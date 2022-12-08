@@ -1,0 +1,49 @@
+# CE210514_PSOC3_5_Thermistor
+# 2022-12-08 04:14:54Z
+
+# IO_0@[IOP=(1)][IoId=(0)] is reserved: SWDDebugEnabled
+dont_use_io iocell 1 0
+# IO_1@[IOP=(1)][IoId=(1)] is reserved: SWDDebugEnabled
+dont_use_io iocell 1 1
+set_io "MISO_1(0)" iocell 5 6
+set_io "MOSI_1(0)" iocell 5 7
+set_io "SCLK_1(0)" iocell 5 4
+set_io "\ADC_1:Bypass_P32(0)\" iocell 3 2
+set_io "\CapSense:CmodCH0(0)\" iocell 15 4
+set_io "\CapSense:PortCH0(0)\" iocell 2 3
+set_io "\CapSense:PortCH0(1)\" iocell 2 4
+set_io "\CapSense:PortCH0(2)\" iocell 2 5
+set_io "\CapSense:PortCH0(3)\" iocell 2 6
+set_io "\CapSense:PortCH0(4)\" iocell 2 7
+set_io "\CapSense:PortCH0(5)\" iocell 6 4
+set_io "\CapSense:PortCH0(6)\" iocell 6 5
+set_io "\CapSense:PortCH0(7)\" iocell 6 6
+set_io "\CapSense:PortCH0(8)\" iocell 6 7
+set_io "\CapSense:PortCH0(9)\" iocell 2 0
+set_io "\CapSense:PortCH0(10)\" iocell 2 2
+set_io "\CapSense:PortCH0(11)\" iocell 2 1
+set_io "Vout_3(0)" iocell 3 6
+set_io "SS_1(0)" iocell 5 5
+set_io "SS_3(0)" iocell 1 5
+set_io "MOSI_3(0)" iocell 1 7
+set_io "SCLK_3(0)" iocell 1 4
+set_io "Vout_4(0)" iocell 3 7
+set_io "bottom_wiper1(0)" iocell 0 5
+set_io "top_wiper1(0)" iocell 0 3
+set_io "top_wiper2(0)" iocell 0 2
+set_io "bottom_wiper2(0)" iocell 0 6
+set_io "MISO_3(0)" iocell 1 6
+set_io "Vout_2(0)" iocell 0 1
+set_io "Vout_1(0)" iocell 0 0
+set_io "middle_wiper2(0)" iocell 4 2
+set_io "middle_wiper1(0)" iocell 3 1
+set_io "midbottom_wiper1(0)" iocell 4 5
+set_io "midbottom_wiper2(0)" iocell 0 7
+set_location "\ADC_1:DSM\" dsmodcell -1 -1 0
+set_location "\Opamp_1:ABuf\" abufcell -1 -1 2
+set_location "\CapSense:BufCH0\" csabufcell -1 -1 0
+set_location "\CapSense:CompCH0:ctComp\" comparatorcell -1 -1 2
+set_location "\CapSense:IdacCH0:viDAC8\" vidaccell -1 -1 0
+set_location "\Opamp_3:ABuf\" abufcell -1 -1 1
+set_location "\Opamp_2:ABuf\" abufcell -1 -1 0
+set_location "\Opamp_4:ABuf\" abufcell -1 -1 3
