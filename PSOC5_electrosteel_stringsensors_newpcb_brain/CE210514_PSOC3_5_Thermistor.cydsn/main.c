@@ -52,7 +52,7 @@ void DmaRxConfiguration(void);
 #define DMA_RX_DST_BASE             (CYDEV_SRAM_BASE)
 
 #define PLUCK_BUFFER_SIZE                 (26u)
-#define BAR_BUFFER_SIZE                 (8u)
+#define BAR_BUFFER_SIZE                 (12u)
 #define STORE_TD_CFG_ONCMPLT        (1u)
 uint8 rx1Channel, rx2Channel __attribute__((aligned(32)));
 uint8 rx1TD[2], rx2TD[2] __attribute__((aligned(32)));
@@ -62,8 +62,8 @@ volatile uint8 rxBufferBar[2][BAR_BUFFER_SIZE] __attribute__((aligned(32)));
 
 volatile uint16_t strings[12];
 volatile uint16_t prevStrings[12];
-volatile uint16_t bar[2];
-volatile uint16_t prevBar[2];
+volatile uint16_t bar[4];
+volatile uint16_t prevBar[4];
 volatile uint16_t maxStrings[12];
 volatile uint8_t amHere = 0;
 volatile uint8_t spiCounter = 0;
@@ -436,15 +436,15 @@ int16_t prev_processed_volumePedal;
 int16_t processed_volumePedal;
 
 
-float fretMeasurements[4][2] ={
+float fretMeasurements[4][4] ={
 
-		{52703.0f, 62473.0f},
+		{28597.0f, 27612.0f, 31785.0f, 0.0f },
 
-		{33446.0f, 41091.0f},
+		{12269.0f, 12732.0f, 15700.0f, 0.0f},
 
-		{23331.0f, 30345.0f},
+		{6456.0f, 6566.0f, 8458.0f, 0.0f},
 
-		{7712.0f, 13618.0f}
+		{1709.0f, 1656.0f, 2674.0f, 0.0f}
 
 	};
 
@@ -1059,9 +1059,9 @@ int main(void)
             main_counter = 0;
         }
         #endif
-        if ((rxBufferBar[!currentBarBuffer][6] == 254) && (rxBufferBar[!currentBarBuffer][7] == 253))
+        if ((rxBufferBar[!currentBarBuffer][10] == 254) && (rxBufferBar[!currentBarBuffer][11] == 253))
         {
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < 4; i++)
             {
                 bar[i] = ((rxBufferBar[!currentBarBuffer][i*2] << 8) + rxBufferBar[!currentBarBuffer][(i*2)+1]);    
     
