@@ -80,10 +80,14 @@ int main(void)
 
 
     SPIM_1_Start();
-    SPIM_1_Start();
+    //SPIM_1_Start();
     Opamp_1_Start();
     Opamp_2_Start();
+    Opamp_3_Start();
+    Opamp_4_Start();
     Opamp_1_Sleep();
+    Opamp_3_Sleep();
+    Opamp_4_Sleep();
 
    // VDAC8_1_Start();
    // VDAC8_2_Start();
@@ -101,7 +105,7 @@ int main(void)
     {
         CapSense_ClearSensors();
         
-        for (i = 0; i < 2; i++)
+        for (i = 0; i < 4; i++)
         {
            scanLinearResistor(i);
         }
@@ -238,12 +242,31 @@ void scanLinearResistor(uint8_t channel)
         if (channel == 0)
         {
             Opamp_2_Sleep();
+            Opamp_3_Sleep();
+            Opamp_4_Sleep();
             Opamp_1_Wakeup();
         }
+        else if (channel == 1)
+        {   
+            Opamp_1_Sleep();
+            Opamp_3_Sleep();
+            Opamp_4_Sleep();
+            Opamp_2_Wakeup();
+        }
+        else if (channel == 2)
+        {   
+            Opamp_1_Sleep();
+            Opamp_2_Sleep();
+            Opamp_4_Sleep();
+            Opamp_3_Wakeup();
+        }
+        
         else
         {   
             Opamp_1_Sleep();
-            Opamp_2_Wakeup();
+            Opamp_2_Sleep();
+            Opamp_3_Sleep();
+            Opamp_4_Wakeup();
         }
     
         //select the wiper pins
@@ -253,7 +276,7 @@ void scanLinearResistor(uint8_t channel)
         iVtherm = ADC_1_GetResult32();
         
         	/* Get the offset voltage*/
-	    AMux_1_FastSelect(4);
+	    AMux_1_FastSelect(8);
         ADC_1_StartConvert();
         ADC_1_IsEndConversion(ADC_1_WAIT_FOR_RESULT);
         offset = ADC_1_GetResult32();
