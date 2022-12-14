@@ -185,11 +185,11 @@ CY_ISR_PROTO(CapSense_IsrCH0_ISR);
 #define CapSense_TOTAL_RB_NUMBER__CH0            (1u)
 
 /* Define Sensors */
-#define CapSense_SENSOR_BUTTON0__BTN    (0u)
-#define CapSense_SENSOR_BUTTON1__BTN    (1u)
+#define CapSense_SENSOR_BUTTON4__BTN    (0u)
+#define CapSense_SENSOR_BUTTON3__BTN    (1u)
 #define CapSense_SENSOR_BUTTON2__BTN    (2u)
-#define CapSense_SENSOR_BUTTON3__BTN    (3u)
-#define CapSense_SENSOR_BUTTON4__BTN    (4u)
+#define CapSense_SENSOR_BUTTON1__BTN    (3u)
+#define CapSense_SENSOR_BUTTON0__BTN    (4u)
 #define CapSense_SENSOR_BUTTON5__BTN    (5u)
 #define CapSense_SENSOR_BUTTON6__BTN    (6u)
 #define CapSense_SENSOR_BUTTON7__BTN    (7u)

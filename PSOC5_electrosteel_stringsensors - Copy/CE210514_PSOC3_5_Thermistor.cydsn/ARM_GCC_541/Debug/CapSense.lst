@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 1
 
 
    1              		.syntax unified
@@ -58,7 +58,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
   55              	CapSense_portTable:
   56 0030 02       		.byte	2
   57 0031 02       		.byte	2
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 2
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 2
 
 
   58 0032 02       		.byte	2
@@ -118,7 +118,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  112 000c 32       		.byte	50
  113 000d 32       		.byte	50
  114 000e C8       		.byte	-56
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 3
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 3
 
 
  115 000f C8       		.byte	-56
@@ -143,11 +143,11 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  132              		.type	CapSense_widgetNumber, %object
  133              		.size	CapSense_widgetNumber, 12
  134              	CapSense_widgetNumber:
- 135 0068 00       		.byte	0
- 136 0069 01       		.byte	1
+ 135 0068 04       		.byte	4
+ 136 0069 03       		.byte	3
  137 006a 02       		.byte	2
- 138 006b 03       		.byte	3
- 139 006c 04       		.byte	4
+ 138 006b 01       		.byte	1
+ 139 006c 00       		.byte	0
  140 006d 05       		.byte	5
  141 006e 06       		.byte	6
  142 006f 07       		.byte	7
@@ -178,7 +178,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
   12:Generated_Source\PSoC5/CapSense.c **** * Copyright 2008-2013, Cypress Semiconductor Corporation.  All rights reserved.
   13:Generated_Source\PSoC5/CapSense.c **** * You may use this file only in accordance with the license, terms, conditions,
   14:Generated_Source\PSoC5/CapSense.c **** * disclaimers, and limitations in the end user license agreement accompanying
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 4
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 4
 
 
   15:Generated_Source\PSoC5/CapSense.c **** * the software package with which this file was provided.
@@ -213,11 +213,11 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
   44:Generated_Source\PSoC5/CapSense.c **** 0xFFu, 0xFu, };
   45:Generated_Source\PSoC5/CapSense.c **** 
   46:Generated_Source\PSoC5/CapSense.c **** uint8 CYXDATA * const CYCODE CapSense_pcTable[] = {
-  47:Generated_Source\PSoC5/CapSense.c ****     (uint8 CYXDATA *)CapSense_PortCH0__Button0__BTN__PC, 
-  48:Generated_Source\PSoC5/CapSense.c ****     (uint8 CYXDATA *)CapSense_PortCH0__Button1__BTN__PC, 
+  47:Generated_Source\PSoC5/CapSense.c ****     (uint8 CYXDATA *)CapSense_PortCH0__Button4__BTN__PC, 
+  48:Generated_Source\PSoC5/CapSense.c ****     (uint8 CYXDATA *)CapSense_PortCH0__Button3__BTN__PC, 
   49:Generated_Source\PSoC5/CapSense.c ****     (uint8 CYXDATA *)CapSense_PortCH0__Button2__BTN__PC, 
-  50:Generated_Source\PSoC5/CapSense.c ****     (uint8 CYXDATA *)CapSense_PortCH0__Button3__BTN__PC, 
-  51:Generated_Source\PSoC5/CapSense.c ****     (uint8 CYXDATA *)CapSense_PortCH0__Button4__BTN__PC, 
+  50:Generated_Source\PSoC5/CapSense.c ****     (uint8 CYXDATA *)CapSense_PortCH0__Button1__BTN__PC, 
+  51:Generated_Source\PSoC5/CapSense.c ****     (uint8 CYXDATA *)CapSense_PortCH0__Button0__BTN__PC, 
   52:Generated_Source\PSoC5/CapSense.c ****     (uint8 CYXDATA *)CapSense_PortCH0__Button5__BTN__PC, 
   53:Generated_Source\PSoC5/CapSense.c ****     (uint8 CYXDATA *)CapSense_PortCH0__Button6__BTN__PC, 
   54:Generated_Source\PSoC5/CapSense.c ****     (uint8 CYXDATA *)CapSense_PortCH0__Button7__BTN__PC, 
@@ -228,17 +228,17 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
   59:Generated_Source\PSoC5/CapSense.c **** };
   60:Generated_Source\PSoC5/CapSense.c **** 
   61:Generated_Source\PSoC5/CapSense.c **** const uint8 CYCODE CapSense_portTable[] = {
-  62:Generated_Source\PSoC5/CapSense.c ****     CapSense_PortCH0__Button0__BTN__PORT, 
-  63:Generated_Source\PSoC5/CapSense.c ****     CapSense_PortCH0__Button1__BTN__PORT, 
+  62:Generated_Source\PSoC5/CapSense.c ****     CapSense_PortCH0__Button4__BTN__PORT, 
+  63:Generated_Source\PSoC5/CapSense.c ****     CapSense_PortCH0__Button3__BTN__PORT, 
   64:Generated_Source\PSoC5/CapSense.c ****     CapSense_PortCH0__Button2__BTN__PORT, 
-  65:Generated_Source\PSoC5/CapSense.c ****     CapSense_PortCH0__Button3__BTN__PORT, 
-  66:Generated_Source\PSoC5/CapSense.c ****     CapSense_PortCH0__Button4__BTN__PORT, 
+  65:Generated_Source\PSoC5/CapSense.c ****     CapSense_PortCH0__Button1__BTN__PORT, 
+  66:Generated_Source\PSoC5/CapSense.c ****     CapSense_PortCH0__Button0__BTN__PORT, 
   67:Generated_Source\PSoC5/CapSense.c ****     CapSense_PortCH0__Button5__BTN__PORT, 
   68:Generated_Source\PSoC5/CapSense.c ****     CapSense_PortCH0__Button6__BTN__PORT, 
   69:Generated_Source\PSoC5/CapSense.c ****     CapSense_PortCH0__Button7__BTN__PORT, 
   70:Generated_Source\PSoC5/CapSense.c ****     CapSense_PortCH0__Button8__BTN__PORT, 
   71:Generated_Source\PSoC5/CapSense.c ****     CapSense_PortCH0__Button9__BTN__PORT, 
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 5
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 5
 
 
   72:Generated_Source\PSoC5/CapSense.c ****     CapSense_PortCH0__Button10__BTN__PORT, 
@@ -246,11 +246,11 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
   74:Generated_Source\PSoC5/CapSense.c **** };
   75:Generated_Source\PSoC5/CapSense.c **** 
   76:Generated_Source\PSoC5/CapSense.c **** const uint8 CYCODE CapSense_maskTable[] = {
-  77:Generated_Source\PSoC5/CapSense.c ****     CapSense_PortCH0__Button0__BTN__MASK,
-  78:Generated_Source\PSoC5/CapSense.c ****     CapSense_PortCH0__Button1__BTN__MASK,
+  77:Generated_Source\PSoC5/CapSense.c ****     CapSense_PortCH0__Button4__BTN__MASK,
+  78:Generated_Source\PSoC5/CapSense.c ****     CapSense_PortCH0__Button3__BTN__MASK,
   79:Generated_Source\PSoC5/CapSense.c ****     CapSense_PortCH0__Button2__BTN__MASK,
-  80:Generated_Source\PSoC5/CapSense.c ****     CapSense_PortCH0__Button3__BTN__MASK,
-  81:Generated_Source\PSoC5/CapSense.c ****     CapSense_PortCH0__Button4__BTN__MASK,
+  80:Generated_Source\PSoC5/CapSense.c ****     CapSense_PortCH0__Button1__BTN__MASK,
+  81:Generated_Source\PSoC5/CapSense.c ****     CapSense_PortCH0__Button0__BTN__MASK,
   82:Generated_Source\PSoC5/CapSense.c ****     CapSense_PortCH0__Button5__BTN__MASK,
   83:Generated_Source\PSoC5/CapSense.c ****     CapSense_PortCH0__Button6__BTN__MASK,
   84:Generated_Source\PSoC5/CapSense.c ****     CapSense_PortCH0__Button7__BTN__MASK,
@@ -288,17 +288,17 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  116:Generated_Source\PSoC5/CapSense.c **** uint8 CapSense_analogSwitchDivider = 30u;
  117:Generated_Source\PSoC5/CapSense.c **** 
  118:Generated_Source\PSoC5/CapSense.c **** const uint8 CYCODE CapSense_widgetNumber[] = {
- 119:Generated_Source\PSoC5/CapSense.c ****     0u, /* Button0__BTN */
- 120:Generated_Source\PSoC5/CapSense.c ****     1u, /* Button1__BTN */
+ 119:Generated_Source\PSoC5/CapSense.c ****     4u, /* Button4__BTN */
+ 120:Generated_Source\PSoC5/CapSense.c ****     3u, /* Button3__BTN */
  121:Generated_Source\PSoC5/CapSense.c ****     2u, /* Button2__BTN */
- 122:Generated_Source\PSoC5/CapSense.c ****     3u, /* Button3__BTN */
- 123:Generated_Source\PSoC5/CapSense.c ****     4u, /* Button4__BTN */
+ 122:Generated_Source\PSoC5/CapSense.c ****     1u, /* Button1__BTN */
+ 123:Generated_Source\PSoC5/CapSense.c ****     0u, /* Button0__BTN */
  124:Generated_Source\PSoC5/CapSense.c ****     5u, /* Button5__BTN */
  125:Generated_Source\PSoC5/CapSense.c ****     6u, /* Button6__BTN */
  126:Generated_Source\PSoC5/CapSense.c ****     7u, /* Button7__BTN */
  127:Generated_Source\PSoC5/CapSense.c ****     8u, /* Button8__BTN */
  128:Generated_Source\PSoC5/CapSense.c ****     9u, /* Button9__BTN */
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 6
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 6
 
 
  129:Generated_Source\PSoC5/CapSense.c ****     10u, /* Button10__BTN */
@@ -358,7 +358,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  169:Generated_Source\PSoC5/CapSense.c ****     /* Set Prescaler */
  170:Generated_Source\PSoC5/CapSense.c ****     #if (CapSense_PRESCALER_OPTIONS == CapSense_PRESCALER_UDB)
  171:Generated_Source\PSoC5/CapSense.c ****         /* Do nothing = config without prescaler */
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 7
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 7
 
 
  172:Generated_Source\PSoC5/CapSense.c ****     #elif (CapSense_PRESCALER_OPTIONS == CapSense_PRESCALER_FF)
@@ -418,7 +418,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  193              		.loc 1 202 0
  194 0038 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
  195 003a 1846     		mov	r0, r3
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 8
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 8
 
 
  196 003c FFF7FEFF 		bl	CyExitCriticalSection
@@ -478,7 +478,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  209              		.loc 1 243 0
  210 0056 FFF7FEFF 		bl	CyEnterCriticalSection
  211 005a 0346     		mov	r3, r0
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 9
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 9
 
 
  212 005c FB71     		strb	r3, [r7, #7]
@@ -538,7 +538,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  253              		.loc 1 256 0
  254 00a4 244B     		ldr	r3, .L2+48
  255 00a6 FF22     		movs	r2, #255
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 10
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 10
 
 
  256 00a8 1A70     		strb	r2, [r3]
@@ -598,7 +598,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  298:Generated_Source\PSoC5/CapSense.c ****     
  299:Generated_Source\PSoC5/CapSense.c ****     #if (CapSense_DESIGN_TYPE == CapSense_TWO_CHANNELS_DESIGN)
  300:Generated_Source\PSoC5/CapSense.c ****         CyIntDisable(CapSense_IsrCH1_ISR_NUMBER);
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 11
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 11
 
 
  301:Generated_Source\PSoC5/CapSense.c ****         CyIntSetVector(CapSense_IsrCH1_ISR_NUMBER, CapSense_IsrCH1_ISR);
@@ -658,7 +658,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  289 00e6 FFF7FEFF 		bl	CapSense_CompCH0_Init
  335:Generated_Source\PSoC5/CapSense.c ****     #if (CapSense_CURRENT_SOURCE)
  336:Generated_Source\PSoC5/CapSense.c ****         CapSense_IdacCH0_Init();
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 12
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 12
 
 
  290              		.loc 1 336 0
@@ -718,7 +718,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  321 012c 08640040 		.word	1073767432
  322 0130 28650040 		.word	1073767720
  323 0134 58650040 		.word	1073767768
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 13
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 13
 
 
  324 0138 48650040 		.word	1073767752
@@ -778,7 +778,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  383:Generated_Source\PSoC5/CapSense.c ****     /* Enable Prescaler */
  384:Generated_Source\PSoC5/CapSense.c ****     #if (CapSense_PRESCALER_OPTIONS == CapSense_PRESCALER_UDB)
  385:Generated_Source\PSoC5/CapSense.c ****         /* Do nothing  for UDB */
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 14
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 14
 
 
  386:Generated_Source\PSoC5/CapSense.c ****     #elif (CapSense_PRESCALER_OPTIONS == CapSense_PRESCALER_FF)
@@ -838,7 +838,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  432:Generated_Source\PSoC5/CapSense.c ****     /* Enable the Clock */
  433:Generated_Source\PSoC5/CapSense.c ****     #if (CapSense_CLOCK_SOURCE == CapSense_INTERNAL_CLOCK)
  434:Generated_Source\PSoC5/CapSense.c ****        CapSense_IntClock_Enable();
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 15
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 15
 
 
  363              		.loc 1 434 0
@@ -898,7 +898,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  467:Generated_Source\PSoC5/CapSense.c ****     #endif  /* (CapSense_VREF_VDAC == CapSense_VREF_OPTIONS) */
  468:Generated_Source\PSoC5/CapSense.c ****     
  469:Generated_Source\PSoC5/CapSense.c ****     /* Set reference on AMux Bus */
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 16
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 16
 
 
  470:Generated_Source\PSoC5/CapSense.c ****     #if (CapSense_VREF_OPTIONS == CapSense_VREF_VDAC)
@@ -958,7 +958,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  412              		.cfi_def_cfa_offset 8
  413 007c BD46     		mov	sp, r7
  414              		.cfi_def_cfa_register 13
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 17
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 17
 
 
  415              		@ sp needed
@@ -1018,7 +1018,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  529:Generated_Source\PSoC5/CapSense.c **** *******************************************************************************/
  530:Generated_Source\PSoC5/CapSense.c **** void CapSense_Start(void)  
  531:Generated_Source\PSoC5/CapSense.c **** {
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 18
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 18
 
 
  437              		.loc 1 531 0
@@ -1078,7 +1078,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  477              	CapSense_Stop:
  478              	.LFB3:
  546:Generated_Source\PSoC5/CapSense.c **** 
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 19
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 19
 
 
  547:Generated_Source\PSoC5/CapSense.c **** 
@@ -1138,7 +1138,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  579:Generated_Source\PSoC5/CapSense.c ****     CapSense_ClearSensors();
  501              		.loc 1 579 0
  502 001a FFF7FEFF 		bl	CapSense_ClearSensors
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 20
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 20
 
 
  580:Generated_Source\PSoC5/CapSense.c ****     
@@ -1198,7 +1198,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  626:Generated_Source\PSoC5/CapSense.c ****         #endif  /* (CapSense_IMPLEMENTATION_CH1 == CapSense_MEASURE_IMPLEMENTATION_FF) */
  627:Generated_Source\PSoC5/CapSense.c ****     
  628:Generated_Source\PSoC5/CapSense.c ****     #endif  /* (CapSense_DESIGN_TYPE == TWO_CHANNELS_DESIGN)*/
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 21
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 21
 
 
  629:Generated_Source\PSoC5/CapSense.c ****     
@@ -1258,7 +1258,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  532 0058 1370     		strb	r3, [r2]
  662:Generated_Source\PSoC5/CapSense.c ****         CapSense_BufCH0_STBY_PWRMGR_REG &= (uint8)(~CapSense_BufCH0_STBY_PWR_EN);
  533              		.loc 1 662 0
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 22
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 22
 
 
  534 005a 0E4A     		ldr	r2, .L12+20
@@ -1318,7 +1318,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  679:Generated_Source\PSoC5/CapSense.c ****     ********************************************************************************
  680:Generated_Source\PSoC5/CapSense.c ****     *
  681:Generated_Source\PSoC5/CapSense.c ****     * Summary:
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 23
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 23
 
 
  682:Generated_Source\PSoC5/CapSense.c ****     *  Finds next sensor to scan. 
@@ -1378,7 +1378,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  592 0010 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
  593 0012 0C2B     		cmp	r3, #12
  594 0014 12D0     		beq	.L19
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 24
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 24
 
 
  716:Generated_Source\PSoC5/CapSense.c ****             {
@@ -1438,7 +1438,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  638              		.size	CapSense_FindNextSensor, .-CapSense_FindNextSensor
  639              		.section	.text.CapSense_SetScanSlotSettings,"ax",%progbits
  640              		.align	2
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 25
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 25
 
 
  641              		.global	CapSense_SetScanSlotSettings
@@ -1498,7 +1498,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  774:Generated_Source\PSoC5/CapSense.c ****                 indexCh0 = CapSense_END_OF_SCAN__CH0;
  775:Generated_Source\PSoC5/CapSense.c ****                 break;
  776:Generated_Source\PSoC5/CapSense.c ****             }
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 26
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 26
 
 
  777:Generated_Source\PSoC5/CapSense.c ****             
@@ -1558,7 +1558,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  831:Generated_Source\PSoC5/CapSense.c ****         
  832:Generated_Source\PSoC5/CapSense.c ****         return (snsIndex);
  833:Generated_Source\PSoC5/CapSense.c ****     }
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 27
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 27
 
 
  834:Generated_Source\PSoC5/CapSense.c **** #endif  /* CapSense_DESIGN_TYPE == CapSense_TWO_CHANNELS_DESIGN */
@@ -1618,7 +1618,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  869:Generated_Source\PSoC5/CapSense.c ****             CapSense_IdacCH0_SetValue(CapSense_idacSettings[slot]);
  666              		.loc 1 869 0
  667 0012 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 28
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 28
 
 
  668 0014 0A4A     		ldr	r2, .L23+4
@@ -1678,7 +1678,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  909:Generated_Source\PSoC5/CapSense.c ****         if(slot < CapSense_TOTAL_SENSOR_COUNT__CH1)
  910:Generated_Source\PSoC5/CapSense.c ****         {
  911:Generated_Source\PSoC5/CapSense.c ****             widget = CapSense_widgetNumber[slot+CapSense_TOTAL_SENSOR_COUNT__CH0];
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 29
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 29
 
 
  912:Generated_Source\PSoC5/CapSense.c ****         
@@ -1738,7 +1738,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  939:Generated_Source\PSoC5/CapSense.c **** 
  940:Generated_Source\PSoC5/CapSense.c **** 
  941:Generated_Source\PSoC5/CapSense.c **** /*******************************************************************************
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 30
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 30
 
 
  942:Generated_Source\PSoC5/CapSense.c **** * Function Name: CapSense_ScanSensor
@@ -1798,7 +1798,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  730 0012 FB79     		ldrb	r3, [r7, #7]
  731 0014 1370     		strb	r3, [r2]
  976:Generated_Source\PSoC5/CapSense.c ****     
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 31
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 31
 
 
  977:Generated_Source\PSoC5/CapSense.c ****     #if (CapSense_DESIGN_TYPE == CapSense_ONE_CHANNEL_DESIGN)
@@ -1858,7 +1858,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  749              		.align	2
  750              	.L26:
  751 002c 00000000 		.word	CapSense_csv
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 32
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 32
 
 
  752 0030 00000000 		.word	CapSense_sensorIndex
@@ -1918,7 +1918,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  770              		.cfi_offset 7, -8
  771              		.cfi_offset 14, -4
  772 0002 00AF     		add	r7, sp, #0
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 33
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 33
 
 
  773              		.cfi_def_cfa_register 7
@@ -1978,7 +1978,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
 1064:Generated_Source\PSoC5/CapSense.c ****         
 1065:Generated_Source\PSoC5/CapSense.c ****     #else
 1066:Generated_Source\PSoC5/CapSense.c ****         /* Find next sensor and set proper control register */
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 34
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 34
 
 
 1067:Generated_Source\PSoC5/CapSense.c ****         CapSense_sensorIndex = CapSense_FindNextPair(CapSense_sensorIndex);
@@ -2038,7 +2038,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
 1102:Generated_Source\PSoC5/CapSense.c **** {
  832              		.loc 1 1102 0
  833              		.cfi_startproc
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 35
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 35
 
 
  834              		@ args = 0, pretend = 0, frame = 0
@@ -2098,7 +2098,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
 1119:Generated_Source\PSoC5/CapSense.c **** * Return:
 1120:Generated_Source\PSoC5/CapSense.c **** *  Returns current raw data value for defined sensor number.
 1121:Generated_Source\PSoC5/CapSense.c **** *
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 36
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 36
 
 
 1122:Generated_Source\PSoC5/CapSense.c **** * Global Variables:
@@ -2158,7 +2158,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
 1132:Generated_Source\PSoC5/CapSense.c **** /*******************************************************************************
 1133:Generated_Source\PSoC5/CapSense.c **** * Function Name: CapSense_ClearSensors
 1134:Generated_Source\PSoC5/CapSense.c **** ********************************************************************************
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 37
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 37
 
 
 1135:Generated_Source\PSoC5/CapSense.c **** *
@@ -2218,7 +2218,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  947 0020 00BF     		nop
  948 0022 0837     		adds	r7, r7, #8
  949              		.cfi_def_cfa_offset 8
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 38
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 38
 
 
  950 0024 BD46     		mov	sp, r7
@@ -2278,7 +2278,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
 1195:Generated_Source\PSoC5/CapSense.c ****         {
 1196:Generated_Source\PSoC5/CapSense.c ****             /* Enable sensor (signle) */
 1197:Generated_Source\PSoC5/CapSense.c ****             CapSense_EnableSensor(slot);
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 39
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 39
 
 
 1198:Generated_Source\PSoC5/CapSense.c ****         }
@@ -2338,7 +2338,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
 1252:Generated_Source\PSoC5/CapSense.c ****         }
 1253:Generated_Source\PSoC5/CapSense.c ****         else
 1254:Generated_Source\PSoC5/CapSense.c ****         {
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 40
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 40
 
 
 1255:Generated_Source\PSoC5/CapSense.c ****             /* Disable complex sensor */
@@ -2398,7 +2398,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  975 0004 00AF     		add	r7, sp, #0
  976              		.cfi_def_cfa_register 7
  977 0006 0346     		mov	r3, r0
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 41
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 41
 
 
  978 0008 FB71     		strb	r3, [r7, #7]
@@ -2458,7 +2458,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1013 0046 D2B2     		uxtb	r2, r2
  1014 0048 1A70     		strb	r2, [r3]
 1318:Generated_Source\PSoC5/CapSense.c ****     
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 42
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 42
 
 
 1319:Generated_Source\PSoC5/CapSense.c ****     /* Connect to AMUX */
@@ -2518,7 +2518,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1035              	.LFE11:
  1036              		.size	CapSense_EnableSensor, .-CapSense_EnableSensor
  1037              		.section	.text.CapSense_DisableSensor,"ax",%progbits
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 43
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 43
 
 
  1038              		.align	2
@@ -2578,7 +2578,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1060 000a FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
  1061 000c 144A     		ldr	r2, .L50
  1062 000e D35C     		ldrb	r3, [r2, r3]
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 44
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 44
 
 
  1063 0010 FB73     		strb	r3, [r7, #15]
@@ -2638,7 +2638,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
 1429:Generated_Source\PSoC5/CapSense.c **** 	if(port == 15u)
  1073              		.loc 1 1429 0
  1074 0022 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 45
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 45
 
 
  1075 0024 0F2B     		cmp	r3, #15
@@ -2698,7 +2698,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1115 006c 00000000 		.word	CapSense_pcTable
  1116              		.cfi_endproc
  1117              	.LFE12:
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 46
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 46
 
 
  1118              		.size	CapSense_DisableSensor, .-CapSense_DisableSensor
@@ -2758,7 +2758,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
 1471:Generated_Source\PSoC5/CapSense.c ****     /* Place disable interrupts here to eliminate influence on start of scanning */
 1472:Generated_Source\PSoC5/CapSense.c ****     /* `#START CapSense_PreScan_DisableInt` */
 1473:Generated_Source\PSoC5/CapSense.c **** 
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 47
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 47
 
 
 1474:Generated_Source\PSoC5/CapSense.c ****     /* `#END` */
@@ -2818,7 +2818,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
 1508:Generated_Source\PSoC5/CapSense.c ****             
 1509:Generated_Source\PSoC5/CapSense.c ****             /* Enable Sensor */
 1510:Generated_Source\PSoC5/CapSense.c ****             CapSense_EnableScanSlot(sensor);
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 48
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 48
 
 
 1511:Generated_Source\PSoC5/CapSense.c ****              
@@ -2878,7 +2878,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
 1565:Generated_Source\PSoC5/CapSense.c ****                     CapSense_BufCH1_CAPS_CFG0_REG &= ~CapSense_CSBUF_ENABLE;
 1566:Generated_Source\PSoC5/CapSense.c ****                 #endif  /* (CapSense_VREF_VDAC == CapSense_VREF_OPTIONS) */
 1567:Generated_Source\PSoC5/CapSense.c ****                 
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 49
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 49
 
 
 1568:Generated_Source\PSoC5/CapSense.c ****                 /* Enable Sensor */
@@ -2938,7 +2938,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1179              		@ sp needed
  1180 0050 80BD     		pop	{r7, pc}
  1181              	.L54:
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 50
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 50
 
 
  1182 0052 00BF     		.align	2
@@ -2998,7 +2998,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1208              		.cfi_def_cfa_register 7
  1209 0006 0346     		mov	r3, r0
  1210 0008 FB71     		strb	r3, [r7, #7]
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 51
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 51
 
 
 1636:Generated_Source\PSoC5/CapSense.c ****         /* Stop Capsensing and rearm sync */
@@ -3058,7 +3058,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1252 005a 22F81310 		strh	r1, [r2, r3, lsl #1]	@ movhi
 1648:Generated_Source\PSoC5/CapSense.c ****         #endif  /* (CapSense_IMPLEMENTATION == CapSense_MEASURE_IMPLEMENTATION_FF) */
 1649:Generated_Source\PSoC5/CapSense.c ****         
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 52
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 52
 
 
 1650:Generated_Source\PSoC5/CapSense.c ****         /* Disable Sensor */
@@ -3118,7 +3118,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1285              	.LFE14:
  1286              		.size	CapSense_PostScan, .-CapSense_PostScan
  1287              		.section	.text.CapSense_SetPrescaler,"ax",%progbits
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 53
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 53
 
 
  1288              		.align	2
@@ -3178,7 +3178,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
 1719:Generated_Source\PSoC5/CapSense.c ****         CapSense_DisableScanSlot(sensor);
 1720:Generated_Source\PSoC5/CapSense.c ****         
 1721:Generated_Source\PSoC5/CapSense.c ****         #if (CapSense_CURRENT_SOURCE)
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 54
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 54
 
 
 1722:Generated_Source\PSoC5/CapSense.c ****             /* Turn off IDAC */
@@ -3238,7 +3238,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
 1776:Generated_Source\PSoC5/CapSense.c ****             CapSense_sensorRaw[sensor]  = CapSense_MEASURE_FULL_RANGE - 
 1777:Generated_Source\PSoC5/CapSense.c ****                                                       CY_GET_REG16(CapSense_RAW_CH1_COUNTER_PTR);
 1778:Generated_Source\PSoC5/CapSense.c ****         #else
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 55
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 55
 
 
 1779:Generated_Source\PSoC5/CapSense.c ****             CapSense_sensorRaw[sensor]  = ((uint16) CapSense_RAW_CH1_COUNTER_HI_REG << 8u);
@@ -3298,7 +3298,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
 1833:Generated_Source\PSoC5/CapSense.c ****         for(i = 0u; i < CapSense_TOTAL_RB_NUMBER; i++)
 1834:Generated_Source\PSoC5/CapSense.c ****         {
 1835:Generated_Source\PSoC5/CapSense.c ****             /* Make High-Z */
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 56
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 56
 
 
 1836:Generated_Source\PSoC5/CapSense.c ****             *CapSense_rbTable[i] = CapSense_PRT_PC_HIGHZ;
@@ -3358,7 +3358,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
 1890:Generated_Source\PSoC5/CapSense.c ****     /*******************************************************************************
 1891:Generated_Source\PSoC5/CapSense.c ****     * Function Name: CapSense_SetPrescaler
 1892:Generated_Source\PSoC5/CapSense.c ****     ********************************************************************************
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 57
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 57
 
 
 1893:Generated_Source\PSoC5/CapSense.c ****     *
@@ -3418,7 +3418,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1325              		@ sp needed
  1326 0020 80BC     		pop	{r7}
  1327              		.cfi_restore 7
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 58
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 58
 
 
  1328              		.cfi_def_cfa_offset 0
@@ -3478,7 +3478,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
 1938:Generated_Source\PSoC5/CapSense.c ****         #if (CapSense_PRESCALER_OPTIONS == CapSense_PRESCALER_UDB)
 1939:Generated_Source\PSoC5/CapSense.c ****             prescaler = CapSense_PRESCALER_PERIOD_REG;
  1361              		.loc 1 1939 0
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 59
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 59
 
 
  1362 000a 044B     		ldr	r3, .L63
@@ -3538,7 +3538,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
 1963:Generated_Source\PSoC5/CapSense.c **** * Return:
 1964:Generated_Source\PSoC5/CapSense.c **** *  None
 1965:Generated_Source\PSoC5/CapSense.c **** *
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 60
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 60
 
 
 1966:Generated_Source\PSoC5/CapSense.c **** *******************************************************************************/
@@ -3598,7 +3598,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
 1976:Generated_Source\PSoC5/CapSense.c ****     ********************************************************************************
 1977:Generated_Source\PSoC5/CapSense.c ****     *
 1978:Generated_Source\PSoC5/CapSense.c ****     * Summary:
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 61
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 61
 
 
 1979:Generated_Source\PSoC5/CapSense.c ****     *  Selects the Analog switches source between PRS and prescaler. It is useful
@@ -3658,7 +3658,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1464 0020 07E0     		b	.L71
  1465              	.L69:
 2003:Generated_Source\PSoC5/CapSense.c ****         }
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 62
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 62
 
 
  1466              		.loc 1 2003 0
@@ -3701,7 +3701,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1503 000c 61000000 		.4byte	.LASF61
  1504 0010 0C       		.byte	0xc
  1505 0011 14000000 		.4byte	.LASF62
- 1506 0015 0F040000 		.4byte	.LASF63
+ 1506 0015 46010000 		.4byte	.LASF63
  1507 0019 00000000 		.4byte	.Ldebug_ranges0+0
  1508 001d 00000000 		.4byte	0
  1509 0021 00000000 		.4byte	.Ldebug_line0
@@ -3712,26 +3712,26 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1514 002c 02       		.uleb128 0x2
  1515 002d 01       		.byte	0x1
  1516 002e 08       		.byte	0x8
- 1517 002f 56030000 		.4byte	.LASF1
+ 1517 002f CE030000 		.4byte	.LASF1
  1518 0033 02       		.uleb128 0x2
  1519 0034 02       		.byte	0x2
  1520 0035 05       		.byte	0x5
- 1521 0036 7E030000 		.4byte	.LASF2
+ 1521 0036 F6030000 		.4byte	.LASF2
  1522 003a 02       		.uleb128 0x2
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 63
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 63
 
 
  1523 003b 02       		.byte	0x2
  1524 003c 07       		.byte	0x7
- 1525 003d 5B020000 		.4byte	.LASF3
+ 1525 003d D3020000 		.4byte	.LASF3
  1526 0041 02       		.uleb128 0x2
  1527 0042 04       		.byte	0x4
  1528 0043 05       		.byte	0x5
- 1529 0044 67010000 		.4byte	.LASF4
+ 1529 0044 DF010000 		.4byte	.LASF4
  1530 0048 02       		.uleb128 0x2
  1531 0049 04       		.byte	0x4
  1532 004a 07       		.byte	0x7
- 1533 004b 23020000 		.4byte	.LASF5
+ 1533 004b 9B020000 		.4byte	.LASF5
  1534 004f 02       		.uleb128 0x2
  1535 0050 08       		.byte	0x8
  1536 0051 05       		.byte	0x5
@@ -3747,9 +3747,9 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1546 0064 02       		.uleb128 0x2
  1547 0065 04       		.byte	0x4
  1548 0066 07       		.byte	0x7
- 1549 0067 00020000 		.4byte	.LASF8
+ 1549 0067 78020000 		.4byte	.LASF8
  1550 006b 04       		.uleb128 0x4
- 1551 006c 76010000 		.4byte	.LASF9
+ 1551 006c EE010000 		.4byte	.LASF9
  1552 0070 02       		.byte	0x2
  1553 0071 E401     		.2byte	0x1e4
  1554 0073 2C000000 		.4byte	0x2c
@@ -3759,26 +3759,26 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1558 007d E501     		.2byte	0x1e5
  1559 007f 3A000000 		.4byte	0x3a
  1560 0083 04       		.uleb128 0x4
- 1561 0084 C6010000 		.4byte	.LASF11
+ 1561 0084 3E020000 		.4byte	.LASF11
  1562 0088 02       		.byte	0x2
  1563 0089 E601     		.2byte	0x1e6
  1564 008b 48000000 		.4byte	0x48
  1565 008f 02       		.uleb128 0x2
  1566 0090 04       		.byte	0x4
  1567 0091 04       		.byte	0x4
- 1568 0092 12030000 		.4byte	.LASF12
+ 1568 0092 8A030000 		.4byte	.LASF12
  1569 0096 02       		.uleb128 0x2
  1570 0097 08       		.byte	0x8
  1571 0098 04       		.byte	0x4
- 1572 0099 7C010000 		.4byte	.LASF13
+ 1572 0099 F4010000 		.4byte	.LASF13
  1573 009d 02       		.uleb128 0x2
  1574 009e 01       		.byte	0x1
  1575 009f 08       		.byte	0x8
- 1576 00a0 A5030000 		.4byte	.LASF14
+ 1576 00a0 1D040000 		.4byte	.LASF14
  1577 00a4 04       		.uleb128 0x4
- 1578 00a5 22030000 		.4byte	.LASF15
+ 1578 00a5 9A030000 		.4byte	.LASF15
  1579 00a9 02       		.byte	0x2
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 64
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 64
 
 
  1580 00aa 8E02     		.2byte	0x28e
@@ -3786,14 +3786,14 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1582 00b0 05       		.uleb128 0x5
  1583 00b1 6B000000 		.4byte	0x6b
  1584 00b5 04       		.uleb128 0x4
- 1585 00b6 70010000 		.4byte	.LASF16
+ 1585 00b6 E8010000 		.4byte	.LASF16
  1586 00ba 02       		.byte	0x2
  1587 00bb 8F02     		.2byte	0x28f
  1588 00bd C1000000 		.4byte	0xc1
  1589 00c1 05       		.uleb128 0x5
  1590 00c2 77000000 		.4byte	0x77
  1591 00c6 04       		.uleb128 0x4
- 1592 00c7 94020000 		.4byte	.LASF17
+ 1592 00c7 0C030000 		.4byte	.LASF17
  1593 00cb 02       		.byte	0x2
  1594 00cc 9002     		.2byte	0x290
  1595 00ce D2000000 		.4byte	0xd2
@@ -3802,13 +3802,13 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1598 00d7 02       		.uleb128 0x2
  1599 00d8 08       		.byte	0x8
  1600 00d9 04       		.byte	0x4
- 1601 00da D1020000 		.4byte	.LASF18
+ 1601 00da 49030000 		.4byte	.LASF18
  1602 00de 02       		.uleb128 0x2
  1603 00df 04       		.byte	0x4
  1604 00e0 07       		.byte	0x7
- 1605 00e1 B7020000 		.4byte	.LASF19
+ 1605 00e1 2F030000 		.4byte	.LASF19
  1606 00e5 06       		.uleb128 0x6
- 1607 00e6 86040000 		.4byte	.LASF20
+ 1607 00e6 98040000 		.4byte	.LASF20
  1608 00ea 01       		.byte	0x1
  1609 00eb 98       		.byte	0x98
  1610 00ec 00000000 		.4byte	.LFB0
@@ -3817,7 +3817,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1613 00f5 9C       		.byte	0x9c
  1614 00f6 09010000 		.4byte	0x109
  1615 00fa 07       		.uleb128 0x7
- 1616 00fb E1030000 		.4byte	.LASF22
+ 1616 00fb 59040000 		.4byte	.LASF22
  1617 00ff 01       		.byte	0x1
  1618 0100 9F       		.byte	0x9f
  1619 0101 6B000000 		.4byte	0x6b
@@ -3835,10 +3835,10 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1631 011a 9C       		.byte	0x9c
  1632 011b 2F010000 		.4byte	0x12f
  1633 011f 09       		.uleb128 0x9
- 1634 0120 E1030000 		.4byte	.LASF22
+ 1634 0120 59040000 		.4byte	.LASF22
  1635 0124 01       		.byte	0x1
  1636 0125 7B01     		.2byte	0x17b
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 65
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 65
 
 
  1637 0127 6B000000 		.4byte	0x6b
@@ -3847,7 +3847,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1640 012d 77       		.sleb128 -9
  1641 012e 00       		.byte	0
  1642 012f 0A       		.uleb128 0xa
- 1643 0130 C0030000 		.4byte	.LASF23
+ 1643 0130 38040000 		.4byte	.LASF23
  1644 0134 01       		.byte	0x1
  1645 0135 1202     		.2byte	0x212
  1646 0137 00000000 		.4byte	.LFB2
@@ -3855,7 +3855,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1648 013f 01       		.uleb128 0x1
  1649 0140 9C       		.byte	0x9c
  1650 0141 0A       		.uleb128 0xa
- 1651 0142 DD020000 		.4byte	.LASF24
+ 1651 0142 55030000 		.4byte	.LASF24
  1652 0146 01       		.byte	0x1
  1653 0147 3702     		.2byte	0x237
  1654 0149 00000000 		.4byte	.LFB3
@@ -3863,7 +3863,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1656 0151 01       		.uleb128 0x1
  1657 0152 9C       		.byte	0x9c
  1658 0153 0B       		.uleb128 0xb
- 1659 0154 27030000 		.4byte	.LASF33
+ 1659 0154 9F030000 		.4byte	.LASF33
  1660 0158 01       		.byte	0x1
  1661 0159 C102     		.2byte	0x2c1
  1662 015b 6B000000 		.4byte	0x6b
@@ -3889,7 +3889,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1682 0189 91       		.byte	0x91
  1683 018a 77       		.sleb128 -9
  1684 018b 09       		.uleb128 0x9
- 1685 018c F5020000 		.4byte	.LASF25
+ 1685 018c 6D030000 		.4byte	.LASF25
  1686 0190 01       		.byte	0x1
  1687 0191 C402     		.2byte	0x2c4
  1688 0193 6B000000 		.4byte	0x6b
@@ -3898,10 +3898,10 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1691 0199 76       		.sleb128 -10
  1692 019a 00       		.byte	0
  1693 019b 08       		.uleb128 0x8
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 66
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 66
 
 
- 1694 019c F2030000 		.4byte	.LASF26
+ 1694 019c 6A040000 		.4byte	.LASF26
  1695 01a0 01       		.byte	0x1
  1696 01a1 5B03     		.2byte	0x35b
  1697 01a3 00000000 		.4byte	.LFB5
@@ -3910,7 +3910,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1700 01ac 9C       		.byte	0x9c
  1701 01ad D0010000 		.4byte	0x1d0
  1702 01b1 0C       		.uleb128 0xc
- 1703 01b2 8F020000 		.4byte	.LASF28
+ 1703 01b2 07030000 		.4byte	.LASF28
  1704 01b6 01       		.byte	0x1
  1705 01b7 5B03     		.2byte	0x35b
  1706 01b9 6B000000 		.4byte	0x6b
@@ -3918,7 +3918,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1708 01be 91       		.byte	0x91
  1709 01bf 6F       		.sleb128 -17
  1710 01c0 09       		.uleb128 0x9
- 1711 01c1 88030000 		.4byte	.LASF29
+ 1711 01c1 00040000 		.4byte	.LASF29
  1712 01c5 01       		.byte	0x1
  1713 01c6 5D03     		.2byte	0x35d
  1714 01c8 6B000000 		.4byte	0x6b
@@ -3927,7 +3927,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1717 01ce 77       		.sleb128 -9
  1718 01cf 00       		.byte	0
  1719 01d0 08       		.uleb128 0x8
- 1720 01d1 EC010000 		.4byte	.LASF30
+ 1720 01d1 64020000 		.4byte	.LASF30
  1721 01d5 01       		.byte	0x1
  1722 01d6 CB03     		.2byte	0x3cb
  1723 01d8 00000000 		.4byte	.LFB6
@@ -3936,7 +3936,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1726 01e1 9C       		.byte	0x9c
  1727 01e2 F6010000 		.4byte	0x1f6
  1728 01e6 0C       		.uleb128 0xc
- 1729 01e7 6E020000 		.4byte	.LASF31
+ 1729 01e7 E6020000 		.4byte	.LASF31
  1730 01eb 01       		.byte	0x1
  1731 01ec CB03     		.2byte	0x3cb
  1732 01ee 6B000000 		.4byte	0x6b
@@ -3945,7 +3945,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1735 01f4 77       		.sleb128 -9
  1736 01f5 00       		.byte	0
  1737 01f6 0A       		.uleb128 0xa
- 1738 01f7 A7040000 		.4byte	.LASF32
+ 1738 01f7 B9040000 		.4byte	.LASF32
  1739 01fb 01       		.byte	0x1
  1740 01fc 1804     		.2byte	0x418
  1741 01fe 00000000 		.4byte	.LFB7
@@ -3953,19 +3953,19 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1743 0206 01       		.uleb128 0x1
  1744 0207 9C       		.byte	0x9c
  1745 0208 0E       		.uleb128 0xe
- 1746 0209 C3040000 		.4byte	.LASF64
+ 1746 0209 D5040000 		.4byte	.LASF64
  1747 020d 01       		.byte	0x1
  1748 020e 4D04     		.2byte	0x44d
  1749 0210 6B000000 		.4byte	0x6b
  1750 0214 00000000 		.4byte	.LFB8
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 67
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 67
 
 
  1751 0218 1C000000 		.4byte	.LFE8-.LFB8
  1752 021c 01       		.uleb128 0x1
  1753 021d 9C       		.byte	0x9c
  1754 021e 0B       		.uleb128 0xb
- 1755 021f AF010000 		.4byte	.LASF34
+ 1755 021f 27020000 		.4byte	.LASF34
  1756 0223 01       		.byte	0x1
  1757 0224 6604     		.2byte	0x466
  1758 0226 77000000 		.4byte	0x77
@@ -3975,7 +3975,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1762 0233 9C       		.byte	0x9c
  1763 0234 48020000 		.4byte	0x248
  1764 0238 0C       		.uleb128 0xc
- 1765 0239 6E020000 		.4byte	.LASF31
+ 1765 0239 E6020000 		.4byte	.LASF31
  1766 023d 01       		.byte	0x1
  1767 023e 6604     		.2byte	0x466
  1768 0240 6B000000 		.4byte	0x6b
@@ -3984,7 +3984,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1771 0246 77       		.sleb128 -9
  1772 0247 00       		.byte	0
  1773 0248 08       		.uleb128 0x8
- 1774 0249 0D020000 		.4byte	.LASF35
+ 1774 0249 85020000 		.4byte	.LASF35
  1775 024d 01       		.byte	0x1
  1776 024e 7B04     		.2byte	0x47b
  1777 0250 00000000 		.4byte	.LFB10
@@ -4002,7 +4002,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1789 026a 77       		.sleb128 -9
  1790 026b 00       		.byte	0
  1791 026c 08       		.uleb128 0x8
- 1792 026d 83010000 		.4byte	.LASF36
+ 1792 026d FB010000 		.4byte	.LASF36
  1793 0271 01       		.byte	0x1
  1794 0272 1105     		.2byte	0x511
  1795 0274 00000000 		.4byte	.LFB11
@@ -4011,18 +4011,18 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1798 027d 9C       		.byte	0x9c
  1799 027e B0020000 		.4byte	0x2b0
  1800 0282 0C       		.uleb128 0xc
- 1801 0283 6E020000 		.4byte	.LASF31
+ 1801 0283 E6020000 		.4byte	.LASF31
  1802 0287 01       		.byte	0x1
  1803 0288 1105     		.2byte	0x511
  1804 028a 6B000000 		.4byte	0x6b
  1805 028e 02       		.uleb128 0x2
  1806 028f 91       		.byte	0x91
  1807 0290 6F       		.sleb128 -17
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 68
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 68
 
 
  1808 0291 09       		.uleb128 0x9
- 1809 0292 D2010000 		.4byte	.LASF37
+ 1809 0292 4A020000 		.4byte	.LASF37
  1810 0296 01       		.byte	0x1
  1811 0297 1305     		.2byte	0x513
  1812 0299 6B000000 		.4byte	0x6b
@@ -4030,7 +4030,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1814 029e 91       		.byte	0x91
  1815 029f 77       		.sleb128 -9
  1816 02a0 09       		.uleb128 0x9
- 1817 02a1 CD010000 		.4byte	.LASF38
+ 1817 02a1 45020000 		.4byte	.LASF38
  1818 02a5 01       		.byte	0x1
  1819 02a6 1405     		.2byte	0x514
  1820 02a8 6B000000 		.4byte	0x6b
@@ -4039,7 +4039,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1823 02ae 76       		.sleb128 -10
  1824 02af 00       		.byte	0
  1825 02b0 08       		.uleb128 0x8
- 1826 02b1 3F030000 		.4byte	.LASF39
+ 1826 02b1 B7030000 		.4byte	.LASF39
  1827 02b5 01       		.byte	0x1
  1828 02b6 6605     		.2byte	0x566
  1829 02b8 00000000 		.4byte	.LFB12
@@ -4048,7 +4048,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1832 02c1 9C       		.byte	0x9c
  1833 02c2 F4020000 		.4byte	0x2f4
  1834 02c6 0C       		.uleb128 0xc
- 1835 02c7 6E020000 		.4byte	.LASF31
+ 1835 02c7 E6020000 		.4byte	.LASF31
  1836 02cb 01       		.byte	0x1
  1837 02cc 6605     		.2byte	0x566
  1838 02ce 6B000000 		.4byte	0x6b
@@ -4056,7 +4056,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1840 02d3 91       		.byte	0x91
  1841 02d4 6F       		.sleb128 -17
  1842 02d5 09       		.uleb128 0x9
- 1843 02d6 D2010000 		.4byte	.LASF37
+ 1843 02d6 4A020000 		.4byte	.LASF37
  1844 02da 01       		.byte	0x1
  1845 02db 6805     		.2byte	0x568
  1846 02dd 6B000000 		.4byte	0x6b
@@ -4064,7 +4064,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1848 02e2 91       		.byte	0x91
  1849 02e3 77       		.sleb128 -9
  1850 02e4 09       		.uleb128 0x9
- 1851 02e5 CD010000 		.4byte	.LASF38
+ 1851 02e5 45020000 		.4byte	.LASF38
  1852 02e9 01       		.byte	0x1
  1853 02ea 6905     		.2byte	0x569
  1854 02ec 6B000000 		.4byte	0x6b
@@ -4073,19 +4073,19 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1857 02f2 76       		.sleb128 -10
  1858 02f3 00       		.byte	0
  1859 02f4 08       		.uleb128 0x8
- 1860 02f5 75040000 		.4byte	.LASF40
+ 1860 02f5 87040000 		.4byte	.LASF40
  1861 02f9 01       		.byte	0x1
  1862 02fa BA05     		.2byte	0x5ba
  1863 02fc 00000000 		.4byte	.LFB13
  1864 0300 5C000000 		.4byte	.LFE13-.LFB13
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 69
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 69
 
 
  1865 0304 01       		.uleb128 0x1
  1866 0305 9C       		.byte	0x9c
  1867 0306 1A030000 		.4byte	0x31a
  1868 030a 0C       		.uleb128 0xc
- 1869 030b 6E020000 		.4byte	.LASF31
+ 1869 030b E6020000 		.4byte	.LASF31
  1870 030f 01       		.byte	0x1
  1871 0310 BA05     		.2byte	0x5ba
  1872 0312 6B000000 		.4byte	0x6b
@@ -4094,7 +4094,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1875 0318 77       		.sleb128 -9
  1876 0319 00       		.byte	0
  1877 031a 08       		.uleb128 0x8
- 1878 031b CF030000 		.4byte	.LASF41
+ 1878 031b 47040000 		.4byte	.LASF41
  1879 031f 01       		.byte	0x1
  1880 0320 6206     		.2byte	0x662
  1881 0322 00000000 		.4byte	.LFB14
@@ -4103,7 +4103,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1884 032b 9C       		.byte	0x9c
  1885 032c 40030000 		.4byte	0x340
  1886 0330 0C       		.uleb128 0xc
- 1887 0331 6E020000 		.4byte	.LASF31
+ 1887 0331 E6020000 		.4byte	.LASF31
  1888 0335 01       		.byte	0x1
  1889 0336 6206     		.2byte	0x662
  1890 0338 6B000000 		.4byte	0x6b
@@ -4121,7 +4121,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1902 0351 9C       		.byte	0x9c
  1903 0352 66030000 		.4byte	0x366
  1904 0356 0C       		.uleb128 0xc
- 1905 0357 18030000 		.4byte	.LASF43
+ 1905 0357 90030000 		.4byte	.LASF43
  1906 035b 01       		.byte	0x1
  1907 035c 7007     		.2byte	0x770
  1908 035e 6B000000 		.4byte	0x6b
@@ -4130,7 +4130,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1911 0364 77       		.sleb128 -9
  1912 0365 00       		.byte	0
  1913 0366 0B       		.uleb128 0xb
- 1914 0367 8F030000 		.4byte	.LASF44
+ 1914 0367 07040000 		.4byte	.LASF44
  1915 036b 01       		.byte	0x1
  1916 036c 8D07     		.2byte	0x78d
  1917 036e 6B000000 		.4byte	0x6b
@@ -4138,12 +4138,12 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1919 0376 20000000 		.4byte	.LFE16-.LFB16
  1920 037a 01       		.uleb128 0x1
  1921 037b 9C       		.byte	0x9c
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 70
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 70
 
 
  1922 037c 90030000 		.4byte	0x390
  1923 0380 09       		.uleb128 0x9
- 1924 0381 18030000 		.4byte	.LASF43
+ 1924 0381 90030000 		.4byte	.LASF43
  1925 0385 01       		.byte	0x1
  1926 0386 8F07     		.2byte	0x78f
  1927 0388 6B000000 		.4byte	0x6b
@@ -4152,7 +4152,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1930 038e 77       		.sleb128 -9
  1931 038f 00       		.byte	0
  1932 0390 0F       		.uleb128 0xf
- 1933 0391 AA030000 		.4byte	.LASF45
+ 1933 0391 22040000 		.4byte	.LASF45
  1934 0395 01       		.byte	0x1
  1935 0396 AF07     		.2byte	0x7af
  1936 0398 00000000 		.4byte	.LFB17
@@ -4161,7 +4161,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1939 03a1 9C       		.byte	0x9c
  1940 03a2 B6030000 		.4byte	0x3b6
  1941 03a6 0C       		.uleb128 0xc
- 1942 03a7 EB020000 		.4byte	.LASF46
+ 1942 03a7 63030000 		.4byte	.LASF46
  1943 03ab 01       		.byte	0x1
  1944 03ac AF07     		.2byte	0x7af
  1945 03ae 6B000000 		.4byte	0x6b
@@ -4170,7 +4170,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1948 03b4 77       		.sleb128 -9
  1949 03b5 00       		.byte	0
  1950 03b6 0F       		.uleb128 0xf
- 1951 03b7 46010000 		.4byte	.LASF47
+ 1951 03b7 BE010000 		.4byte	.LASF47
  1952 03bb 01       		.byte	0x1
  1953 03bc CA07     		.2byte	0x7ca
  1954 03be 00000000 		.4byte	.LFB18
@@ -4198,7 +4198,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1976 03ed 11       		.uleb128 0x11
  1977 03ee 07000000 		.4byte	.LASF49
  1978 03f2 01       		.byte	0x1
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 71
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 71
 
 
  1979 03f3 19       		.byte	0x19
@@ -4207,7 +4207,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1982 03f9 03       		.byte	0x3
  1983 03fa 00000000 		.4byte	CapSense_csv
  1984 03fe 11       		.uleb128 0x11
- 1985 03ff D7010000 		.4byte	.LASF50
+ 1985 03ff 4F020000 		.4byte	.LASF50
  1986 0403 01       		.byte	0x1
  1987 0404 1A       		.byte	0x1a
  1988 0405 B0000000 		.4byte	0xb0
@@ -4222,7 +4222,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  1997 041d 0B       		.byte	0xb
  1998 041e 00       		.byte	0
  1999 041f 11       		.uleb128 0x11
- 2000 0420 94040000 		.4byte	.LASF51
+ 2000 0420 A6040000 		.4byte	.LASF51
  2001 0424 01       		.byte	0x1
  2002 0425 29       		.byte	0x29
  2003 0426 0F040000 		.4byte	0x40f
@@ -4237,7 +4237,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  2012 043e 01       		.byte	0x1
  2013 043f 00       		.byte	0
  2014 0440 11       		.uleb128 0x11
- 2015 0441 75020000 		.4byte	.LASF52
+ 2015 0441 ED020000 		.4byte	.LASF52
  2016 0445 01       		.byte	0x1
  2017 0446 2B       		.byte	0x2b
  2018 0447 30040000 		.4byte	0x430
@@ -4258,7 +4258,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  2033 0468 61040000 		.4byte	0x461
  2034 046c 11       		.uleb128 0x11
  2035 046d 47000000 		.4byte	.LASF53
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 72
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 72
 
 
  2036 0471 01       		.byte	0x1
@@ -4279,7 +4279,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  2051 0492 15       		.uleb128 0x15
  2052 0493 6B000000 		.4byte	0x6b
  2053 0497 11       		.uleb128 0x11
- 2054 0498 48020000 		.4byte	.LASF54
+ 2054 0498 C0020000 		.4byte	.LASF54
  2055 049c 01       		.byte	0x1
  2056 049d 3D       		.byte	0x3d
  2057 049e A8040000 		.4byte	0x4a8
@@ -4289,7 +4289,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  2061 04a8 15       		.uleb128 0x15
  2062 04a9 82040000 		.4byte	0x482
  2063 04ad 11       		.uleb128 0x11
- 2064 04ae 35020000 		.4byte	.LASF55
+ 2064 04ae AD020000 		.4byte	.LASF55
  2065 04b2 01       		.byte	0x1
  2066 04b3 4C       		.byte	0x4c
  2067 04b4 BE040000 		.4byte	0x4be
@@ -4306,7 +4306,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  2078 04d1 07       		.byte	0x7
  2079 04d2 00       		.byte	0
  2080 04d3 11       		.uleb128 0x11
- 2081 04d4 C0020000 		.4byte	.LASF56
+ 2081 04d4 38030000 		.4byte	.LASF56
  2082 04d8 01       		.byte	0x1
  2083 04d9 5B       		.byte	0x5b
  2084 04da E4040000 		.4byte	0x4e4
@@ -4318,7 +4318,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  2090 04e9 12       		.uleb128 0x12
  2091 04ea 6B000000 		.4byte	0x6b
  2092 04ee F9040000 		.4byte	0x4f9
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 73
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 73
 
 
  2093 04f2 13       		.uleb128 0x13
@@ -4326,7 +4326,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  2095 04f7 0B       		.byte	0xb
  2096 04f8 00       		.byte	0
  2097 04f9 11       		.uleb128 0x11
- 2098 04fa FC020000 		.4byte	.LASF57
+ 2098 04fa 74030000 		.4byte	.LASF57
  2099 04fe 01       		.byte	0x1
  2100 04ff 61       		.byte	0x61
  2101 0500 E9040000 		.4byte	0x4e9
@@ -4334,7 +4334,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  2103 0505 03       		.byte	0x3
  2104 0506 00000000 		.4byte	CapSense_idacSettings
  2105 050a 11       		.uleb128 0x11
- 2106 050b 64030000 		.4byte	.LASF58
+ 2106 050b DC030000 		.4byte	.LASF58
  2107 050f 01       		.byte	0x1
  2108 0510 65       		.byte	0x65
  2109 0511 E9040000 		.4byte	0x4e9
@@ -4342,7 +4342,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  2111 0516 03       		.byte	0x3
  2112 0517 00000000 		.4byte	CapSense_widgetResolution
  2113 051b 11       		.uleb128 0x11
- 2114 051c 9A020000 		.4byte	.LASF59
+ 2114 051c 12030000 		.4byte	.LASF59
  2115 0520 01       		.byte	0x1
  2116 0521 74       		.byte	0x74
  2117 0522 6B000000 		.4byte	0x6b
@@ -4350,7 +4350,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  2119 0527 03       		.byte	0x3
  2120 0528 00000000 		.4byte	CapSense_analogSwitchDivider
  2121 052c 11       		.uleb128 0x11
- 2122 052d 99010000 		.4byte	.LASF60
+ 2122 052d 11020000 		.4byte	.LASF60
  2123 0531 01       		.byte	0x1
  2124 0532 76       		.byte	0x76
  2125 0533 3D050000 		.4byte	0x53d
@@ -4378,7 +4378,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  2147 000d 11       		.uleb128 0x11
  2148 000e 01       		.uleb128 0x1
  2149 000f 10       		.uleb128 0x10
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 74
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 74
 
 
  2150 0010 17       		.uleb128 0x17
@@ -4438,7 +4438,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  2204 0046 3B       		.uleb128 0x3b
  2205 0047 0B       		.uleb128 0xb
  2206 0048 27       		.uleb128 0x27
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 75
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 75
 
 
  2207 0049 19       		.uleb128 0x19
@@ -4498,7 +4498,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  2261 0081 34       		.uleb128 0x34
  2262 0082 00       		.byte	0
  2263 0083 03       		.uleb128 0x3
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 76
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 76
 
 
  2264 0084 0E       		.uleb128 0xe
@@ -4558,7 +4558,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  2318 00bb 18       		.uleb128 0x18
  2319 00bc 9742     		.uleb128 0x2117
  2320 00be 19       		.uleb128 0x19
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 77
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 77
 
 
  2321 00bf 01       		.uleb128 0x1
@@ -4618,7 +4618,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  2375 00f5 18       		.uleb128 0x18
  2376 00f6 9742     		.uleb128 0x2117
  2377 00f8 19       		.uleb128 0x19
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 78
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 78
 
 
  2378 00f9 00       		.byte	0
@@ -4678,7 +4678,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  2432 0130 19       		.uleb128 0x19
  2433 0131 02       		.uleb128 0x2
  2434 0132 18       		.uleb128 0x18
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 79
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 79
 
 
  2435 0133 00       		.byte	0
@@ -4738,7 +4738,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  2489 0034 50000000 		.4byte	.LFE4-.LFB4
  2490 0038 00000000 		.4byte	.LFB5
  2491 003c 50000000 		.4byte	.LFE5-.LFB5
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 80
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 80
 
 
  2492 0040 00000000 		.4byte	.LFB6
@@ -4798,7 +4798,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  2546 0060 00000000 		.4byte	.LFB12
  2547 0064 70000000 		.4byte	.LFE12
  2548 0068 00000000 		.4byte	.LFB13
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 81
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 81
 
 
  2549 006c 5C000000 		.4byte	.LFE13
@@ -4858,7 +4858,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  2578      31203230 
  2578      31363036 
  2579 0094 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 82
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 82
 
 
  2579      20726576 
@@ -4896,283 +4896,286 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 1
  2590 013a 7369676E 		.ascii	"signed char\000"
  2590      65642063 
  2590      68617200 
- 2591              	.LASF47:
- 2592 0146 43617053 		.ascii	"CapSense_SetAnalogSwitchesSource\000"
- 2592      656E7365 
- 2592      5F536574 
- 2592      416E616C 
- 2592      6F675377 
- 2593              	.LASF4:
- 2594 0167 6C6F6E67 		.ascii	"long int\000"
- 2594      20696E74 
- 2594      00
- 2595              	.LASF16:
- 2596 0170 72656731 		.ascii	"reg16\000"
- 2596      3600
- 2597              	.LASF9:
- 2598 0176 75696E74 		.ascii	"uint8\000"
- 2598      3800
- 2599              	.LASF13:
- 2600 017c 646F7562 		.ascii	"double\000"
- 2600      6C6500
- 2601              	.LASF36:
- 2602 0183 43617053 		.ascii	"CapSense_EnableSensor\000"
- 2602      656E7365 
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 83
+ 2591              	.LASF63:
+ 2592 0146 433A5C55 		.ascii	"C:\\Users\\JeffSnyder\\dev\\Electrosteel_embedded\\"
+ 2592      73657273 
+ 2592      5C4A6566 
+ 2592      66536E79 
+ 2592      6465725C 
+ 2593 0174 50534F43 		.ascii	"PSOC5_electrosteel_stringsensors - Copy\\CE210514_P"
+ 2593      355F656C 
+ 2593      65637472 
+ 2593      6F737465 
+ 2593      656C5F73 
+ 2594 01a6 534F4333 		.ascii	"SOC3_5_Thermistor.cydsn\000"
+ 2594      5F355F54 
+ 2594      6865726D 
+ 2594      6973746F 
+ 2594      722E6379 
+ 2595              	.LASF47:
+ 2596 01be 43617053 		.ascii	"CapSense_SetAnalogSwitchesSource\000"
+ 2596      656E7365 
+ 2596      5F536574 
+ 2596      416E616C 
+ 2596      6F675377 
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 83
 
 
- 2602      5F456E61 
- 2602      626C6553 
- 2602      656E736F 
- 2603              	.LASF60:
- 2604 0199 43617053 		.ascii	"CapSense_widgetNumber\000"
- 2604      656E7365 
- 2604      5F776964 
- 2604      6765744E 
- 2604      756D6265 
- 2605              	.LASF34:
- 2606 01af 43617053 		.ascii	"CapSense_ReadSensorRaw\000"
+ 2597              	.LASF4:
+ 2598 01df 6C6F6E67 		.ascii	"long int\000"
+ 2598      20696E74 
+ 2598      00
+ 2599              	.LASF16:
+ 2600 01e8 72656731 		.ascii	"reg16\000"
+ 2600      3600
+ 2601              	.LASF9:
+ 2602 01ee 75696E74 		.ascii	"uint8\000"
+ 2602      3800
+ 2603              	.LASF13:
+ 2604 01f4 646F7562 		.ascii	"double\000"
+ 2604      6C6500
+ 2605              	.LASF36:
+ 2606 01fb 43617053 		.ascii	"CapSense_EnableSensor\000"
  2606      656E7365 
- 2606      5F526561 
- 2606      6453656E 
- 2606      736F7252 
- 2607              	.LASF11:
- 2608 01c6 75696E74 		.ascii	"uint32\000"
- 2608      333200
- 2609              	.LASF38:
- 2610 01cd 6D61736B 		.ascii	"mask\000"
- 2610      00
- 2611              	.LASF37:
- 2612 01d2 706F7274 		.ascii	"port\000"
- 2612      00
- 2613              	.LASF50:
- 2614 01d7 43617053 		.ascii	"CapSense_sensorIndex\000"
- 2614      656E7365 
- 2614      5F73656E 
- 2614      736F7249 
- 2614      6E646578 
- 2615              	.LASF30:
- 2616 01ec 43617053 		.ascii	"CapSense_ScanSensor\000"
- 2616      656E7365 
- 2616      5F536361 
- 2616      6E53656E 
- 2616      736F7200 
- 2617              	.LASF8:
- 2618 0200 756E7369 		.ascii	"unsigned int\000"
- 2618      676E6564 
- 2618      20696E74 
- 2618      00
- 2619              	.LASF35:
- 2620 020d 43617053 		.ascii	"CapSense_ClearSensors\000"
+ 2606      5F456E61 
+ 2606      626C6553 
+ 2606      656E736F 
+ 2607              	.LASF60:
+ 2608 0211 43617053 		.ascii	"CapSense_widgetNumber\000"
+ 2608      656E7365 
+ 2608      5F776964 
+ 2608      6765744E 
+ 2608      756D6265 
+ 2609              	.LASF34:
+ 2610 0227 43617053 		.ascii	"CapSense_ReadSensorRaw\000"
+ 2610      656E7365 
+ 2610      5F526561 
+ 2610      6453656E 
+ 2610      736F7252 
+ 2611              	.LASF11:
+ 2612 023e 75696E74 		.ascii	"uint32\000"
+ 2612      333200
+ 2613              	.LASF38:
+ 2614 0245 6D61736B 		.ascii	"mask\000"
+ 2614      00
+ 2615              	.LASF37:
+ 2616 024a 706F7274 		.ascii	"port\000"
+ 2616      00
+ 2617              	.LASF50:
+ 2618 024f 43617053 		.ascii	"CapSense_sensorIndex\000"
+ 2618      656E7365 
+ 2618      5F73656E 
+ 2618      736F7249 
+ 2618      6E646578 
+ 2619              	.LASF30:
+ 2620 0264 43617053 		.ascii	"CapSense_ScanSensor\000"
  2620      656E7365 
- 2620      5F436C65 
- 2620      61725365 
- 2620      6E736F72 
- 2621              	.LASF5:
- 2622 0223 6C6F6E67 		.ascii	"long unsigned int\000"
- 2622      20756E73 
- 2622      69676E65 
- 2622      6420696E 
- 2622      7400
- 2623              	.LASF55:
- 2624 0235 43617053 		.ascii	"CapSense_maskTable\000"
+ 2620      5F536361 
+ 2620      6E53656E 
+ 2620      736F7200 
+ 2621              	.LASF8:
+ 2622 0278 756E7369 		.ascii	"unsigned int\000"
+ 2622      676E6564 
+ 2622      20696E74 
+ 2622      00
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 84
+
+
+ 2623              	.LASF35:
+ 2624 0285 43617053 		.ascii	"CapSense_ClearSensors\000"
  2624      656E7365 
- 2624      5F6D6173 
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 84
-
-
- 2624      6B546162 
- 2624      6C6500
- 2625              	.LASF54:
- 2626 0248 43617053 		.ascii	"CapSense_portTable\000"
- 2626      656E7365 
- 2626      5F706F72 
- 2626      74546162 
- 2626      6C6500
- 2627              	.LASF3:
- 2628 025b 73686F72 		.ascii	"short unsigned int\000"
- 2628      7420756E 
- 2628      7369676E 
- 2628      65642069 
- 2628      6E7400
- 2629              	.LASF31:
- 2630 026e 73656E73 		.ascii	"sensor\000"
- 2630      6F7200
- 2631              	.LASF52:
- 2632 0275 43617053 		.ascii	"CapSense_sensorEnableMask\000"
- 2632      656E7365 
- 2632      5F73656E 
- 2632      736F7245 
- 2632      6E61626C 
- 2633              	.LASF28:
- 2634 028f 736C6F74 		.ascii	"slot\000"
- 2634      00
- 2635              	.LASF17:
- 2636 0294 72656733 		.ascii	"reg32\000"
- 2636      3200
- 2637              	.LASF59:
- 2638 029a 43617053 		.ascii	"CapSense_analogSwitchDivider\000"
- 2638      656E7365 
- 2638      5F616E61 
- 2638      6C6F6753 
- 2638      77697463 
- 2639              	.LASF19:
- 2640 02b7 73697A65 		.ascii	"sizetype\000"
- 2640      74797065 
- 2640      00
- 2641              	.LASF56:
- 2642 02c0 43617053 		.ascii	"CapSense_csTable\000"
+ 2624      5F436C65 
+ 2624      61725365 
+ 2624      6E736F72 
+ 2625              	.LASF5:
+ 2626 029b 6C6F6E67 		.ascii	"long unsigned int\000"
+ 2626      20756E73 
+ 2626      69676E65 
+ 2626      6420696E 
+ 2626      7400
+ 2627              	.LASF55:
+ 2628 02ad 43617053 		.ascii	"CapSense_maskTable\000"
+ 2628      656E7365 
+ 2628      5F6D6173 
+ 2628      6B546162 
+ 2628      6C6500
+ 2629              	.LASF54:
+ 2630 02c0 43617053 		.ascii	"CapSense_portTable\000"
+ 2630      656E7365 
+ 2630      5F706F72 
+ 2630      74546162 
+ 2630      6C6500
+ 2631              	.LASF3:
+ 2632 02d3 73686F72 		.ascii	"short unsigned int\000"
+ 2632      7420756E 
+ 2632      7369676E 
+ 2632      65642069 
+ 2632      6E7400
+ 2633              	.LASF31:
+ 2634 02e6 73656E73 		.ascii	"sensor\000"
+ 2634      6F7200
+ 2635              	.LASF52:
+ 2636 02ed 43617053 		.ascii	"CapSense_sensorEnableMask\000"
+ 2636      656E7365 
+ 2636      5F73656E 
+ 2636      736F7245 
+ 2636      6E61626C 
+ 2637              	.LASF28:
+ 2638 0307 736C6F74 		.ascii	"slot\000"
+ 2638      00
+ 2639              	.LASF17:
+ 2640 030c 72656733 		.ascii	"reg32\000"
+ 2640      3200
+ 2641              	.LASF59:
+ 2642 0312 43617053 		.ascii	"CapSense_analogSwitchDivider\000"
  2642      656E7365 
- 2642      5F637354 
- 2642      61626C65 
- 2642      00
- 2643              	.LASF18:
- 2644 02d1 6C6F6E67 		.ascii	"long double\000"
- 2644      20646F75 
- 2644      626C6500 
- 2645              	.LASF24:
- 2646 02dd 43617053 		.ascii	"CapSense_Stop\000"
+ 2642      5F616E61 
+ 2642      6C6F6753 
+ 2642      77697463 
+ 2643              	.LASF19:
+ 2644 032f 73697A65 		.ascii	"sizetype\000"
+ 2644      74797065 
+ 2644      00
+ 2645              	.LASF56:
+ 2646 0338 43617053 		.ascii	"CapSense_csTable\000"
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 85
+
+
  2646      656E7365 
- 2646      5F53746F 
- 2646      7000
- 2647              	.LASF46:
- 2648 02eb 7363616E 		.ascii	"scanSpeed\000"
- 2648      53706565 
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 85
-
-
- 2648      6400
- 2649              	.LASF25:
- 2650 02f5 656E4D61 		.ascii	"enMask\000"
- 2650      736B00
- 2651              	.LASF57:
- 2652 02fc 43617053 		.ascii	"CapSense_idacSettings\000"
- 2652      656E7365 
- 2652      5F696461 
- 2652      63536574 
- 2652      74696E67 
- 2653              	.LASF12:
- 2654 0312 666C6F61 		.ascii	"float\000"
- 2654      7400
- 2655              	.LASF43:
- 2656 0318 70726573 		.ascii	"prescaler\000"
- 2656      63616C65 
- 2656      7200
- 2657              	.LASF15:
- 2658 0322 72656738 		.ascii	"reg8\000"
- 2658      00
- 2659              	.LASF33:
- 2660 0327 43617053 		.ascii	"CapSense_FindNextSensor\000"
- 2660      656E7365 
- 2660      5F46696E 
- 2660      644E6578 
- 2660      7453656E 
- 2661              	.LASF39:
- 2662 033f 43617053 		.ascii	"CapSense_DisableSensor\000"
- 2662      656E7365 
- 2662      5F446973 
- 2662      61626C65 
- 2662      53656E73 
- 2663              	.LASF1:
- 2664 0356 756E7369 		.ascii	"unsigned char\000"
- 2664      676E6564 
- 2664      20636861 
- 2664      7200
- 2665              	.LASF58:
- 2666 0364 43617053 		.ascii	"CapSense_widgetResolution\000"
+ 2646      5F637354 
+ 2646      61626C65 
+ 2646      00
+ 2647              	.LASF18:
+ 2648 0349 6C6F6E67 		.ascii	"long double\000"
+ 2648      20646F75 
+ 2648      626C6500 
+ 2649              	.LASF24:
+ 2650 0355 43617053 		.ascii	"CapSense_Stop\000"
+ 2650      656E7365 
+ 2650      5F53746F 
+ 2650      7000
+ 2651              	.LASF46:
+ 2652 0363 7363616E 		.ascii	"scanSpeed\000"
+ 2652      53706565 
+ 2652      6400
+ 2653              	.LASF25:
+ 2654 036d 656E4D61 		.ascii	"enMask\000"
+ 2654      736B00
+ 2655              	.LASF57:
+ 2656 0374 43617053 		.ascii	"CapSense_idacSettings\000"
+ 2656      656E7365 
+ 2656      5F696461 
+ 2656      63536574 
+ 2656      74696E67 
+ 2657              	.LASF12:
+ 2658 038a 666C6F61 		.ascii	"float\000"
+ 2658      7400
+ 2659              	.LASF43:
+ 2660 0390 70726573 		.ascii	"prescaler\000"
+ 2660      63616C65 
+ 2660      7200
+ 2661              	.LASF15:
+ 2662 039a 72656738 		.ascii	"reg8\000"
+ 2662      00
+ 2663              	.LASF33:
+ 2664 039f 43617053 		.ascii	"CapSense_FindNextSensor\000"
+ 2664      656E7365 
+ 2664      5F46696E 
+ 2664      644E6578 
+ 2664      7453656E 
+ 2665              	.LASF39:
+ 2666 03b7 43617053 		.ascii	"CapSense_DisableSensor\000"
  2666      656E7365 
- 2666      5F776964 
- 2666      67657452 
- 2666      65736F6C 
- 2667              	.LASF2:
- 2668 037e 73686F72 		.ascii	"short int\000"
- 2668      7420696E 
- 2668      7400
- 2669              	.LASF29:
- 2670 0388 77696467 		.ascii	"widget\000"
- 2670      657400
- 2671              	.LASF44:
- 2672 038f 43617053 		.ascii	"CapSense_GetPrescaler\000"
- 2672      656E7365 
- 2672      5F476574 
- 2672      50726573 
- 2672      63616C65 
- 2673              	.LASF14:
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 86
+ 2666      5F446973 
+ 2666      61626C65 
+ 2666      53656E73 
+ 2667              	.LASF1:
+ 2668 03ce 756E7369 		.ascii	"unsigned char\000"
+ 2668      676E6564 
+ 2668      20636861 
+ 2668      7200
+ 2669              	.LASF58:
+ 2670 03dc 43617053 		.ascii	"CapSense_widgetResolution\000"
+ 2670      656E7365 
+ 2670      5F776964 
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 86
 
 
- 2674 03a5 63686172 		.ascii	"char\000"
- 2674      00
- 2675              	.LASF45:
- 2676 03aa 43617053 		.ascii	"CapSense_SetScanSpeed\000"
+ 2670      67657452 
+ 2670      65736F6C 
+ 2671              	.LASF2:
+ 2672 03f6 73686F72 		.ascii	"short int\000"
+ 2672      7420696E 
+ 2672      7400
+ 2673              	.LASF29:
+ 2674 0400 77696467 		.ascii	"widget\000"
+ 2674      657400
+ 2675              	.LASF44:
+ 2676 0407 43617053 		.ascii	"CapSense_GetPrescaler\000"
  2676      656E7365 
- 2676      5F536574 
- 2676      5363616E 
- 2676      53706565 
- 2677              	.LASF23:
- 2678 03c0 43617053 		.ascii	"CapSense_Start\000"
- 2678      656E7365 
- 2678      5F537461 
- 2678      727400
- 2679              	.LASF41:
- 2680 03cf 43617053 		.ascii	"CapSense_PostScan\000"
+ 2676      5F476574 
+ 2676      50726573 
+ 2676      63616C65 
+ 2677              	.LASF14:
+ 2678 041d 63686172 		.ascii	"char\000"
+ 2678      00
+ 2679              	.LASF45:
+ 2680 0422 43617053 		.ascii	"CapSense_SetScanSpeed\000"
  2680      656E7365 
- 2680      5F506F73 
- 2680      74536361 
- 2680      6E00
- 2681              	.LASF22:
- 2682 03e1 656E6162 		.ascii	"enableInterrupts\000"
- 2682      6C65496E 
- 2682      74657272 
- 2682      75707473 
- 2682      00
- 2683              	.LASF26:
- 2684 03f2 43617053 		.ascii	"CapSense_SetScanSlotSettings\000"
+ 2680      5F536574 
+ 2680      5363616E 
+ 2680      53706565 
+ 2681              	.LASF23:
+ 2682 0438 43617053 		.ascii	"CapSense_Start\000"
+ 2682      656E7365 
+ 2682      5F537461 
+ 2682      727400
+ 2683              	.LASF41:
+ 2684 0447 43617053 		.ascii	"CapSense_PostScan\000"
  2684      656E7365 
- 2684      5F536574 
- 2684      5363616E 
- 2684      536C6F74 
- 2685              	.LASF63:
- 2686 040f 433A5C55 		.ascii	"C:\\Users\\JeffSnyder\\Desktop\\PSOC5_electrosteel_"
- 2686      73657273 
- 2686      5C4A6566 
- 2686      66536E79 
- 2686      6465725C 
- 2687 043e 73747269 		.ascii	"stringsensors - Copy\\CE210514_PSOC3_5_Thermistor.c"
- 2687      6E677365 
- 2687      6E736F72 
- 2687      73202D20 
- 2687      436F7079 
- 2688 0470 7964736E 		.ascii	"ydsn\000"
- 2688      00
+ 2684      5F506F73 
+ 2684      74536361 
+ 2684      6E00
+ 2685              	.LASF22:
+ 2686 0459 656E6162 		.ascii	"enableInterrupts\000"
+ 2686      6C65496E 
+ 2686      74657272 
+ 2686      75707473 
+ 2686      00
+ 2687              	.LASF26:
+ 2688 046a 43617053 		.ascii	"CapSense_SetScanSlotSettings\000"
+ 2688      656E7365 
+ 2688      5F536574 
+ 2688      5363616E 
+ 2688      536C6F74 
  2689              	.LASF40:
- 2690 0475 43617053 		.ascii	"CapSense_PreScan\000"
+ 2690 0487 43617053 		.ascii	"CapSense_PreScan\000"
  2690      656E7365 
  2690      5F507265 
  2690      5363616E 
  2690      00
  2691              	.LASF20:
- 2692 0486 43617053 		.ascii	"CapSense_Init\000"
+ 2692 0498 43617053 		.ascii	"CapSense_Init\000"
  2692      656E7365 
  2692      5F496E69 
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccy89Ti8.s 			page 87
+
+
  2692      7400
  2693              	.LASF51:
- 2694 0494 43617053 		.ascii	"CapSense_sensorRaw\000"
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccwnyKIB.s 			page 87
-
-
+ 2694 04a6 43617053 		.ascii	"CapSense_sensorRaw\000"
  2694      656E7365 
  2694      5F73656E 
  2694      736F7252 
  2694      617700
  2695              	.LASF32:
- 2696 04a7 43617053 		.ascii	"CapSense_ScanEnabledWidgets\000"
+ 2696 04b9 43617053 		.ascii	"CapSense_ScanEnabledWidgets\000"
  2696      656E7365 
  2696      5F536361 
  2696      6E456E61 
  2696      626C6564 
  2697              	.LASF64:
- 2698 04c3 43617053 		.ascii	"CapSense_IsBusy\000"
+ 2698 04d5 43617053 		.ascii	"CapSense_IsBusy\000"
  2698      656E7365 
  2698      5F497342 
  2698      75737900 

@@ -66,11 +66,11 @@ uint8 CapSense_debounceCounter[] = {
 };
 
 const uint8 CYCODE CapSense_rawDataIndex[] = {
-    0u, /* Button0__BTN */
-    1u, /* Button1__BTN */
+    4u, /* Button0__BTN */
+    3u, /* Button1__BTN */
     2u, /* Button2__BTN */
-    3u, /* Button3__BTN */
-    4u, /* Button4__BTN */
+    1u, /* Button3__BTN */
+    0u, /* Button4__BTN */
     5u, /* Button5__BTN */
     6u, /* Button6__BTN */
     7u, /* Button7__BTN */

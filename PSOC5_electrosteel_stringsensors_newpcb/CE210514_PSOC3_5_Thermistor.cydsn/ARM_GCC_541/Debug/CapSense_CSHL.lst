@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 1
 
 
    1              		.syntax unified
@@ -30,18 +30,18 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
   27              		.type	CapSense_fingerThreshold, %object
   28              		.size	CapSense_fingerThreshold, 24
   29              	CapSense_fingerThreshold:
-  30 0000 1E00     		.short	30
-  31 0002 1E00     		.short	30
-  32 0004 1E00     		.short	30
-  33 0006 1E00     		.short	30
-  34 0008 1E00     		.short	30
-  35 000a 1E00     		.short	30
-  36 000c 1E00     		.short	30
-  37 000e 1E00     		.short	30
-  38 0010 1E00     		.short	30
-  39 0012 1E00     		.short	30
-  40 0014 1E00     		.short	30
-  41 0016 1E00     		.short	30
+  30 0000 1400     		.short	20
+  31 0002 1400     		.short	20
+  32 0004 1400     		.short	20
+  33 0006 1400     		.short	20
+  34 0008 1400     		.short	20
+  35 000a 1400     		.short	20
+  36 000c 1400     		.short	20
+  37 000e 1400     		.short	20
+  38 0010 1400     		.short	20
+  39 0012 1400     		.short	20
+  40 0014 1400     		.short	20
+  41 0016 1400     		.short	20
   42              		.global	CapSense_noiseThreshold
   43              		.align	2
   44              		.type	CapSense_noiseThreshold, %object
@@ -58,7 +58,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
   55 0028 0A00     		.short	10
   56 002a 0A00     		.short	10
   57 002c 0A00     		.short	10
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 2
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 2
 
 
   58 002e 0A00     		.short	10
@@ -118,7 +118,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  109 0003 03       		.byte	3
  110 0004 04       		.byte	4
  111 0005 05       		.byte	5
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 3
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 3
 
 
  112 0006 06       		.byte	6
@@ -178,7 +178,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
   23:Generated_Source\PSoC5/CapSense_CSHL.c **** 
   24:Generated_Source\PSoC5/CapSense_CSHL.c ****     uint16 CapSense_rawFilterData1[CapSense_TOTAL_SENSOR_COUNT];
   25:Generated_Source\PSoC5/CapSense_CSHL.c ****     uint16 CapSense_rawFilterData2[CapSense_TOTAL_SENSOR_COUNT];
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 4
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 4
 
 
   26:Generated_Source\PSoC5/CapSense_CSHL.c **** 
@@ -204,7 +204,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
   46:Generated_Source\PSoC5/CapSense_CSHL.c **** uint8 CapSense_lowBaselineResetCnt[CapSense_TOTAL_SENSOR_COUNT];
   47:Generated_Source\PSoC5/CapSense_CSHL.c **** 
   48:Generated_Source\PSoC5/CapSense_CSHL.c **** uint16 CapSense_fingerThreshold[] = {
-  49:Generated_Source\PSoC5/CapSense_CSHL.c ****     30u, 30u, 30u, 30u, 30u, 30u, 30u, 30u, 30u, 30u, 30u, 30u, 
+  49:Generated_Source\PSoC5/CapSense_CSHL.c ****     20u, 20u, 20u, 20u, 20u, 20u, 20u, 20u, 20u, 20u, 20u, 20u, 
   50:Generated_Source\PSoC5/CapSense_CSHL.c **** };
   51:Generated_Source\PSoC5/CapSense_CSHL.c **** 
   52:Generated_Source\PSoC5/CapSense_CSHL.c **** uint16 CapSense_noiseThreshold[] = {
@@ -238,7 +238,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
   80:Generated_Source\PSoC5/CapSense_CSHL.c ****     11u, /* Button11__BTN */
   81:Generated_Source\PSoC5/CapSense_CSHL.c **** 
   82:Generated_Source\PSoC5/CapSense_CSHL.c **** };
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 5
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 5
 
 
   83:Generated_Source\PSoC5/CapSense_CSHL.c **** 
@@ -298,7 +298,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  137:Generated_Source\PSoC5/CapSense_CSHL.c **** *  of enabled raw data filter. Only required for median or average filters.
  138:Generated_Source\PSoC5/CapSense_CSHL.c **** *
  139:Generated_Source\PSoC5/CapSense_CSHL.c **** * Reentrant:
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 6
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 6
 
 
  140:Generated_Source\PSoC5/CapSense_CSHL.c **** *  No
@@ -358,7 +358,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  163:Generated_Source\PSoC5/CapSense_CSHL.c ****     CapSense_sensorSignal[sensor] = 0u;
  175              		.loc 1 163 0
  176 002a FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 7
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 7
 
 
  177 002c 0B4A     		ldr	r2, .L2+16
@@ -418,7 +418,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  202 0050 00000000 		.word	CapSense_sensorRaw
  203 0054 00000000 		.word	CapSense_sensorBaseline
  204 0058 00000000 		.word	CapSense_sensorBaselineLow
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 8
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 8
 
 
  205 005c 00000000 		.word	CapSense_sensorSignal
@@ -478,7 +478,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  219:Generated_Source\PSoC5/CapSense_CSHL.c ****     /* Scan sensor */
  220:Generated_Source\PSoC5/CapSense_CSHL.c ****     CapSense_ScanSensor(sensor);
  233              		.loc 1 220 0
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 9
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 9
 
 
  234 000a FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
@@ -538,7 +538,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  263              		.thumb
  264              		.thumb_func
  265              		.type	CapSense_InitializeAllBaselines, %function
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 10
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 10
 
 
  266              	CapSense_InitializeAllBaselines:
@@ -598,7 +598,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  274:Generated_Source\PSoC5/CapSense_CSHL.c ****     {
  289              		.loc 1 274 0 discriminator 3
  290 0014 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 11
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 11
 
 
  291 0016 0133     		adds	r3, r3, #1
@@ -658,7 +658,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  317              		.loc 1 303 0
  318              		.cfi_startproc
  319              		@ args = 0, pretend = 0, frame = 8
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 12
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 12
 
 
  320              		@ frame_needed = 1, uses_anonymous_args = 0
@@ -718,7 +718,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  357 0034 D25C     		ldrb	r2, [r2, r3]	@ zero_extendqisi2
  358 0036 7B79     		ldrb	r3, [r7, #5]
  359 0038 1340     		ands	r3, r3, r2
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 13
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 13
 
 
  360 003a DBB2     		uxtb	r3, r3
@@ -778,7 +778,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  404              	CapSense_UpdateSensorBaseline:
  405              	.LFB4:
  329:Generated_Source\PSoC5/CapSense_CSHL.c **** 
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 14
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 14
 
 
  330:Generated_Source\PSoC5/CapSense_CSHL.c **** 
@@ -838,7 +838,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  419 0008 FB71     		strb	r3, [r7, #7]
  371:Generated_Source\PSoC5/CapSense_CSHL.c ****     uint32 calc;
  372:Generated_Source\PSoC5/CapSense_CSHL.c ****     uint16 tempRaw;
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 15
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 15
 
 
  373:Generated_Source\PSoC5/CapSense_CSHL.c ****     uint16 filteredRawData;
@@ -898,7 +898,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  412:Generated_Source\PSoC5/CapSense_CSHL.c ****         filteredRawData = CapSense_IIR8Filter(filteredRawData, CapSense_rawFilterData1[sensor]);
  413:Generated_Source\PSoC5/CapSense_CSHL.c ****         CapSense_rawFilterData1[sensor] = filteredRawData;
  414:Generated_Source\PSoC5/CapSense_CSHL.c ****         
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 16
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 16
 
 
  415:Generated_Source\PSoC5/CapSense_CSHL.c ****     #elif (CapSense_RAW_FILTER_MASK & CapSense_IIR16_FILTER)
@@ -958,7 +958,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  439:Generated_Source\PSoC5/CapSense_CSHL.c ****     }
  440:Generated_Source\PSoC5/CapSense_CSHL.c **** 
  441:Generated_Source\PSoC5/CapSense_CSHL.c ****     if((widget == 0u) && (tempRaw > (uint16) CapSense_NEGATIVE_NOISE_THRESHOLD))
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 17
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 17
 
 
  465              		.loc 1 441 0
@@ -1018,7 +1018,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  457:Generated_Source\PSoC5/CapSense_CSHL.c ****             if ( (tempRaw <= (uint16) noiseThreshold) || 
  502              		.loc 1 457 0
  503 0092 FA8A     		ldrh	r2, [r7, #22]
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 18
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 18
 
 
  504 0094 7B8A     		ldrh	r3, [r7, #18]
@@ -1078,7 +1078,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  473:Generated_Source\PSoC5/CapSense_CSHL.c ****                 CapSense_sensorBaseline[sensor] = ((uint16) (calc >> 8u));
  543              		.loc 1 473 0
  544 00d8 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 19
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 19
 
 
  545 00da FA68     		ldr	r2, [r7, #12]
@@ -1138,7 +1138,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  576 0110 04E0     		b	.L25
  577              	.L24:
  497:Generated_Source\PSoC5/CapSense_CSHL.c ****         #endif  /* (CapSense_SIGNAL_SIZE == CapSense_SIGNAL_SIZE_UINT8) */
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 20
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 20
 
 
  498:Generated_Source\PSoC5/CapSense_CSHL.c ****     }
@@ -1198,7 +1198,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  517:Generated_Source\PSoC5/CapSense_CSHL.c **** *  Checks CapSense_sensorEnableMask[] array and calls the 
  518:Generated_Source\PSoC5/CapSense_CSHL.c **** *  CapSense_UpdateSensorBaseline function to update the baselines 
  519:Generated_Source\PSoC5/CapSense_CSHL.c **** *  for enabled sensors.
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 21
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 21
 
 
  520:Generated_Source\PSoC5/CapSense_CSHL.c **** *
@@ -1258,7 +1258,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  635 0012 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
  636 0014 03F00703 		and	r3, r3, #7
  637 0018 0122     		movs	r2, #1
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 22
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 22
 
 
  638 001a 02FA03F3 		lsl	r3, r2, r3
@@ -1318,7 +1318,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  684              	CapSense_CheckIsSensorActive:
  685              	.LFB6:
  558:Generated_Source\PSoC5/CapSense_CSHL.c **** 
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 23
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 23
 
 
  559:Generated_Source\PSoC5/CapSense_CSHL.c **** 
@@ -1378,7 +1378,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  697              		.cfi_def_cfa_register 7
  698 0006 0346     		mov	r3, r0
  699 0008 FB71     		strb	r3, [r7, #7]
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 24
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 24
 
 
  602:Generated_Source\PSoC5/CapSense_CSHL.c ****     uint8 debounceIndex;
@@ -1438,7 +1438,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  739 0050 DBB2     		uxtb	r3, r3
  740 0052 002B     		cmp	r3, #0
  741 0054 19D0     		beq	.L35
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 25
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 25
 
 
  617:Generated_Source\PSoC5/CapSense_CSHL.c ****     {
@@ -1498,7 +1498,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  781              		.loc 1 631 0
  782 009e BB7B     		ldrb	r3, [r7, #14]	@ zero_extendqisi2
  783 00a0 1A4A     		ldr	r2, .L43+24
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 26
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 26
 
 
  784 00a2 D35C     		ldrb	r3, [r2, r3]	@ zero_extendqisi2
@@ -1558,7 +1558,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  825 00e4 00E0     		b	.L41
  826              	.L40:
  827              		.loc 1 644 0 discriminator 2
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 27
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 27
 
 
  828 00e6 0023     		movs	r3, #0
@@ -1618,7 +1618,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  665:Generated_Source\PSoC5/CapSense_CSHL.c **** *  active, 0 if all sensors within widget are inactive.
  666:Generated_Source\PSoC5/CapSense_CSHL.c **** *
  667:Generated_Source\PSoC5/CapSense_CSHL.c **** * Reentrant:
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 28
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 28
 
 
  668:Generated_Source\PSoC5/CapSense_CSHL.c **** *  No
@@ -1678,7 +1678,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  900 0030 0123     		movs	r3, #1
  901 0032 BB73     		strb	r3, [r7, #14]
  902              	.L46:
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 29
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 29
 
 
  684:Generated_Source\PSoC5/CapSense_CSHL.c ****         }
@@ -1738,7 +1738,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  703:Generated_Source\PSoC5/CapSense_CSHL.c **** *  function.
  704:Generated_Source\PSoC5/CapSense_CSHL.c **** *
  705:Generated_Source\PSoC5/CapSense_CSHL.c **** * Parameters:
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 30
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 30
 
 
  706:Generated_Source\PSoC5/CapSense_CSHL.c **** *  widget:  widget number.
@@ -1798,7 +1798,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  971 0024 0133     		adds	r3, r3, #1
  972 0026 FB71     		strb	r3, [r7, #7]
  973              	.L52:
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 31
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 31
 
 
  721:Generated_Source\PSoC5/CapSense_CSHL.c ****     {
@@ -1858,7 +1858,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  754:Generated_Source\PSoC5/CapSense_CSHL.c **** *  0 - sensor doesn't scan by CapSense_ScanEnabledWidgets().
  755:Generated_Source\PSoC5/CapSense_CSHL.c **** *  1 - sensor scans by CapSense_ScanEnabledWidgets().
  756:Generated_Source\PSoC5/CapSense_CSHL.c **** *
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 32
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 32
 
 
  757:Generated_Source\PSoC5/CapSense_CSHL.c **** * Reentrant:
@@ -1918,7 +1918,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  774:Generated_Source\PSoC5/CapSense_CSHL.c ****         
  775:Generated_Source\PSoC5/CapSense_CSHL.c ****         CapSense_sensorEnableMask[pos] |= enMask;
  1036              		.loc 1 775 0 discriminator 1
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 33
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 33
 
 
  1037 0032 7B7B     		ldrb	r3, [r7, #13]	@ zero_extendqisi2
@@ -1978,7 +1978,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  784:Generated_Source\PSoC5/CapSense_CSHL.c **** /*******************************************************************************
  785:Generated_Source\PSoC5/CapSense_CSHL.c **** * Function Name: CapSense_DisableWidget
  786:Generated_Source\PSoC5/CapSense_CSHL.c **** ********************************************************************************
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 34
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 34
 
 
  787:Generated_Source\PSoC5/CapSense_CSHL.c **** *
@@ -2038,7 +2038,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  1106 0018 FB7B     		ldrb	r3, [r7, #15]
  1107 001a 1344     		add	r3, r3, r2
  1108 001c BB73     		strb	r3, [r7, #14]
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 35
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 35
 
 
  1109              	.L61:
@@ -2098,7 +2098,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  1149              		.cfi_restore 7
  1150              		.cfi_def_cfa_offset 0
  1151 005e 7047     		bx	lr
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 36
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 36
 
 
  1152              	.L63:
@@ -2158,7 +2158,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  1206 0051 05       		.byte	0x5
  1207 0052 50010000 		.4byte	.LASF6
  1208 0056 02       		.uleb128 0x2
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 37
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 37
 
 
  1209 0057 08       		.byte	0x8
@@ -2218,7 +2218,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  1263 00c3 E4000000 		.4byte	0xe4
  1264 00c7 06       		.uleb128 0x6
  1265 00c8 C7020000 		.4byte	.LASF19
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 38
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 38
 
 
  1266 00cc 01       		.byte	0x1
@@ -2278,7 +2278,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  1320 0132 2D01     		.2byte	0x12d
  1321 0134 00000000 		.4byte	.LFB3
  1322 0138 70000000 		.4byte	.LFE3-.LFB3
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 39
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 39
 
 
  1323 013c 01       		.uleb128 0x1
@@ -2338,7 +2338,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  1377 01a3 ED040000 		.4byte	.LASF26
  1378 01a7 01       		.byte	0x1
  1379 01a8 7401     		.2byte	0x174
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 40
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 40
 
 
  1380 01aa 77000000 		.4byte	0x77
@@ -2398,7 +2398,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  1434 0211 0B       		.uleb128 0xb
  1435 0212 7E030000 		.4byte	.LASF23
  1436 0216 01       		.byte	0x1
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 41
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 41
 
 
  1437 0217 2202     		.2byte	0x222
@@ -2458,7 +2458,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  1491 0284 91       		.byte	0x91
  1492 0285 75       		.sleb128 -11
  1493 0286 0B       		.uleb128 0xb
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 42
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 42
 
 
  1494 0287 41000000 		.4byte	.LASF32
@@ -2518,7 +2518,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  1548 02f4 6B000000 		.4byte	0x6b
  1549 02f8 02       		.uleb128 0x2
  1550 02f9 91       		.byte	0x91
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 43
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 43
 
 
  1551 02fa 75       		.sleb128 -11
@@ -2578,7 +2578,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  1605 0367 0A       		.uleb128 0xa
  1606 0368 706F7300 		.ascii	"pos\000"
  1607 036c 01       		.byte	0x1
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 44
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 44
 
 
  1608 036d FC02     		.2byte	0x2fc
@@ -2638,7 +2638,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  1662 03d7 75       		.sleb128 -11
  1663 03d8 0B       		.uleb128 0xb
  1664 03d9 7E030000 		.4byte	.LASF23
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 45
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 45
 
 
  1665 03dd 01       		.byte	0x1
@@ -2698,7 +2698,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  1719 044e 13       		.uleb128 0x13
  1720 044f 6B000000 		.4byte	0x6b
  1721 0453 12       		.uleb128 0x12
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 46
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 46
 
 
  1722 0454 3C020000 		.4byte	.LASF45
@@ -2758,7 +2758,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  1776 04ca 9D030000 		.4byte	.LASF51
  1777 04ce 01       		.byte	0x1
  1778 04cf 30       		.byte	0x30
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 47
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 47
 
 
  1779 04d0 06040000 		.4byte	0x406
@@ -2818,7 +2818,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  1833 0545 F5040000 		.4byte	.LASF57
  1834 0549 01       		.byte	0x1
  1835 054a 54       		.byte	0x54
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 48
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 48
 
 
  1836 054b 55050000 		.4byte	0x555
@@ -2878,7 +2878,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  1890 002d 0E       		.uleb128 0xe
  1891 002e 3A       		.uleb128 0x3a
  1892 002f 0B       		.uleb128 0xb
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 49
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 49
 
 
  1893 0030 3B       		.uleb128 0x3b
@@ -2938,7 +2938,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  1947 0067 0B       		.uleb128 0xb
  1948 0068 49       		.uleb128 0x49
  1949 0069 13       		.uleb128 0x13
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 50
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 50
 
 
  1950 006a 02       		.uleb128 0x2
@@ -2998,7 +2998,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  2004 00a2 0A       		.uleb128 0xa
  2005 00a3 34       		.uleb128 0x34
  2006 00a4 00       		.byte	0
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 51
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 51
 
 
  2007 00a5 03       		.uleb128 0x3
@@ -3058,7 +3058,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  2061 00db 19       		.uleb128 0x19
  2062 00dc 49       		.uleb128 0x49
  2063 00dd 13       		.uleb128 0x13
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 52
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 52
 
 
  2064 00de 11       		.uleb128 0x11
@@ -3118,7 +3118,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  2118 0116 12       		.uleb128 0x12
  2119 0117 06       		.uleb128 0x6
  2120 0118 40       		.uleb128 0x40
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 53
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 53
 
 
  2121 0119 18       		.uleb128 0x18
@@ -3178,7 +3178,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  2175 0150 3A       		.uleb128 0x3a
  2176 0151 0B       		.uleb128 0xb
  2177 0152 3B       		.uleb128 0x3b
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 54
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 54
 
 
  2178 0153 0B       		.uleb128 0xb
@@ -3238,7 +3238,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  2232 0028 00000000 		.4byte	.LFB5
  2233 002c 50000000 		.4byte	.LFE5
  2234 0030 00000000 		.4byte	.LFB6
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 55
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 55
 
 
  2235 0034 10010000 		.4byte	.LFE6
@@ -3298,7 +3298,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  2262 00b7 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
  2262      66756E63 
  2262      74696F6E 
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 56
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 56
 
 
  2262      2D736563 
@@ -3358,7 +3358,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  2282      66536E79 
  2282      6465725C 
  2283 01c9 73747269 		.ascii	"stringsensors_newpcb\\CE210514_PSOC3_5_Thermistor.c"
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 57
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 57
 
 
  2283      6E677365 
@@ -3418,7 +3418,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  2306      6173656C 
  2307              	.LASF56:
  2308 029e 43617053 		.ascii	"CapSense_rawDataIndex\000"
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 58
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 58
 
 
  2308      656E7365 
@@ -3478,7 +3478,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  2330      656E7365 
  2330      5F436865 
  2330      636B4973 
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 59
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 59
 
 
  2330      53656E73 
@@ -3538,7 +3538,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 1
  2354      5F426173 
  2354      65496E69 
  2354      7400
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmeU0AT.s 			page 60
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc6rpV78.s 			page 60
 
 
  2355              	.LASF50:

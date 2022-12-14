@@ -44,11 +44,11 @@ uint8 CapSense_sensorEnableMask[(((CapSense_TOTAL_SENSOR_COUNT - 1u) / 8u) + 1u)
 0xFFu, 0xFu, };
 
 uint8 CYXDATA * const CYCODE CapSense_pcTable[] = {
-    (uint8 CYXDATA *)CapSense_PortCH0__Button0__BTN__PC, 
-    (uint8 CYXDATA *)CapSense_PortCH0__Button1__BTN__PC, 
-    (uint8 CYXDATA *)CapSense_PortCH0__Button2__BTN__PC, 
-    (uint8 CYXDATA *)CapSense_PortCH0__Button3__BTN__PC, 
     (uint8 CYXDATA *)CapSense_PortCH0__Button4__BTN__PC, 
+    (uint8 CYXDATA *)CapSense_PortCH0__Button3__BTN__PC, 
+    (uint8 CYXDATA *)CapSense_PortCH0__Button2__BTN__PC, 
+    (uint8 CYXDATA *)CapSense_PortCH0__Button1__BTN__PC, 
+    (uint8 CYXDATA *)CapSense_PortCH0__Button0__BTN__PC, 
     (uint8 CYXDATA *)CapSense_PortCH0__Button5__BTN__PC, 
     (uint8 CYXDATA *)CapSense_PortCH0__Button6__BTN__PC, 
     (uint8 CYXDATA *)CapSense_PortCH0__Button7__BTN__PC, 
@@ -59,11 +59,11 @@ uint8 CYXDATA * const CYCODE CapSense_pcTable[] = {
 };
 
 const uint8 CYCODE CapSense_portTable[] = {
-    CapSense_PortCH0__Button0__BTN__PORT, 
-    CapSense_PortCH0__Button1__BTN__PORT, 
-    CapSense_PortCH0__Button2__BTN__PORT, 
-    CapSense_PortCH0__Button3__BTN__PORT, 
     CapSense_PortCH0__Button4__BTN__PORT, 
+    CapSense_PortCH0__Button3__BTN__PORT, 
+    CapSense_PortCH0__Button2__BTN__PORT, 
+    CapSense_PortCH0__Button1__BTN__PORT, 
+    CapSense_PortCH0__Button0__BTN__PORT, 
     CapSense_PortCH0__Button5__BTN__PORT, 
     CapSense_PortCH0__Button6__BTN__PORT, 
     CapSense_PortCH0__Button7__BTN__PORT, 
@@ -74,11 +74,11 @@ const uint8 CYCODE CapSense_portTable[] = {
 };
 
 const uint8 CYCODE CapSense_maskTable[] = {
-    CapSense_PortCH0__Button0__BTN__MASK,
-    CapSense_PortCH0__Button1__BTN__MASK,
-    CapSense_PortCH0__Button2__BTN__MASK,
-    CapSense_PortCH0__Button3__BTN__MASK,
     CapSense_PortCH0__Button4__BTN__MASK,
+    CapSense_PortCH0__Button3__BTN__MASK,
+    CapSense_PortCH0__Button2__BTN__MASK,
+    CapSense_PortCH0__Button1__BTN__MASK,
+    CapSense_PortCH0__Button0__BTN__MASK,
     CapSense_PortCH0__Button5__BTN__MASK,
     CapSense_PortCH0__Button6__BTN__MASK,
     CapSense_PortCH0__Button7__BTN__MASK,
@@ -116,11 +116,11 @@ uint8 CapSense_widgetResolution[] = {
 uint8 CapSense_analogSwitchDivider = 30u;
 
 const uint8 CYCODE CapSense_widgetNumber[] = {
-    0u, /* Button0__BTN */
-    1u, /* Button1__BTN */
-    2u, /* Button2__BTN */
-    3u, /* Button3__BTN */
     4u, /* Button4__BTN */
+    3u, /* Button3__BTN */
+    2u, /* Button2__BTN */
+    1u, /* Button1__BTN */
+    0u, /* Button0__BTN */
     5u, /* Button5__BTN */
     6u, /* Button6__BTN */
     7u, /* Button7__BTN */

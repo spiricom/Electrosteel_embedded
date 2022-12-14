@@ -43,21 +43,22 @@
 #include "measurement.h"
 #include <stdio.h>
 
-#define myBufferSize 32
 #define REFERENCE_RESISTOR 20000
+
+#define barBufferSize 12
+#define touchBufferSize 4
+
 
 
 uint8_t stringCapSensorsOnOff[1];
 uint8_t stringCapSensorsRaw[16];
-uint8_t thresholdArray[10] = {15, 15, 15, 15, 15, 15, 15, 15, 15, 15};
-uint8 myArray[myBufferSize];
+uint8_t thresholdArray[12] = {15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15};
+uint8 barArray[barBufferSize];
+uint8 touchArray[touchBufferSize];
 int32_t linearPotValue32Bit[4];
 uint8_t i = 0;
 uint8_t counter = 0;
-uint8_t returnedData[myBufferSize];
 int32_t temper;
-int previousButtons[11];
-int octave = 0;
 void scanLinearResistor(uint8_t channel);
 
 
@@ -75,19 +76,21 @@ int main(void)
 
 
 	CYGlobalIntEnable; 
+    IDAC8_1_Start();
 	ADC_1_Start();
 	AMux_1_Start();
+    AMux_2_Start();
+
+    AMux_2_DisconnectAll();
+    AMux_2_Connect(0);
+   // AMux_2_Connect(4);
 
 
     SPIM_1_Start();
-    //SPIM_1_Start();
-    Opamp_1_Start();
-    Opamp_2_Start();
-    Opamp_3_Start();
-    Opamp_4_Start();
-    Opamp_1_Sleep();
-    Opamp_3_Sleep();
-    Opamp_4_Sleep();
+    SPIM_2_Start();
+    //Opamp_1_Start();
+    //Opamp_2_Start();
+   // Opamp_1_Sleep();
 
    // VDAC8_1_Start();
    // VDAC8_2_Start();
@@ -105,57 +108,47 @@ int main(void)
     {
         CapSense_ClearSensors();
         
-        for (i = 0; i < 4; i++)
+        for (i = 0; i < 3; i++)
         {
            scanLinearResistor(i);
         }
+
 
         uint8_t byteCounter = 0;
 
         CapSense_UpdateEnabledBaselines();
         CapSense_ScanEnabledWidgets();  
         
-        int isSensorOn1 = (CapSense_sensorRaw[0] - CapSense_sensorBaseline[0]) > thresholdArray[0];
+        int isSensorOn1 = (CapSense_sensorRaw[11] - CapSense_sensorBaseline[11]) > thresholdArray[11];
         if (isSensorOn1)
         {
-            //LED_1_Write(1);
+            LED_Write(1);
         }
         else
         {
-            //LED_1_Write(0);
+            LED_Write(0);
         }
 
         counter = 0;
         
-        for (i = 0; i < 2; i++)
+        for (i = 0; i < 3; i++)
         {
-            myArray[counter++] = ((uint16_t) linearPotValue32Bit[i]) >> 8;
-            myArray[counter++] = linearPotValue32Bit[i] & 0xff;
+            barArray[counter++] = ((uint16_t) linearPotValue32Bit[i]) >> 8;
+            barArray[counter++] = linearPotValue32Bit[i] & 0xff;
         }
 
 
 
+        barArray[8] = 0;
+        barArray[9] = 0;
+        barArray[10] = 254;
+        barArray[11] = 253;
         
-        myArray[4] = 0;
-        myArray[5] = 0;
-        //int octButtons = Status_Reg_1_Read();
-        //int currentButtons[11];
-        
-        //for (i = 0; i < 4; i++)
-        //{
-           //currentButtons[i] = ((octButtons >> i) & 1);
-           // if ((previousButtons[i] == 1) &&  (currentButtons[i] == 0))
-            //{
-           //     octave = i;
-            //}
-          //  previousButtons[i] = currentButtons[i];
-        //}
-        //int fretButtons = Status_Reg_2_Read();
-        
+        touchArray[0] = 0;
+        touchArray[1] = 0;
+        touchArray[2] = 254;
+        touchArray[3] = 253;
 
-        
-
-        
         
         while(CapSense_IsBusy() != 0)  
         {
@@ -164,71 +157,31 @@ int main(void)
         for (i = 0; i < 8; i++)
         {
            int isSensorOn = (CapSense_sensorRaw[i] - CapSense_sensorBaseline[i]) > thresholdArray[i];
-            myArray[4] |= (isSensorOn << i);
+            touchArray[0] |= (isSensorOn << i);
+            barArray[8] |= (isSensorOn << i);
+
         }
-        for (i = 8; i < 10; i++)
+        for (i = 8; i < 12; i++)
         {
            int isSensorOn = (CapSense_sensorRaw[i] - CapSense_sensorBaseline[i]) > thresholdArray[i];
-            myArray[5] |= (isSensorOn << (i - 8));
-        }
+            touchArray[1] |= (isSensorOn << (i - 8));
+            barArray[9] |= (isSensorOn << (i - 8));
+        }        
         
-        //send data over SPI to Genera boards
-         for (int i = 0; i < myBufferSize; i++)
+        //send data over SPI to pluck detector boards
+         for (int i = 0; i < touchBufferSize; i++)
         {         
 
-            SPIM_1_WriteTxData(myArray[i]);
-            /*
-            if ((SPIM_1_RX_STATUS_REG & SPIM_1_STS_RX_FIFO_NOT_EMPTY))
-            {
-                returnedData[i] = CY_GET_REG8(SPIM_1_RXDATA_PTR);
-            }
-            */
-        }
-        
-        /*
-        //fill end of array with data from Genera 1 to send to Genera 2 
-        for (int i = 0; i < 7; i++)
-        {
-            myArray[i + 9] = returnedData[i];
-        }
-        */
-        //send and receive data over SPI from Genera 2
-        //for (int i = 0; i < myBufferSize; i++)
-        //{    
+            SPIM_1_WriteTxData(touchArray[i]);
 
-            //SPIS_1_WriteTxData(myArray[i]);
-            //if ((SPIM_2_RX_STATUS_REG & SPIM_2_STS_RX_FIFO_NOT_EMPTY))
-            //{
-           //     returnedData[i] = CY_GET_REG8(SPIM_2_RXDATA_PTR);
-           // }
-        //}
-        /*
-        //fill end of array with data from Genera 2 to send to Genera 1 
-        for (int i = 0; i < 7; i++)
-        {
-            myArray[i + 9] = returnedData[i];
         }
-        */
         
-        /*
-        if ((EZI2C_GetActivity() & EZI2C_STATUS_BUSY) == 0)
-        {
-           for (uint8_t i = 0; i < 16; i++)
-            {
-                myArray[i] = stringCapSensorsRaw[i];
-            }
-            myArray[16] = CapSense_sensorOnMask[0];
-            
-            counter = 17;
-            for (i = 0; i < 4; i++)
-            {
-                myArray[counter++] = ((uint16_t) linearPotValue32Bit[i]) >> 8;
-                myArray[counter++] = linearPotValue32Bit[i] & 0xff;
-            }
+        //send data over SPI to brain and synth boards
+         for (int i = 0; i < barBufferSize; i++)
+        {         
+            SPIM_2_WriteTxData(barArray[i]);
         }
-        */
-        
-     }
+    }
 }
 
 void scanLinearResistor(uint8_t channel)
@@ -237,58 +190,24 @@ void scanLinearResistor(uint8_t channel)
         int32 iVref = 0;
         int32 iRes = 0;
         int32 offset = 0;
-        
-        //select the high/low pins
-        if (channel == 0)
-        {
-            Opamp_2_Sleep();
-            Opamp_3_Sleep();
-            Opamp_4_Sleep();
-            Opamp_1_Wakeup();
-        }
-        else if (channel == 1)
-        {   
-            Opamp_1_Sleep();
-            Opamp_3_Sleep();
-            Opamp_4_Sleep();
-            Opamp_2_Wakeup();
-        }
-        else if (channel == 2)
-        {   
-            Opamp_1_Sleep();
-            Opamp_2_Sleep();
-            Opamp_4_Sleep();
-            Opamp_3_Wakeup();
-        }
-        
-        else
-        {   
-            Opamp_1_Sleep();
-            Opamp_2_Sleep();
-            Opamp_3_Sleep();
-            Opamp_4_Wakeup();
-        }
+        //connect the iout pin to the correct resistor channel
+        AMux_2_FastSelect(channel);
+        //connect the iout pin to the input adc mux
+       // AMux_2_Connect(4);
     
         //select the wiper pins
         AMux_1_FastSelect(channel * 2);
+        CyDelayUs(5); 
         ADC_1_StartConvert();
         ADC_1_IsEndConversion(ADC_1_WAIT_FOR_RESULT);
         iVtherm = ADC_1_GetResult32();
-        
-        	/* Get the offset voltage*/
-	    AMux_1_FastSelect(8);
-        ADC_1_StartConvert();
-        ADC_1_IsEndConversion(ADC_1_WAIT_FOR_RESULT);
-        offset = ADC_1_GetResult32();
-        
-        iVtherm =  iVtherm - offset;
 	
         AMux_1_FastSelect((channel * 2) + 1);
+        CyDelayUs(5); 
         ADC_1_StartConvert();
         ADC_1_IsEndConversion(ADC_1_WAIT_FOR_RESULT);
         iVref = ADC_1_GetResult32();
-        
-        iVref =  iVref - offset;
+
         
         //iRes = Thermistor_GetResistance(iVtherm, iVref); //check if more efficient than my version
         if ((iVref > 10000) && (iVtherm < 100))
@@ -298,10 +217,10 @@ void scanLinearResistor(uint8_t channel)
         else
         
         {
-            iRes = (int32)(((float)iVref / iVtherm) * REFERENCE_RESISTOR);
+            iRes = (int32)(((float)iVref / (float)iVtherm) * 10000.0f);
         }
         
-        linearPotValue32Bit[channel] = iRes;
+        linearPotValue32Bit[2-channel] = iRes;
 }
 
 

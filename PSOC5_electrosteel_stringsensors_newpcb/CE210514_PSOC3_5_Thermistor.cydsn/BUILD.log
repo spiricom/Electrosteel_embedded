@@ -1,24 +1,5 @@
---------------- Build Started: 12/07/2022 23:51:08 Project: CE210514_PSOC3_5_Thermistor, Configuration: ARM GCC 5.4-2016-q2-update Debug ---------------
+--------------- Build Started: 12/13/2022 20:38:45 Project: CE210514_PSOC3_5_Thermistor, Configuration: ARM GCC 5.4-2016-q2-update Debug ---------------
 The code generation step is up to date.
-arm-none-eabi-gcc.exe -mcpu=cortex-m3 -mthumb -I. -IGenerated_Source\PSoC5 -Wa,-alh=.\ARM_GCC_541\Debug/main.lst -g -Wall -ffunction-sections -ffat-lto-objects -O0 -c main.c -o .\ARM_GCC_541\Debug\main.o
-main.c: In function 'main':
-main.c:113:17: warning: unused variable 'byteCounter' [-Wunused-variable]
-         uint8_t byteCounter = 0;
-                 ^
-main.c:99:13: warning: unused variable 'myArrayCounter' [-Wunused-variable]
-     uint8_t myArrayCounter = 0;
-             ^
-main.c:74:7: warning: unused variable 'printBuf' [-Wunused-variable]
-  char printBuf[16]={'\0'};
-       ^
-arm-none-eabi-ar.exe -rs .\ARM_GCC_541\Debug\CE210514_PSOC3_5_Thermistor.a .\ARM_GCC_541\Debug\CapSense.o .\ARM_GCC_541\Debug\CapSense_CSHL.o .\ARM_GCC_541\Debug\CapSense_INT.o .\ARM_GCC_541\Debug\CapSense_Pins.o .\ARM_GCC_541\Debug\CapSense_PM.o .\ARM_GCC_541\Debug\CapSense_SMS_Wrapper.o .\ARM_GCC_541\Debug\CapSense_TunerHelper.o .\ARM_GCC_541\Debug\CapSense_CompCH0.o .\ARM_GCC_541\Debug\CapSense_CompCH0_PM.o .\ARM_GCC_541\Debug\CapSense_IdacCH0.o .\ARM_GCC_541\Debug\CapSense_IdacCH0_PM.o .\ARM_GCC_541\Debug\CapSense_AMuxCH0.o .\ARM_GCC_541\Debug\CapSense_IntClock.o .\ARM_GCC_541\Debug\cy_em_eeprom.o .\ARM_GCC_541\Debug\CyDmac.o .\ARM_GCC_541\Debug\CyFlash.o .\ARM_GCC_541\Debug\CyLib.o .\ARM_GCC_541\Debug\cyPm.o .\ARM_GCC_541\Debug\CySpc.o .\ARM_GCC_541\Debug\cyutils.o .\ARM_GCC_541\Debug\AMux_1.o .\ARM_GCC_541\Debug\ADC_1.o .\ARM_GCC_541\Debug\ADC_1_PM.o .\ARM_GCC_541\Debug\ADC_1_INT.o .\ARM_GCC_541\Debug\ADC_1_Ext_CP_Clk.o .\ARM_GCC_541\Debug\ADC_1_IRQ.o .\ARM_GCC_541\Debug\ADC_1_theACLK.o .\ARM_GCC_541\Debug\MISO_1.o .\ARM_GCC_541\Debug\MOSI_1.o .\ARM_GCC_541\Debug\SCLK_1.o .\ARM_GCC_541\Debug\SPIM_1.o .\ARM_GCC_541\Debug\SPIM_1_PM.o .\ARM_GCC_541\Debug\SPIM_1_INT.o .\ARM_GCC_541\Debug\SPIM_2.o .\ARM_GCC_541\Debug\SPIM_2_PM.o .\ARM_GCC_541\Debug\SPIM_2_INT.o .\ARM_GCC_541\Debug\SPIM_1_IntClock.o .\ARM_GCC_541\Debug\SPIM_2_IntClock.o .\ARM_GCC_541\Debug\SS_1.o .\ARM_GCC_541\Debug\Opamp_2.o .\ARM_GCC_541\Debug\Opamp_2_PM.o .\ARM_GCC_541\Debug\Vout_2.o .\ARM_GCC_541\Debug\Opamp_1.o .\ARM_GCC_541\Debug\Opamp_1_PM.o .\ARM_GCC_541\Debug\Vout_1.o .\ARM_GCC_541\Debug\ADC_1_Bypass_P32.o .\ARM_GCC_541\Debug\bottom_wiper1.o .\ARM_GCC_541\Debug\top_wiper1.o .\ARM_GCC_541\Debug\top_wiper2.o .\ARM_GCC_541\Debug\bottom_wiper2.o .\ARM_GCC_541\Debug\SS_3.o .\ARM_GCC_541\Debug\MOSI_3.o .\ARM_GCC_541\Debug\SCLK_3.o .\ARM_GCC_541\Debug\MISO_3.o .\ARM_GCC_541\Debug\Vout_3.o .\ARM_GCC_541\Debug\Opamp_3.o .\ARM_GCC_541\Debug\Opamp_3_PM.o .\ARM_GCC_541\Debug\middle_wiper2.o .\ARM_GCC_541\Debug\middle_wiper1.o .\ARM_GCC_541\Debug\midbottom_wiper1.o .\ARM_GCC_541\Debug\midbottom_wiper2.o .\ARM_GCC_541\Debug\Vout_4.o .\ARM_GCC_541\Debug\Opamp_4.o .\ARM_GCC_541\Debug\Opamp_4_PM.o .\ARM_GCC_541\Debug\CyBootAsmGnu.o
-arm-none-eabi-ar.exe: creating .\ARM_GCC_541\Debug\CE210514_PSOC3_5_Thermistor.a
-arm-none-eabi-gcc.exe -Wl,--start-group -o C:\Users\JeffSnyder\dev\Electrosteel_embedded\PSOC5_electrosteel_stringsensors_newpcb\CE210514_PSOC3_5_Thermistor.cydsn\ARM_GCC_541\Debug\CE210514_PSOC3_5_Thermistor.elf .\ARM_GCC_541\Debug\main.o .\ARM_GCC_541\Debug\measurement.o .\ARM_GCC_541\Debug\removeOffsetNoise.o .\ARM_GCC_541\Debug\cyfitter_cfg.o .\ARM_GCC_541\Debug\cymetadata.o .\ARM_GCC_541\Debug\Cm3Start.o .\ARM_GCC_541\Debug\CE210514_PSOC3_5_Thermistor.a "C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\psoc\content\CyComponentLibrary\CyComponentLibrary.cylib\CapSense_CSD_v3_50\Library\CapSenseLibrary_GCC.a" "C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\psoc\content\cycomponentlibrary\CyComponentLibrary.cylib\CortexM3\ARM_GCC_541\Debug\CyComponentLibrary.a" -mcpu=cortex-m3 -mthumb -l m -L Generated_Source\PSoC5 -Wl,-Map,.\ARM_GCC_541\Debug/CE210514_PSOC3_5_Thermistor.map -T Generated_Source\PSoC5\cm3gcc.ld -specs=nano.specs -Wl,--gc-sections -u_printf_float -g -ffunction-sections -O0 -ffat-lto-objects -Wl,--end-group
-cyelftool.exe -C C:\Users\JeffSnyder\dev\Electrosteel_embedded\PSOC5_electrosteel_stringsensors_newpcb\CE210514_PSOC3_5_Thermistor.cydsn\ARM_GCC_541\Debug\CE210514_PSOC3_5_Thermistor.elf --flash_row_size 256 --flash_size 262144 --flash_offset 0x00000000
-No ELF section .cychecksum found, creating one
-Application checksum calculated and stored in ELF section .cychecksum
-Checksum calculated and stored in ELF section .cymeta
-cyelftool.exe -S C:\Users\JeffSnyder\dev\Electrosteel_embedded\PSOC5_electrosteel_stringsensors_newpcb\CE210514_PSOC3_5_Thermistor.cydsn\ARM_GCC_541\Debug\CE210514_PSOC3_5_Thermistor.elf
-Flash used: 24100 of 262144 bytes (9.2%).
-SRAM used: 3093 of 65536 bytes (4.7%). Stack: 2048 bytes. Heap: 128 bytes.
---------------- Build Succeeded: 12/07/2022 23:51:10 ---------------
+The compile step is up to date, no work needs to be done.
+The link step is up to date, no work needs to be done.
+--------------- Build Succeeded: 12/13/2022 20:38:47 ---------------
