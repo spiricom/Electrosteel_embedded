@@ -51,7 +51,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-uint8_t SPI_RX[16] __ATTR_RAM_D2;
+uint8_t SPI_RX[24] __ATTR_RAM_D2;
 
 uint8_t SPI_PLUCK_RX[52] __ATTR_RAM_D2;
 uint8_t SPI_LEVERS[148] __ATTR_RAM_D2;
@@ -144,7 +144,7 @@ int main(void)
   __set_FPSCR(tempFPURegisterVal);
 
   HAL_Delay(200);
-  HAL_SPI_Receive_DMA(&hspi2, SPI_RX, 16);
+  HAL_SPI_Receive_DMA(&hspi2, SPI_RX, 24);
   HAL_SPI_Receive_DMA(&hspi5, SPI_PLUCK_RX, 52);
   HAL_SPI_Receive_DMA(&hspi1, SPI_LEVERS, 74);
 

@@ -202,7 +202,7 @@ tADSRT additiveEnv[NUM_STRINGS_PER_BOARD][18];
 
 
 tWaveTable therT;
-tWaveSynth wt[NUM_STRINGS_PER_BOARD];
+//tWaveSynth wt[NUM_STRINGS_PER_BOARD];
 tWaveTable wtab[5][73];
 //int tableSizes[] = {26, 32, 73, 32, 22, 11, 64, 19};
 int tableSizes[] = {26, 32, 73, 64, 19};
@@ -244,11 +244,11 @@ float knobScaled[4];
 float stringMIDIPitches[NUM_STRINGS_PER_BOARD];
 //TODO:
 // frets are measured at 3 7 12 and 19   need to redo these measurements with an accurately set capo
-float fretMeasurements[4][2] ={
-		{52703.0f, 62473.0f},
-		{33446.0f, 41091.0f},
-		{23331.0f, 30345.0f},
-		{7712.0f, 13618.0f}
+float fretMeasurements[4][4] ={
+		{28597.0f, 27612.0f, 31785.0f, 0.0f},
+		{12269.0f, 12732.0f, 15700.0f, 0.0f},
+		{6456.0f, 6566.0f, 8458.0f, 0.0f},
+		{1709.0f, 1656.0f, 2674.0f, 0.0f}
 	};
 
 float fretScaling[4] = {1.0f, 0.6666666666666f, 0.5f, 0.25f};
@@ -543,11 +543,11 @@ void audioFrame(uint16_t buffer_offset)
 	{
 		int currentBarBufferL = currentBarBuffer;
 
-		if ((SPI_RX[6 + (8 * currentBarBufferL)] == 254) && (SPI_RX[7 + (8 * currentBarBufferL)] == 253))
+		if ((SPI_RX[10 + (12 * currentBarBufferL)] == 254) && (SPI_RX[11 + (12 * currentBarBufferL)] == 253))
 		{
 			for (int j = 0; j < 2; j++)
 			{
-				stringPositions[j] =  ((uint16_t)SPI_RX[(j * 2) + (8 * currentBarBufferL)] << 8) + ((uint16_t)SPI_RX[(j * 2) + (8 * currentBarBufferL) + 1] & 0xff);
+				stringPositions[j] =  ((uint16_t)SPI_RX[(j * 2) + (12 * currentBarBufferL)] << 8) + ((uint16_t)SPI_RX[(j * 2) + (12 * currentBarBufferL) + 1] & 0xff);
 				if ((stringPositions[j] == 65535) || (stringPositions[j] > fretMeasurements[0][j]))
 				{
 					stringMappedPositions[j] = 1.0f;
