@@ -1,11 +1,9 @@
 Middlewares/Third_Party/FatFs/src/ff.o: \
  ../Middlewares/Third_Party/FatFs/src/ff.c \
  ../Middlewares/Third_Party/FatFs/src/ff.h \
- ../Middlewares/Third_Party/FatFs/src/integer.h \
- /Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/Inc/ffconf.h \
- /Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/Inc/main.h \
- ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h \
- /Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/Inc/stm32h7xx_hal_conf.h \
+ ../Middlewares/Third_Party/FatFs/src/integer.h ../FATFS/Target/ffconf.h \
+ ../Core/Inc/main.h ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h \
+ ../Core/Inc/stm32h7xx_hal_conf.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_rcc.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_def.h \
  ../Drivers/CMSIS/Device/ST/STM32H7xx/Include/stm32h7xx.h \
@@ -43,15 +41,47 @@ Middlewares/Third_Party/FatFs/src/ff.o: \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_ll_fmc.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi_ex.h \
- /Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/Inc/bsp_driver_sd.h \
- /Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/Inc/fatfs_platform.h \
+ ../Core/Inc/parameters.h ../Core/Inc/audiostream.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/leaf.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-global.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-mempool.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/./Inc/../leaf-config.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-math.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-global.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-mempool.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-tables.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-math.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-distortion.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-dynamics.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-analysis.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-distortion.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-filters.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-delay.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-tables.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-envelopes.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-oscillators.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-filters.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-delay.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-reverb.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-oscillators.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-effects.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-dynamics.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-envelopes.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-analysis.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-instruments.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-midi.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-sampling.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-physical.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-electrical.h \
+ ../Core/Inc/main.h ../FATFS/Target/bsp_driver_sd.h \
+ ../FATFS/Target/fatfs_platform.h \
  ../Middlewares/Third_Party/FatFs/src/diskio.h
 ../Middlewares/Third_Party/FatFs/src/ff.h:
 ../Middlewares/Third_Party/FatFs/src/integer.h:
-/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/Inc/ffconf.h:
-/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/Inc/main.h:
+../FATFS/Target/ffconf.h:
+../Core/Inc/main.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h:
-/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/Inc/stm32h7xx_hal_conf.h:
+../Core/Inc/stm32h7xx_hal_conf.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_rcc.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_def.h:
 ../Drivers/CMSIS/Device/ST/STM32H7xx/Include/stm32h7xx.h:
@@ -89,6 +119,40 @@ Middlewares/Third_Party/FatFs/src/ff.o: \
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_ll_fmc.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi_ex.h:
-/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/Inc/bsp_driver_sd.h:
-/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/Inc/fatfs_platform.h:
+../Core/Inc/parameters.h:
+../Core/Inc/audiostream.h:
+/Users/jeffsnyder/dev/LEAF/leaf/leaf.h:
+/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-global.h:
+/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-mempool.h:
+/Users/jeffsnyder/dev/LEAF/leaf/./Inc/../leaf-config.h:
+/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-math.h:
+/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-global.h:
+/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-mempool.h:
+/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-tables.h:
+/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-math.h:
+/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-distortion.h:
+/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-dynamics.h:
+/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-analysis.h:
+/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-distortion.h:
+/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-filters.h:
+/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-delay.h:
+/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-tables.h:
+/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-envelopes.h:
+/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-oscillators.h:
+/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-filters.h:
+/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-delay.h:
+/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-reverb.h:
+/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-oscillators.h:
+/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-effects.h:
+/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-dynamics.h:
+/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-envelopes.h:
+/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-analysis.h:
+/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-instruments.h:
+/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-midi.h:
+/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-sampling.h:
+/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-physical.h:
+/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-electrical.h:
+../Core/Inc/main.h:
+../FATFS/Target/bsp_driver_sd.h:
+../FATFS/Target/fatfs_platform.h:
 ../Middlewares/Third_Party/FatFs/src/diskio.h:

@@ -100,6 +100,7 @@ static void MX_RNG_Init(void);
 /* USER CODE BEGIN 0 */
 void MPU_Conf(void);
 float randomNumber(void);
+
 /* USER CODE END 0 */
 
 /**
