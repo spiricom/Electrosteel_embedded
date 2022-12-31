@@ -17,9 +17,14 @@
 #include "wavetables.h"
 
 //the audio buffers are put in the D2 RAM area because that is a memory location that the DMA has access to.
-int32_t audioOutBuffer[AUDIO_BUFFER_SIZE] __ATTR_RAM_D2;
-int32_t audioInBuffer[AUDIO_BUFFER_SIZE] __ATTR_RAM_D2;
+volatile int32_t audioOutBuffer[AUDIO_BUFFER_SIZE] __ATTR_RAM_D2;
+volatile int32_t audioInBuffer[AUDIO_BUFFER_SIZE] __ATTR_RAM_D2;
 
+//#define DISPLAY_BLOCK_SIZE 512
+//float audioDisplayBuffer[128];
+//uint8_t displayBufferIndex = 0;
+//float displayBlockVal = 0.0f;
+//uint32_t displayBlockCount = 0;
 char small_memory[SMALL_MEM_SIZE];
 char medium_memory[MED_MEM_SIZE] __ATTR_RAM_D1;
 char large_memory[LARGE_MEM_SIZE] __ATTR_SDRAM;

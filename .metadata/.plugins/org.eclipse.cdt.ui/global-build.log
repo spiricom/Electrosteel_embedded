@@ -1,21 +1,45 @@
-21:14:24 **** Incremental Build of configuration Debug for project electrosteel_strings_STM32H730 ****
+19:01:54 **** Incremental Build of configuration Debug for project Electrosteel_audio ****
 make -j7 all 
-arm-none-eabi-size   electrosteel_strings_STM32H730.elf 
+arm-none-eabi-gcc "../Src/audiostream.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DUSE_HAL_DRIVER -DSTM32H743xx -DDEBUG -c -I/Users/jeffsnyder/dev/LEAF/leaf -I"/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/Inc" -I../Drivers/CMSIS/Include -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Middlewares/Third_Party/FatFs/src -I../Drivers/STM32H7xx_HAL_Driver/Inc -Ofast -ffunction-sections -fdata-sections -fno-strict-aliasing -Wall -fstack-usage -MMD -MP -MF"Src/audiostream.d" -MT"Src/audiostream.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Src/audiostream.o"
+In file included from ../Src/audiostream.c:17:
+/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/Inc/wavetables.h:53255:7: warning: type defaults to 'int' in declaration of 'numTablesC64' [-Wimplicit-int]
+53255 | const numTablesC64 = 32;
+      |       ^~~~~~~~~~~~
+../Src/audiostream.c:228:34: warning: excess elements in array initializer
+  228 | float detunes[NUM_OSCS] = {1.0f, .996f, 1.002f, .999f, 1.0054, 0.998f};
+      |                                  ^~~~~
+../Src/audiostream.c:228:34: note: (near initialization for 'detunes')
+../Src/audiostream.c:228:41: warning: excess elements in array initializer
+  228 | float detunes[NUM_OSCS] = {1.0f, .996f, 1.002f, .999f, 1.0054, 0.998f};
+      |                                         ^~~~~~
+../Src/audiostream.c:228:41: note: (near initialization for 'detunes')
+../Src/audiostream.c:228:49: warning: excess elements in array initializer
+  228 | float detunes[NUM_OSCS] = {1.0f, .996f, 1.002f, .999f, 1.0054, 0.998f};
+      |                                                 ^~~~~
+../Src/audiostream.c:228:49: note: (near initialization for 'detunes')
+../Src/audiostream.c:228:56: warning: excess elements in array initializer
+  228 | float detunes[NUM_OSCS] = {1.0f, .996f, 1.002f, .999f, 1.0054, 0.998f};
+      |                                                        ^~~~~~
+../Src/audiostream.c:228:56: note: (near initialization for 'detunes')
+../Src/audiostream.c:228:64: warning: excess elements in array initializer
+  228 | float detunes[NUM_OSCS] = {1.0f, .996f, 1.002f, .999f, 1.0054, 0.998f};
+      |                                                                ^~~~~~
+../Src/audiostream.c:228:64: note: (near initialization for 'detunes')
+../Src/audiostream.c: In function 'audioTick':
+../Src/audiostream.c:740:8: warning: unused variable 'volumeSmoothed' [-Wunused-variable]
+  740 |  float volumeSmoothed = tExpSmooth_tick(&volumeSmoother);
+      |        ^~~~~~~~~~~~~~
+../Src/audiostream.c:738:8: warning: unused variable 'audioInput' [-Wunused-variable]
+  738 |  float audioInput = samples[0] + samples[1];
+      |        ^~~~~~~~~~
+arm-none-eabi-gcc -o "Electrosteel_audio.elf" @"objects.list"   -mcpu=cortex-m7 -T"/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/STM32H743ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Electrosteel_audio.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: Electrosteel_audio.elf
+ 
+arm-none-eabi-size   Electrosteel_audio.elf 
+arm-none-eabi-objdump -h -S  Electrosteel_audio.elf  > "Electrosteel_audio.list"
    text	   data	    bss	    dec	    hex	filename
-  37596	    128	 313928	 351652	  55da4	electrosteel_strings_STM32H730.elf
+  83328	   2480	34228140	34313948	20b96dc	Electrosteel_audio.elf
 Finished building: default.size.stdout
  
-21:14:45 **** Incremental Build of configuration Debug for project electrosteel_strings_STM32H730 ****
-make -j7 all 
-arm-none-eabi-size   electrosteel_strings_STM32H730.elf 
-   text	   data	    bss	    dec	    hex	filename
-  37596	    128	 313928	 351652	  55da4	electrosteel_strings_STM32H730.elf
-Finished building: default.size.stdout
- 
-21:15:08 **** Incremental Build of configuration Debug for project electrosteel_strings_STM32H730 ****
-make -j7 all 
-arm-none-eabi-size   electrosteel_strings_STM32H730.elf 
-   text	   data	    bss	    dec	    hex	filename
-  37596	    128	 313928	 351652	  55da4	electrosteel_strings_STM32H730.elf
-Finished building: default.size.stdout
+Finished building: Electrosteel_audio.list
  
