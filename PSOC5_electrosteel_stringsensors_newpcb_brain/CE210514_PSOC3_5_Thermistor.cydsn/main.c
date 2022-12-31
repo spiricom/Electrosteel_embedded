@@ -18,7 +18,7 @@ volatile uint8_t USB_check_flag = 0;
 
 uint8 myArray[myBufferSize];
 uint8 myInputArray[2];
-int32_t linearPotValue32Bit[4];
+int32_t linearPotValue32Bit[2];
 uint8_t i = 0;
 uint8_t counter = 0;
 uint8_t returnedData[myBufferSize];
@@ -52,7 +52,7 @@ void DmaRxConfiguration(void);
 #define DMA_RX_DST_BASE             (CYDEV_SRAM_BASE)
 
 #define PLUCK_BUFFER_SIZE                 (26u)
-#define BAR_BUFFER_SIZE                 (12u)
+#define BAR_BUFFER_SIZE                 (8u)
 #define STORE_TD_CFG_ONCMPLT        (1u)
 uint8 rx1Channel, rx2Channel __attribute__((aligned(32)));
 uint8 rx1TD[2], rx2TD[2] __attribute__((aligned(32)));
@@ -62,8 +62,8 @@ volatile uint8 rxBufferBar[2][BAR_BUFFER_SIZE] __attribute__((aligned(32)));
 
 volatile uint16_t strings[12];
 volatile uint16_t prevStrings[12];
-volatile uint16_t bar[4];
-volatile uint16_t prevBar[4];
+volatile uint16_t bar[2];
+volatile uint16_t prevBar[2];
 volatile uint16_t maxStrings[12];
 volatile uint8_t amHere = 0;
 volatile uint8_t spiCounter = 0;
@@ -104,75 +104,9 @@ CY_ISR(spis_1_ss)
     CyDmaChSetInitialTd(rx1Channel, rx1TD[currentPluckBuffer]);
     CyDmaChEnable(rx1Channel, 1);
 
-    /*
-    //get rid of any data in the spi2 buffer
-    currentPluckBuffer = !currentPluckBuffer;
-    pluck_index = 0;
-    SPIS_1_ClearRxBuffer();
-    //set up dma to transfer with a clean start
-    //CyDmaChSetInitialTd(rx2Channel, rx2TD[0]);
-    //CyDmaChEnable(rx2Channel, 1);
-    //offsetErrorCount++;
-    //disable this interrupt until another error occurs
-    //isr_SPI2_ss_Stop();
-    */
 }
 
-CY_ISR(spis_1_function) {     /* No need to clear any interrupt source; interrupt component should be      * configured for RISING_EDGE mode.      */     /* Read the debouncer status reg just to clear it, no need to check its      * contents in this application.      */  
-    //SPI receive from pluck detector
-    while(SPIS_1_GetRxBufferSize())
-    {
-        rxBufferPluck[currentPluckBuffer][pluck_index] = CY_GET_REG8(SPIS_1_RXDATA_PTR);
-        pluck_index++;
-    }
-        
-    if (pluck_index == 26)
-    {
-        if ((rxBufferPluck[currentPluckBuffer][0] == 254) && (rxBufferPluck[currentPluckBuffer][21] == 253))
-        {
 
-            for (int i = 0; i < 12; i++)
-            {
-                strings[i] = ((rxBufferPluck[currentPluckBuffer][(i*2)+1] << 7) + rxBufferPluck[currentPluckBuffer][i*2+2]);
-            }
-            
-        }
-        else
-        {
-            
-            //disable the dma chain
-            //CyDmaChDisable(rx2Channel);
-
-            SPI1ErrorCount++;
-            //enable an interrupt to reset it on the rising edge of the cs (at the end of an 8-byte transfer)
-            //isr_SPI2_ss_StartEx(spis_2_ss);
-
-
-            
-            amHere = 1;
-        }
-    }
-    /*
-    uint8_t currentTd = 0;
-    uint8_t state = 0;
-     CyDmaChStatus(rx1Channel, &currentTd, &state);
-    
-
-    currentPluckBuffer = (currentTd & 1);
-    if ((rxBufferPluck[currentPluckBuffer][0] == 254) && (rxBufferPluck[currentPluckBuffer][21] == 253))
-    {
-        for (int i = 0; i < 10; i++)
-        {
-            strings[i] = ((rxBufferPluck[currentPluckBuffer][(i*2)+1] << 7) + rxBufferPluck[currentPluckBuffer][i*2+2]);
-        }
-    }
-    else
-    {
-        pluckErrorCount++;
-    }
-    amHere = 1;
-    */
-}
 
 uint8_t spiAdjusted = 0;
 uint8_t mySpiCounter = 0;
@@ -187,107 +121,17 @@ volatile uint8_t SPI2started = 0;
 
 CY_ISR(spis_2_ss)
 {
-    //get rid of any data in the spi2 buffer
-
 
     currentBarBuffer = !currentBarBuffer;
     SPIS_2_ClearRxBuffer();
     CyDmaClearPendingDrq(rx2Channel);
 
     //set up the next DMA transaction
-
     CyDmaTdSetConfiguration(rx2TD[currentBarBuffer], BAR_BUFFER_SIZE, DMA_DISABLE_TD, TD_INC_DST_ADR | DMA_2__TD_TERMOUT_EN);
     CyDmaTdSetAddress(rx2TD[currentBarBuffer], LO16((uint32) SPIS_2_RXDATA_PTR), LO16((uint32) rxBufferBar[currentBarBuffer]));
     CyDmaChSetInitialTd(rx2Channel, rx2TD[currentBarBuffer]);
     CyDmaChEnable(rx2Channel, 1);
-    //SPI2started = 1;
-
-    /*
-    //get rid of any data in the spi2 buffer
-    currentBarBuffer = !currentBarBuffer;
-    bar_index = 0;
-    SPIS_2_ClearRxBuffer();
-    */
-    //set up dma to transfer with a clean start
-    //CyDmaChSetInitialTd(rx2Channel, rx2TD[0]);
-    //CyDmaChEnable(rx2Channel, 1);
-    //offsetErrorCount++;
-    //disable this interrupt until another error occurs
-    //isr_SPI2_ss_Stop();
 }
-
-
-CY_ISR(spis_2_function) {     /* No need to clear any interrupt source; interrupt component should be      * configured for RISING_EDGE mode.      */     /* Read the debouncer status reg just to clear it, no need to check its      * contents in this application.      */  
-    //SPI receive from bar sensor
-    /*
-    while(SPIS_2_GetRxBufferSize())
-    {
-        rxBufferBar[currentBarBuffer][bar_index] = CY_GET_REG8(SPIS_2_RXDATA_PTR);
-        bar_index++;
-    }
-        
-    if (bar_index == 8)
-    {
-        if ((rxBufferBar[currentBarBuffer][6] == 254) && (rxBufferBar[currentBarBuffer][7] == 253))
-        {
-            for (int i = 0; i < 2; i++)
-            {
-                bar[i] = ((rxBufferBar[currentBarBuffer][i*2] << 8) + rxBufferBar[currentBarBuffer][(i*2)+1]);
-            }
-            
-        }
-        else
-        {
-            
-            //disable the dma chain
-            //CyDmaChDisable(rx2Channel);
-            SPI2errorflag = 1;
-            offsetErrorCount++;
-            //enable an interrupt to reset it on the rising edge of the cs (at the end of an 8-byte transfer)
-            //isr_SPI2_ss_StartEx(spis_2_ss);
-
-
-            
-            amHere2 = 1;
-        }
-    }
-    /*
-        uint8_t currentTd = 0;
-        uint8_t state = 0;
-        CyDmaChStatus(rx2Channel, &currentTd, &state);
-        currentBarBuffer = (currentTd & 1);
-        uint8_t datasize = 8;
-        */
-    
-    /*
-        if ((rxBufferBar[currentBarBuffer][6] == 254) && (rxBufferBar[currentBarBuffer][7] == 253))
-        {
-            for (int i = 0; i < 2; i++)
-            {
-                bar[i] = ((rxBufferBar[currentBarBuffer][i*2] << 8) + rxBufferBar[currentBarBuffer][(i*2)+1]);
-            }
-            
-        }
-        else
-        {
-            
-            //disable the dma chain
-            //CyDmaChDisable(rx2Channel);
-            SPI2errorflag = 1;
-            //enable an interrupt to reset it on the rising edge of the cs (at the end of an 8-byte transfer)
-            //isr_SPI2_ss_StartEx(spis_2_ss);
-
-
-            
-            amHere2 = 1;
-        }
-*/
-        
-        amHere = 1;
-
-}
-
-
 
 CY_ISR(SleepIsr_function)
 {
@@ -438,13 +282,13 @@ int16_t processed_volumePedal;
 
 float fretMeasurements[4][4] ={
 
-		{28597.0f, 27612.0f, 31785.0f, 0.0f },
+		{62020.0f, 60000.0f, 31785.0f, 0.0f },
 
-		{12269.0f, 12732.0f, 15700.0f, 0.0f},
+		{27600.0f, 29450.0f, 15700.0f, 0.0f},
 
-		{6456.0f, 6566.0f, 8458.0f, 0.0f},
+		{14160.0f, 16180.0f, 8458.0f, 0.0f},
 
-		{1709.0f, 1656.0f, 2674.0f, 0.0f}
+		{3450.0f, 5110.0f, 2674.0f, 0.0f}
 
 	};
 
@@ -597,54 +441,15 @@ int main(void)
         }
 	}
 
-    
     QuadDec_1_Start();
     LED_amber1_Write(0);
     LED_amber2_Write(1);
     LED_amber3_Write(0);
     LED_amber4_Write(0);
     //CyDmaChEnable(rxChannel, STORE_TD_CFG_ONCMPLT);
-    
-/*
-    while(1)
-    {
-        if (!oct1_Read())
-        {
-            LED_amber1_Write(1);
-            LED_amber2_Write(0);
-            LED_amber3_Write(0);
-            LED_amber4_Write(0);
-        }
-        if (!oct2_Read())
-        {
-            LED_amber1_Write(0);
-            LED_amber2_Write(1);
-            LED_amber3_Write(0);
-            LED_amber4_Write(0);
-        }
-        if (!oct3_Read())
-        {
-            LED_amber1_Write(0);
-            LED_amber2_Write(0);
-            LED_amber3_Write(1);
-            LED_amber4_Write(0);
-        }
-        if (!oct4_Read())
-        {
-            LED_amber1_Write(0);
-            LED_amber2_Write(0);
-            LED_amber3_Write(0);
-            LED_amber4_Write(1);
-        }
 
-
-    }
-    */
     SPIM_1_Start();
  
-
-
-    //CyDelay(150);
     eepromReturnValue = Em_EEPROM_Init((uint32_t)Em_EEPROM_em_EepromStorage);
     if(eepromReturnValue != CY_EM_EEPROM_SUCCESS)
     {
@@ -660,9 +465,7 @@ int main(void)
     {
         restartSystemCheck();
     }
-
-
-
+    
     CyDelay(100);
     I2Cbuff1[0] = 1<<6;
     status = I2C_MasterWriteBlocking(0x70, 1, I2C_1_MODE_COMPLETE_XFER);
@@ -734,19 +537,14 @@ int main(void)
     SPIM_1_Start();  
     SPIS_2_Start(); 
     DmaRxConfiguration();
-    //isr_1_StartEx(isr_1_function);
-    //isr_SPI1_DMA_StartEx(spis_1_function);
     isr_SPI1_ss_StartEx(spis_1_ss);
-    //isr_SPI2_DMA_StartEx(spis_2_function);
     isr_SPI2_ss_StartEx(spis_2_ss);
     
     myArray[72] = 254;
     myArray[73] = 253;
-    //temporarily start on the volume pedal for testing!
-    //TODO: fix this
+
     main_counter = 0;
-    //CyDelay(1000);
-    //CyDelay(1);
+
 	for(;;)
     {
         //if (newDataFlag)
@@ -834,7 +632,7 @@ int main(void)
         }
         */    
 
-            
+        #if 0 //sensev levers and pedals
         if (mux_states[main_counter][0] != last_mux)
         {
             I2Cbuff1[0] = 1<<mux_states[main_counter][0];
@@ -851,6 +649,7 @@ int main(void)
 
         CyDelayUs(10);
         //if it's a hall sensor
+
         if (main_counter < 10)
         {
             //CyDelayUs(100);
@@ -870,8 +669,8 @@ int main(void)
             volumePedal = I2Cbuff2[0] << 8;
             volumePedal +=  I2Cbuff2[1];
         }
-        
         else
+        #endif
         { 
             if (OLEDcount == 0)
             {
@@ -900,6 +699,10 @@ int main(void)
             else if (OLEDcount == 6)
             {
                 OLED_drawFirstLine();
+                
+                OLEDwriteInt( bar[0] , 6, 0,SecondLine);
+                OLEDwriteInt( bar[1] , 6, 0,ThirdLine);
+                 OLED_draw();
             }
             OLEDcount++;
             if (OLEDcount > 6)
@@ -997,7 +800,7 @@ int main(void)
             }
             
             
-            if ( processed_pedals[main_counter] != prev_processed_pedals[main_counter])
+            //if ( processed_pedals[main_counter] != prev_processed_pedals[main_counter])
             {
                 //sendMIDIControlChange(main_counter, (processed_pedals[main_counter] >> 7), 1);
                 //sendMIDIControlChange(main_counter+36, (processed_pedals[main_counter] & 127), 1);
@@ -1059,9 +862,9 @@ int main(void)
             main_counter = 0;
         }
         #endif
-        if ((rxBufferBar[!currentBarBuffer][10] == 254) && (rxBufferBar[!currentBarBuffer][11] == 253))
+        if ((rxBufferBar[!currentBarBuffer][6] == 254) && (rxBufferBar[!currentBarBuffer][7] == 253))
         {
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < 2; i++)
             {
                 bar[i] = ((rxBufferBar[!currentBarBuffer][i*2] << 8) + rxBufferBar[!currentBarBuffer][(i*2)+1]);    
     
@@ -1276,8 +1079,7 @@ int main(void)
                         (copedent[currentNeck][3][i] * pedals_float[7]) +
                         (copedent[currentNeck][1][i] * pedals_float[8]) +
                         (copedent[currentNeck][2][i] * pedals_float[9]));
-    		//stringPitch[i] = tempFreq;
-            //stringMIDI[i] = ftom(stringPitch[i]);
+
             
             float openStringMIDI  = copedent[currentNeck][0][i];
             openStringMIDI_Int[i] = (int)openStringMIDI;
@@ -1354,7 +1156,7 @@ int main(void)
             myArray[(i * 4) + 3] = tempBreak.b[3];
         }
         
-        myArray[48] = octave | (voice << 2) | (dualSlider << 3) | (neck << 4);
+        myArray[48] = octave | (voice << 4) | (dualSlider << 5) | (neck << 6);
         for (int i = 0; i < 4; i++)
         {
             myArray[i+49] = knobs[i];
@@ -1371,10 +1173,6 @@ int main(void)
 
             SPIM_1_WriteTxData(myArray[i]);
         }
-
-        //CyDelayUs(400);
-        
-        
      }
 }
 
@@ -1382,11 +1180,9 @@ int main(void)
 
 void DmaRxConfiguration()
 { 
-
     //pluck dma
     rx1Channel = DMA_1_DmaInitialize(DMA_RX_BYTES_PER_BURST, DMA_RX_REQUEST_PER_BURST,
                                      HI16(DMA_RX_SRC_BASE), HI16(DMA_RX_DST_BASE));
-
     rx1TD[0] = CyDmaTdAllocate();
     rx1TD[1] = CyDmaTdAllocate();
     CyDmaTdSetConfiguration(rx1TD[0], PLUCK_BUFFER_SIZE, DMA_DISABLE_TD , TD_INC_DST_ADR | DMA_1__TD_TERMOUT_EN);
@@ -1394,8 +1190,6 @@ void DmaRxConfiguration()
     CyDmaTdSetAddress(rx1TD[0], LO16((uint32) SPIS_1_RXDATA_PTR), LO16((uint32) rxBufferPluck[0]));
     CyDmaTdSetAddress(rx1TD[1], LO16((uint32) SPIS_1_RXDATA_PTR), LO16((uint32) rxBufferPluck[1]));
 
-    
-    
     //bar dma
     rx2Channel = DMA_2_DmaInitialize(DMA_RX_BYTES_PER_BURST, DMA_RX_REQUEST_PER_BURST,
                                      HI16(DMA_RX_SRC_BASE), HI16(DMA_RX_DST_BASE));
@@ -1405,36 +1199,6 @@ void DmaRxConfiguration()
     CyDmaTdSetConfiguration(rx2TD[1], BAR_BUFFER_SIZE, DMA_DISABLE_TD, TD_INC_DST_ADR | DMA_2__TD_TERMOUT_EN);
     CyDmaTdSetAddress(rx2TD[0], LO16((uint32) SPIS_2_RXDATA_PTR), LO16((uint32) rxBufferBar[0]));
     CyDmaTdSetAddress(rx2TD[1], LO16((uint32) SPIS_2_RXDATA_PTR), LO16((uint32) rxBufferBar[1]));
-
-
-    /*
-    rx1Channel = DMA_2_DmaInitialize(DMA_RX_BYTES_PER_BURST, DMA_RX_REQUEST_PER_BURST,
-                                     HI16(DMA_RX_SRC_BASE), HI16(DMA_RX_DST_BASE));
-
-    rx1TD[0] = CyDmaTdAllocate();
-    rx1TD[1] = CyDmaTdAllocate();
-
-    CyDmaTdSetConfiguration(rx1TD[0], BAR_BUFFER_SIZE, rx1TD[1] , TD_INC_DST_ADR | DMA_2__TD_TERMOUT_EN);
-    CyDmaTdSetConfiguration(rx1TD[1], BAR_BUFFER_SIZE, rx1TD[0] , TD_INC_DST_ADR | DMA_2__TD_TERMOUT_EN);
-    CyDmaTdSetAddress(rx1TD[0], LO16((uint32) SPIS_2_RXDATA_PTR), LO16((uint32) rxBufferBar[0]));
-    CyDmaTdSetAddress(rx1TD[1], LO16((uint32) SPIS_2_RXDATA_PTR), LO16((uint32) rxBufferBar[1]));
-    CyDmaChSetInitialTd(rx1Channel, rx1TD[0]);
-    CyDmaChEnable(rx1Channel, 1);
-    
-    
-    rx2Channel = DMA_1_DmaInitialize(DMA_RX_BYTES_PER_BURST, DMA_RX_REQUEST_PER_BURST,
-                                     HI16(DMA_RX_SRC_BASE), HI16(DMA_RX_DST_BASE));
-
-    rx2TD[0] = CyDmaTdAllocate();
-    rx2TD[1] = CyDmaTdAllocate();
-
-    CyDmaTdSetConfiguration(rx2TD[0], PLUCK_BUFFER_SIZE, rx2TD[1] , TD_INC_DST_ADR | DMA_1__TD_TERMOUT_EN);
-    CyDmaTdSetConfiguration(rx2TD[1], PLUCK_BUFFER_SIZE, rx2TD[0] , TD_INC_DST_ADR | DMA_1__TD_TERMOUT_EN);
-    CyDmaTdSetAddress(rx2TD[0], LO16((uint32) SPIS_1_RXDATA_PTR), LO16((uint32) rxBufferPluck[0]));
-    CyDmaTdSetAddress(rx2TD[1], LO16((uint32) SPIS_1_RXDATA_PTR), LO16((uint32) rxBufferPluck[1]));
-    CyDmaChSetInitialTd(rx2Channel, rx2TD[0]);
-    CyDmaChEnable(rx2Channel, 1);
-*/
 }
 uint8 I2C_MasterWriteBlocking(uint8 i2CAddr, uint16 nbytes, uint8_t mode)
 {
@@ -1461,13 +1225,6 @@ uint8 I2C_MasterWriteBlocking(uint8 i2CAddr, uint16 nbytes, uint8_t mode)
                     status = I2C_1_MSTAT_ERR_XFER;
                     I2C_reset();
                 }
-                /*
-                if (status == 0)
-                {
-                    status = I2C_1_MSTAT_ERR_XFER;
-                    I2C_reset();
-                }
-                */
             } while(((status & (I2C_1_MSTAT_WR_CMPLT | I2C_1_MSTAT_ERR_XFER)) == 0u) && (status != 0u) && (timeout>0));
         }
         else
@@ -1508,13 +1265,6 @@ uint8 I2C_MasterReadBlocking(uint8 i2CAddr, uint8 nbytes, uint8_t mode)
                     status = I2C_1_MSTAT_ERR_XFER;
                     I2C_reset();
                 }
-                /*
-                if (status == 0)
-                {
-                    status = I2C_1_MSTAT_ERR_XFER;
-                    I2C_reset();
-                }
-                */
             } while(((status & (I2C_1_MSTAT_RD_CMPLT | I2C_1_MSTAT_ERR_XFER)) == 0u) && (status != 0u) && (timeout>0));
         }
         else
@@ -1530,31 +1280,7 @@ uint8 I2C_MasterReadBlocking(uint8 i2CAddr, uint8 nbytes, uint8_t mode)
 
 void I2C_reset(void)
 {
-    //I2C_1_GENERATE_STOP_MANUAL;
-    //I2C_1_state = I2C_1_SM_EXIT_IDLE;
-    //CyDelay(100);
-    ///I2C_1_Stop();
-    //CyDelay(100);
-    //I2C_1_Init();
-    //CyDelay(100);
-    //I2C_1_Start();
-    //CyDelay(100);
-    /*
-            if (mux_states[main_counter][0] != last_mux)
-        {
-            I2Cbuff1[0] = 1<<mux_states[main_counter][0];
-            uint8_t status = I2C_MasterWriteBlocking(0x71, 1, I2C_1_MODE_COMPLETE_XFER);
-        }
-        last_mux = mux_states[main_counter][0];
-        
-        CyDelayUs(10);
-        if (mux_states[main_counter][0] == 0)
-        {
-            I2Cbuff1[0] = 1<<mux_states[main_counter][1];
-            status = I2C_MasterWriteBlocking(0x70, 1, I2C_1_MODE_COMPLETE_XFER);
-        }
-        main_counter = 0;
-    */
+
 }
 
 void checkUSB_Vbus(void)
@@ -1585,19 +1311,11 @@ void USB_service(void)
     {
         if(USB_GetConfiguration() != 0u)   
         {
-           // Sleep_isr_StartEx(SleepIsr_function);
-            
-            //SleepTimer_Start();
-        	
             if ((USB_active) && (USB_VBusPresent()))
             {
                 USB_MIDI_EP_Init();
             }
         }
-        else
-        {
-            //SleepTimer_Stop();
-        }    
     }        
     
     if(USB_GetConfiguration() != 0u)    
@@ -1616,24 +1334,6 @@ void USB_service(void)
                 USB_MIDI_OUT_Service();
             }
         #endif
-
-/*
-        if( usbActivityCounter >= 2u ) 
-        {
-
-            USB_Suspend();
-
-            CyPmSaveClocks();
-            CyPmSleep(PM_SLEEP_TIME_NONE, PM_SLEEP_SRC_PICU);
-            CyPmRestoreClocks();
-
-            USB_Resume();
-            USB_MIDI_EP_Init();
-            
-            usbActivityCounter = 0u; 
-
-        }
-        */
     }
         
 }
@@ -1702,7 +1402,6 @@ void sendMIDINoteOn(int MIDInoteNum, int velocity, int channel)
     midiMsg[0] = USB_MIDI_NOTE_ON + channel;
     midiMsg[1] = MIDInoteNum;
     midiMsg[2] = velocity;	
-    //MIDI1_UART_PutArray(midiMsg, 3);
     if ((USB_active) && (USB_VBusPresent()))
     {
         USB_PutUsbMidiIn(3u, midiMsg, USB_MIDI_CABLE_00);
@@ -1715,8 +1414,6 @@ void sendMIDIPolyKeyPressure(int MIDInoteNum, int pressure, int channel)
     midiMsg[0] = USB_MIDI_POLY_KEY_PRESSURE + channel;
     midiMsg[1] = MIDInoteNum;
     midiMsg[2] = pressure;		
-    //MIDI1_UART_PutArray(midiMsg, 3);
-
     if ((USB_active) && (USB_VBusPresent()))
     {
         USB_PutUsbMidiIn(3u, midiMsg, USB_MIDI_CABLE_00);
@@ -1729,8 +1426,6 @@ void sendMIDIControlChange(int CCnum, int CCval, int channel)
     midiMsg[0] = USB_MIDI_CONTROL_CHANGE + channel;
     midiMsg[1] = CCnum;
     midiMsg[2] = CCval;			
-    //MIDI1_UART_PutArray(midiMsg, 3);
-    
     if ((USB_active) && (USB_VBusPresent()))
     {
         USB_PutUsbMidiIn(3u, midiMsg, USB_MIDI_CABLE_00);
@@ -1743,9 +1438,6 @@ void sendMIDIPitchBend(int val, int channel)
     midiMsg[0] = USB_MIDI_PITCH_BEND_CHANGE + channel;
     midiMsg[1] = (val & 127); //LSB
     midiMsg[2] = (val >> 7);	//MSB		
-
-    //MIDI1_UART_PutArray(midiMsg, 3);
-    
     if ((USB_active) && (USB_VBusPresent()))
     {
         USB_PutUsbMidiIn(3u, midiMsg, USB_MIDI_CABLE_00);
@@ -1760,7 +1452,6 @@ void sendMIDIAllNotesOff(void)
         midiMsg[0] = USB_MIDI_NOTE_ON;
         midiMsg[1] = i;
         midiMsg[2] = 0;	
-       // MIDI1_UART_PutArray(midiMsg, 3);
         if ((USB_active) && (USB_VBusPresent()))
         {       
             USB_PutUsbMidiIn(3u, midiMsg, USB_MIDI_CABLE_00);
@@ -1852,74 +1543,7 @@ void USB_callbackLocalMidiEvent(uint8 cable, uint8 *midiMsg) CYREENTRANT
     //check that we got here
     
     if ((USB_active) && (USB_VBusPresent()))
-    { 
-        /*
-        if(midiMsg[USB_EVENT_BYTE0] == USB_MIDI_NOTE_ON)
-        {
-    
-            //write the note on into the mastrKeys array, which stores all the pitches on/off info for the brain
-            masterKeys[ midiMsg[USB_EVENT_BYTE1] ][0] = midiMsg[USB_EVENT_BYTE2];
-            int possibleKey = (int)USB_EVENT_BYTE1 + (int)cvOffsetFinal - 32 - (int)keyOffset;
-            if ((possibleKey < NUM_KEYS) && (possibleKey >= 0))
-            {
-                //looks like the MIDI note from the computer also lands on the keyboard with the current CV offset and keyOffset, so associate it with a key
-                masterKeys[ midiMsg[USB_EVENT_BYTE1] ][1] = possibleKey;
-            }
-            else
-            {
-                masterKeys[ midiMsg[USB_EVENT_BYTE1] ][1] = -1;
-            }
-            if (midiMsg[USB_EVENT_BYTE2] > 0)
-            {
-                //note on
-                addToNoteStack(midiMsg[USB_EVENT_BYTE1]);
-                if (mainMode == SEQUENCERMODE)
-                {
-                    if (toggleKeys[midiMsg[USB_EVENT_BYTE1]] == 0)
-                    {
-                        toggleKeys[midiMsg[USB_EVENT_BYTE1]] = 1;
-                        addToSequencerStack(midiMsg[USB_EVENT_BYTE1]);
-                    }
-                    else
-                    {
-                        toggleKeys[midiMsg[USB_EVENT_BYTE1]] = 0;
-                        removeFromSequencerStack(midiMsg[USB_EVENT_BYTE1]);
-                    }
-                }
-            }
-            else
-            {
-                //note off
-                removeFromNoteStack(midiMsg[USB_EVENT_BYTE1]);
-            }
-            
-        }
-        
-        if (midiMsg[USB_EVENT_BYTE0] == USB_MIDI_CONTROL_CHANGE)
-        {
-            computerCC[midiMsg[USB_EVENT_BYTE2]] = midiMsg[USB_EVENT_BYTE1];
-            
-            if (midiMsg[USB_EVENT_BYTE2] == 0) // low res 7-bit full value
-            {
-                DACvalue16 = (midiMsg[USB_EVENT_BYTE1] << 5); 
-                //send the DAC value to masterpitch sensor
-                WriteCommandPacket((DACvalue16 >> 8),(DACvalue16 & 255) , masterPitch);
-            }
-            
-            if (midiMsg[USB_EVENT_BYTE2] == 1) // high byte
-            {
-                DACvalue16 = (midiMsg[USB_EVENT_BYTE1] << 7) + DAClowbyte7; 
-                //send the DAC value to masterpitch sensor
-                WriteCommandPacket((DACvalue16 >> 8),(DACvalue16 & 255) , masterPitch);
-            }
-            if (midiMsg[USB_EVENT_BYTE2] == 2) // low byte
-            {
-                DAClowbyte7 = midiMsg[USB_EVENT_BYTE1];
-            }
-
-        }
-        */
-        
+    {
         if (receivingSysex)
         {
             for (int i = 0; i < 3; i++)
@@ -1940,6 +1564,7 @@ void USB_callbackLocalMidiEvent(uint8 cable, uint8 *midiMsg) CYREENTRANT
             }
 
         }
+        //TODO: should this be else if? -JS
         if (midiMsg[USB_EVENT_BYTE0] == USB_MIDI_SYSEX)
         {
             if (!parsingSysex)

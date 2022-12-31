@@ -45,7 +45,7 @@
 
 #define REFERENCE_RESISTOR 20000
 
-#define barBufferSize 12
+#define barBufferSize 8
 #define touchBufferSize 4
 
 
@@ -55,7 +55,7 @@ uint8_t stringCapSensorsRaw[16];
 uint8_t thresholdArray[12] = {15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15};
 uint8 barArray[barBufferSize];
 uint8 touchArray[touchBufferSize];
-int32_t linearPotValue32Bit[4];
+int32_t linearPotValue32Bit[2];
 uint8_t i = 0;
 uint8_t counter = 0;
 int32_t temper;
@@ -81,19 +81,9 @@ int main(void)
 	AMux_1_Start();
     AMux_2_Start();
 
-    AMux_2_DisconnectAll();
-    AMux_2_Connect(0);
-   // AMux_2_Connect(4);
-
 
     SPIM_1_Start();
     SPIM_2_Start();
-    //Opamp_1_Start();
-    //Opamp_2_Start();
-   // Opamp_1_Sleep();
-
-   // VDAC8_1_Start();
-   // VDAC8_2_Start();
     
     CapSense_Start();     
     
@@ -108,7 +98,7 @@ int main(void)
     {
         CapSense_ClearSensors();
         
-        for (i = 0; i < 3; i++)
+        for (i = 0; i < 2; i++)
         {
            scanLinearResistor(i);
         }
@@ -131,7 +121,7 @@ int main(void)
 
         counter = 0;
         
-        for (i = 0; i < 3; i++)
+        for (i = 0; i < 2; i++)
         {
             barArray[counter++] = ((uint16_t) linearPotValue32Bit[i]) >> 8;
             barArray[counter++] = linearPotValue32Bit[i] & 0xff;
@@ -139,10 +129,10 @@ int main(void)
 
 
 
-        barArray[8] = 0;
-        barArray[9] = 0;
-        barArray[10] = 254;
-        barArray[11] = 253;
+        barArray[4] = 0;
+        barArray[5] = 0;
+        barArray[6] = 254;
+        barArray[7] = 253;
         
         touchArray[0] = 0;
         touchArray[1] = 0;
@@ -158,14 +148,14 @@ int main(void)
         {
            int isSensorOn = (CapSense_sensorRaw[i] - CapSense_sensorBaseline[i]) > thresholdArray[i];
             touchArray[0] |= (isSensorOn << i);
-            barArray[8] |= (isSensorOn << i);
+            barArray[4] |= (isSensorOn << i);
 
         }
         for (i = 8; i < 12; i++)
         {
            int isSensorOn = (CapSense_sensorRaw[i] - CapSense_sensorBaseline[i]) > thresholdArray[i];
             touchArray[1] |= (isSensorOn << (i - 8));
-            barArray[9] |= (isSensorOn << (i - 8));
+            barArray[5] |= (isSensorOn << (i - 8));
         }        
         
         //send data over SPI to pluck detector boards
@@ -183,7 +173,7 @@ int main(void)
         }
     }
 }
-
+float resistorRatio[2];
 void scanLinearResistor(uint8_t channel)
 {  
         int32 iVtherm = 0;
@@ -192,35 +182,35 @@ void scanLinearResistor(uint8_t channel)
         int32 offset = 0;
         //connect the iout pin to the correct resistor channel
         AMux_2_FastSelect(channel);
-        //connect the iout pin to the input adc mux
-       // AMux_2_Connect(4);
     
         //select the wiper pins
         AMux_1_FastSelect(channel * 2);
         CyDelayUs(5); 
+
+       
         ADC_1_StartConvert();
         ADC_1_IsEndConversion(ADC_1_WAIT_FOR_RESULT);
         iVtherm = ADC_1_GetResult32();
-	
         AMux_1_FastSelect((channel * 2) + 1);
         CyDelayUs(5); 
         ADC_1_StartConvert();
         ADC_1_IsEndConversion(ADC_1_WAIT_FOR_RESULT);
         iVref = ADC_1_GetResult32();
-
+        
         
         //iRes = Thermistor_GetResistance(iVtherm, iVref); //check if more efficient than my version
-        if ((iVref > 10000) && (iVtherm < 100))
+        if ((iVref > 100) && (iVtherm < 100))
         {
             iRes = 65535;
         }
         else
         
         {
-            iRes = (int32)(((float)iVref / (float)iVtherm) * 10000.0f);
+            resistorRatio[channel] = ((float)iVref / (float)iVtherm);
+            iRes = (int32)(((float)iVref / (float)iVtherm) * 32000.0f);
         }
         
-        linearPotValue32Bit[2-channel] = iRes;
+        linearPotValue32Bit[channel] = iRes;
 }
 
 

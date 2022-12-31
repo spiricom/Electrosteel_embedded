@@ -1,5 +1,5 @@
 # CE210514_PSOC3_5_Thermistor
-# 2022-12-14 01:02:31Z
+# 2022-12-30 01:57:25Z
 
 # IO_0@[IOP=(1)][IoId=(0)] is reserved: SWDDebugEnabled
 dont_use_io iocell 1 0
@@ -26,23 +26,16 @@ set_io "Vout_3(0)" iocell 3 6
 set_io "SS_1(0)" iocell 5 5
 set_io "SS_2(0)" iocell 1 5
 set_io "SCLK_2(0)" iocell 1 4
-set_io "Vout_4(0)" iocell 3 7
+set_io "Vout_4(0)" iocell 0 0
 set_io "LED(0)" iocell 5 1
 set_io "MISO_2(0)" iocell 1 6
 set_io "MOSI_2(0)" iocell 1 7
-set_io "top_wiper1(0)" iocell 0 3
-set_io "bottom_wiper2(0)" iocell 0 6
-set_io "top_wiper2(0)" iocell 0 2
-set_io "bottom_wiper1(0)" iocell 0 5
-set_io "Vout_2(0)" iocell 0 1
-set_io "Vout_1(0)" iocell 0 0
 set_io "midtop_wiper2(0)" iocell 4 2
-set_io "midbottom_wiper1(0)" iocell 4 5
-set_io "midbottom_wiper2(0)" iocell 0 7
-set_io "VHout(0)" iocell 5 3
+set_io "midbottom_wiper1(0)" iocell 0 3
+set_io "midbottom_wiper2(0)" iocell 0 2
 set_io "midtop_wiper1(0)" iocell 3 1
 set_location "\ADC_1:DSM\" dsmodcell -1 -1 0
 set_location "\IDAC8_1:viDAC8\" vidaccell -1 -1 3
 set_location "\CapSense:BufCH0\" csabufcell -1 -1 0
-set_location "\CapSense:CompCH0:ctComp\" comparatorcell -1 -1 0
+set_location "\CapSense:CompCH0:ctComp\" comparatorcell -1 -1 2
 set_location "\CapSense:IdacCH0:viDAC8\" vidaccell -1 -1 0

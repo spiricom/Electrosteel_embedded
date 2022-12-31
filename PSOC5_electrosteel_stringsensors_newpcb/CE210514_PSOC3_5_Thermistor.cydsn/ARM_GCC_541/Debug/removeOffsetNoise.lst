@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cce23EnS.s 			page 1
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczAPEiM.s 			page 1
 
 
    1              		.syntax unified
@@ -58,7 +58,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cce23EnS.s 			page 1
   28:removeOffsetNoise.c **** * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
   29:removeOffsetNoise.c **** * Cypress reserves the right to make changes without further notice to the 
   30:removeOffsetNoise.c **** * materials described herein. Cypress does not assume any liability arising out 
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cce23EnS.s 			page 2
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczAPEiM.s 			page 2
 
 
   31:removeOffsetNoise.c **** * of the application or use of any product or circuit described herein. Cypress 
@@ -118,7 +118,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cce23EnS.s 			page 1
   42 000a FB70     		strb	r3, [r7, #3]
   71:removeOffsetNoise.c **** 	/* Running filtered value accumulator */
   72:removeOffsetNoise.c **** 	static int32 filteredValue[NUM_SENSORS] = {0,0};
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cce23EnS.s 			page 3
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczAPEiM.s 			page 3
 
 
   73:removeOffsetNoise.c **** 	
@@ -178,7 +178,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cce23EnS.s 			page 1
   93:removeOffsetNoise.c **** 	
   94:removeOffsetNoise.c **** 	/* Compensate filter result for  left shift of 8 and round off */
   95:removeOffsetNoise.c **** 	filValueRounded = (filteredValue[sensor] >> MAX_FILTER_COEFF_SHIFT) + ((filteredValue[sensor] & 0x
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cce23EnS.s 			page 4
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczAPEiM.s 			page 4
 
 
   77              		.loc 1 95 0
@@ -212,7 +212,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cce23EnS.s 			page 1
  102              	.L7:
  103              		.align	2
  104              	.L6:
- 105 0074 00000000 		.word	filteredValue.6416
+ 105 0074 00000000 		.word	filteredValue.6323
  106              		.cfi_endproc
  107              	.LFE63:
  108              		.size	FilterSignal, .-FilterSignal
@@ -238,7 +238,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cce23EnS.s 			page 1
  110:removeOffsetNoise.c **** * int32: result (offset value).
  111:removeOffsetNoise.c **** *
  112:removeOffsetNoise.c **** * Theory:
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cce23EnS.s 			page 5
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczAPEiM.s 			page 5
 
 
  113:removeOffsetNoise.c **** *
@@ -287,7 +287,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cce23EnS.s 			page 1
  144              		.size	GetOffset, .-GetOffset
  145 0012 00BF     		.bss
  146              		.align	2
- 147              	filteredValue.6416:
+ 147              	filteredValue.6323:
  148 0000 00000000 		.space	8
  148      00000000 
  149              		.text
@@ -298,7 +298,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cce23EnS.s 			page 1
  154              		.file 5 "Generated_Source\\PSoC5/core_cm3.h"
  155              		.section	.debug_info,"",%progbits
  156              	.Ldebug_info0:
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cce23EnS.s 			page 6
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczAPEiM.s 			page 6
 
 
  157 0000 57010000 		.4byte	0x157
@@ -324,7 +324,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cce23EnS.s 			page 1
  177 0033 02       		.uleb128 0x2
  178 0034 02       		.byte	0x2
  179 0035 05       		.byte	0x5
- 180 0036 0A020000 		.4byte	.LASF2
+ 180 0036 1C020000 		.4byte	.LASF2
  181 003a 02       		.uleb128 0x2
  182 003b 02       		.byte	0x2
  183 003c 07       		.byte	0x7
@@ -358,23 +358,23 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cce23EnS.s 			page 1
  211 0070 04       		.byte	0x4
  212 0071 07       		.byte	0x7
  213 0072 21000000 		.4byte	.LASF8
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cce23EnS.s 			page 7
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczAPEiM.s 			page 7
 
 
  214 0076 03       		.uleb128 0x3
- 215 0077 14020000 		.4byte	.LASF10
+ 215 0077 26020000 		.4byte	.LASF10
  216 007b 03       		.byte	0x3
  217 007c 2C       		.byte	0x2c
  218 007d 41000000 		.4byte	0x41
  219 0081 05       		.uleb128 0x5
  220 0082 4B000000 		.4byte	.LASF11
  221 0086 04       		.byte	0x4
- 222 0087 E401     		.2byte	0x1e4
+ 222 0087 E901     		.2byte	0x1e9
  223 0089 2C000000 		.4byte	0x2c
  224 008d 05       		.uleb128 0x5
- 225 008e 25020000 		.4byte	.LASF12
+ 225 008e 37020000 		.4byte	.LASF12
  226 0092 04       		.byte	0x4
- 227 0093 E901     		.2byte	0x1e9
+ 227 0093 EE01     		.2byte	0x1ee
  228 0095 4C000000 		.4byte	0x4c
  229 0099 02       		.uleb128 0x2
  230 009a 04       		.byte	0x4
@@ -395,7 +395,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cce23EnS.s 			page 1
  245 00b5 02       		.uleb128 0x2
  246 00b6 04       		.byte	0x4
  247 00b7 07       		.byte	0x7
- 248 00b8 1C020000 		.4byte	.LASF17
+ 248 00b8 2E020000 		.4byte	.LASF17
  249 00bc 06       		.uleb128 0x6
  250 00bd 3E000000 		.4byte	.LASF22
  251 00c1 01       		.byte	0x1
@@ -418,7 +418,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cce23EnS.s 			page 1
  268 00e4 84000000 		.4byte	.LASF19
  269 00e8 01       		.byte	0x1
  270 00e9 45       		.byte	0x45
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cce23EnS.s 			page 8
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczAPEiM.s 			page 8
 
 
  271 00ea 81000000 		.4byte	0x81
@@ -432,7 +432,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cce23EnS.s 			page 1
  279 00f8 11010000 		.4byte	0x111
  280 00fc 05       		.uleb128 0x5
  281 00fd 03       		.byte	0x3
- 282 00fe 00000000 		.4byte	filteredValue.6416
+ 282 00fe 00000000 		.4byte	filteredValue.6323
  283 0102 08       		.uleb128 0x8
  284 0103 2E000000 		.4byte	.LASF21
  285 0107 01       		.byte	0x1
@@ -478,7 +478,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cce23EnS.s 			page 1
  325 015a 00       		.byte	0
  326              		.section	.debug_abbrev,"",%progbits
  327              	.Ldebug_abbrev0:
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cce23EnS.s 			page 9
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczAPEiM.s 			page 9
 
 
  328 0000 01       		.uleb128 0x1
@@ -538,7 +538,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cce23EnS.s 			page 1
  382 0036 05       		.uleb128 0x5
  383 0037 16       		.uleb128 0x16
  384 0038 00       		.byte	0
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cce23EnS.s 			page 10
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczAPEiM.s 			page 10
 
 
  385 0039 03       		.uleb128 0x3
@@ -598,7 +598,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cce23EnS.s 			page 1
  439 0070 00       		.byte	0
  440 0071 03       		.uleb128 0x3
  441 0072 0E       		.uleb128 0xe
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cce23EnS.s 			page 11
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczAPEiM.s 			page 11
 
 
  442 0073 3A       		.uleb128 0x3a
@@ -658,7 +658,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cce23EnS.s 			page 1
  496 0000 24000000 		.4byte	0x24
  497 0004 0200     		.2byte	0x2
  498 0006 00000000 		.4byte	.Ldebug_info0
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cce23EnS.s 			page 12
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczAPEiM.s 			page 12
 
 
  499 000a 04       		.byte	0x4
@@ -718,7 +718,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cce23EnS.s 			page 1
  532              	.LASF5:
  533 0051 6C6F6E67 		.ascii	"long unsigned int\000"
  533      20756E73 
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cce23EnS.s 			page 13
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczAPEiM.s 			page 13
 
 
  533      69676E65 
@@ -778,7 +778,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cce23EnS.s 			page 1
  555      6C6500
  556              	.LASF4:
  557 0152 6C6F6E67 		.ascii	"long int\000"
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cce23EnS.s 			page 14
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczAPEiM.s 			page 14
 
 
  557      20696E74 
@@ -810,30 +810,36 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cce23EnS.s 			page 1
  569 019e 666C6F61 		.ascii	"float\000"
  569      7400
  570              	.LASF27:
- 571 01a4 433A5C55 		.ascii	"C:\\Users\\JeffSnyder\\Desktop\\PSOC5_electrosteel_"
+ 571 01a4 433A5C55 		.ascii	"C:\\Users\\JeffSnyder\\dev\\Electrosteel_embedded\\"
  571      73657273 
  571      5C4A6566 
  571      66536E79 
  571      6465725C 
- 572 01d3 73747269 		.ascii	"stringsensors_newpcb\\CE210514_PSOC3_5_Thermistor.c"
- 572      6E677365 
- 572      6E736F72 
- 572      735F6E65 
- 572      77706362 
- 573 0205 7964736E 		.ascii	"ydsn\000"
- 573      00
+ 572 01d2 50534F43 		.ascii	"PSOC5_electrosteel_stringsensors_newpcb\\CE210514_P"
+ 572      355F656C 
+ 572      65637472 
+ 572      6F737465 
+ 572      656C5F73 
+ 573 0204 534F4333 		.ascii	"SOC3_5_Thermistor.cydsn\000"
+ 573      5F355F54 
+ 573      6865726D 
+ 573      6973746F 
+ 573      722E6379 
  574              	.LASF2:
- 575 020a 73686F72 		.ascii	"short int\000"
+ 575 021c 73686F72 		.ascii	"short int\000"
  575      7420696E 
  575      7400
  576              	.LASF10:
- 577 0214 696E7433 		.ascii	"int32_t\000"
+ 577 0226 696E7433 		.ascii	"int32_t\000"
  577      325F7400 
  578              	.LASF17:
- 579 021c 73697A65 		.ascii	"sizetype\000"
+ 579 022e 73697A65 		.ascii	"sizetype\000"
  579      74797065 
  579      00
  580              	.LASF12:
- 581 0225 696E7433 		.ascii	"int32\000"
+ 581 0237 696E7433 		.ascii	"int32\000"
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczAPEiM.s 			page 15
+
+
  581      3200
  582              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

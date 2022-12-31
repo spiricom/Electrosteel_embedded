@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 1
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccVIIKtg.s 			page 1
 
 
    1              		.syntax unified
@@ -58,7 +58,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 1
   22:Generated_Source\PSoC5/IDAC8_1.c **** #if (CY_PSOC5A)
   23:Generated_Source\PSoC5/IDAC8_1.c ****     #include <CyLib.h>
   24:Generated_Source\PSoC5/IDAC8_1.c **** #endif /* CY_PSOC5A */
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 2
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccVIIKtg.s 			page 2
 
 
   25:Generated_Source\PSoC5/IDAC8_1.c **** 
@@ -118,7 +118,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 1
   65:Generated_Source\PSoC5/IDAC8_1.c ****     #else
   66:Generated_Source\PSoC5/IDAC8_1.c ****         IDAC8_1_CR1 = (IDAC8_1_DEFAULT_CNTL | IDAC8_1_DACBUS_DISABLE);
   48              		.loc 1 66 0
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 3
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccVIIKtg.s 			page 3
 
 
   49 000a 084B     		ldr	r3, .L2+4
@@ -178,7 +178,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 1
   78              		.thumb_func
   79              		.type	IDAC8_1_Enable, %function
   80              	IDAC8_1_Enable:
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 4
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccVIIKtg.s 			page 4
 
 
   81              	.LFB1:
@@ -238,7 +238,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 1
  119:Generated_Source\PSoC5/IDAC8_1.c ****         if(IDAC8_1_restoreReg == 1u)
  120:Generated_Source\PSoC5/IDAC8_1.c ****         {
  121:Generated_Source\PSoC5/IDAC8_1.c ****             IDAC8_1_CR0 = IDAC8_1_lowPowerBackup.DACCR0Reg;
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 5
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccVIIKtg.s 			page 5
 
 
  122:Generated_Source\PSoC5/IDAC8_1.c **** 
@@ -298,7 +298,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 1
  135              		@ args = 0, pretend = 0, frame = 0
  136              		@ frame_needed = 1, uses_anonymous_args = 0
  137 0000 80B5     		push	{r7, lr}
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 6
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccVIIKtg.s 			page 6
 
 
  138              		.cfi_def_cfa_offset 8
@@ -334,7 +334,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 1
  160:Generated_Source\PSoC5/IDAC8_1.c ****     /* Set default value */
  161:Generated_Source\PSoC5/IDAC8_1.c ****     IDAC8_1_SetValue(IDAC8_1_DEFAULT_DATA);
  157              		.loc 1 161 0
- 158 001a 7820     		movs	r0, #120
+ 158 001a 2820     		movs	r0, #40
  159 001c FFF7FEFF 		bl	IDAC8_1_SetValue
  162:Generated_Source\PSoC5/IDAC8_1.c **** 
  163:Generated_Source\PSoC5/IDAC8_1.c **** }
@@ -358,7 +358,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 1
  177              	.LFB3:
  164:Generated_Source\PSoC5/IDAC8_1.c **** 
  165:Generated_Source\PSoC5/IDAC8_1.c **** 
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 7
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccVIIKtg.s 			page 7
 
 
  166:Generated_Source\PSoC5/IDAC8_1.c **** /*******************************************************************************
@@ -418,7 +418,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 1
  194:Generated_Source\PSoC5/IDAC8_1.c ****         /* Save the control register and then Clear it. */
  195:Generated_Source\PSoC5/IDAC8_1.c ****         IDAC8_1_lowPowerBackup.DACCR0Reg = IDAC8_1_CR0;
  196:Generated_Source\PSoC5/IDAC8_1.c ****         IDAC8_1_CR0 = (IDAC8_1_MODE_I | IDAC8_1_RANGE_3 | IDAC8_1_HS_HIGHSPEED);
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 8
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccVIIKtg.s 			page 8
 
 
  197:Generated_Source\PSoC5/IDAC8_1.c ****     #endif /* CY_PSOC5A */
@@ -478,7 +478,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 1
  235              		.cfi_def_cfa_offset 4
  236              		.cfi_offset 7, -4
  237 0002 83B0     		sub	sp, sp, #12
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 9
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccVIIKtg.s 			page 9
 
 
  238              		.cfi_def_cfa_offset 16
@@ -538,7 +538,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 1
  224:Generated_Source\PSoC5/IDAC8_1.c **** 
  225:Generated_Source\PSoC5/IDAC8_1.c **** 
  226:Generated_Source\PSoC5/IDAC8_1.c **** /*******************************************************************************
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 10
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccVIIKtg.s 			page 10
 
 
  227:Generated_Source\PSoC5/IDAC8_1.c **** * Function Name: IDAC8_1_SetPolarity
@@ -598,7 +598,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 1
  319 002c DBB2     		uxtb	r3, r3
  320 002e 0B70     		strb	r3, [r1]
  250:Generated_Source\PSoC5/IDAC8_1.c ****     
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 11
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccVIIKtg.s 			page 11
 
 
  251:Generated_Source\PSoC5/IDAC8_1.c ****         IDAC8_1_DacTrim();
@@ -658,7 +658,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 1
  351              		.cfi_def_cfa_offset 8
  352              		.cfi_offset 7, -8
  353              		.cfi_offset 14, -4
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 12
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccVIIKtg.s 			page 12
 
 
  354 0002 82B0     		sub	sp, sp, #8
@@ -718,7 +718,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 1
  279:Generated_Source\PSoC5/IDAC8_1.c **** 
  280:Generated_Source\PSoC5/IDAC8_1.c **** 
  281:Generated_Source\PSoC5/IDAC8_1.c **** /*******************************************************************************
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 13
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccVIIKtg.s 			page 13
 
 
  282:Generated_Source\PSoC5/IDAC8_1.c **** * Function Name: IDAC8_1_SetValue
@@ -778,7 +778,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 1
  427              		.cfi_def_cfa_register 13
  428              		@ sp needed
  429 0016 80BC     		pop	{r7}
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 14
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccVIIKtg.s 			page 14
 
 
  430              		.cfi_restore 7
@@ -838,7 +838,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 1
  451              		@ frame_needed = 1, uses_anonymous_args = 0
  452              		@ link register save eliminated.
  453 0000 80B4     		push	{r7}
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 15
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccVIIKtg.s 			page 15
 
 
  454              		.cfi_def_cfa_offset 4
@@ -898,7 +898,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 1
  497              		.cfi_def_cfa_offset 0
  498 0044 7047     		bx	lr
  499              	.L29:
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 16
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccVIIKtg.s 			page 16
 
 
  500 0046 00BF     		.align	2
@@ -919,21 +919,21 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 1
  515 0006 00000000 		.4byte	.Ldebug_abbrev0
  516 000a 04       		.byte	0x4
  517 000b 01       		.uleb128 0x1
- 518 000c A1000000 		.4byte	.LASF27
+ 518 000c 4C000000 		.4byte	.LASF27
  519 0010 0C       		.byte	0xc
- 520 0011 80000000 		.4byte	.LASF28
- 521 0015 1A000000 		.4byte	.LASF29
+ 520 0011 2B000000 		.4byte	.LASF28
+ 521 0015 0E020000 		.4byte	.LASF29
  522 0019 00000000 		.4byte	.Ldebug_ranges0+0
  523 001d 00000000 		.4byte	0
  524 0021 00000000 		.4byte	.Ldebug_line0
  525 0025 02       		.uleb128 0x2
  526 0026 01       		.byte	0x1
  527 0027 06       		.byte	0x6
- 528 0028 B5010000 		.4byte	.LASF0
+ 528 0028 60010000 		.4byte	.LASF0
  529 002c 02       		.uleb128 0x2
  530 002d 01       		.byte	0x1
  531 002e 08       		.byte	0x8
- 532 002f 8D010000 		.4byte	.LASF1
+ 532 002f 38010000 		.4byte	.LASF1
  533 0033 02       		.uleb128 0x2
  534 0034 02       		.byte	0x2
  535 0035 05       		.byte	0x5
@@ -941,24 +941,24 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 1
  537 003a 02       		.uleb128 0x2
  538 003b 02       		.byte	0x2
  539 003c 07       		.byte	0x7
- 540 003d F9010000 		.4byte	.LASF3
+ 540 003d A4010000 		.4byte	.LASF3
  541 0041 02       		.uleb128 0x2
  542 0042 04       		.byte	0x4
  543 0043 05       		.byte	0x5
- 544 0044 84010000 		.4byte	.LASF4
+ 544 0044 2F010000 		.4byte	.LASF4
  545 0048 02       		.uleb128 0x2
  546 0049 04       		.byte	0x4
  547 004a 07       		.byte	0x7
- 548 004b 34020000 		.4byte	.LASF5
+ 548 004b DF010000 		.4byte	.LASF5
  549 004f 02       		.uleb128 0x2
  550 0050 08       		.byte	0x8
  551 0051 05       		.byte	0x5
- 552 0052 76010000 		.4byte	.LASF6
+ 552 0052 21010000 		.4byte	.LASF6
  553 0056 02       		.uleb128 0x2
  554 0057 08       		.byte	0x8
  555 0058 07       		.byte	0x7
- 556 0059 C1010000 		.4byte	.LASF7
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 17
+ 556 0059 6C010000 		.4byte	.LASF7
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccVIIKtg.s 			page 17
 
 
  557 005d 03       		.uleb128 0x3
@@ -968,33 +968,33 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 1
  561 0064 02       		.uleb128 0x2
  562 0065 04       		.byte	0x4
  563 0066 07       		.byte	0x7
- 564 0067 E6010000 		.4byte	.LASF8
+ 564 0067 91010000 		.4byte	.LASF8
  565 006b 04       		.uleb128 0x4
- 566 006c 5B010000 		.4byte	.LASF12
+ 566 006c 06010000 		.4byte	.LASF12
  567 0070 02       		.byte	0x2
- 568 0071 E401     		.2byte	0x1e4
+ 568 0071 E901     		.2byte	0x1e9
  569 0073 2C000000 		.4byte	0x2c
  570 0077 02       		.uleb128 0x2
  571 0078 04       		.byte	0x4
  572 0079 04       		.byte	0x4
- 573 007a 70010000 		.4byte	.LASF9
+ 573 007a 1B010000 		.4byte	.LASF9
  574 007e 02       		.uleb128 0x2
  575 007f 08       		.byte	0x8
  576 0080 04       		.byte	0x4
- 577 0081 46020000 		.4byte	.LASF10
+ 577 0081 F1010000 		.4byte	.LASF10
  578 0085 02       		.uleb128 0x2
  579 0086 01       		.byte	0x1
  580 0087 08       		.byte	0x8
- 581 0088 0C020000 		.4byte	.LASF11
+ 581 0088 B7010000 		.4byte	.LASF11
  582 008c 04       		.uleb128 0x4
- 583 008d 2F020000 		.4byte	.LASF13
+ 583 008d DA010000 		.4byte	.LASF13
  584 0091 02       		.byte	0x2
- 585 0092 8E02     		.2byte	0x28e
+ 585 0092 9302     		.2byte	0x293
  586 0094 98000000 		.4byte	0x98
  587 0098 05       		.uleb128 0x5
  588 0099 6B000000 		.4byte	0x6b
  589 009d 06       		.uleb128 0x6
- 590 009e 11020000 		.4byte	.LASF14
+ 590 009e BC010000 		.4byte	.LASF14
  591 00a2 01       		.byte	0x1
  592 00a3 3A       		.byte	0x3a
  593 00a4 00000000 		.4byte	.LFB0
@@ -1002,7 +1002,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 1
  595 00ac 01       		.uleb128 0x1
  596 00ad 9C       		.byte	0x9c
  597 00ae 07       		.uleb128 0x7
- 598 00af 61010000 		.4byte	.LASF15
+ 598 00af 0C010000 		.4byte	.LASF15
  599 00b3 01       		.byte	0x1
  600 00b4 6F       		.byte	0x6f
  601 00b5 00000000 		.4byte	.LFB1
@@ -1010,7 +1010,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 1
  603 00bd 01       		.uleb128 0x1
  604 00be 9C       		.byte	0x9c
  605 00bf 06       		.uleb128 0x6
- 606 00c0 D8010000 		.4byte	.LASF16
+ 606 00c0 83010000 		.4byte	.LASF16
  607 00c4 01       		.byte	0x1
  608 00c5 93       		.byte	0x93
  609 00c6 00000000 		.4byte	.LFB2
@@ -1018,10 +1018,10 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 1
  611 00ce 01       		.uleb128 0x1
  612 00cf 9C       		.byte	0x9c
  613 00d0 07       		.uleb128 0x7
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 18
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccVIIKtg.s 			page 18
 
 
- 614 00d1 34010000 		.4byte	.LASF17
+ 614 00d1 DF000000 		.4byte	.LASF17
  615 00d5 01       		.byte	0x1
  616 00d6 B7       		.byte	0xb7
  617 00d7 00000000 		.4byte	.LFB3
@@ -1029,7 +1029,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 1
  619 00df 01       		.uleb128 0x1
  620 00e0 9C       		.byte	0x9c
  621 00e1 08       		.uleb128 0x8
- 622 00e2 63020000 		.4byte	.LASF18
+ 622 00e2 1A000000 		.4byte	.LASF18
  623 00e6 01       		.byte	0x1
  624 00e7 DA       		.byte	0xda
  625 00e8 00000000 		.4byte	.LFB4
@@ -1038,7 +1038,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 1
  628 00f1 9C       		.byte	0x9c
  629 00f2 05010000 		.4byte	0x105
  630 00f6 09       		.uleb128 0x9
- 631 00f7 F3010000 		.4byte	.LASF20
+ 631 00f7 9E010000 		.4byte	.LASF20
  632 00fb 01       		.byte	0x1
  633 00fc DA       		.byte	0xda
  634 00fd 6B000000 		.4byte	0x6b
@@ -1047,7 +1047,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 1
  637 0103 77       		.sleb128 -9
  638 0104 00       		.byte	0
  639 0105 0A       		.uleb128 0xa
- 640 0106 41010000 		.4byte	.LASF19
+ 640 0106 EC000000 		.4byte	.LASF19
  641 010a 01       		.byte	0x1
  642 010b F6       		.byte	0xf6
  643 010c 00000000 		.4byte	.LFB5
@@ -1056,7 +1056,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 1
  646 0115 9C       		.byte	0x9c
  647 0116 29010000 		.4byte	0x129
  648 011a 09       		.uleb128 0x9
- 649 011b 9B010000 		.4byte	.LASF21
+ 649 011b 46010000 		.4byte	.LASF21
  650 011f 01       		.byte	0x1
  651 0120 F6       		.byte	0xf6
  652 0121 6B000000 		.4byte	0x6b
@@ -1065,7 +1065,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 1
  655 0127 77       		.sleb128 -9
  656 0128 00       		.byte	0
  657 0129 0B       		.uleb128 0xb
- 658 012a A4010000 		.4byte	.LASF22
+ 658 012a 4F010000 		.4byte	.LASF22
  659 012e 01       		.byte	0x1
  660 012f 1101     		.2byte	0x111
  661 0131 00000000 		.4byte	.LFB6
@@ -1074,11 +1074,11 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 1
  664 013a 9C       		.byte	0x9c
  665 013b 4F010000 		.4byte	0x14f
  666 013f 0C       		.uleb128 0xc
- 667 0140 5D020000 		.4byte	.LASF23
+ 667 0140 08020000 		.4byte	.LASF23
  668 0144 01       		.byte	0x1
  669 0145 1101     		.2byte	0x111
  670 0147 6B000000 		.4byte	0x6b
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 19
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccVIIKtg.s 			page 19
 
 
  671 014b 02       		.uleb128 0x2
@@ -1086,7 +1086,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 1
  673 014d 77       		.sleb128 -9
  674 014e 00       		.byte	0
  675 014f 0D       		.uleb128 0xd
- 676 0150 1E020000 		.4byte	.LASF24
+ 676 0150 C9010000 		.4byte	.LASF24
  677 0154 01       		.byte	0x1
  678 0155 2A01     		.2byte	0x12a
  679 0157 00000000 		.4byte	.LFB7
@@ -1095,7 +1095,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 1
  682 0160 9C       		.byte	0x9c
  683 0161 75010000 		.4byte	0x175
  684 0165 0C       		.uleb128 0xc
- 685 0166 55010000 		.4byte	.LASF25
+ 685 0166 00010000 		.4byte	.LASF25
  686 016a 01       		.byte	0x1
  687 016b 2A01     		.2byte	0x12a
  688 016d 6B000000 		.4byte	0x6b
@@ -1104,7 +1104,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 1
  691 0173 77       		.sleb128 -9
  692 0174 00       		.byte	0
  693 0175 0D       		.uleb128 0xd
- 694 0176 4D020000 		.4byte	.LASF26
+ 694 0176 F8010000 		.4byte	.LASF26
  695 017a 01       		.byte	0x1
  696 017b 5801     		.2byte	0x158
  697 017d 00000000 		.4byte	.LFB8
@@ -1113,7 +1113,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 1
  700 0186 9C       		.byte	0x9c
  701 0187 9B010000 		.4byte	0x19b
  702 018b 0E       		.uleb128 0xe
- 703 018c 2F010000 		.4byte	.LASF30
+ 703 018c DA000000 		.4byte	.LASF30
  704 0190 01       		.byte	0x1
  705 0191 5A01     		.2byte	0x15a
  706 0193 6B000000 		.4byte	0x6b
@@ -1138,7 +1138,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 1
  725 0003 25       		.uleb128 0x25
  726 0004 0E       		.uleb128 0xe
  727 0005 13       		.uleb128 0x13
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 20
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccVIIKtg.s 			page 20
 
 
  728 0006 0B       		.uleb128 0xb
@@ -1198,7 +1198,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 1
  782 003c 00       		.byte	0
  783 003d 06       		.uleb128 0x6
  784 003e 2E       		.uleb128 0x2e
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 21
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccVIIKtg.s 			page 21
 
 
  785 003f 00       		.byte	0
@@ -1258,7 +1258,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 1
  839 0077 0B       		.uleb128 0xb
  840 0078 27       		.uleb128 0x27
  841 0079 19       		.uleb128 0x19
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 22
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccVIIKtg.s 			page 22
 
 
  842 007a 11       		.uleb128 0x11
@@ -1318,7 +1318,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 1
  896 00b2 01       		.byte	0x1
  897 00b3 3F       		.uleb128 0x3f
  898 00b4 19       		.uleb128 0x19
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 23
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccVIIKtg.s 			page 23
 
 
  899 00b5 03       		.uleb128 0x3
@@ -1378,7 +1378,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 1
  953 00ec 9742     		.uleb128 0x2117
  954 00ee 19       		.uleb128 0x19
  955 00ef 01       		.uleb128 0x1
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 24
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccVIIKtg.s 			page 24
 
 
  956 00f0 13       		.uleb128 0x13
@@ -1438,7 +1438,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 1
  1010 0038 00000000 		.4byte	.LFB5
  1011 003c 40000000 		.4byte	.LFE5-.LFB5
  1012 0040 00000000 		.4byte	.LFB6
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 25
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccVIIKtg.s 			page 25
 
 
  1013 0044 40000000 		.4byte	.LFE6-.LFB6
@@ -1486,169 +1486,172 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 1
  1048 0010 73686F72 		.ascii	"short int\000"
  1048      7420696E 
  1048      7400
- 1049              	.LASF29:
- 1050 001a 433A5C55 		.ascii	"C:\\Users\\JeffSnyder\\Desktop\\PSOC5_electrosteel_"
- 1050      73657273 
- 1050      5C4A6566 
- 1050      66536E79 
- 1050      6465725C 
- 1051 0049 73747269 		.ascii	"stringsensors_newpcb\\CE210514_PSOC3_5_Thermistor.c"
- 1051      6E677365 
- 1051      6E736F72 
- 1051      735F6E65 
- 1051      77706362 
- 1052 007b 7964736E 		.ascii	"ydsn\000"
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 26
+ 1049              	.LASF18:
+ 1050 001a 49444143 		.ascii	"IDAC8_1_SetSpeed\000"
+ 1050      385F315F 
+ 1050      53657453 
+ 1050      70656564 
+ 1050      00
+ 1051              	.LASF28:
+ 1052 002b 47656E65 		.ascii	"Generated_Source\\PSoC5\\IDAC8_1.c\000"
+ 1052      72617465 
+ 1052      645F536F 
+ 1052      75726365 
+ 1052      5C50536F 
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccVIIKtg.s 			page 26
 
 
- 1052      00
- 1053              	.LASF28:
- 1054 0080 47656E65 		.ascii	"Generated_Source\\PSoC5\\IDAC8_1.c\000"
- 1054      72617465 
- 1054      645F536F 
- 1054      75726365 
- 1054      5C50536F 
- 1055              	.LASF27:
- 1056 00a1 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
- 1056      43313120 
- 1056      352E342E 
- 1056      31203230 
- 1056      31363036 
- 1057 00d4 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
- 1057      20726576 
- 1057      6973696F 
- 1057      6E203233 
- 1057      37373135 
- 1058 0107 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
- 1058      66756E63 
- 1058      74696F6E 
- 1058      2D736563 
- 1058      74696F6E 
- 1059              	.LASF30:
- 1060 012f 6D6F6465 		.ascii	"mode\000"
+ 1053              	.LASF27:
+ 1054 004c 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 1054      43313120 
+ 1054      352E342E 
+ 1054      31203230 
+ 1054      31363036 
+ 1055 007f 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 1055      20726576 
+ 1055      6973696F 
+ 1055      6E203233 
+ 1055      37373135 
+ 1056 00b2 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 1056      66756E63 
+ 1056      74696F6E 
+ 1056      2D736563 
+ 1056      74696F6E 
+ 1057              	.LASF30:
+ 1058 00da 6D6F6465 		.ascii	"mode\000"
+ 1058      00
+ 1059              	.LASF17:
+ 1060 00df 49444143 		.ascii	"IDAC8_1_Stop\000"
+ 1060      385F315F 
+ 1060      53746F70 
  1060      00
- 1061              	.LASF17:
- 1062 0134 49444143 		.ascii	"IDAC8_1_Stop\000"
+ 1061              	.LASF19:
+ 1062 00ec 49444143 		.ascii	"IDAC8_1_SetPolarity\000"
  1062      385F315F 
- 1062      53746F70 
- 1062      00
- 1063              	.LASF19:
- 1064 0141 49444143 		.ascii	"IDAC8_1_SetPolarity\000"
- 1064      385F315F 
- 1064      53657450 
- 1064      6F6C6172 
- 1064      69747900 
- 1065              	.LASF25:
- 1066 0155 76616C75 		.ascii	"value\000"
- 1066      6500
- 1067              	.LASF12:
- 1068 015b 75696E74 		.ascii	"uint8\000"
- 1068      3800
- 1069              	.LASF15:
- 1070 0161 49444143 		.ascii	"IDAC8_1_Enable\000"
- 1070      385F315F 
- 1070      456E6162 
- 1070      6C6500
- 1071              	.LASF9:
- 1072 0170 666C6F61 		.ascii	"float\000"
+ 1062      53657450 
+ 1062      6F6C6172 
+ 1062      69747900 
+ 1063              	.LASF25:
+ 1064 0100 76616C75 		.ascii	"value\000"
+ 1064      6500
+ 1065              	.LASF12:
+ 1066 0106 75696E74 		.ascii	"uint8\000"
+ 1066      3800
+ 1067              	.LASF15:
+ 1068 010c 49444143 		.ascii	"IDAC8_1_Enable\000"
+ 1068      385F315F 
+ 1068      456E6162 
+ 1068      6C6500
+ 1069              	.LASF9:
+ 1070 011b 666C6F61 		.ascii	"float\000"
+ 1070      7400
+ 1071              	.LASF6:
+ 1072 0121 6C6F6E67 		.ascii	"long long int\000"
+ 1072      206C6F6E 
+ 1072      6720696E 
  1072      7400
- 1073              	.LASF6:
- 1074 0176 6C6F6E67 		.ascii	"long long int\000"
- 1074      206C6F6E 
- 1074      6720696E 
- 1074      7400
- 1075              	.LASF4:
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 27
+ 1073              	.LASF4:
+ 1074 012f 6C6F6E67 		.ascii	"long int\000"
+ 1074      20696E74 
+ 1074      00
+ 1075              	.LASF1:
+ 1076 0138 756E7369 		.ascii	"unsigned char\000"
+ 1076      676E6564 
+ 1076      20636861 
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccVIIKtg.s 			page 27
 
 
- 1076 0184 6C6F6E67 		.ascii	"long int\000"
- 1076      20696E74 
- 1076      00
- 1077              	.LASF1:
- 1078 018d 756E7369 		.ascii	"unsigned char\000"
- 1078      676E6564 
- 1078      20636861 
- 1078      7200
- 1079              	.LASF21:
- 1080 019b 706F6C61 		.ascii	"polarity\000"
- 1080      72697479 
+ 1076      7200
+ 1077              	.LASF21:
+ 1078 0146 706F6C61 		.ascii	"polarity\000"
+ 1078      72697479 
+ 1078      00
+ 1079              	.LASF22:
+ 1080 014f 49444143 		.ascii	"IDAC8_1_SetRange\000"
+ 1080      385F315F 
+ 1080      53657452 
+ 1080      616E6765 
  1080      00
- 1081              	.LASF22:
- 1082 01a4 49444143 		.ascii	"IDAC8_1_SetRange\000"
- 1082      385F315F 
- 1082      53657452 
- 1082      616E6765 
- 1082      00
- 1083              	.LASF0:
- 1084 01b5 7369676E 		.ascii	"signed char\000"
- 1084      65642063 
- 1084      68617200 
- 1085              	.LASF7:
- 1086 01c1 6C6F6E67 		.ascii	"long long unsigned int\000"
- 1086      206C6F6E 
- 1086      6720756E 
- 1086      7369676E 
- 1086      65642069 
- 1087              	.LASF16:
- 1088 01d8 49444143 		.ascii	"IDAC8_1_Start\000"
- 1088      385F315F 
- 1088      53746172 
- 1088      7400
- 1089              	.LASF8:
- 1090 01e6 756E7369 		.ascii	"unsigned int\000"
- 1090      676E6564 
- 1090      20696E74 
- 1090      00
- 1091              	.LASF20:
- 1092 01f3 73706565 		.ascii	"speed\000"
- 1092      6400
- 1093              	.LASF3:
- 1094 01f9 73686F72 		.ascii	"short unsigned int\000"
- 1094      7420756E 
- 1094      7369676E 
- 1094      65642069 
- 1094      6E7400
- 1095              	.LASF11:
- 1096 020c 63686172 		.ascii	"char\000"
+ 1081              	.LASF0:
+ 1082 0160 7369676E 		.ascii	"signed char\000"
+ 1082      65642063 
+ 1082      68617200 
+ 1083              	.LASF7:
+ 1084 016c 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1084      206C6F6E 
+ 1084      6720756E 
+ 1084      7369676E 
+ 1084      65642069 
+ 1085              	.LASF16:
+ 1086 0183 49444143 		.ascii	"IDAC8_1_Start\000"
+ 1086      385F315F 
+ 1086      53746172 
+ 1086      7400
+ 1087              	.LASF8:
+ 1088 0191 756E7369 		.ascii	"unsigned int\000"
+ 1088      676E6564 
+ 1088      20696E74 
+ 1088      00
+ 1089              	.LASF20:
+ 1090 019e 73706565 		.ascii	"speed\000"
+ 1090      6400
+ 1091              	.LASF3:
+ 1092 01a4 73686F72 		.ascii	"short unsigned int\000"
+ 1092      7420756E 
+ 1092      7369676E 
+ 1092      65642069 
+ 1092      6E7400
+ 1093              	.LASF11:
+ 1094 01b7 63686172 		.ascii	"char\000"
+ 1094      00
+ 1095              	.LASF14:
+ 1096 01bc 49444143 		.ascii	"IDAC8_1_Init\000"
+ 1096      385F315F 
+ 1096      496E6974 
  1096      00
- 1097              	.LASF14:
- 1098 0211 49444143 		.ascii	"IDAC8_1_Init\000"
+ 1097              	.LASF24:
+ 1098 01c9 49444143 		.ascii	"IDAC8_1_SetValue\000"
  1098      385F315F 
- 1098      496E6974 
+ 1098      53657456 
+ 1098      616C7565 
  1098      00
- 1099              	.LASF24:
- 1100 021e 49444143 		.ascii	"IDAC8_1_SetValue\000"
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccg0yDeb.s 			page 28
-
-
- 1100      385F315F 
- 1100      53657456 
- 1100      616C7565 
+ 1099              	.LASF13:
+ 1100 01da 72656738 		.ascii	"reg8\000"
  1100      00
- 1101              	.LASF13:
- 1102 022f 72656738 		.ascii	"reg8\000"
- 1102      00
- 1103              	.LASF5:
- 1104 0234 6C6F6E67 		.ascii	"long unsigned int\000"
- 1104      20756E73 
- 1104      69676E65 
- 1104      6420696E 
- 1104      7400
- 1105              	.LASF10:
- 1106 0246 646F7562 		.ascii	"double\000"
- 1106      6C6500
- 1107              	.LASF26:
- 1108 024d 49444143 		.ascii	"IDAC8_1_DacTrim\000"
- 1108      385F315F 
- 1108      44616354 
- 1108      72696D00 
- 1109              	.LASF23:
- 1110 025d 72616E67 		.ascii	"range\000"
- 1110      6500
- 1111              	.LASF18:
- 1112 0263 49444143 		.ascii	"IDAC8_1_SetSpeed\000"
- 1112      385F315F 
- 1112      53657453 
- 1112      70656564 
- 1112      00
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccVIIKtg.s 			page 28
+
+
+ 1101              	.LASF5:
+ 1102 01df 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1102      20756E73 
+ 1102      69676E65 
+ 1102      6420696E 
+ 1102      7400
+ 1103              	.LASF10:
+ 1104 01f1 646F7562 		.ascii	"double\000"
+ 1104      6C6500
+ 1105              	.LASF26:
+ 1106 01f8 49444143 		.ascii	"IDAC8_1_DacTrim\000"
+ 1106      385F315F 
+ 1106      44616354 
+ 1106      72696D00 
+ 1107              	.LASF23:
+ 1108 0208 72616E67 		.ascii	"range\000"
+ 1108      6500
+ 1109              	.LASF29:
+ 1110 020e 433A5C55 		.ascii	"C:\\Users\\JeffSnyder\\dev\\Electrosteel_embedded\\"
+ 1110      73657273 
+ 1110      5C4A6566 
+ 1110      66536E79 
+ 1110      6465725C 
+ 1111 023c 50534F43 		.ascii	"PSOC5_electrosteel_stringsensors_newpcb\\CE210514_P"
+ 1111      355F656C 
+ 1111      65637472 
+ 1111      6F737465 
+ 1111      656C5F73 
+ 1112 026e 534F4333 		.ascii	"SOC3_5_Thermistor.cydsn\000"
+ 1112      5F355F54 
+ 1112      6865726D 
+ 1112      6973746F 
+ 1112      722E6379 
  1113              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

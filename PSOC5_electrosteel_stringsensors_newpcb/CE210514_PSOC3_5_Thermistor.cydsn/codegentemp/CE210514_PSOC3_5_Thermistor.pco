@@ -1,5 +1,5 @@
 # CE210514_PSOC3_5_Thermistor
-# 2022-12-14 01:02:34Z
+# 2022-12-30 01:57:27Z
 
 # IO_0@[IOP=(1)][IoId=(0)] is reserved: SWDDebugEnabled
 dont_use_io iocell 1 0
@@ -28,49 +28,42 @@ set_io "Vout_3(0)" iocell 3 6
 set_io "SS_1(0)" iocell 5 5
 set_io "SS_2(0)" iocell 1 5
 set_io "SCLK_2(0)" iocell 1 4
-set_io "Vout_4(0)" iocell 3 7
+set_io "Vout_4(0)" iocell 0 0
 set_io "LED(0)" iocell 5 1
 set_io "MISO_2(0)" iocell 1 6
 set_io "MOSI_2(0)" iocell 1 7
-set_io "top_wiper1(0)" iocell 0 3
-set_io "bottom_wiper2(0)" iocell 0 6
-set_io "top_wiper2(0)" iocell 0 2
-set_io "bottom_wiper1(0)" iocell 0 5
-set_io "Vout_2(0)" iocell 0 1
-set_io "Vout_1(0)" iocell 0 0
 set_io "midtop_wiper2(0)" iocell 4 2
-set_io "midbottom_wiper1(0)" iocell 4 5
-set_io "midbottom_wiper2(0)" iocell 0 7
-set_io "VHout(0)" iocell 5 3
+set_io "midbottom_wiper1(0)" iocell 0 3
+set_io "midbottom_wiper2(0)" iocell 0 2
 set_io "midtop_wiper1(0)" iocell 3 1
-set_location "\CapSense:MeasureCH0:cs_addr_win_2\" 0 4 1 3
+set_location "\CapSense:MeasureCH0:cs_addr_win_2\" 0 4 1 0
 set_location "\CapSense:MeasureCH0:cs_addr_win_1\" 0 4 1 2
-set_location "\CapSense:MeasureCH0:cs_addr_win_0\" 0 4 1 0
+set_location "\CapSense:MeasureCH0:cs_addr_win_0\" 0 4 1 3
 set_location "\CapSense:MeasureCH0:cs_addr_cnt_2\" 1 5 0 1
 set_location "\CapSense:MeasureCH0:cs_addr_cnt_1\" 1 5 0 2
 set_location "\CapSense:MeasureCH0:cs_addr_cnt_0\" 1 5 0 0
-set_location "\CapSense:PreChargeClk\" 1 3 1 3
+set_location "\CapSense:PreChargeClk\" 1 4 0 0
 set_location "\SPIM_2:BSPIM:load_rx_data\" 0 1 1 1
-set_location "\SPIM_2:BSPIM:tx_status_0\" 0 1 1 3
-set_location "\SPIM_2:BSPIM:tx_status_4\" 0 1 0 1
+set_location "\SPIM_2:BSPIM:tx_status_0\" 0 0 0 2
+set_location "\SPIM_2:BSPIM:tx_status_4\" 0 0 1 0
 set_location "\SPIM_2:BSPIM:rx_status_6\" 1 0 0 3
-set_location "\SPIM_1:BSPIM:load_rx_data\" 0 4 0 2
-set_location "\SPIM_1:BSPIM:tx_status_0\" 1 4 1 1
-set_location "\SPIM_1:BSPIM:tx_status_4\" 1 3 1 2
+set_location "\SPIM_1:BSPIM:load_rx_data\" 0 3 0 2
+set_location "\SPIM_1:BSPIM:tx_status_0\" 0 3 1 3
+set_location "\SPIM_1:BSPIM:tx_status_4\" 1 4 1 1
 set_location "\SPIM_1:BSPIM:rx_status_6\" 0 5 1 2
 set_location "\ADC_1:DSM\" dsmodcell -1 -1 0
 set_location "\ADC_1:IRQ\" interrupt -1 -1 29
 set_location "\ADC_1:DEC\" decimatorcell -1 -1 0
-set_location "__ONE__" 2 0 1 0
+set_location "__ONE__" 2 4 0 0
 set_location "\IDAC8_1:viDAC8\" vidaccell -1 -1 3
 set_location "\CapSense:BufCH0\" csabufcell -1 -1 0
-set_location "\CapSense:CompCH0:ctComp\" comparatorcell -1 -1 0
+set_location "\CapSense:CompCH0:ctComp\" comparatorcell -1 -1 2
 set_location "\CapSense:IdacCH0:viDAC8\" vidaccell -1 -1 0
 set_location "\CapSense:MeasureCH0:genblk1:SyncCMPR\" 1 5 5 0
 set_location "\CapSense:MeasureCH0:UDB:Window:u0\" 0 4 2
 set_location "\CapSense:MeasureCH0:UDB:Counter:u0\" 1 5 2
-set_location "\CapSense:ClockGen:SyncCtrl:CtrlReg\" 0 4 6
-set_location "\CapSense:ClockGen:ScanSpeed\" 1 4 7
+set_location "\CapSense:ClockGen:SyncCtrl:CtrlReg\" 1 4 6
+set_location "\CapSense:ClockGen:ScanSpeed\" 0 4 7
 set_location "\CapSense:ClockGen:UDB:PrescalerDp:u0\" 1 2 2
 set_location "\CapSense:ClockGen:sC16:PRSdp:u0\" 0 3 2
 set_location "\CapSense:ClockGen:sC16:PRSdp:u1\" 1 3 2
@@ -80,34 +73,34 @@ set_location "\SPIM_2:BSPIM:TxStsReg\" 0 0 4
 set_location "\SPIM_2:BSPIM:RxStsReg\" 1 0 4
 set_location "\SPIM_2:BSPIM:sR8:Dp:u0\" 0 0 2
 set_location "\SPIM_1:BSPIM:BitCounter\" 0 2 7
-set_location "\SPIM_1:BSPIM:TxStsReg\" 1 3 4
+set_location "\SPIM_1:BSPIM:TxStsReg\" 0 3 4
 set_location "\SPIM_1:BSPIM:RxStsReg\" 0 5 4
 set_location "\SPIM_1:BSPIM:sR8:Dp:u0\" 0 2 2
-set_location "Net_415" 0 0 1 0
-set_location "\CapSense:Net_1603\" 0 3 1 2
+set_location "Net_415" 0 1 0 1
+set_location "\CapSense:Net_1603\" 1 3 0 2
 set_location "\CapSense:MeasureCH0:wndState_2\" 0 4 1 1
-set_location "\CapSense:MeasureCH0:wndState_1\" 0 3 1 3
-set_location "\CapSense:MeasureCH0:wndState_0\" 0 3 1 1
-set_location "\CapSense:ClockGen:clock_detect_reg\" 0 4 0 0
-set_location "\CapSense:ClockGen:tmp_ppulse_reg\" 1 2 1 3
-set_location "\CapSense:ClockGen:tmp_ppulse_dly\" 0 4 0 1
-set_location "\CapSense:ClockGen:cstate_2\" 0 4 0 3
-set_location "\CapSense:mrst\" 1 4 1 3
-set_location "\CapSense:ClockGen:inter_reset\" 0 3 1 0
+set_location "\CapSense:MeasureCH0:wndState_1\" 1 3 0 3
+set_location "\CapSense:MeasureCH0:wndState_0\" 1 3 0 1
+set_location "\CapSense:ClockGen:clock_detect_reg\" 1 3 1 1
+set_location "\CapSense:ClockGen:tmp_ppulse_reg\" 1 3 1 2
+set_location "\CapSense:ClockGen:tmp_ppulse_dly\" 1 4 1 3
+set_location "\CapSense:ClockGen:cstate_2\" 1 4 1 0
+set_location "\CapSense:mrst\" 1 3 1 0
+set_location "\CapSense:ClockGen:inter_reset\" 1 3 1 3
 set_location "Net_1042" 0 0 0 3
-set_location "\SPIM_2:BSPIM:state_2\" 0 1 1 2
-set_location "\SPIM_2:BSPIM:state_1\" 1 1 1 1
+set_location "\SPIM_2:BSPIM:state_2\" 1 1 1 1
+set_location "\SPIM_2:BSPIM:state_1\" 0 1 1 2
 set_location "\SPIM_2:BSPIM:state_0\" 0 1 0 0
 set_location "Net_437" 0 0 1 1
 set_location "\SPIM_2:BSPIM:load_cond\" 1 0 0 0
 set_location "\SPIM_2:BSPIM:ld_ident\" 1 1 0 1
 set_location "\SPIM_2:BSPIM:cnt_enable\" 1 1 0 0
-set_location "Net_1421" 0 2 1 3
+set_location "Net_1421" 1 2 0 0
 set_location "Net_23" 0 2 0 0
 set_location "\SPIM_1:BSPIM:state_2\" 0 2 1 1
-set_location "\SPIM_1:BSPIM:state_1\" 0 3 0 3
-set_location "\SPIM_1:BSPIM:state_0\" 1 3 0 2
+set_location "\SPIM_1:BSPIM:state_1\" 0 2 1 0
+set_location "\SPIM_1:BSPIM:state_0\" 0 3 1 2
 set_location "\SPIM_1:BSPIM:load_cond\" 0 5 0 3
-set_location "\SPIM_1:BSPIM:ld_ident\" 0 3 0 2
+set_location "\SPIM_1:BSPIM:ld_ident\" 0 4 0 2
 set_location "\SPIM_1:BSPIM:cnt_enable\" 0 5 1 1
 set_location "Net_1416" 1 5 1 2
