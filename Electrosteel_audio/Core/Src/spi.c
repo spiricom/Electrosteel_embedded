@@ -176,17 +176,10 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* spiHandle)
     PA6     ------> SPI1_MISO
     PA7     ------> SPI1_MOSI
     */
-    GPIO_InitStruct.Pin = GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_7;
+    GPIO_InitStruct.Pin = GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_7;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-    GPIO_InitStruct.Alternate = GPIO_AF5_SPI1;
-    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-    GPIO_InitStruct.Pin = GPIO_PIN_6;
-    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
     GPIO_InitStruct.Alternate = GPIO_AF5_SPI1;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
@@ -213,7 +206,7 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* spiHandle)
     __HAL_LINKDMA(spiHandle,hdmarx,hdma_spi1_rx);
 
     /* SPI1 interrupt Init */
-    HAL_NVIC_SetPriority(SPI1_IRQn, 0, 0);
+    HAL_NVIC_SetPriority(SPI1_IRQn, 2, 0);
     HAL_NVIC_EnableIRQ(SPI1_IRQn);
   /* USER CODE BEGIN SPI1_MspInit 1 */
 
@@ -272,7 +265,7 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* spiHandle)
     __HAL_LINKDMA(spiHandle,hdmarx,hdma_spi2_rx);
 
     /* SPI2 interrupt Init */
-    HAL_NVIC_SetPriority(SPI2_IRQn, 0, 0);
+    HAL_NVIC_SetPriority(SPI2_IRQn, 3, 0);
     HAL_NVIC_EnableIRQ(SPI2_IRQn);
   /* USER CODE BEGIN SPI2_MspInit 1 */
 
@@ -337,7 +330,7 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* spiHandle)
     __HAL_LINKDMA(spiHandle,hdmarx,hdma_spi5_rx);
 
     /* SPI5 interrupt Init */
-    HAL_NVIC_SetPriority(SPI5_IRQn, 0, 0);
+    HAL_NVIC_SetPriority(SPI5_IRQn, 4, 0);
     HAL_NVIC_EnableIRQ(SPI5_IRQn);
   /* USER CODE BEGIN SPI5_MspInit 1 */
 

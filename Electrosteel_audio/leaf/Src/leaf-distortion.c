@@ -635,7 +635,7 @@ void tCrusher_initToPool (tCrusher* const cr, tMempool* const mp)
     c->mempool = m;
     
     c->op = 4;
-    c->div = SCALAR;
+    c->div = 1.0f / SCALAR;
     c->rnd = 0.25f;
     c->srr = 0.25f;
     tSampleReducer_initToPool(&c->sReducer, mp);
@@ -660,7 +660,7 @@ float tCrusher_tick (tCrusher* const cr, float input)
     
     sample = (int32_t) sample;
     
-    sample /= c->div;
+    sample *= c->div;
     
     sample = LEAF_bitwise_xor(sample, c->op << 23);
     

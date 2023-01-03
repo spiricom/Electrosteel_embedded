@@ -36541,11 +36541,12 @@ by exp-lbrs.ulp</description>
 <pinref part="R112" gate="G$1" pin="2"/>
 </segment>
 </net>
-<net name="N$298" class="0">
+<net name="PA0-0" class="0">
 <segment>
 <pinref part="JP9" gate="A" pin="13"/>
 <pinref part="JP1" gate="A" pin="4"/>
 <wire x1="81.28" y1="17.78" x2="48.26" y2="17.78" width="0.1524" layer="91"/>
+<label x="55.88" y="17.78" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="PA1_1" class="0">
@@ -36560,13 +36561,14 @@ by exp-lbrs.ulp</description>
 <label x="38.1" y="15.24" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="N$300" class="0">
+<net name="PA2-0" class="0">
 <segment>
 <pinref part="JP9" gate="A" pin="15"/>
 <wire x1="81.28" y1="15.24" x2="53.34" y2="15.24" width="0.1524" layer="91"/>
 <wire x1="53.34" y1="15.24" x2="53.34" y2="12.7" width="0.1524" layer="91"/>
 <pinref part="JP1" gate="A" pin="2"/>
 <wire x1="53.34" y1="12.7" x2="48.26" y2="12.7" width="0.1524" layer="91"/>
+<label x="55.88" y="15.24" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="PA3_1" class="0">

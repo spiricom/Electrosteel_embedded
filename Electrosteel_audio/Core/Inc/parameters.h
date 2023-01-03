@@ -8,8 +8,9 @@
 #ifndef INC_PARAMETERS_H_
 #define INC_PARAMETERS_H_
 
+
 typedef float (*scaler_t)(float);
-typedef void (*setParam_t)(float, int);
+typedef void (*setParam_t)(float, int, int);
 #define SPI_MESSAGE_ENDING 253
 #define TUNING_MESSAGE_SIZE 266
 
@@ -46,6 +47,8 @@ enum SPIMessage
 #define NUM_LFOS 4
 #define NUM_EFFECT 4
 
+#define NUM_STRINGS 12
+#define NUM_STRINGS_PER_BOARD 2
 
 //mapping array defines
 #define NUM_POSSIBLE_HOOKS 3
@@ -64,8 +67,8 @@ enum SPIMessage
 //struct for every parameter
 typedef struct param
 {
-	float zeroToOneVal; //0-1 value stored in the preset (all parameter values are stored as 0-1)
-	float realVal; //value used by the setting functions
+	float zeroToOneVal[NUM_STRINGS_PER_BOARD]; //0-1 value stored in the preset (all parameter values are stored as 0-1)
+	float realVal[NUM_STRINGS_PER_BOARD]; //value used by the setting functions
 	scaler_t scaleFunc; //scale the value from 0-1 to real value
 	setParam_t setParam; //function for setting the actual backend audio parameter (i.e. calling leaf library filter Q setting code)
 	uint8_t objectNumber; //which oscillator, filter, env, etc
@@ -102,9 +105,9 @@ typedef struct mapping
 {
 	uint8_t destNumber;
 	param* dest;
-	float* sourceValPtr[NUM_POSSIBLE_HOOKS];
+	float* sourceValPtr[NUM_POSSIBLE_HOOKS][NUM_STRINGS_PER_BOARD];
 	uint8_t sourceSmoothed[NUM_POSSIBLE_HOOKS];
-	float* scalarSourceValPtr[NUM_POSSIBLE_HOOKS];
+	float* scalarSourceValPtr[NUM_POSSIBLE_HOOKS][NUM_STRINGS_PER_BOARD];
 	float amount[NUM_POSSIBLE_HOOKS];
 	uint8_t numHooks;
 } mapping;

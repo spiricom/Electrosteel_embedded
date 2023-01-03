@@ -757,7 +757,7 @@ void     tADSRT_setAttack(tADSRT* const adsrenv, float attack)
 
     if (attack < 0.0f)
     {
-        attack = 0.0f;
+        attack = 0.01f;
     }
     adsr->attack = attack;
     adsr->attackInc = adsr->bufferSizeDividedBySampleRateInMs / attack;
@@ -769,7 +769,7 @@ void     tADSRT_setDecay(tADSRT* const adsrenv, float decay)
 
     if (decay < 0.0f)
     {
-        decay = 0.0f;
+        decay = 0.01f;
     }
     adsr->decay = decay;
     adsr->decayInc = adsr->bufferSizeDividedBySampleRateInMs / decay;
@@ -790,7 +790,7 @@ void     tADSRT_setRelease(tADSRT* const adsrenv, float release)
 
     if (release < 0.0f)
     {
-        release = 0.0f;
+        release = 0.01f;
     }
     adsr->release = release;
     adsr->releaseInc = adsr->bufferSizeDividedBySampleRateInMs / release;

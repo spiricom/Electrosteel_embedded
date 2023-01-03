@@ -29,18 +29,21 @@
 #define __AUDIOSTREAM_H
 
 /* Includes ------------------------------------------------------------------*/
-
+#include "parameters.h"
 #include "leaf.h"
 #include "main.h"
 
-#define AUDIO_FRAME_SIZE      16
+
+#define AUDIO_FRAME_SIZE      8
 #define HALF_BUFFER_SIZE      AUDIO_FRAME_SIZE * 2 //number of samples per half of the "double-buffer" (twice the audio frame size because there are interleaved samples for both left and right channels)
 #define AUDIO_BUFFER_SIZE     AUDIO_FRAME_SIZE * 4 //number of samples in the whole data structure (four times the audio frame size because of stereo and also double-buffering/ping-ponging)
-#define SMALL_MEM_SIZE 60328
-#define MED_MEM_SIZE 519000
+#define SMALL_MEM_SIZE 58000
+#define MED_MEM_SIZE 200000
 #define LARGE_MEM_SIZE 33554432 //32 MBytes - size of SDRAM IC
-
-
+#define MTOF_TABLE_SIZE	32768
+#define MAPPING_TABLE_SIZE	8196
+#define ATODB_TABLE_SIZE 8192
+#define DBTOA_TABLE_SIZE 8192
 
 /* Exported types ------------------------------------------------------------*/
 typedef enum
@@ -74,18 +77,6 @@ typedef enum BOOL {
 	TRUE
 } BOOL;
 
-typedef struct cStack {
-    uint8_t buffer[64][3];
-    int8_t writeCnt;
-    int8_t readCnt;
-    int8_t size;
-} cStack;
-void cStack_init(cStack* stack);
-int cStack_size(cStack* stack);
-void cStack_push(cStack* stack, uint8_t val, uint8_t val1, uint8_t val2);
-void cStack_pop(cStack* stack, uint8_t* output);
-
-extern cStack midiStack;
 
 
 void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTypeDef* hsaiIn);
@@ -108,190 +99,188 @@ void sendPitchBend(uint8_t value, uint8_t ctrl);
 
 
 
-void setTranspose(float in, int v);
-void setPitchBendRange(float in, int v);
-void setNoiseAmp(float in, int v);
+void setTranspose(float in, int v, int string);
+void setPitchBendRange(float in, int v, int string);
+void setNoiseAmp(float in, int v, int string);
 
-void oscillator_tick(float note);
+void oscillator_tick(float note, int string);
 
-typedef void (*shapeTick_t)(float*, int, float, float, int);
-typedef void (*lfoShapeTick_t)(float*, int);
-void sawSquareTick(float* sample, int v, float freq, float shape, int sync);
-void sineTriTick(float* sample, int v, float freq, float shape, int sync);
-void sawTick(float* sample, int v, float freq, float shape, int sync);
-void pulseTick(float* sample, int v, float freq, float shape, int sync);
-void sineTick(float* sample, int v, float freq, float shape, int sync);
-void triTick(float* sample, int v, float freq, float shape, int sync);
-void userTick(float* sample, int v, float freq, float shape, int sync);
+typedef void (*shapeTick_t)(float*, int, float, float, int, int string);
+typedef void (*lfoShapeTick_t)(float*, int, int string);
+void sawSquareTick(float* sample, int v, float freq, float shape, int sync, int string);
+void sineTriTick(float* sample, int v, float freq, float shape, int sync, int string);
+void sawTick(float* sample, int v, float freq, float shape, int sync, int string);
+void pulseTick(float* sample, int v, float freq, float shape, int sync, int string);
+void sineTick(float* sample, int v, float freq, float shape, int sync, int string);
+void triTick(float* sample, int v, float freq, float shape, int sync, int string);
+void userTick(float* sample, int v, float freq, float shape, int sync, int string);
 
-void lfoSawSquareTick(float* sample, int v);
-void lfoSineTriTick(float* sample, int v);
-void lfoSineTick(float* sample, int v);
-void lfoTriTick(float* sample, int v);
-void lfoSawTick(float* sample, int v);
-void lfoPulseTick(float* sample, int v);
+void lfoSawSquareTick(float* sample, int v, int string);
+void lfoSineTriTick(float* sample, int v, int string);
+void lfoSineTick(float* sample, int v, int string);
+void lfoTriTick(float* sample, int v, int string);
+void lfoSawTick(float* sample, int v, int string);
+void lfoPulseTick(float* sample, int v, int string);
 
-void lfoSawSquareSetRate(float r, int v);
-void lfoSineTriSetRate(float r, int v);
-void lfoSineSetRate(float r, int v);
-void lfoTriSetRate(float r, int v);
-void lfoSawSetRate(float r, int v);
-void lfoPulseSetRate(float r, int v);
-
-
-void lfoSawSquareSetPhase(float p, int v);
-void lfoSineTriSetPhase(float p, int v);
-void lfoSineSetPhase(float p, int v);
-void lfoTriSetPhase(float p, int v);
-void lfoSawSetPhase(float p, int v);
-void lfoPulseSetPhase(float p, int v);
+void lfoSawSquareSetRate(float r, int v, int string);
+void lfoSineTriSetRate(float r, int v, int string);
+void lfoSineSetRate(float r, int v, int string);
+void lfoTriSetRate(float r, int v, int string);
+void lfoSawSetRate(float r, int v, int string);
+void lfoPulseSetRate(float r, int v, int string);
 
 
-void lfoSawSquareSetShape(float s, int v);
-void lfoSineTriSetShape(float s, int v);
-void lfoSineSetShape(float s, int v);
-void lfoTriSetShape(float s, int v);
-void lfoSawSetShape(float s, int v);
-void lfoPulseSetShape(float s, int v);
+void lfoSawSquareSetPhase(float p, int v, int string);
+void lfoSineTriSetPhase(float p, int v, int string);
+void lfoSineSetPhase(float p, int v, int string);
+void lfoTriSetPhase(float p, int v, int string);
+void lfoSawSetPhase(float p, int v, int string);
+void lfoPulseSetPhase(float p, int v, int string);
+
+
+void lfoSawSquareSetShape(float s, int v, int string);
+void lfoSineTriSetShape(float s, int v, int string);
+void lfoSineSetShape(float s, int v, int string);
+void lfoTriSetShape(float s, int v, int string);
+void lfoSawSetShape(float s, int v, int string);
+void lfoPulseSetShape(float s, int v, int string);
 
 extern shapeTick_t shapeTick[NUM_OSC];
 extern lfoShapeTick_t lfoShapeTick[NUM_LFOS];
 
-void noise_tick();
-void noiseSetFreq(float value, int v);
-void noiseSetGain(float value, int v);
-void noiseSetTilt(float value, int v);
+void noise_tick(int string);
+void noiseSetFreq(float value, int v, int string);
+void noiseSetGain(float value, int v, int string);
+void noiseSetTilt(float value, int v, int string);
 
-float filter_tick(float* samples, float note);
+float filter_tick(float* samples, float note, int string);
 
-typedef void (*filterTick_t)(float*, int, float);
-void setFreqMultPitch(float pitch, int osc);
-void setFreqMultHarm(float harm, int osc);
-void lowpassTick(float* sample, int v, float cutoff);
-void highpassTick(float* sample, int v, float cutoff);
-void bandpassTick(float* sample, int v, float cutoff);
-void diodeLowpassTick(float* sample, int v, float cutoff);
-void LadderLowpassTick(float* sample, int v, float cutoff);
-void VZlowshelfTick(float* sample, int v, float cutoff);
-void VZhighshelfTick(float* sample, int v, float cutoff);
-void VZpeakTick(float* sample, int v, float cutoff);
-void VZbandrejectTick(float* sample, int v, float cutoff);
+typedef void (*filterTick_t)(float*, int, float, int);
+void setFreqMultPitch(float pitch, int osc, int string);
+void setFreqMultHarm(float harm, int osc, int string);
+void lowpassTick(float* sample, int v, float cutoff, int string);
+void highpassTick(float* sample, int v, float cutoff, int string);
+void bandpassTick(float* sample, int v, float cutoff, int string);
+void diodeLowpassTick(float* sample, int v, float cutoff, int string);
+void LadderLowpassTick(float* sample, int v, float cutoff, int string);
+void VZlowshelfTick(float* sample, int v, float cutoff, int string);
+void VZhighshelfTick(float* sample, int v, float cutoff, int string);
+void VZpeakTick(float* sample, int v, float cutoff, int string);
+void VZbandrejectTick(float* sample, int v, float cutoff, int string);
 
-void filterSetCutoff(float cutoff, int v);
-void filterSetKeyfollow(float keyfollow, int v);
-void lowpassSetQ(float q, int v);
-void highpassSetQ(float q, int v);
-void bandpassSetQ(float q, int v);
-void diodeLowpassSetQ(float q, int v);
-void VZpeakSetQ(float bw, int v);
-void VZlowshelfSetQ(float bw, int v);
-void VZhighshelfSetQ(float bw, int v);
-void VZbandrejectSetQ(float bw, int v);
-void LadderLowpassSetQ(float q, int v);
-void lowpassSetGain(float gain, int v);
-void highpassSetGain(float gain, int v);
-void bandpassSetGain(float gain, int v);
-void diodeLowpassSetGain(float gain, int v);
-void VZpeakSetGain(float gain, int v);
-void VZlowshelfSetGain(float gain, int v);
-void VZhighshelfSetGain(float gain, int v);
-void VZbandrejectSetGain(float gain, int v);
-void LadderLowpassSetGain(float gain, int v);
+void filterSetCutoff(float cutoff, int v, int string);
+void filterSetKeyfollow(float keyfollow, int v, int string);
+void lowpassSetQ(float q, int v, int string);
+void highpassSetQ(float q, int v, int string);
+void bandpassSetQ(float q, int v, int string);
+void diodeLowpassSetQ(float q, int v, int string);
+void VZpeakSetQ(float bw, int v, int string);
+void VZlowshelfSetQ(float bw, int v, int string);
+void VZhighshelfSetQ(float bw, int v, int string);
+void VZbandrejectSetQ(float bw, int v, int string);
+void LadderLowpassSetQ(float q, int v, int string);
+void lowpassSetGain(float gain, int v, int string);
+void highpassSetGain(float gain, int v, int string);
+void bandpassSetGain(float gain, int v, int string);
+void diodeLowpassSetGain(float gain, int v, int string);
+void VZpeakSetGain(float gain, int v, int string);
+void VZlowshelfSetGain(float gain, int v, int string);
+void VZhighshelfSetGain(float gain, int v, int string);
+void VZbandrejectSetGain(float gain, int v, int string);
+void LadderLowpassSetGain(float gain, int v, int string);
 extern filterTick_t filterTick[NUM_FILT];
 
 //envelope functions
-void setEnvelopeAttack(float a, int v);
-void setEnvelopeDecay(float d, int v);
-void setEnvelopeSustain(float s, int v);
-void setEnvelopeRelease(float r, int v);
-void setEnvelopeLeak(float leak, int v);
+void setEnvelopeAttack(float a, int v, int string);
+void setEnvelopeDecay(float d, int v, int string);
+void setEnvelopeSustain(float s, int v, int string);
+void setEnvelopeRelease(float r, int v, int string);
+void setEnvelopeLeak(float leak, int v, int string);
 
 //effects
 
-void effects_tick(float* samples);
 
-typedef float (*effectTick_t)(float sample,int v);
+typedef float (*effectTick_t)(float sample,int v, int string);
 extern effectTick_t effectTick[NUM_EFFECT];
-float blankTick(float sample, int v);
-float tiltFilterTick(float sample,int v);
-float hardClipTick(float sample, int v);
-float tanhTick(float sample, int v);
-float softClipTick(float sample, int v);
-float satTick(float sample, int v);
-float bcTick(float sample, int v);
-float compressorTick(float sample, int v);
-float shaperTick(float sample, int v);
-float wavefolderTick(float sample, int v);
-float chorusTick(float sample, int v);
+float blankTick(float sample, int v, int string);
+float tiltFilterTick(float sample,int v, int string);
+float hardClipTick(float sample, int v, int string);
+float tanhTick(float sample, int v, int string);
+float softClipTick(float sample, int v, int string);
+float satTick(float sample, int v, int string);
+float bcTick(float sample, int v, int string);
+float compressorTick(float sample, int v, int string);
+float shaperTick(float sample, int v, int string);
+float wavefolderTick(float sample, int v, int string);
+float chorusTick(float sample, int v, int string);
 
-void clipperGainSet(float value, int v);
-void wavefolderParam1(float value, int v);
-void wavefolderParam3(float value, int v);
-void tiltParam1(float value, int v);
-void tiltParam2(float value, int v);
-void tiltParam3(float value, int v);
-void tiltParam4(float value, int v);
-void compressorParam1(float value, int v);
-void compressorParam2(float value, int v);
-void compressorParam3(float value, int v);
-void compressorParam4(float value, int v);
-void compressorParam5(float value, int v);
-void offsetParam2(float value, int v);
-void param2Linear(float value, int v);
-void param3Linear(float value, int v);
-void param3Soft(float value, int v);
-void param3Hard(float value, int v);
-void param3BC(float value, int v);
-void param4Linear(float value, int v);
-void param5Linear(float value, int v);
-void fxMixSet(float value, int v);
-void fxPostGainSet(float value, int v);
-float wavefolderTick(float sample, int v);
-void chorusParam1(float value, int v);
-void chorusParam2(float value, int v);
-void chorusParam3(float value, int v);
-void chorusParam4(float value, int v);
+void clipperGainSet(float value, int v, int string);
+void wavefolderParam1(float value, int v, int string);
+void wavefolderParam3(float value, int v, int string);
+void tiltParam1(float value, int v, int string);
+void tiltParam2(float value, int v, int string);
+void tiltParam3(float value, int v, int string);
+void tiltParam4(float value, int v, int string);
+void compressorParam1(float value, int v, int string);
+void compressorParam2(float value, int v, int string);
+void compressorParam3(float value, int v, int string);
+void compressorParam4(float value, int v, int string);
+void compressorParam5(float value, int v, int string);
+void offsetParam2(float value, int v, int string);
+void param2Linear(float value, int v, int string);
+void param3Linear(float value, int v, int string);
+void param3Soft(float value, int v, int string);
+void param3Hard(float value, int v, int string);
+void param3BC(float value, int v, int string);
+void param4Linear(float value, int v, int string);
+void param5Linear(float value, int v, int string);
+void fxMixSet(float value, int v, int string);
+void fxPostGainSet(float value, int v, int string);
+float wavefolderTick(float sample, int v, int string);
+void chorusParam1(float value, int v, int string);
+void chorusParam2(float value, int v, int string);
+void chorusParam3(float value, int v, int string);
+void chorusParam4(float value, int v, int string);
 
-void FXLowpassParam1(float value, int v);
-void FXLowpassParam3(float value, int v);
-void FXHighpassParam1(float value, int v);
-void FXHighpassParam3(float value, int v);
-void FXBandpassParam1(float value, int v);
-void FXBandpassParam3(float value, int v);
-void FXDiodeParam1(float value, int v);
-void FXDiodeParam3(float value, int v);
-void FXPeakParam1(float value, int v);
-void FXPeakParam2(float value, int v);
-void FXPeakParam3(float value, int v);
-void FXLowShelfParam1(float value, int v);
-void FXLowShelfParam2(float value, int v);
-void FXLowShelfParam3(float value, int v);
-void FXHighShelfParam1(float value, int v);
-void FXHighShelfParam2(float value, int v);
-void FXHighShelfParam3(float vlaue, int v);
-void FXNotchParam1(float value, int v);
-void FXNotchParam2(float value, int v);
-void FXNotchParam3(float value, int v);
-void FXLadderParam1(float value, int v);
-void FXLadderParam3(float value, int v);
-float FXlowpassTick(float sample, int v);
-float FXhighpassTick(float sample, int v);
-float FXbandpassTick(float sample, int v);
-float FXdiodeLowpassTick(float sample, int v);
-float FXLadderLowpassTick(float sample, int v);
-float FXVZlowshelfTick(float sample, int v);
-float FXVZhighshelfTick(float sample, int v);
-float FXVZpeakTick(float sample, int v);
-float FXVZbandrejectTick(float sample, int v);
+void FXLowpassParam1(float value, int v, int string);
+void FXLowpassParam3(float value, int v, int string);
+void FXHighpassParam1(float value, int v, int string);
+void FXHighpassParam3(float value, int v, int string);
+void FXBandpassParam1(float value, int v, int string);
+void FXBandpassParam3(float value, int v, int string);
+void FXDiodeParam1(float value, int v, int string);
+void FXDiodeParam3(float value, int v, int string);
+void FXPeakParam1(float value, int v, int string);
+void FXPeakParam2(float value, int v, int string);
+void FXPeakParam3(float value, int v, int string);
+void FXLowShelfParam1(float value, int v, int string);
+void FXLowShelfParam2(float value, int v, int string);
+void FXLowShelfParam3(float value, int v, int string);
+void FXHighShelfParam1(float value, int v, int string);
+void FXHighShelfParam2(float value, int v, int string);
+void FXHighShelfParam3(float vlaue, int v, int string);
+void FXNotchParam1(float value, int v, int string);
+void FXNotchParam2(float value, int v, int string);
+void FXNotchParam3(float value, int v, int string);
+void FXLadderParam1(float value, int v, int string);
+void FXLadderParam3(float value, int v, int string);
+float FXlowpassTick(float sample, int v, int string);
+float FXhighpassTick(float sample, int v, int string);
+float FXbandpassTick(float sample, int v, int string);
+float FXdiodeLowpassTick(float sample, int v, int string);
+float FXLadderLowpassTick(float sample, int v, int string);
+float FXVZlowshelfTick(float sample, int v, int string);
+float FXVZhighshelfTick(float sample, int v, int string);
+float FXVZpeakTick(float sample, int v, int string);
+float FXVZbandrejectTick(float sample, int v, int string);
 
 
 //master functions
-void setAmp(float amp, int v);
-void setMaster(float amp, int v);
-void setFinalLowpass(float in, int v);
+void setAmp(float amp, int v, int string);
+void setFinalLowpass(float in, int v, int string);
+void setMaster(float amp, int v, int string);
 
-
-extern float sourceValues[NUM_SOURCES];
+extern float sourceValues[NUM_SOURCES][NUM_STRINGS_PER_BOARD];
 extern uint8_t lfoOn[NUM_LFOS];
 extern float oscAmpMult;
 extern float oscAmpMultArray[4];
@@ -300,6 +289,10 @@ extern int32_t audioOutBuffer[AUDIO_BUFFER_SIZE];
 extern int32_t audioInBuffer[AUDIO_BUFFER_SIZE];
 extern uint32_t codecReady;
 extern int presetReady;
+extern uint8_t oscToTick;
+extern uint8_t filterToTick;
+extern uint8_t overSampled;
+extern uint8_t numEffectToTick;
 //extern float audioDisplayBuffer[128];
 extern uint32_t displayBufferIndex;
 #endif /* __AUDIOSTREAM_H */

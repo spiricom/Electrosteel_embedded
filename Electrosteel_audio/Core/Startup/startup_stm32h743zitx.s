@@ -45,7 +45,9 @@ defined in linker script */
 /* end address for the .bss section. defined in linker script */
 .word  _ebss
 /* stack used for SystemInit_ExtMemCtl; always internal RAM used */
-
+.word _sitcmram
+.word _eitcmram
+.word _siitcmram
 /**
  * @brief  This is the code that gets called when the processor first
  *          starts execution following a reset event. Only the absolutely
@@ -65,6 +67,7 @@ Reset_Handler:
   movs  r1, #0
   b  LoopCopyDataInit
 
+
 CopyDataInit:
   ldr  r3, =_sidata
   ldr  r3, [r3, r1]
@@ -79,6 +82,11 @@ LoopCopyDataInit:
   bcc  CopyDataInit
   ldr  r2, =_sbss
   b  LoopFillZerobss
+
+
+
+
+
 /* Zero fill the bss segment. */
 FillZerobss:
   movs  r3, #0

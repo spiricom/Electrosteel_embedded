@@ -2301,7 +2301,7 @@ void tMBSawPulse_initToPool(tMBSawPulse* const osc, tMempool* const pool)
     c->numBLEPs = 0;
     c->mostRecentBLEP = 0;
     c->maxBLEPphase = MINBLEP_PHASES * STEP_DD_PULSE_LENGTH;
-    memset (c->BLEPindices, 0, 128 * sizeof (uint16_t));
+    memset (c->BLEPindices, 0, 64 * sizeof (uint16_t));
     memset (c->_f, 0, 8 * sizeof (float));
 
 }
@@ -2330,12 +2330,12 @@ void tMBSawPulse_place_step_dd_noBuffer(tMBSawPulse* const osc, int index, float
 		i = lrintf(r - 0.5f);
 		r -= (float)i;
 		i &= MINBLEP_PHASE_MASK;  /* extreme modulation can cause i to be out-of-range */
-		c->mostRecentBLEP = (c->mostRecentBLEP + 1) & 127;
+		c->mostRecentBLEP = (c->mostRecentBLEP + 1) & 63;
 		c->BLEPindices[c->mostRecentBLEP] = i;
 		c->BLEPproperties[c->mostRecentBLEP][0] = r;
 		c->BLEPproperties[c->mostRecentBLEP][1] = scale;
 
-		c->numBLEPs = (c->numBLEPs + 1) & 127;
+		c->numBLEPs = (c->numBLEPs + 1) & 63;
     }
 }
 
@@ -2559,7 +2559,7 @@ float tMBSawPulse_tick(tMBSawPulse* const osc)
     for (int i = 0; i < numBLEPsAtLoopStart; i++)
     {
     	volatile uint16_t whichBLEP = (c->mostRecentBLEP - i);
-    	whichBLEP &= 127;
+    	whichBLEP &= 63;
 
     	//use the scale and r values from the BLEPproperties array to compute the current state of each active BLEP and add it to the output value
     	c->_f[j] += c->BLEPproperties[whichBLEP][1] * (step_dd_table[c->BLEPindices[whichBLEP]].value + c->BLEPproperties[whichBLEP][0] * step_dd_table[c->BLEPindices[whichBLEP]].delta);

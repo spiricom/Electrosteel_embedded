@@ -39,7 +39,8 @@ extern "C" {
 #define PI              (3.14159265358979f)
 #define TWO_PI          (6.28318530717958f)
 #define HALF_PI         (1.570796326794897f)
-
+#define INV_TWO_PI		(0.159154943091895f)
+#define INV_TWO_PI_TIMES_SINE_TABLE_SIZE		(325.949323452201648)
 #define VSF             1.0e-38f
     
 #define MAX_DELAY       8192
@@ -102,7 +103,7 @@ extern "C" {
 #define LOGTEN 2.302585092994
     float log2f_approx(float X);
     float log2f_approx2(float x);
-
+    float fast_sinf2(float x);
     // Jones shaper
     float LEAF_shaper     (float input, float m_drive);
     float LEAF_reedTable  (float input, float offset, float slope);
@@ -179,9 +180,11 @@ extern "C" {
     void LEAF_generate_exp(float* buffer, float base, float start, float end, float offset, int size);
     void LEAF_generate_table_skew_non_sym(float* buffer, float start, float end, float center, int size);
 
-    void LEAF_generate_atodb(float* buffer, int size);
+    void LEAF_generate_atodb(float* buffer, int size, float min, float max);
     void LEAF_generate_atodbPositiveClipped(float* buffer, float lowerThreshold, float range, int size);
-
+    void LEAF_generate_dbtoa(float* buffer, int size, float minDb, float maxDb);
+    void LEAF_generate_mtof(float* buffer, float startMIDI, float endMIDI, int size);
+    void LEAF_generate_ftom(float* buffer, float startFreq, float endFreq, int size);
     
     float LEAF_poly_blep(float t, float dt);
     float LEAF_midiToFrequency(float f);

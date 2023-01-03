@@ -197,6 +197,27 @@ inline float fasterexpf(float x) {
     return x;
 }
 
+float fast_sinf2(float x)
+{
+	float invert = 1.0f;
+	float out;
+
+	x = x * INV_TWO_PI_TIMES_SINE_TABLE_SIZE;
+
+	if (x < 0.0f)
+	{
+		x *= -1.0f;
+		invert = -1.0f;
+	}
+	int intX = ((int)x) & 2047;
+	int intXNext = (intX + 1) & 2047;
+	float floatX = x-intX;
+
+	out = __leaf_table_sinewave[intX] * (1.0f - floatX);
+	out += __leaf_table_sinewave[intXNext] * floatX;
+	out *= invert;
+	return out;
+}
 // fast floating-point exp2 function taken from Robert Bristow Johnson's
 // post in the music-dsp list on Date: Tue, 02 Sep 2014 16:50:11 -0400
 float fastexp2f(float x)
@@ -602,13 +623,24 @@ void LEAF_generate_table_skew_non_sym(float* buffer, float start, float end, flo
 }
 
 
-void LEAF_generate_atodb(float* buffer, int size)
+void LEAF_generate_atodb(float* buffer, int size, float min, float max)
 {
-    float increment = 1.0f / (float)(size-1);
-    float x = 0.0f;
+    float increment = (max-min) / (float)(size-1);
+    float x = min;
     for (int i = 0; i < size; i++)
     {
         buffer[i] = atodb(x);
+        x += increment;
+    }
+}
+
+void LEAF_generate_dbtoa(float* buffer, int size, float minDb, float maxDb)
+{
+    float increment = (maxDb-minDb) / (float)(size-1);
+    float x = minDb;
+    for (int i = 0; i < size; i++)
+    {
+        buffer[i] = dbtoa(x);
         x += increment;
     }
 }
@@ -624,6 +656,33 @@ void LEAF_generate_atodbPositiveClipped(float* buffer, float lowerThreshold, flo
         float temp = atodb(x);
         temp = LEAF_clip(lowerThreshold, temp, 0.0f);
         buffer[i] = (temp-lowerThreshold) * scalar;
+        x += increment;
+    }
+}
+
+
+void LEAF_generate_mtof(float* buffer, float startMIDI, float endMIDI, int size)
+{
+    float increment = 1.0f / (float)(size-1);
+    float x = 0.0f;
+    float scalar = (endMIDI-startMIDI);
+    for (int i = 0; i < size; i++)
+    {
+        float midiVal = (x * scalar) + startMIDI;
+        buffer[i] = mtof(midiVal);
+        x += increment;
+    }
+}
+
+void LEAF_generate_ftom(float* buffer, float startFreq, float endFreq, int size)
+{
+    float increment = 1.0f / (float)(size-1);
+    float x = 0.0f;
+    float scalar = (endFreq-startFreq);
+    for (int i = 0; i < size; i++)
+    {
+        float midiVal = (x * scalar) + startFreq;
+        buffer[i] = ftom(midiVal);
         x += increment;
     }
 }

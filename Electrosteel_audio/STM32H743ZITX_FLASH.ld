@@ -41,7 +41,8 @@ _Min_Stack_Size = 0x3000;	/* required amount of stack */
 MEMORY
 {
   DTCMRAM    (xrw)    : ORIGIN = 0x20000000,   LENGTH = 128K
-  ITCMRAM    (xrw)    : ORIGIN = 0x00000000,   LENGTH = 64K
+	ITCMRAM (RWX) : ORIGIN = 0x00000000, LENGTH = 1K
+	ITCMRAMFUNC (RWX) : ORIGIN = 0x00000400, LENGTH = 63K
   RAM_D1    (xrw)    : ORIGIN = 0x24000000,   LENGTH = 512K
   RAM_D2    (xrw)    : ORIGIN = 0x30000000,   LENGTH = 288K
   RAM_D3    (xrw)    : ORIGIN = 0x38000000,   LENGTH = 64K
@@ -172,6 +173,7 @@ SECTIONS
     . = . + _Min_Stack_Size;
     . = ALIGN(8);
   } >DTCMRAM
+  
 	  .RAM_D1 (NOLOAD) :
   {
         KEEP(*(.RAM_D1)) 
@@ -197,11 +199,6 @@ SECTIONS
   {
         KEEP(*(.SDRAM)) /* ORIGIN = 0x60000000, LENGTH = 32M */
   } >SDRAM
-  
-   .ITCMRAM (NOLOAD) :
-  {
-        KEEP(*(.ITCMRAM)) /* ORIGIN = 0x60000000, LENGTH = 32M */
-  } >ITCMRAM
   
 /*from https://electronics.stackexchange.com/questions/370175/creating-programmable-look-up-table-on-stm32 */
  .FIXED_DATA (NOLOAD):

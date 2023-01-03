@@ -71,6 +71,14 @@ extern "C" {
         int isActive;
         
         float sampleRate;
+        float* atodbTable;
+        float* dbtoaTable;
+        float atodbScalar;
+        float dbtoaScalar;
+        float atodbOffset;
+        float dbtoaOffset;
+        int atodbTableSizeMinus1;
+        int dbtoaTableSizeMinus1;
         
     } _tCompressor;
     
@@ -81,6 +89,9 @@ extern "C" {
     void    tCompressor_free        (tCompressor* const);
     
     float   tCompressor_tick        (tCompressor* const, float input);
+    float tCompressor_tickWithTable(tCompressor* const comp, float in);
+    float tCompressor_tickWithTableHardKnee(tCompressor* const comp, float in);
+    float tCompressor_setTables(tCompressor* const comp, float* atodb, float* dbtoa, float atodbMinIn, float atodbMaxIn, float dbtoaMinIn, float dbtoaMaxIn, int atodbTableSize, int dbtoaTableSize);
 void    tCompressor_setParams   (tCompressor* const comp, float thresh, float ratio, float knee, float makeup, float attack, float release);
     
     

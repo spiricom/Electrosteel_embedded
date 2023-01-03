@@ -39,37 +39,37 @@ Core/Src/sai.o: ../Core/Src/sai.c ../Core/Inc/sai.h ../Core/Inc/main.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi_ex.h \
  ../Core/Inc/parameters.h ../Core/Inc/audiostream.h \
- /Users/jeffsnyder/dev/LEAF/leaf/leaf.h \
- /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-global.h \
- /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-mempool.h \
- /Users/jeffsnyder/dev/LEAF/leaf/./Inc/../leaf-config.h \
- /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-math.h \
- /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-global.h \
- /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-mempool.h \
- /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-tables.h \
- /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-math.h \
- /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-distortion.h \
- /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-dynamics.h \
- /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-analysis.h \
- /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-distortion.h \
- /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-filters.h \
- /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-delay.h \
- /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-tables.h \
- /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-envelopes.h \
- /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-oscillators.h \
- /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-filters.h \
- /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-delay.h \
- /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-reverb.h \
- /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-oscillators.h \
- /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-effects.h \
- /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-dynamics.h \
- /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-envelopes.h \
- /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-analysis.h \
- /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-instruments.h \
- /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-midi.h \
- /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-sampling.h \
- /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-physical.h \
- /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-electrical.h
+ /Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/leaf.h \
+ /Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-global.h \
+ /Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-mempool.h \
+ /Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/../leaf-config.h \
+ /Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-math.h \
+ /Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-global.h \
+ /Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-mempool.h \
+ /Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-tables.h \
+ /Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-math.h \
+ /Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-distortion.h \
+ /Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-dynamics.h \
+ /Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-analysis.h \
+ /Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-distortion.h \
+ /Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-filters.h \
+ /Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-delay.h \
+ /Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-tables.h \
+ /Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-envelopes.h \
+ /Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-oscillators.h \
+ /Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-filters.h \
+ /Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-delay.h \
+ /Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-reverb.h \
+ /Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-oscillators.h \
+ /Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-effects.h \
+ /Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-dynamics.h \
+ /Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-envelopes.h \
+ /Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-analysis.h \
+ /Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-instruments.h \
+ /Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-midi.h \
+ /Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-sampling.h \
+ /Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-physical.h \
+ /Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-electrical.h
 ../Core/Inc/sai.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h:
@@ -113,34 +113,34 @@ Core/Src/sai.o: ../Core/Src/sai.c ../Core/Inc/sai.h ../Core/Inc/main.h \
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi_ex.h:
 ../Core/Inc/parameters.h:
 ../Core/Inc/audiostream.h:
-/Users/jeffsnyder/dev/LEAF/leaf/leaf.h:
-/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-global.h:
-/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-mempool.h:
-/Users/jeffsnyder/dev/LEAF/leaf/./Inc/../leaf-config.h:
-/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-math.h:
-/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-global.h:
-/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-mempool.h:
-/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-tables.h:
-/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-math.h:
-/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-distortion.h:
-/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-dynamics.h:
-/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-analysis.h:
-/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-distortion.h:
-/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-filters.h:
-/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-delay.h:
-/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-tables.h:
-/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-envelopes.h:
-/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-oscillators.h:
-/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-filters.h:
-/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-delay.h:
-/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-reverb.h:
-/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-oscillators.h:
-/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-effects.h:
-/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-dynamics.h:
-/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-envelopes.h:
-/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-analysis.h:
-/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-instruments.h:
-/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-midi.h:
-/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-sampling.h:
-/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-physical.h:
-/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-electrical.h:
+/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/leaf.h:
+/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-global.h:
+/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-mempool.h:
+/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/../leaf-config.h:
+/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-math.h:
+/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-global.h:
+/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-mempool.h:
+/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-tables.h:
+/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-math.h:
+/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-distortion.h:
+/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-dynamics.h:
+/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-analysis.h:
+/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-distortion.h:
+/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-filters.h:
+/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-delay.h:
+/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-tables.h:
+/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-envelopes.h:
+/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-oscillators.h:
+/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-filters.h:
+/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-delay.h:
+/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-reverb.h:
+/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-oscillators.h:
+/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-effects.h:
+/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-dynamics.h:
+/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-envelopes.h:
+/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-analysis.h:
+/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-instruments.h:
+/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-midi.h:
+/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-sampling.h:
+/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-physical.h:
+/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf/./Inc/leaf-electrical.h:

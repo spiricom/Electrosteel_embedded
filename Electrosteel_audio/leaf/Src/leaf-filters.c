@@ -1827,7 +1827,9 @@ float tanhXdX(float x)
 {
     float a = x*x;
     // IIRC I got this as Pade-approx for tanh(sqrt(x))/sqrt(x)
+#ifdef SAFE_FILTER
     float testVal = ((15.0f*a + 420.0f)*a + 945.0f);
+
     float output = 1.0f;
     
     if (testVal!= 0.0f)
@@ -1836,6 +1838,9 @@ float tanhXdX(float x)
         
     }
     return ((a + 105.0f)*a + 945.0f) / output;
+#endif
+    float testVal = ((15.0f*a + 420.0f)*a + 945.0f);
+    return ((a + 105.0f)*a + 945.0f) / testVal;
 }
 
 volatile int errorCheckCheck = 0;
@@ -1925,6 +1930,97 @@ float   tDiodeFilter_tick               (tDiodeFilter* const vf, float in)
     
     f->zi = in;
     return tanhf(y3*f->r);
+}
+
+//#define SAFE_FILTER
+float   tDiodeFilter_tickEfficient               (tDiodeFilter* const vf, float in)
+{
+    _tDiodeFilter* f = *vf;
+#ifdef SAFE_FILTER
+    int errorCheck = 0;
+#endif
+    // the input x[n+1] is given by 'in', and x[n] by zi
+    // input with half delay
+    float ih = 0.5f * (in + f->zi);
+
+    // evaluate the non-linear factors
+    float t0 = f->f*tanhXdX((ih - f->r * f->s3)*f->g0inv)*f->g0inv;
+    float t1 = f->f*tanhXdX((f->s1-f->s0)*f->g1inv)*f->g1inv;
+    float t2 = f->f*tanhXdX((f->s2-f->s1)*f->g1inv)*f->g1inv;
+    float t3 = f->f*tanhXdX((f->s3-f->s2)*f->g1inv)*f->g1inv;
+    float t4 = f->f*tanhXdX((f->s3)*f->g2inv)*f->g2inv;
+
+    // This formula gives the result for y3 thanks to MATLAB
+    float y3 = (f->s2 + f->s3 + t2*(f->s1 + f->s2 + f->s3 + t1*(f->s0 + f->s1 + f->s2 + f->s3 + t0*in)) + t1*(2.0f*f->s2 + 2.0f*f->s3))*t3 + f->s3 + 2.0f*f->s3*t1 + t2*(2.0f*f->s3 + 3.0f*f->s3*t1);
+#ifdef SAFE_FILTER
+    if (isnan(y3))
+    {
+        errorCheck = 1;
+    }
+#endif
+    float tempy3denom = (t4 + t1*(2.0f*t4 + 4.0f) + t2*(t4 + t1*(t4 + f->r*t0 + 4.0f) + 3.0f) + 2.0f)*t3 + t4 + t1*(2.0f*t4 + 2.0f) + t2*(2.0f*t4 + t1*(3.0f*t4 + 3.0f) + 2.0f) + 1.0f;
+#ifdef SAFE_FILTER
+    if (isnan(tempy3denom))
+    {
+        errorCheck = 2;
+    }
+
+#endif
+    if (tempy3denom == 0.0f)
+    {
+        tempy3denom = 0.000001f;
+    }
+
+    y3 = y3 / tempy3denom;
+#ifdef SAFE_FILTER
+    if (isnan(y3))
+    {
+        errorCheck = 3;
+    }
+#endif
+    if (t1 == 0.0f)
+    {
+        t1 = 0.000001f;
+    }
+    if (t2 == 0.0f)
+    {
+        t2 = 0.000001f;
+    }
+    if (t3 == 0.0f)
+    {
+        t3 = 0.000001f;
+    }
+
+    // Other outputs
+    float y2 = (f->s3 - (1+t4+t3)*y3) / (-t3);
+    float y1 = (f->s2 - (1+t3+t2)*y2 + t3*y3) / (-t2);
+    float y0 = (f->s1 - (1+t2+t1)*y1 + t2*y2) / (-t1);
+    float xx = (in - f->r*y3);
+
+    // update state
+    f->s0 += 2.0f * (t0*xx + t1*(y1-y0));
+#ifdef SAFE_FILTER
+    if (isnan(f->s0))
+    {
+        errorCheck = 4;
+    }
+
+    if (isinf(f->s0))
+    {
+        errorCheck = 5;
+    }
+
+    if (errorCheck != 0)
+    {
+        errorCheckCheck = errorCheck;
+    }
+#endif
+    f->s1 += 2.0f * (t2*(y2-y1) - t1*(y1-y0));
+    f->s2 += 2.0f * (t3*(y3-y2) - t2*(y2-y1));
+    f->s3 += 2.0f * (-t4*(y3) - t3*(y3-y2));
+
+    f->zi = in;
+    return LEAF_tanh(y3*f->r);
 }
 
 void    tDiodeFilter_setFreq     (tDiodeFilter* const vf, float cutoff)

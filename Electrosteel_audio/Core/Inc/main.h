@@ -53,7 +53,7 @@ extern "C" {
 #define __ATTR_RAM_D2	__attribute__ ((section(".RAM_D2"))) __attribute__ ((aligned (32)))
 #define __ATTR_RAM_D3	__attribute__ ((section(".RAM_D3"))) __attribute__ ((aligned (32)))
 #define __ATTR_SDRAM	__attribute__ ((section(".SDRAM"))) __attribute__ ((aligned (32)))
-#define __ATTR_ITCMRAM	__attribute__ ((section(".ITCMRAM"))) __attribute__ ((aligned (32)))
+#define __ATTR_ITCMRAM	//__attribute__ ((section(".itcmram"))) __attribute__ ((aligned (32)))
 
 #define STM32 // define this so that LEAF knows you are building for STM32
 /* USER CODE END EM */
@@ -71,10 +71,20 @@ void CycleCounterInit( void );
 /* Private defines -----------------------------------------------------------*/
 
 /* USER CODE BEGIN Private defines */
-extern uint8_t SPI_RX[24];
-extern uint8_t SPI_PLUCK_RX[52];
-extern uint8_t SPI_LEVERS[148];
-extern uint8_t levers[2][74];
+
+#define LEVER_BUFFER_SIZE 74
+#define LEVER_BUFFER_SIZE_TIMES_TWO LEVER_BUFFER_SIZE*2
+
+#define PLUCK_BUFFER_SIZE 26
+#define PLUCK_BUFFER_SIZE_TIMES_TWO PLUCK_BUFFER_SIZE*2
+
+#define BAR_BUFFER_SIZE 8
+#define BAR_BUFFER_SIZE_TIMES_TWO BAR_BUFFER_SIZE*2
+
+extern uint8_t SPI_RX[BAR_BUFFER_SIZE_TIMES_TWO];
+extern uint8_t SPI_PLUCK_RX[PLUCK_BUFFER_SIZE_TIMES_TWO];
+extern uint8_t SPI_LEVERS[LEVER_BUFFER_SIZE_TIMES_TWO];
+extern uint8_t levers[2][LEVER_BUFFER_SIZE];
 extern int currentLeverBuffer;
 
 
@@ -88,7 +98,9 @@ extern uint8_t numMappings;
 extern uint8_t diskBusy;
 extern uint8_t volatile interruptChecker;
 extern float random_values[256];
-
+extern uint32_t presetWaitingToLoad;
+extern uint8_t presetNumberToLoad;
+extern uint8_t boardNumber;
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

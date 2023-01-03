@@ -1037,8 +1037,8 @@ void tMBSineTri_place_dd_noBuffer(tMBSineTri* const osc, int index, float phase,
         uint16_t numBLEPs;
         uint16_t mostRecentBLEP;
         uint16_t maxBLEPphase;
-        uint16_t BLEPindices[128];
-        float 	BLEPproperties[128][2];
+        uint16_t BLEPindices[64];
+        float 	BLEPproperties[64][2];
         float gain;
         int active;
 

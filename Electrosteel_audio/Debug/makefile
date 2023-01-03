@@ -18,6 +18,7 @@ RM := rm -rf
 -include Drivers/STM32H7xx_HAL_Driver/Src/subdir.mk
 -include Core/Startup/subdir.mk
 -include Core/Src/subdir.mk
+-include Core/Inc/subdir.mk
 -include objects.mk
 
 ifneq ($(MAKECMDGOALS),clean)
@@ -67,7 +68,7 @@ main-build: Electrosteel_audio.elf secondary-outputs
 
 # Tool invocations
 Electrosteel_audio.elf Electrosteel_audio.map: $(OBJS) $(USER_OBJS) /Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/STM32H743ZITX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "Electrosteel_audio.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/STM32H743ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Electrosteel_audio.map" -Wl,--cref -Wl,--gc-sections -static -L../Drivers/CMSIS/DSP/Lib/GCC/ --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+	arm-none-eabi-gcc -o "Electrosteel_audio.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/STM32H743ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Electrosteel_audio.map" -Wl,--cref -Wl,--gc-sections -nodefaultlibs -static -L../Drivers/CMSIS/DSP/Lib/GCC/ --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

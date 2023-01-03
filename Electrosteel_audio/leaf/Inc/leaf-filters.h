@@ -1140,6 +1140,9 @@ extern "C" {
     void    tDiodeFilter_free           (tDiodeFilter* const);
     
     float   tDiodeFilter_tick               (tDiodeFilter* const, float input);
+
+    float   tDiodeFilter_tickEfficient               (tDiodeFilter* const vf, float in);
+
     void    tDiodeFilter_setFreq     (tDiodeFilter* const vf, float cutoff);
     void    tDiodeFilter_setFreqFast     (tDiodeFilter* const vf, float cutoff);
     void    tDiodeFilter_setQ     (tDiodeFilter* const vf, float resonance);

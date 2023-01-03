@@ -132,6 +132,115 @@ float tCompressor_tick(tCompressor* const comp, float in)
     return attenuation * in;
 }
 
+//requires tables to be set with set function
+//more efficient without soft knee calculation
+float tCompressor_tickWithTable(tCompressor* const comp, float in)
+{
+    _tCompressor* c = *comp;
+
+    float slope, overshoot;
+
+    in = fastabsf(in);
+    int inAmpIndex = LEAF_clip (0, (in * c->atodbScalar) - c->atodbOffset, c->atodbTableSizeMinus1);
+    float in_db = c->atodbTable[inAmpIndex];
+    float out_db = 0.0f;
+
+    c->y_T[1] = c->y_T[0];
+
+    slope = 1.0f - c->invR; // feed-forward topology;
+
+    overshoot = in_db - c->T;
+
+
+    if (overshoot <= -(c->W))
+    {
+        out_db = in_db;
+        c->isActive = 0;
+    }
+    else if ((overshoot > -(c->W)) && (overshoot < (c->W)))
+    {
+        float squareit = (overshoot + c->W);
+        out_db = in_db + slope * ((squareit * squareit) * c->inv4W); // .^ 2 ???
+        c->isActive = 1;
+    }
+    else
+    {
+        out_db = in_db + slope * overshoot;
+        c->isActive = 1;
+    }
+
+    c->x_T[0] = out_db - in_db;
+    if (c->x_T[0] > c->y_T[1])
+        c->y_T[0] = c->tauAttack * c->y_T[1] + (1.0f-c->tauAttack) * c->x_T[0];
+    else
+        c->y_T[0] = c->tauRelease * c->y_T[1] + (1.0f-c->tauRelease) * c->x_T[0];
+    float attenuationDb = c->M - c->y_T[0];
+   // tempdbToA = dbtoa(attenuationDb);
+    int attenuationDbIndex = LEAF_clip (0, (attenuationDb * c->dbtoaScalar) - c->dbtoaOffset, c->dbtoaTableSizeMinus1);
+    float attenuation = c->dbtoaTable[attenuationDbIndex];
+    return attenuation * in;
+}
+
+//requires tables to be set with set function
+float tCompressor_tickWithTableHardKnee(tCompressor* const comp, float in)
+{
+    _tCompressor* c = *comp;
+
+    float slope, overshoot;
+
+    in = fastabsf(in);
+    int inAmpIndex = LEAF_clip (0, (in * c->atodbScalar) - c->atodbOffset, c->atodbTableSizeMinus1);
+    float in_db = c->atodbTable[inAmpIndex];
+    float out_db = 0.0f;
+
+    c->y_T[1] = c->y_T[0];
+
+    slope = 1.0f - c->invR; // feed-forward topology;
+
+    overshoot = in_db - c->T;
+
+  // simpler hard-knee version (more efficient)
+    if (overshoot <= 0.0f)
+    {
+        out_db = in_db;
+        c->isActive = 0;
+    }
+    else
+    {
+        out_db = in_db + slope * overshoot;
+        c->isActive = 1;
+    }
+
+    c->x_T[0] = out_db - in_db;
+    if (c->x_T[0] > c->y_T[1])
+        c->y_T[0] = c->tauAttack * c->y_T[1] + (1.0f-c->tauAttack) * c->x_T[0];
+    else
+        c->y_T[0] = c->tauRelease * c->y_T[1] + (1.0f-c->tauRelease) * c->x_T[0];
+    float attenuationDb = c->M - c->y_T[0];
+   // tempdbToA = dbtoa(attenuationDb);
+    int attenuationDbIndex = LEAF_clip (0, (attenuationDb * c->dbtoaScalar) - c->dbtoaOffset, c->dbtoaTableSizeMinus1);
+    float attenuation = c->dbtoaTable[attenuationDbIndex];
+    return attenuation * in;
+}
+
+float tCompressor_setTables(tCompressor* const comp, float* atodb, float* dbtoa, float atodbMinIn, float atodbMaxIn, float dbtoaMinIn, float dbtoaMaxIn, int atodbTableSize, int dbtoaTableSize)
+{
+    _tCompressor* c = *comp;
+	c->atodbTable = atodb;
+	c->dbtoaTable = dbtoa;
+
+	c->atodbTableSizeMinus1 = atodbTableSize-1;
+	c->dbtoaTableSizeMinus1 = dbtoaTableSize-1;
+
+	c->atodbScalar = c->atodbTableSizeMinus1/(atodbMaxIn-atodbMinIn);
+	c->atodbOffset = atodbMinIn * c->atodbScalar;
+
+
+	c->dbtoaScalar = c->dbtoaTableSizeMinus1/(dbtoaMaxIn-dbtoaMinIn);
+	c->dbtoaOffset = dbtoaMinIn * c->dbtoaScalar;
+
+}
+
 ////c->tauAttack = 100;
 //c->tauRelease = 100;
 //

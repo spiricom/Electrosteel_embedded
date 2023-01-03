@@ -55,8 +55,10 @@
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
+extern I2C_HandleTypeDef hi2c2;
 extern DMA_HandleTypeDef hdma_sai1_a;
 extern DMA_HandleTypeDef hdma_sai1_b;
+extern SD_HandleTypeDef hsd1;
 extern DMA_HandleTypeDef hdma_spi1_rx;
 extern DMA_HandleTypeDef hdma_spi2_rx;
 extern DMA_HandleTypeDef hdma_spi5_rx;
@@ -276,6 +278,34 @@ void DMA1_Stream4_IRQHandler(void)
 }
 
 /**
+  * @brief This function handles I2C2 event interrupt.
+  */
+void I2C2_EV_IRQHandler(void)
+{
+  /* USER CODE BEGIN I2C2_EV_IRQn 0 */
+
+  /* USER CODE END I2C2_EV_IRQn 0 */
+  HAL_I2C_EV_IRQHandler(&hi2c2);
+  /* USER CODE BEGIN I2C2_EV_IRQn 1 */
+
+  /* USER CODE END I2C2_EV_IRQn 1 */
+}
+
+/**
+  * @brief This function handles I2C2 error interrupt.
+  */
+void I2C2_ER_IRQHandler(void)
+{
+  /* USER CODE BEGIN I2C2_ER_IRQn 0 */
+
+  /* USER CODE END I2C2_ER_IRQn 0 */
+  HAL_I2C_ER_IRQHandler(&hi2c2);
+  /* USER CODE BEGIN I2C2_ER_IRQn 1 */
+
+  /* USER CODE END I2C2_ER_IRQn 1 */
+}
+
+/**
   * @brief This function handles SPI1 global interrupt.
   */
 void SPI1_IRQHandler(void)
@@ -301,6 +331,20 @@ void SPI2_IRQHandler(void)
   /* USER CODE BEGIN SPI2_IRQn 1 */
 
   /* USER CODE END SPI2_IRQn 1 */
+}
+
+/**
+  * @brief This function handles SDMMC1 global interrupt.
+  */
+void SDMMC1_IRQHandler(void)
+{
+  /* USER CODE BEGIN SDMMC1_IRQn 0 */
+
+  /* USER CODE END SDMMC1_IRQn 0 */
+  HAL_SD_IRQHandler(&hsd1);
+  /* USER CODE BEGIN SDMMC1_IRQn 1 */
+
+  /* USER CODE END SDMMC1_IRQn 1 */
 }
 
 /**
