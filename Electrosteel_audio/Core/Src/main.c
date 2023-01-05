@@ -72,7 +72,7 @@ FILINFO fno;
 DIR dir;
 const TCHAR path = 0;
 
-#define MAX_NUM_PRESETS 20
+#define MAX_NUM_PRESETS 50
 volatile uint8_t writingState = 0;
 volatile float 	audioMasterLevel = 1.0f;
 FIL fdst;
@@ -260,7 +260,7 @@ int main(void)
 
     HAL_SPI_Receive_DMA(&hspi2, SPI_RX, BAR_BUFFER_SIZE_TIMES_TWO);
     HAL_SPI_Receive_DMA(&hspi5, SPI_PLUCK_RX, PLUCK_BUFFER_SIZE_TIMES_TWO);
-    //if (boardNumber == 1)
+    //if (boardNumber != 0)
     {
     	HAL_SPI_Receive_DMA(&hspi1, SPI_LEVERS, LEVER_BUFFER_SIZE_TIMES_TWO);
     	//
@@ -820,25 +820,28 @@ void MPU_Conf(void)
 }
 
 
-#if 0
+
 void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 {
 	interruptChecker = 1;
 	// if the first number is a 1 then it's a midi note/ctrl/bend message
-	if (SPI_RX[offset] == ReceivingMIDI)
+	if (SPI_LEVERS[offset] == ReceivingPitches)
 	{
-
 		 uint8_t currentByte = offset+1;
-
-		 while ((SPI_RX[currentByte] != 0) && ((currentByte % 16) < SPI_FRAME_SIZE))
+		 for (int i = 0; i < numStringsThisBoard; i++)
 		 {
-			 cStack_push(&midiStack,SPI_RX[currentByte],SPI_RX[currentByte+1],SPI_RX[currentByte+2]);
-			 currentByte = currentByte+3;
+			float myPitch = (float)(SPI_LEVERS[((i+firstString) * 2) + currentByte] << 8) + SPI_LEVERS[((i+firstString) * 2) + 1 + currentByte];
+			myPitch = myPitch * 0.001953154802777f; //(128 / 65535) scale the 16 bit integer into midinotes.
+			if ((myPitch > 0.0f) && (myPitch < 140.0f))
+			{
+				stringMIDIPitches[i] = myPitch;
+			}
 		 }
+		 updateStateFromSPIMessage(offset);
 		 //HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
 	}
 	// if the first number is a 2 then it's a preset write
-	else if (SPI_RX[offset] == ReceivingPreset)
+	else if (SPI_LEVERS[offset] == ReceivingPreset)
 	{
 		//got a new preset to write to memory
 		 //HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
@@ -852,37 +855,29 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 			 //write the raw data as a preset number on the SD card
 			 bufferPos = 0;
 		 }
-		 presetNumberToSave = SPI_RX[offset + 1];
+		 presetNumberToSave = SPI_LEVERS[offset + 1];
 		 uint8_t currentByte = offset+2; // first number says what it is 2nd number says which number it is
 
 		 for (int i = 0; i < 14; i++)
 		 {
-			 buffer[bufferPos++] = SPI_RX[currentByte + i];
+			 buffer[bufferPos++] = SPI_LEVERS[currentByte + i];
 
 		 }
 		 //HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
 	}
-	else if (SPI_RX[offset] == ReceivingTuning)
+	else if (SPI_LEVERS[offset] == ReceivingKnobs)
 	{
-		//if you aren't already writing a tuning to memory, start the process
-		 if (writingState != ReceivingTuning)
+		 uint8_t currentByte = offset+1;
+		 for (int i = 0; i < numStringsThisBoard; i++)
 		 {
-			 writingState = ReceivingTuning; // set the flag to let the mcu know that a tuning write is in progress
-			 diskBusy = 1;
-			 audioMasterLevel = 0.0f;
-			 //write the raw data as a tuning number on the SD card
-			 bufferPos = 0;
-		 }
-		 tuningNumberToSave = SPI_RX[offset + 1];
-		 uint8_t currentByte = offset+2; // first number says what it is 2nd number says which number it is
-
-		 for (int i = 0; i < 14; i++)
-		 {
-			 buffer[bufferPos++] = SPI_RX[currentByte + i];
-
+			for (int i = 0; i < 20; i++)
+			{
+				paramsFromBrain[i] = SPI_LEVERS[i + currentByte] * 0.003921568627451f; //scaled 0.0 to 1.0
+			}
+			updateStateFromSPIMessage(currentByte);
 		 }
 	}
-	else if (SPI_RX[offset] == ReceivingEnd)
+	else if (SPI_LEVERS[offset] == ReceivingEnd)
 	{
 		if(writingState == ReceivingPreset)
 		{
@@ -891,17 +886,12 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 			 /* Parse into Audio Params */
 			 presetWaitingToParse = bufferPos;
 			 presetWaitingToWrite = bufferPos;
-		} else if (writingState == ReceivingTuning)
-		{
-			writingState = 0;
-			tuningWaitingToParse = bufferPos;
-			tuningWaitingToParse = bufferPos;
 		}
 	}
-
-	else if (SPI_RX[offset] == LoadingPreset)
+/*
+	else if (SPI_LEVERS[offset] == LoadingPreset)
 	{
-		uint8_t loadNumber = SPI_RX[offset+1];
+		uint8_t loadNumber = SPI_LEVERS[offset+1];
 		if (loadNumber < MAX_NUM_PRESETS)
 		{
 			presetNumberToLoad = loadNumber;
@@ -909,42 +899,45 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 			presetWaitingToLoad = 1;
 		}
 	}
-	if (SPI_RX[offset] == WaitingForLoadAck)
+	if (SPI_LEVERS[offset] == WaitingForLoadAck)
 	{
-		SPI_TX[offset] = 252;
+		SPI_LEVERS[offset] = 252;
 		if(!loadFailed)
 		{
-			SPI_TX[offset+1] = currentActivePreset;//this will change to the loaded preset number when parsing is finished
+			SPI_LEVERS[offset+1] = currentActivePreset;//this will change to the loaded preset number when parsing is finished
 		}
 		else
 		{
-			SPI_TX[offset+1] = 254; //load failed
-			SPI_TX[offset+2] = currentActivePreset; //tell the PSOC that it needs to show the old currently active preset, since the new load failed.
+			SPI_LEVERS[offset+1] = 254; //load failed
+			SPI_LEVERS[offset+2] = currentActivePreset; //tell the PSOC that it needs to show the old currently active preset, since the new load failed.
 		}
 	}
-	else
+	*/
+	//else
 	{
-		SPI_TX[offset] = 253; //special byte that says this is a preset name;
-		SPI_TX[offset+1] = whichPresetToSendName;
-		SPI_TX[offset+2] = presetNamesArray[whichPresetToSendName][0];
-		SPI_TX[offset+3] = presetNamesArray[whichPresetToSendName][1];
-		SPI_TX[offset+4] = presetNamesArray[whichPresetToSendName][2];
-		SPI_TX[offset+5] = presetNamesArray[whichPresetToSendName][3];
-		SPI_TX[offset+6] = presetNamesArray[whichPresetToSendName][4];
-		SPI_TX[offset+7] = presetNamesArray[whichPresetToSendName][5];
-		SPI_TX[offset+8] = presetNamesArray[whichPresetToSendName][6];
-		SPI_TX[offset+9] = presetNamesArray[whichPresetToSendName][7];
-		SPI_TX[offset+10] = presetNamesArray[whichPresetToSendName][8];
-		SPI_TX[offset+11] = presetNamesArray[whichPresetToSendName][9];
-		SPI_TX[offset+12] = presetNamesArray[whichPresetToSendName][10];
-		SPI_TX[offset+13] = presetNamesArray[whichPresetToSendName][11];
-		SPI_TX[offset+14] = presetNamesArray[whichPresetToSendName][12];
-		SPI_TX[offset+15] = presetNamesArray[whichPresetToSendName][13];
-		whichPresetToSendName = (whichPresetToSendName + 1) % MAX_NUM_PRESETS;
+		if (boardNumber == 0)
+		{
+			SPI_LEVERS_TX[offset] = 253; //special byte that says this is a preset name;
+			SPI_LEVERS_TX[offset+1] = whichPresetToSendName;
+			SPI_LEVERS_TX[offset+2] = presetNamesArray[whichPresetToSendName][0];
+			SPI_LEVERS_TX[offset+3] = presetNamesArray[whichPresetToSendName][1];
+			SPI_LEVERS_TX[offset+4] = presetNamesArray[whichPresetToSendName][2];
+			SPI_LEVERS_TX[offset+5] = presetNamesArray[whichPresetToSendName][3];
+			SPI_LEVERS_TX[offset+6] = presetNamesArray[whichPresetToSendName][4];
+			SPI_LEVERS_TX[offset+7] = presetNamesArray[whichPresetToSendName][5];
+			SPI_LEVERS_TX[offset+8] = presetNamesArray[whichPresetToSendName][6];
+			SPI_LEVERS_TX[offset+9] = presetNamesArray[whichPresetToSendName][7];
+			SPI_LEVERS_TX[offset+10] = presetNamesArray[whichPresetToSendName][8];
+			SPI_LEVERS_TX[offset+11] = presetNamesArray[whichPresetToSendName][9];
+			SPI_LEVERS_TX[offset+12] = presetNamesArray[whichPresetToSendName][10];
+			SPI_LEVERS_TX[offset+13] = presetNamesArray[whichPresetToSendName][11];
+			SPI_LEVERS_TX[offset+14] = presetNamesArray[whichPresetToSendName][12];
+			SPI_LEVERS_TX[offset+15] = presetNamesArray[whichPresetToSendName][13];
+			whichPresetToSendName = (whichPresetToSendName + 1) % MAX_NUM_PRESETS;
+		}
 	}
 
 }
-#endif
 
 float __ATTR_ITCMRAM scaleDefault(float input)
 {

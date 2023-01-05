@@ -65,14 +65,14 @@ void Error_Handler(void);
 float randomNumber(void);
 
 void CycleCounterInit( void );
-
+void __ATTR_ITCMRAM handleSPI (uint8_t offset);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
 
 /* USER CODE BEGIN Private defines */
 
-#define LEVER_BUFFER_SIZE 74
+#define LEVER_BUFFER_SIZE 32
 #define LEVER_BUFFER_SIZE_TIMES_TWO LEVER_BUFFER_SIZE*2
 
 #define PLUCK_BUFFER_SIZE 26

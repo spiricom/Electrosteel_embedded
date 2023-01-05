@@ -18,9 +18,9 @@ typedef void (*setParam_t)(float, int, int);
 enum SPIMessage
 {
 	Blank = 0,
-	ReceivingMIDI,
+	ReceivingPitches,
 	ReceivingPreset,
-	ReceivingTuning,
+	ReceivingKnobs,
 	LoadingPreset,
 	WaitingForLoadAck,
 	ReceivingEnd =  253

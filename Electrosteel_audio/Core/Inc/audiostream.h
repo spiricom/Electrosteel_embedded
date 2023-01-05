@@ -87,17 +87,7 @@ void audioFrame(uint16_t buffer_offset);
 float audioTickL(void);
 void DMA1_TransferCpltCallback(DMA_HandleTypeDef *hdma);
 void DMA1_HalfTransferCpltCallback(DMA_HandleTypeDef *hdma);
-
-
-extern void storeNoteOn(uint8_t note, uint8_t velocity);
-extern void storeCtrl(uint8_t value, uint8_t ctrl);
-extern void storePitchBend(uint8_t value, uint8_t ctrl);
-
-void sendNoteOn(uint8_t note, uint8_t velocity);
-void sendCtrl(uint8_t value, uint8_t ctrl);
-void sendPitchBend(uint8_t value, uint8_t ctrl);
-
-
+void updateStateFromSPIMessage(uint8_t currentByte);
 
 void setTranspose(float in, int v, int string);
 void setPitchBendRange(float in, int v, int string);
@@ -295,6 +285,10 @@ extern uint8_t overSampled;
 extern uint8_t numEffectToTick;
 //extern float audioDisplayBuffer[128];
 extern uint32_t displayBufferIndex;
+extern uint8_t numStringsThisBoard;
+extern volatile int firstString;
+extern float stringMIDIPitches[NUM_STRINGS_PER_BOARD];
+extern float paramsFromBrain[20];
 #endif /* __AUDIOSTREAM_H */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

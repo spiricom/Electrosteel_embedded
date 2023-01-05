@@ -1,21 +1,14 @@
-18:14:58 **** Incremental Build of configuration Debug for project Electrosteel_audio ****
+12:48:03 **** Incremental Build of configuration Debug for project Electrosteel_audio ****
 make -j7 all 
-arm-none-eabi-gcc "../Core/Src/audiostream.c" -mcpu=cortex-m7 -std=gnu11 -g -DDEBUG -DNO_DENORMAL_CHECK -DARM_MATH_CM7 -DUSE_HAL_DRIVER -DSTM32H743xx -c -I../Drivers/CMSIS/Include -I"/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/leaf" -I../Drivers/CMSIS/DSP/Include -I"/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/Drivers/CMSIS/DSP/Include" -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Middlewares/Third_Party/FatFs/src -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Core/Inc -I../FATFS/Target -I../FATFS/App -Ofast -ffunction-sections -fdata-sections -fno-strict-aliasing -Wall -fstack-usage -MMD -MP -MF"Core/Src/audiostream.d" -MT"Core/Src/audiostream.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Core/Src/audiostream.o"
-arm-none-eabi-gcc -o "Electrosteel_audio.elf" @"objects.list"  -larm_cortexM7lfsp_math -mcpu=cortex-m7 -T"/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/STM32H743ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Electrosteel_audio.map" -Wl,--cref -Wl,--gc-sections -nodefaultlibs -static -L../Drivers/CMSIS/DSP/Lib/GCC/ --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
-Finished building target: Electrosteel_audio.elf
- 
 arm-none-eabi-size   Electrosteel_audio.elf 
-arm-none-eabi-objdump -h -S  Electrosteel_audio.elf  > "Electrosteel_audio.list"
    text	   data	    bss	    dec	    hex	filename
- 211640	    404	34061324	34273368	20af858	Electrosteel_audio.elf
+ 212144	    404	34061576	34274124	20afb4c	Electrosteel_audio.elf
 Finished building: default.size.stdout
  
-Finished building: Electrosteel_audio.list
- 
-18:15:03 **** Incremental Build of configuration Debug for project Electrosteel_audio ****
+12:48:05 **** Incremental Build of configuration Debug for project Electrosteel_audio ****
 make -j7 all 
 arm-none-eabi-size   Electrosteel_audio.elf 
    text	   data	    bss	    dec	    hex	filename
- 211640	    404	34061324	34273368	20af858	Electrosteel_audio.elf
+ 212144	    404	34061576	34274124	20afb4c	Electrosteel_audio.elf
 Finished building: default.size.stdout
  
