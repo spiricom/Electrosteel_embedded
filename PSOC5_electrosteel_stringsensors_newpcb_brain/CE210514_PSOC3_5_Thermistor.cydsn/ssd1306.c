@@ -161,10 +161,7 @@ void sdd1306_invertDisplay(uint8_t i) {
 }
 
 void ssd1306_command(uint8_t c) {
-	// I2C
-	//	uint8_t control = 0x00;   // Co = 0, D/C = 0
 
-	uint8_t i2c_message[2] = {0,0};
 	I2Cbuff1[0] = 0x0;
     I2Cbuff1[1] = c;
 	I2C_MasterWriteBlocking(SSD1306_I2C_ADDRESS, 2, I2C_1_MODE_COMPLETE_XFER);

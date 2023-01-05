@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc2B2de6.s 			page 1
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccL0rQEL.s 			page 1
 
 
    1              		.syntax unified
@@ -58,7 +58,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc2B2de6.s 			page 1
   28:Generated_Source\PSoC5/USB_audio.c **** 
   29:Generated_Source\PSoC5/USB_audio.c **** /* `#START CUSTOM_DECLARATIONS` Place your declaration here */
   30:Generated_Source\PSoC5/USB_audio.c **** 
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc2B2de6.s 			page 2
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccL0rQEL.s 			page 2
 
 
   31:Generated_Source\PSoC5/USB_audio.c **** /* `#END` */
@@ -118,7 +118,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc2B2de6.s 			page 1
   85:Generated_Source\PSoC5/USB_audio.c **** *      
   86:Generated_Source\PSoC5/USB_audio.c **** *   USB_transferState variable is checked to be sure that transfer
   87:Generated_Source\PSoC5/USB_audio.c **** *              completes.
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc2B2de6.s 			page 3
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccL0rQEL.s 			page 3
 
 
   88:Generated_Source\PSoC5/USB_audio.c **** *   USB_currentMute: Contains mute configuration set by Host.
@@ -178,7 +178,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc2B2de6.s 			page 1
   59 0026 05D1     		bne	.L3
  111:Generated_Source\PSoC5/USB_audio.c ****         {
  112:Generated_Source\PSoC5/USB_audio.c ****             /* Request recipient is to endpoint. */
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc2B2de6.s 			page 4
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccL0rQEL.s 			page 4
 
 
  113:Generated_Source\PSoC5/USB_audio.c ****             switch (USB_bRequestReg)
@@ -238,7 +238,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc2B2de6.s 			page 1
  148:Generated_Source\PSoC5/USB_audio.c ****                 #if defined(USB_ENABLE_AUDIO_STREAMING)
  149:Generated_Source\PSoC5/USB_audio.c ****                     if (wValueHi == USB_MUTE_CONTROL)
  150:Generated_Source\PSoC5/USB_audio.c ****                     {
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc2B2de6.s 			page 5
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccL0rQEL.s 			page 5
 
 
  151:Generated_Source\PSoC5/USB_audio.c ****                         /* `#START MUTE_CONTROL_GET_REQUEST` Place multi-channel handler here */
@@ -298,7 +298,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc2B2de6.s 			page 1
  205:Generated_Source\PSoC5/USB_audio.c ****                     if (wValueHi == USB_VOLUME_CONTROL)
  206:Generated_Source\PSoC5/USB_audio.c ****                     {
  207:Generated_Source\PSoC5/USB_audio.c ****                         /* Entity ID Control Selector is VOLUME, */
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc2B2de6.s 			page 6
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccL0rQEL.s 			page 6
 
 
  208:Generated_Source\PSoC5/USB_audio.c ****                         USB_currentTD.wCount = USB_VOLUME_LEN;
@@ -358,7 +358,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc2B2de6.s 			page 1
  259:Generated_Source\PSoC5/USB_audio.c ****         
  260:Generated_Source\PSoC5/USB_audio.c ****         if (USB_RQST_RCPT_EP == RqstRcpt)
   82              		.loc 1 260 0
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc2B2de6.s 			page 7
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccL0rQEL.s 			page 7
 
 
   83 0046 BB79     		ldrb	r3, [r7, #6]	@ zero_extendqisi2
@@ -418,7 +418,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc2B2de6.s 			page 1
  102 0062 DBB2     		uxtb	r3, r3
  103 0064 012B     		cmp	r3, #1
  104 0066 06D0     		beq	.L22
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc2B2de6.s 			page 8
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccL0rQEL.s 			page 8
 
 
  296:Generated_Source\PSoC5/USB_audio.c ****             {
@@ -478,7 +478,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc2B2de6.s 			page 1
  350:Generated_Source\PSoC5/USB_audio.c ****                 #endif /* (USB_DISPATCH_AUDIO_CLASS_AUDIO_CONTROL_SEL_REQUESTS_CALLBACK) */
  351:Generated_Source\PSoC5/USB_audio.c ****                 break;
  352:Generated_Source\PSoC5/USB_audio.c **** 
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc2B2de6.s 			page 9
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccL0rQEL.s 			page 9
 
 
  353:Generated_Source\PSoC5/USB_audio.c ****                 default:
@@ -538,7 +538,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc2B2de6.s 			page 1
  142              		.size	USB_DispatchAUDIOClassRqst, .-USB_DispatchAUDIOClassRqst
  143              		.text
  144              	.Letext0:
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc2B2de6.s 			page 10
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccL0rQEL.s 			page 10
 
 
  145              		.file 2 "Generated_Source\\PSoC5\\cytypes.h"
@@ -553,7 +553,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc2B2de6.s 			page 1
  154 000c 66000000 		.4byte	.LASF18
  155 0010 0C       		.byte	0xc
  156 0011 34010000 		.4byte	.LASF19
- 157 0015 82010000 		.4byte	.LASF20
+ 157 0015 A7010000 		.4byte	.LASF20
  158 0019 00000000 		.4byte	.Ldebug_ranges0+0
  159 001d 00000000 		.4byte	0
  160 0021 00000000 		.4byte	.Ldebug_line0
@@ -568,7 +568,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc2B2de6.s 			page 1
  169 0033 02       		.uleb128 0x2
  170 0034 02       		.byte	0x2
  171 0035 05       		.byte	0x5
- 172 0036 15020000 		.4byte	.LASF2
+ 172 0036 9D010000 		.4byte	.LASF2
  173 003a 02       		.uleb128 0x2
  174 003b 02       		.byte	0x2
  175 003c 07       		.byte	0x7
@@ -598,7 +598,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc2B2de6.s 			page 1
  199 0066 07       		.byte	0x7
  200 0067 15000000 		.4byte	.LASF8
  201 006b 04       		.uleb128 0x4
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc2B2de6.s 			page 11
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccL0rQEL.s 			page 11
 
 
  202 006c 22000000 		.4byte	.LASF14
@@ -624,7 +624,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc2B2de6.s 			page 1
  222 0093 02       		.uleb128 0x2
  223 0094 04       		.byte	0x4
  224 0095 07       		.byte	0x7
- 225 0096 1F020000 		.4byte	.LASF13
+ 225 0096 25020000 		.4byte	.LASF13
  226 009a 05       		.uleb128 0x5
  227 009b 08       		.byte	0x8
  228 009c 03       		.byte	0x3
@@ -650,7 +650,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc2B2de6.s 			page 1
  248 00c5 C8       		.byte	0xc8
  249 00c6 9A000000 		.4byte	0x9a
  250 00ca 0A       		.uleb128 0xa
- 251 00cb FA010000 		.4byte	.LASF22
+ 251 00cb 82010000 		.4byte	.LASF22
  252 00cf 01       		.byte	0x1
  253 00d0 5F       		.byte	0x5f
  254 00d1 6B000000 		.4byte	0x6b
@@ -658,7 +658,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc2B2de6.s 			page 1
  256 00d9 88000000 		.4byte	.LFE0-.LFB0
  257 00dd 01       		.uleb128 0x1
  258 00de 9C       		.byte	0x9c
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc2B2de6.s 			page 12
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccL0rQEL.s 			page 12
 
 
  259 00df 0B       		.uleb128 0xb
@@ -718,7 +718,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc2B2de6.s 			page 1
  313 0022 0B       		.uleb128 0xb
  314 0023 3E       		.uleb128 0x3e
  315 0024 0B       		.uleb128 0xb
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc2B2de6.s 			page 13
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccL0rQEL.s 			page 13
 
 
  316 0025 03       		.uleb128 0x3
@@ -778,7 +778,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc2B2de6.s 			page 1
  370 005b 08       		.uleb128 0x8
  371 005c 21       		.uleb128 0x21
  372 005d 00       		.byte	0
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc2B2de6.s 			page 14
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccL0rQEL.s 			page 14
 
 
  373 005e 49       		.uleb128 0x49
@@ -838,7 +838,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc2B2de6.s 			page 1
  427 0095 13       		.uleb128 0x13
  428 0096 02       		.uleb128 0x2
  429 0097 18       		.uleb128 0x18
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc2B2de6.s 			page 15
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccL0rQEL.s 			page 15
 
 
  430 0098 00       		.byte	0
@@ -898,7 +898,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc2B2de6.s 			page 1
  465      656400
  466              	.LASF7:
  467 0049 6C6F6E67 		.ascii	"long long unsigned int\000"
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc2B2de6.s 			page 16
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccL0rQEL.s 			page 16
 
 
  467      206C6F6E 
@@ -958,7 +958,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc2B2de6.s 			page 1
  488              	.LASF3:
  489 0157 73686F72 		.ascii	"short unsigned int\000"
  489      7420756E 
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc2B2de6.s 			page 17
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccL0rQEL.s 			page 17
 
 
  489      7369676E 
@@ -972,34 +972,34 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc2B2de6.s 			page 1
  493 0176 6C6F6E67 		.ascii	"long double\000"
  493      20646F75 
  493      626C6500 
- 494              	.LASF20:
- 495 0182 433A5C55 		.ascii	"C:\\Users\\JeffSnyder\\Desktop\\psoc_steel3\\PSOC5_"
- 495      73657273 
- 495      5C4A6566 
- 495      66536E79 
- 495      6465725C 
- 496 01b0 656C6563 		.ascii	"electrosteel_stringsensors_newpcb_brain\\CE210514_P"
- 496      74726F73 
- 496      7465656C 
- 496      5F737472 
- 496      696E6773 
- 497 01e2 534F4333 		.ascii	"SOC3_5_Thermistor.cydsn\000"
- 497      5F355F54 
- 497      6865726D 
- 497      6973746F 
- 497      722E6379 
- 498              	.LASF22:
- 499 01fa 5553425F 		.ascii	"USB_DispatchAUDIOClassRqst\000"
- 499      44697370 
- 499      61746368 
- 499      41554449 
- 499      4F436C61 
- 500              	.LASF2:
- 501 0215 73686F72 		.ascii	"short int\000"
- 501      7420696E 
- 501      7400
+ 494              	.LASF22:
+ 495 0182 5553425F 		.ascii	"USB_DispatchAUDIOClassRqst\000"
+ 495      44697370 
+ 495      61746368 
+ 495      41554449 
+ 495      4F436C61 
+ 496              	.LASF2:
+ 497 019d 73686F72 		.ascii	"short int\000"
+ 497      7420696E 
+ 497      7400
+ 498              	.LASF20:
+ 499 01a7 433A5C55 		.ascii	"C:\\Users\\JeffSnyder\\dev\\Electrosteel_embedded\\"
+ 499      73657273 
+ 499      5C4A6566 
+ 499      66536E79 
+ 499      6465725C 
+ 500 01d5 50534F43 		.ascii	"PSOC5_electrosteel_stringsensors_newpcb_brain\\CE21"
+ 500      355F656C 
+ 500      65637472 
+ 500      6F737465 
+ 500      656C5F73 
+ 501 0207 30353134 		.ascii	"0514_PSOC3_5_Thermistor.cydsn\000"
+ 501      5F50534F 
+ 501      43335F35 
+ 501      5F546865 
+ 501      726D6973 
  502              	.LASF13:
- 503 021f 73697A65 		.ascii	"sizetype\000"
+ 503 0225 73697A65 		.ascii	"sizetype\000"
  503      74797065 
  503      00
  504              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

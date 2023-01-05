@@ -6,8 +6,59 @@
 #include "oled.h"
 #include "main.h"
 
-#define myBufferSize 74
 
+#define EEPROM_NECKS_OFFSET 0
+#define EEPROM_COPEDENT_OFFSET 2
+#define COPEDENT_SIZE_IN_BYTES 278 //including name bytes
+#define COPEDENT_SIZE_IN_FLOATS 132 // not including name bytes
+#define NAME_LENGTH_IN_BYTES 14
+
+
+
+#define myBufferSize 32
+void parseSysex(void);
+
+uint8_t sysexBuffer[1024];
+uint32_t sysexPointer = 0;
+uint8_t receivingSysex = 0;
+uint8_t parsingSysex = 0;
+volatile uint8_t presetArray[1024];
+uint8_t presetNumberToWrite = 0;
+uint8_t copedentNumberToWrite = 0;
+uint8_t sendMessageEnd = 0;
+enum presetArraySectionState
+{
+    presetName = 0,
+    initialVals = 2,
+    mapCountNext = 3,
+    mapping = 4,
+    presetEnd = 5,
+};
+uint8_t presetArraySection = presetName;
+
+uint16_t messageArraySendCount = 0;
+uint16_t messageArraySize = 0;
+
+uint8_t sysexMessageInProgress = 0;
+
+uint8_t bufCount = 0;
+volatile uint8_t sendingMessage = 0;
+
+uint32_t currentFloat = 0;
+uint32_t mapCount = 0;
+
+uint16_t valsCount = 0;
+uint16_t mapCountExpectation = 0;
+uint16_t numMappings = 0;
+volatile uint8_t parseThatMF = 0;
+volatile float valCheck = 0.0f;
+volatile float testVal = 0.0f;
+
+int numStrings = 10;
+/*
+#define TUNING_ARRAY_SIZE 258
+uint8_t tuningArray[TUNING_ARRAY_SIZE];
+*/
 
 volatile uint8 usbActivityCounter = 0u;
 uint8 midiMsg[4];
@@ -24,7 +75,7 @@ uint8_t counter = 0;
 uint8_t returnedData[myBufferSize];
 int32_t temper;
 int previousButtons[11];
-int octave = 1;
+int octave = 4;
 uint16_t angle[10];
 uint16_t prevAngle[10];
 
@@ -32,6 +83,10 @@ uint16_t ADC_values[4];
 uint16_t rawAngle = 0;
 uint16_t midiSent = 0;
 uint16_t midiOverflow = 0;
+
+
+uint8_t currentCopedent = 0;
+uint8_t necks[2] = {0,1};
 
 void checkUSB_Vbus(void);
 void sendMIDIAllNotesOff(void);
@@ -94,6 +149,13 @@ CY_ISR(spis_1_ss)
 {
     currentPluckBuffer = !currentPluckBuffer;
 
+    if ((rxBufferPluck[!currentPluckBuffer][0] == 254) && (rxBufferPluck[!currentPluckBuffer][25] == 253)) 
+    {
+        for (int i = 0 ; i < numStrings; i++)
+        {
+            strings[i] = ((rxBufferPluck[!currentPluckBuffer][(i*2)+1] << 8) + rxBufferPluck[!currentPluckBuffer][i*2+2]);
+        }
+    }
     SPIS_1_ClearRxBuffer();
     CyDmaClearPendingDrq(rx1Channel);
 
@@ -133,24 +195,6 @@ CY_ISR(spis_2_ss)
     CyDmaChEnable(rx2Channel, 1);
 }
 
-CY_ISR(SleepIsr_function)
-{
-    if (USB_active)
-    {
-        //check USB activity
-        if( USB_CheckActivity() != 0u ) 
-        {
-            usbActivityCounter = 0u;
-        } 
-        else 
-        {
-            usbActivityCounter++;
-        }
-
-    }
-    //Clear pending interrupt
-    SleepTimer_GetStatus();
-}
 
     static uint8 CYCODE eepromArray[]={ 0, 0 };
                                             
@@ -192,22 +236,26 @@ CY_ISR(Vbus_function)
 void restartSystemCheck()
 {
     eepromReturnValue = Em_EEPROM_Read(0u, eepromArray, 2u);
-    if (*(volatile uint8 *) &eepromArray[0] == 1u)
+    //only do the restart check if there is a USB cable plugged in (to avoid restarting while trying to debug without a usb cable plugged in)
+    if (USB_VBusPresent() == 1)
     {
-        //a flag says we just restarted
-        //write a zero so it knows next time that it's OK to restart
-        array[0] = 0;
-        Em_EEPROM_Write(0u,array,2u);     
-        USB_check_flag = 1;
-    }
-    else
-    {
-       //otherwise, we need to restart
-       array[0] = 1;
-       Em_EEPROM_Write(0u,array,2u);  
-        USB_Stop();
-        I2C_1_Stop();
-       CySoftwareReset();
+        if (*(volatile uint8 *) &eepromArray[0] == 1u)
+        {
+            //a flag says we just restarted
+            //write a zero so it knows next time that it's OK to restart
+            array[0] = 0;
+            Em_EEPROM_Write(0u,array,2u);     
+            USB_check_flag = 1;
+        }
+        else
+        {
+           //otherwise, we need to restart
+           array[0] = 1;
+           Em_EEPROM_Write(0u,array,2u);  
+            USB_Stop();
+            I2C_1_Stop();
+            CySoftwareReset();
+        }
     }
 }
     
@@ -282,16 +330,21 @@ int16_t processed_volumePedal;
 
 float fretMeasurements[4][4] ={
 
-		{62020.0f, 60000.0f, 31785.0f, 0.0f },
+		{62750.0f, 61600.0f, 31785.0f, 0.0f },
 
-		{27600.0f, 29450.0f, 15700.0f, 0.0f},
+		{39600.0f, 41500.0f, 15700.0f, 0.0f},
 
-		{14160.0f, 16180.0f, 8458.0f, 0.0f},
+		{27520.0f, 30200.0f, 8458.0f, 0.0f},
 
-		{3450.0f, 5110.0f, 2674.0f, 0.0f}
+		{9490.0f, 13600.0f, 2674.0f, 0.0f}
 
 	};
 
+#define MAX_NUM_PRESETS 64
+int currentPresetSelection = 0;
+uint8_t presetNamesArray[MAX_NUM_PRESETS][NAME_LENGTH_IN_BYTES];
+uint8_t presetNumberToLoad = 0;
+uint8_t presetLoadedResponse[2] = {255, 0};
 
 
 float fretScaling[4] = {1.0f, 0.6666666666666f, 0.5f, 0.25f};
@@ -307,6 +360,9 @@ uint8_t dualSlider = 0;
 uint8_t enterUp = 1;
 uint8_t voice = 0;
 uint8_t editUp = 1;
+uint8_t oct1Up = 1;
+uint8_t oct4Up = 1;
+
 volatile uint8_t encoderVal[MAX_ENCODERS];
 int encoderNum = 0;
 uint8_t button1Up = 0;
@@ -333,7 +389,9 @@ float pedalsInCents[NUM_PEDALS][NUM_STRINGS] =
 float openStringMidinotes[NUM_STRINGS] = {66.04f,62.88f,67.86f, 64.0f,59.02f, 55.86f, 54.04f, 52.0f, 50.18f,  47.02f, 43.86,  40.0f };
 #endif
 
-float copedent[32][11][NUM_STRINGS];
+#define MAX_NUM_COPEDENTS 7
+float copedent[MAX_NUM_COPEDENTS][11][NUM_STRINGS];
+uint8_t copedentNamesArray[MAX_NUM_COPEDENTS][NAME_LENGTH_IN_BYTES];
 
 float prevStringPitchBend[NUM_STRINGS];
 
@@ -389,8 +447,6 @@ float map(float value, float istart, float istop, float ostart, float ostop)
 }
 
 int currentNeck = 0;
-#define EEPROM_COPEDENT_OFFSET 0
-#define COPEDENT_SIZE_IN_BYTES 528
 
 int main(void)
 {
@@ -414,42 +470,40 @@ int main(void)
         //openStringFrequencies[i] = mtof(openStringMidinotes[i]);
         //stringOctave[i] = 1.0f;
    // }
-    for (int i = 0; i < 11; i++)
-	{
-		int pedalStartLoc = i*48;
-        //for (int j = 0; j < NUM_STRINGS; j++)
-		//{
-			//pedals[i][j] = pow(2.0, (pedalsInSemitones[currentNeck][i][j] / 1200.0));
-		//}
-        for (int j = 0; j < NUM_STRINGS; j++)
-		{
-
-            int stringStartLoc = j*4;
-
-            union breakFloat myTemp;
-            myTemp.b[0] = EEPROM_ReadByte(EEPROM_COPEDENT_OFFSET + stringStartLoc + pedalStartLoc);
-            myTemp.b[1] = EEPROM_ReadByte(EEPROM_COPEDENT_OFFSET + stringStartLoc + pedalStartLoc + 1);
-            myTemp.b[2] = EEPROM_ReadByte(EEPROM_COPEDENT_OFFSET + stringStartLoc + pedalStartLoc + 2);
-            myTemp.b[3] = EEPROM_ReadByte(EEPROM_COPEDENT_OFFSET + stringStartLoc + pedalStartLoc + 3);
-            copedent[0][i][j] = myTemp.f;
-            
-            myTemp.b[0] = EEPROM_ReadByte(EEPROM_COPEDENT_OFFSET + stringStartLoc + pedalStartLoc + COPEDENT_SIZE_IN_BYTES);
-            myTemp.b[1] = EEPROM_ReadByte(EEPROM_COPEDENT_OFFSET + stringStartLoc + pedalStartLoc + COPEDENT_SIZE_IN_BYTES + 1);
-            myTemp.b[2] = EEPROM_ReadByte(EEPROM_COPEDENT_OFFSET + stringStartLoc + pedalStartLoc + COPEDENT_SIZE_IN_BYTES + 2);
-            myTemp.b[3] = EEPROM_ReadByte(EEPROM_COPEDENT_OFFSET + stringStartLoc + pedalStartLoc + COPEDENT_SIZE_IN_BYTES + 3);
-            copedent[1][i][j] = myTemp.f;
+    
+    //read from eeprom which copedents are loaded on which necks
+    necks[0] = EEPROM_ReadByte(EEPROM_NECKS_OFFSET);
+    necks[1] = EEPROM_ReadByte(EEPROM_NECKS_OFFSET + 1);
+    
+    for (int coped = 0; coped < MAX_NUM_COPEDENTS; coped++)
+    {
+        
+        for (int letter = 0; letter < NAME_LENGTH_IN_BYTES; letter++)
+        {
+               copedentNamesArray[coped][letter] = EEPROM_ReadByte(EEPROM_COPEDENT_OFFSET + (coped*COPEDENT_SIZE_IN_BYTES) + letter);
         }
-	}
+        for (int i = 0; i < 11; i++)
+    	{
+    		int pedalStartLoc = (i*24) + NAME_LENGTH_IN_BYTES;
+            for (int j = 0; j < NUM_STRINGS; j++)
+    		{
+                
+                int stringStartLoc = (j*2) + NAME_LENGTH_IN_BYTES;
+                uint16_t tempIntHigh = EEPROM_ReadByte(EEPROM_COPEDENT_OFFSET + stringStartLoc + pedalStartLoc + (coped*COPEDENT_SIZE_IN_BYTES));
+                uint16_t tempIntLow = EEPROM_ReadByte(EEPROM_COPEDENT_OFFSET + stringStartLoc + pedalStartLoc + 1 + (coped*COPEDENT_SIZE_IN_BYTES));
+                copedent[coped][i][j] = (((float)((tempIntHigh << 8) + tempIntLow)) * 0.00390625f) - 128.0f;// (256 value range from -128 to 128, divided by 65536)
+            }
+    	}
+    }
 
     QuadDec_1_Start();
     LED_amber1_Write(0);
     LED_amber2_Write(1);
     LED_amber3_Write(0);
     LED_amber4_Write(0);
+
     //CyDmaChEnable(rxChannel, STORE_TD_CFG_ONCMPLT);
 
-    SPIM_1_Start();
- 
     eepromReturnValue = Em_EEPROM_Init((uint32_t)Em_EEPROM_em_EepromStorage);
     if(eepromReturnValue != CY_EM_EEPROM_SUCCESS)
     {
@@ -459,11 +513,46 @@ int main(void)
     I2C_1_Start();    
     USB_SetPowerStatus(USB_DEVICE_STATUS_SELF_POWERED);
     my_Vbus_ISR_StartEx(Vbus_function);
+    if (USB_VBusPresent())
+    {
+       //restartSystemCheck();
+    }
+    
+    SPIM_1_Start();
+    LED_red1_Write(0);
+    LED_green2_Write(1);
+#if 0
+        for (int i = 0; i < MAX_NUM_PRESETS; i++)
+    {
+        SPIM_2_ClearRxBuffer();
+        CyDmaChEnable(rx2Channel, STORE_TD_CFG_ONCMPLT);
+        CyDmaChEnable(tx2Channel, STORE_TD_CFG_ONCMPLT);
+        //make sure previous SPI2 transmission has completed before transferring the remaining midi data
+        while (0u == ((SPIM_2_ReadTxStatus() & SPIM_2_STS_SPI_DONE) || (SPIM_2_ReadTxStatus() & SPIM_2_STS_SPI_IDLE )))
+        {
+            ;
+        }    
+        if (rx2Buffer[0] == 253) // message that means audio IC is sending preset names)
+        {
+            uint8_t whichPresetToName = rx2Buffer[1];
+            if (whichPresetToName < MAX_NUM_PRESETS)
+            {
+                for (int i = 0; i < 14; i++)
+                {
+                    presetNamesArray[whichPresetToName][i] = rx2Buffer[i+2];
+                }
+            }
+        }
+
+        
+    }
+    #endif
+    
     ADC_SAR_Seq_1_Start();
     ADC_SAR_Seq_1_StartConvert();
     if (!USB_VBusPresent())
     {
-        restartSystemCheck();
+       // restartSystemCheck();
     }
     
     CyDelay(100);
@@ -471,6 +560,10 @@ int main(void)
     status = I2C_MasterWriteBlocking(0x70, 1, I2C_1_MODE_COMPLETE_XFER);
 
     OLED_init();
+    OLEDwriteInt(currentCopedent , 2, 0,FourthLine);
+    OLEDwriteString(" ", 1, OLEDgetCursor(), FourthLine);
+    OLEDwriteString((char *)&copedentNamesArray[currentCopedent][0], NAME_LENGTH_IN_BYTES, OLEDgetCursor(), FourthLine);
+    OLED_draw();
 #if 0
     while(1)
     {
@@ -540,13 +633,19 @@ int main(void)
     isr_SPI1_ss_StartEx(spis_1_ss);
     isr_SPI2_ss_StartEx(spis_2_ss);
     
-    myArray[72] = 254;
-    myArray[73] = 253;
+    myArray[30] = 254;
+    myArray[31] = 253;
 
     main_counter = 0;
 
 	for(;;)
     {
+        
+        if (parseThatMF)
+        {
+            parseSysex();
+        }
+        
         //if (newDataFlag)
         //{
         //}
@@ -672,6 +771,7 @@ int main(void)
         else
         #endif
         { 
+            #if 0
             if (OLEDcount == 0)
             {
                 OLEDclearLine(FirstLine);
@@ -698,17 +798,20 @@ int main(void)
             }
             else if (OLEDcount == 6)
             {
-                OLED_drawFirstLine();
+                //OLED_drawFirstLine();
                 
-                OLEDwriteInt( bar[0] , 6, 0,SecondLine);
-                OLEDwriteInt( bar[1] , 6, 0,ThirdLine);
-                 OLED_draw();
+                //OLEDwriteInt( bar[0] , 6, 0,SecondLine);
+                //OLEDwriteInt(currentCopedent , 2, 0,FourthLine);
+                //OLEDwriteString(" ", 1, OLEDgetCursor(), FourthLine);
+                //OLEDwriteString((char *)&copedentNamesArray[currentCopedent][0], NAME_LENGTH_IN_BYTES, OLEDgetCursor(), FourthLine);
+                 //OLED_draw();
             }
             OLEDcount++;
             if (OLEDcount > 6)
             {
                 OLEDcount = 0;
             }
+            #endif
         }
         
         /*
@@ -895,69 +998,106 @@ int main(void)
                 prevBar[i] = bar[i];
             }
         }
-        if ((rxBufferPluck[!currentPluckBuffer][0] == 254) && (rxBufferPluck[!currentPluckBuffer][25] == 253)) 
+
+        for (int i = 0 ; i < numStrings; i++)
         {
-            for (int i = 0 ; i < 12; i++)
+            if (strings[i] != prevStrings[i])
             {
-                strings[i] = ((rxBufferPluck[!currentPluckBuffer][(i*2)+1] << 7) + rxBufferPluck[!currentPluckBuffer][i*2+2]);
-                if (strings[i] != prevStrings[i])
-                {
-                    noteEvent(i);
-                }
-                
-                prevStrings[i] = strings[i];
+                noteEvent(i);
             }
+            prevStrings[i] = strings[i];
         }
+        
 
 
         
         
         if (!oct1_Read())
         {
-            octave = 0;
+            if (octave > 4)
+            {
+                octave = 4;
+
+            }
+            if ((oct1Up) && (octave > 0))
+            {
+                octave--;
+            }
             LED_amber1_Write(1);
             LED_amber2_Write(0);
             LED_amber3_Write(0);
             LED_amber4_Write(0);
+            oct1Up = 0;
         }
-        else if (!oct2_Read())
+        
+        else if (oct1_Read())
         {
-            octave = 1;
+            oct1Up = 1;
+        }
+        
+        if (!oct2_Read())
+        {
+            octave = 5;
             LED_amber1_Write(0);
             LED_amber2_Write(1);
             LED_amber3_Write(0);
             LED_amber4_Write(0);
         }
-        else if (!oct3_Read())
+        if (!oct3_Read())
         {
-            octave = 2;
+            octave = 6;
             LED_amber1_Write(0);
             LED_amber2_Write(0);
             LED_amber3_Write(1);
             LED_amber4_Write(0);            
         }
-        else if (!oct4_Read())
+        if (!oct4_Read())
         {
-            octave = 3;
+            if (octave < 7)
+            {
+                octave = 7;
+
+            }
+            if ((oct4Up) && (octave < 11))
+            {
+                octave++;
+
+            }
             LED_amber1_Write(0);
             LED_amber2_Write(0);
             LED_amber3_Write(0);
             LED_amber4_Write(1);
+            oct4Up = 0;
+        }
+        
+        else if (oct4_Read())
+        {
+            oct4Up = 1;
         }
         
         if (!neck1_button_Read())
         {
-            neck = 0;
             currentNeck = 0;
+            currentCopedent = necks[currentNeck];
             LED_red1_Write(0);
             LED_green2_Write(1);
+            OLEDwriteInt(currentCopedent , 2, 0,FourthLine);
+            OLEDwriteString(" ", 1, OLEDgetCursor(), FourthLine);
+            OLEDwriteString((char *)&copedentNamesArray[currentCopedent][0], NAME_LENGTH_IN_BYTES, OLEDgetCursor(), FourthLine);
+            OLED_draw();
         }
         if (!neck2_button_Read())
         {
-            neck = 1;
             currentNeck = 1;
+            currentCopedent = necks[currentNeck];
+            
             LED_red1_Write(1);
             LED_green2_Write(0);
+            EEPROM_WriteByte(currentCopedent, EEPROM_NECKS_OFFSET + currentNeck);
+            OLEDwriteInt(currentCopedent , 2, 0,FourthLine);
+            OLEDwriteString(" ", 1, OLEDgetCursor(), FourthLine);
+            OLEDwriteString((char *)&copedentNamesArray[currentCopedent][0], NAME_LENGTH_IN_BYTES, OLEDgetCursor(), FourthLine);
+            OLED_draw();
         }
         
         if ((!enter_button_Read()) && (enterUp))
@@ -975,8 +1115,14 @@ int main(void)
         
         if ((!button1_Read()) && (button1Up))
         {
-            encoderNum -= 1;
-            encoderNum &= 15;
+            currentCopedent -= 1;
+            currentCopedent &= 31;
+            necks[currentNeck] = currentCopedent;
+            EEPROM_WriteByte(currentCopedent, EEPROM_NECKS_OFFSET + currentNeck);
+            OLEDwriteInt(currentCopedent , 2, 0,FourthLine);
+            OLEDwriteString(" ", 1, OLEDgetCursor(), FourthLine);
+            OLEDwriteString((char *)&copedentNamesArray[currentCopedent][0], NAME_LENGTH_IN_BYTES, OLEDgetCursor(), FourthLine);
+            OLED_draw();
             button1Up = 0;
         }
         else if (button1_Read())
@@ -986,8 +1132,14 @@ int main(void)
         
         if ((!button2_Read()) && (button2Up))
         {
-            encoderNum += 1;
-            encoderNum &= 15;
+            currentCopedent += 1;
+            currentCopedent &= 31;
+            necks[currentNeck] = currentCopedent;
+            EEPROM_WriteByte(currentCopedent, EEPROM_NECKS_OFFSET + currentNeck);
+            OLEDwriteInt(currentCopedent , 2, 0,FourthLine);
+            OLEDwriteString(" ", 1, OLEDgetCursor(), FourthLine);
+            OLEDwriteString((char *)&copedentNamesArray[currentCopedent][0], NAME_LENGTH_IN_BYTES, OLEDgetCursor(), FourthLine);
+            OLED_draw();
             button2Up = 0;
         }
         else if (button2_Read())
@@ -998,7 +1150,7 @@ int main(void)
         if ((!button3_Read()) && (button3Up))
         {
             patchNum -= 1;
-            patchNum &= 15;
+            patchNum &= 63;
             button3Up = 0;
         }
         else if (button3_Read())
@@ -1009,7 +1161,7 @@ int main(void)
         if ((!button4_Read()) && (button4Up))
         {
             patchNum += 1;
-            patchNum &= 15;
+            patchNum &= 63;
             button4Up = 0;
         }
         else if (button4_Read())
@@ -1051,7 +1203,7 @@ int main(void)
         
        
         //calculate the pitch of each string based on the current Copedent
-        for (int i = 0; i < NUM_STRINGS; i++)
+        for (int i = 0; i < numStrings; i++)
     	{
     		//interpolate ratios for each of the strings
            /*
@@ -1069,26 +1221,26 @@ int main(void)
             */
     		//then apply those ratios to the fundamental frequencies
     		float tempMIDI = (copedent[currentNeck][0][i] +
-                        (copedent[currentNeck][4][i] * pedals_float[0]) +
-                        (copedent[currentNeck][5][i] * pedals_float[1]) +
-                        (copedent[currentNeck][6][i] * pedals_float[2]) +
-                        (copedent[currentNeck][7][i] * pedals_float[3]) +
-                        (copedent[currentNeck][8][i] * pedals_float[4]) +
-                        (copedent[currentNeck][10][i] * pedals_float[5]) +
-                        (copedent[currentNeck][9][i] * pedals_float[6]) +
-                        (copedent[currentNeck][3][i] * pedals_float[7]) +
-                        (copedent[currentNeck][1][i] * pedals_float[8]) +
-                        (copedent[currentNeck][2][i] * pedals_float[9]));
+                        (copedent[currentCopedent][4][i] * pedals_float[0]) +
+                        (copedent[currentCopedent][5][i] * pedals_float[1]) +
+                        (copedent[currentCopedent][6][i] * pedals_float[2]) +
+                        (copedent[currentCopedent][7][i] * pedals_float[3]) +
+                        (copedent[currentCopedent][8][i] * pedals_float[4]) +
+                        (copedent[currentCopedent][10][i] * pedals_float[5]) +
+                        (copedent[currentCopedent][9][i] * pedals_float[6]) +
+                        (copedent[currentCopedent][3][i] * pedals_float[7]) +
+                        (copedent[currentCopedent][1][i] * pedals_float[8]) +
+                        (copedent[currentCopedent][2][i] * pedals_float[9]));
 
             
-            float openStringMIDI  = copedent[currentNeck][0][i];
+            float openStringMIDI  = copedent[currentCopedent][0][i];
             openStringMIDI_Int[i] = (int)openStringMIDI;
             
             float barMIDI = ftom((invStringMappedPositions[0]) * mtof(tempMIDI));
             
             float computerMIDIOffset = barMIDI - openStringMIDI_Int[i];// + stringOctave[i];
             
-            float pitchBendAmount = (computerMIDIOffset* 341.0f) + 8192.0f;  // 14bit number divide by 2 for signed, then divided by 24 for 24 semitones up/down range
+            float pitchBendAmount = (computerMIDIOffset * 170.6666666666667f) + 8192.0f;  // 14bit number divide by 2 for signed, then divided by 48 for 48 semitones up/down range
             if (pitchBendAmount != prevStringPitchBend[i])
             {
                 sendMIDIPitchBend((uint)pitchBendAmount, i+1);
@@ -1143,34 +1295,33 @@ int main(void)
         myArray[25] = processed_volumePedal >> 8;
         myArray[26] = processed_volumePedal & 0xff;
         */
-        
+        myArray[0] = 1; //sending normal pitch stuff, not a preset send
         for (int i = 0; i < 12; i++)
         {
-            union breakFloat tempBreak;
-            tempBreak.f = stringMIDI[i];
-            
-            
-            myArray[i * 4] = tempBreak.b[0];
-            myArray[(i * 4) + 1] = tempBreak.b[1];
-            myArray[(i * 4) + 2] = tempBreak.b[2];
-            myArray[(i * 4) + 3] = tempBreak.b[3];
+            int scaledMIDI = roundf(stringMIDI[i] * 512.0f); // divide by 128 multiply by 65535
+            myArray[i * 2 + 1] = scaledMIDI >> 8;
+            myArray[(i * 2) + 2] = scaledMIDI & 255;
         }
         
-        myArray[48] = octave | (voice << 4) | (dualSlider << 5) | (neck << 6);
+        myArray[24] = octave | (voice << 4) | (dualSlider << 5) | (neck << 6);
+        /*
         for (int i = 0; i < 4; i++)
         {
             myArray[i+49] = knobs[i];
         }
-        myArray[53] = processed_volumePedal >> 8;
-        myArray[54] = processed_volumePedal & 0xff;
-        myArray[55] = patchNum;
+        */
+        myArray[25] = patchNum;
+        myArray[26] = processed_volumePedal >> 8;
+        myArray[27] = processed_volumePedal & 0xff;
+
+        /*
         for (int i = 0; i < 16; i++)
         {
             myArray[i+56] = encoderVal[i];
         }
-        for(int i = 0; i < 74; i++)
+        */
+        for(int i = 0; i < myBufferSize; i++)
         {
-
             SPIM_1_WriteTxData(myArray[i]);
         }
      }
@@ -1288,16 +1439,13 @@ void checkUSB_Vbus(void)
    if (USB_VBusPresent() == 0)
    {
        USB_Stop();
-       //LED_PWM_Write(0);
        USB_active = 0; 
-        //CySoftwareReset();
    }
    else if (USB_active == 0 )
    {
        USB_Start(0u, USB_3V_OPERATION ); 
         while (0u == USB_GetConfiguration());
         USB_MIDI_EP_Init();
-       //LED_PWM_Write(255);
        USB_active = 1;
    }
    USB_check_flag = 0;
@@ -1311,29 +1459,45 @@ void USB_service(void)
     {
         if(USB_GetConfiguration() != 0u)   
         {
+           // Sleep_isr_StartEx(SleepIsr_function);
+            
+            //SleepTimer_Start();
+        	
             if ((USB_active) && (USB_VBusPresent()))
             {
                 USB_MIDI_EP_Init();
             }
         }
+        else
+        {
+            //SleepTimer_Stop();
+        }    
     }        
     
     if(USB_GetConfiguration() != 0u)    
     {
-        
-        #if(USB_EP_MM != USB__EP_DMAAUTO) 
-            if ((USB_active) && (USB_VBusPresent()))
-            {
-                USB_MIDI_IN_Service();
-            }
-        #endif
 
-        #if(USB_EP_MM != USB__EP_DMAAUTO) 
-            if ((USB_active) && (USB_VBusPresent()))
-            {
-                USB_MIDI_OUT_Service();
-            }
-        #endif
+         /* Reinitialize after SET_CONFIGURATION or SET_INTERFACE Requests */
+        if(USB_IsConfigurationChanged() != 0x00)
+        {
+            USB_LoadInEP(USB_midi_in_ep, USB_midiInBuffer,(uint16) USB_midiInPointer);
+            //USB_LoadInEP(USB_midi_in_ep, USB_midiInBuffer, 64);
+            USB_ReadOutEP(USB_midi_out_ep,USB_midiOutBuffer, 64);
+                                             /* configuring the DMAs for the first time only, the data as soon as received
+                                             in the EP buffer is Transferred by DMA to the buffer as defined here with no CPU intervention */
+            USB_EnableOutEP(USB_midi_out_ep);       /* Note 3.*/
+        }
+        if ((USB_active) && (USB_VBusPresent()))
+        {
+            USB_MIDI_IN_Service();
+        }
+
+
+
+        if ((USB_active) && (USB_VBusPresent()))
+        {
+            USB_MIDI_OUT_Service();
+        }
     }
         
 }
@@ -1362,6 +1526,8 @@ int prevNotes[NUM_STRINGS] = {0,0,0,0,0,0,0,0,0,0,0,0};
 
 void noteEvent(int string)
 {
+    
+    /*
     float tempAmp = strings[string] * 1.5259021896696421759365224689097e-5f;//divide by 65535
     float v = 127.0f + (64.0f * log10f_fast(tempAmp));
     int vInt  = (int) (v*4.0f);
@@ -1369,25 +1535,36 @@ void noteEvent(int string)
     {
         vInt = 127;
     }
-    if (strings[string] == 0)
+    */
+    uint16_t velocity = strings[string];
+    if (velocity > 0)
     {
-        sendMIDINoteOn(prevNotes[string], 0, string+1);
+        //velocity = (((sqrtf((float)velocity) * 0.00001525878903f) - .0239372430f) * 130.114584436252734f);
+        float tempVel = (float)velocity;
+        tempVel = tempVel * 0.00001525878903f;
+        tempVel = sqrtf(tempVel);
+        tempVel = tempVel - 0.0239372430f;
+        tempVel = tempVel * 130.114584436252734f;
+        velocity = (int)tempVel;
+        
+
+        if (velocity > 127)
+        {
+            velocity = 127;
+        }
+        
+        //only update octave on note-ons
+        //stringOctave[string] = powf(2.0f,octave);
+        int noteToSend = ((octave - 4) * 12) + openStringMIDI_Int[string];
+        sendMIDINoteOn(noteToSend , ((uint8_t)velocity), string+1);
+        prevNotes[string] = noteToSend;
+            
     }
     else
     {
-        if (vInt > 0)
-        {
-            //only update octave on note-ons
-            //stringOctave[string] = powf(2.0f,octave);
-            int noteToSend = ((octave - 1) * 12) + openStringMIDI_Int[string];
-            sendMIDINoteOn(noteToSend , ((uint8_t)vInt), string+1);
-            prevNotes[string] = noteToSend;
-        }
-        else
-        {
-             sendMIDINoteOn(prevNotes[string], 0, string+1);
-        }
+        sendMIDINoteOn(prevNotes[string], 0, string+1);
     }
+
 }
 
 void CCEvent(int cc, int val)
@@ -1461,78 +1638,283 @@ void sendMIDIAllNotesOff(void)
 
 
 
-uint8_t sysexBuffer[128];
-uint32_t sysexPointer = 0;
-uint8_t receivingSysex = 0;
-uint8_t parsingSysex = 0;
+
 volatile uint8_t checkStatus = 0;
 volatile uint8_t checkBase = 0;
 
-volatile uint8_t testy = 0;
 
-volatile uint8_t presetArray[74];
+
+int SPI_errors = 0;
 
 void parseSysex(void)
 {
-    // 0 = it's a preset
+    parsingSysex = 1;
+    //0 = it's a preset
     if (sysexBuffer[0] == 0)
     {
-        testy = 1;
-        for(uint32_t i = 0; i < 72; i++)
+        //if (sysexBuffer[2] == 0)
         {
-            if (i < sysexPointer)
-            {   
-                presetArray[i] = sysexBuffer[i];
-            }
-            else
-            {
-                presetArray[i] = 255;
-            }
+            sysexMessageInProgress = 1; // set a flag that we've started a sysex preset transfer. May take multiple sysex parse calls on the chunks to complete
+            currentFloat = 0;
+            presetArraySection = presetName;
         }
-        presetArray[72] = 240;
-        presetArray[73] = 241;
+        presetNumberToWrite = sysexBuffer[1];
         
-        SPIM_1_WriteTxData(presetArray[i]);
-        
-    }
-    //1 = it's a copedent
-    if (sysexBuffer[0] == 1)
-    {
-        if ((sysexBuffer[2] > 49) && (sysexBuffer[2] <= 61))
+        union breakFloat theVal;
+        uint32_t i = 2;
+        uint8_t stoppingPoint = NAME_LENGTH_IN_BYTES+2;
+        for (; i < stoppingPoint; i++)
         {
-            union breakFloat theVal;
-            uint32_t currentFloat = 0;
-            uint32_t pedalToWrite = sysexBuffer[2] - 50;
-            uint16_t pedalStartLoc = pedalToWrite * 48;
-
-
-            for (uint32_t i = 3; i < sysexPointer; i = i+5)
+            presetArray[i-2] = sysexBuffer[i] & 127; // pass on the first 14 elements as 8-bit bytes (they are the chars for the name string)
+            presetNamesArray[presetNumberToWrite][i-2] = sysexBuffer[i] & 127;
+        }
+        uint16_t valsStart = NAME_LENGTH_IN_BYTES;
+        
+        presetArraySection = initialVals;
+        for (; i < sysexPointer; i = i+5)
+        {
+            theVal.u32 = 0;
+            theVal.u32 |= ((sysexBuffer[i] &15) << 28);
+            theVal.u32 |= (sysexBuffer[i+1] << 21);
+            theVal.u32 |= (sysexBuffer[i+2] << 14);
+            theVal.u32 |= (sysexBuffer[i+3] << 7);
+            theVal.u32 |= (sysexBuffer[i+4] & 127);
+            testVal = theVal.f;
+            if (presetArraySection == initialVals)
             {
-                theVal.u32 = 0;
-                theVal.u32 |= ((sysexBuffer[i] &15) << 28);
-                theVal.u32 |= (sysexBuffer[i+1] << 21);
-                theVal.u32 |= (sysexBuffer[i+2] << 14);
-                theVal.u32 |= (sysexBuffer[i+3] << 7);
-                theVal.u32 |= (sysexBuffer[i+4] & 127);
 
-                copedent[currentNeck][pedalToWrite][currentFloat] = theVal.f;
-                uint16_t stringStartLoc = currentFloat * 4;
-                checkBase = EEPROM_COPEDENT_OFFSET + stringStartLoc + pedalStartLoc + (COPEDENT_SIZE_IN_BYTES * currentNeck);
-                checkStatus = EEPROM_WriteByte(theVal.b[0], EEPROM_COPEDENT_OFFSET + stringStartLoc + pedalStartLoc + (COPEDENT_SIZE_IN_BYTES * currentNeck));
-                checkStatus = EEPROM_WriteByte(theVal.b[1], EEPROM_COPEDENT_OFFSET + stringStartLoc + pedalStartLoc + (COPEDENT_SIZE_IN_BYTES * currentNeck) + 1);
-                checkStatus = EEPROM_WriteByte(theVal.b[2], EEPROM_COPEDENT_OFFSET + stringStartLoc + pedalStartLoc + (COPEDENT_SIZE_IN_BYTES * currentNeck) + 2);
-                checkStatus = EEPROM_WriteByte(theVal.b[3], EEPROM_COPEDENT_OFFSET + stringStartLoc + pedalStartLoc + (COPEDENT_SIZE_IN_BYTES * currentNeck) + 3);
+                if (currentFloat == 0)
+                {
+                    valsCount = (uint16_t) theVal.f;
+                    presetArray[valsStart + currentFloat++] = valsCount >> 8;
+                    presetArray[valsStart + currentFloat++] = valsCount & 0xff;
+                }
+                else if (currentFloat < ((valsCount+1)*2))
+                { 
+                    uint16_t intVal = (uint16_t)(theVal.f * 65535.0f);
+                    presetArray[valsStart + currentFloat++] = intVal >> 8;
+                    presetArray[valsStart + currentFloat++] = intVal & 0xff;
+                }
+                else if (currentFloat == ((valsCount+1)*2))
+                {
+                    valCheck = theVal.f;
+                    if ((valCheck < -1.5f) && (valCheck > -2.5f))
+                    {
+                        presetArray[valsStart + currentFloat++] = 0xef;
+                        presetArray[valsStart + currentFloat++] = 0xef;
+                        presetArraySection = mapCountNext;
+                        mapCount = 0;
+                    }
+                    else
+                    {
+                        //error state
+                        SPI_errors++;
+                        sysexMessageInProgress = 0;
+                        sysexPointer = 0;
+                        sendingMessage = 0;
+                        parseThatMF = 0;
+                    }
+                }
+            }
+            else if (presetArraySection == mapCountNext)
+            {
+                mapCountExpectation = (uint16_t)theVal.f;
+                presetArray[valsStart + currentFloat++] = mapCountExpectation >> 8;
+                presetArray[valsStart + currentFloat++] = mapCountExpectation & 0xff;
+                presetArraySection = mapping;
+                numMappings = 0;
+            }
+            else if (presetArraySection == mapping)
+            {
+                // this is the order
+                // source (int), target (int), scalarSource (arrives as -1.0f if no scalar, send as 255 if no scalar)(int), range (float -1.0 to 1.0)
+                if (numMappings < mapCountExpectation)
+                {
+                    if ((mapCount % 4) == 0)
+                    {
+                        presetArray[valsStart + currentFloat++] = (uint8_t)theVal.f;
+                    }
+                    else if  (mapCount % 4 == 1)
+                    {
+                        presetArray[valsStart + currentFloat++] = (uint8_t)theVal.f;
+                    }
+                    else if (mapCount % 4 == 2) //check if the scalar source is -1 (if so send 255 instead of a valid source number)
+                    {
+                        if (theVal.f < 0.0f)
+                        {
+                             presetArray[valsStart + currentFloat++] = 0xff;
+                        }
+                        else
+                        {
+                             presetArray[valsStart + currentFloat++] = (uint8_t)theVal.f;
+                        }
+                    }
+                    else
+                    {
+                        int16_t intVal = (int16_t)(theVal.f * 32767.0f); //keep it signed to allow negative numbers
+                        presetArray[valsStart + currentFloat++] = intVal >> 8;
+                        presetArray[valsStart + currentFloat++] = intVal & 0xff;
+                        numMappings++;
+                    }
+                    mapCount++;
+                }
+                
+
+                else
+                {
+                    //mapcount ended
+                    if ((theVal.f < -2.5f) && (theVal.f > -3.5f))
+                    {
+                        presetArray[valsStart + currentFloat++] = 0xfe;
+                        presetArray[valsStart + currentFloat++] = 0xfe;
+                        presetArraySection = presetEnd;
+                        sysexMessageInProgress = 0;
+                        sendingMessage = 1;
+                        messageArraySize = valsStart + currentFloat;
+                    }
+                    else
+                    {
+                        //error state
+                        SPI_errors++;
+                        sysexMessageInProgress = 0;
+                        sysexPointer = 0;
+                        sendingMessage = 0;
+                        parseThatMF = 0;
+                    }
+                }
+            }
             
-                currentFloat++;         
-            }
         }
     }
-    parsingSysex = 0;
+    #if 0
+    else if (sysexBuffer[0] == 1) //its a tuning
+    {
+        
+        sysexMessageInProgress = 1; // set a flag that we've started a sysex preset transfer. May take multiple sysex parse calls on the chunks to complete
+        currentFloat = 0;
+        presetNumberToWrite = sysexBuffer[1];
+        union breakFloat theVal;
+        for (uint32_t i = 2; i < sysexPointer; i = i+5)
+        {
+            theVal.u32 = 0;
+            theVal.u32 |= ((sysexBuffer[i] &15) << 28);
+            theVal.u32 |= (sysexBuffer[i+1] << 21);
+            theVal.u32 |= (sysexBuffer[i+2] << 14);
+            theVal.u32 |= (sysexBuffer[i+3] << 7);
+            theVal.u32 |= (sysexBuffer[i+4] & 127);
+            testVal = theVal.f;
+            uint16_t intVal = (uint16_t)(theVal.f * 512.0f);//(uint16_t)(theVal.f * 65535.0f);
+            tuningArray[currentFloat++] = intVal >> 8;
+            tuningArray[currentFloat++] = intVal & 0xff;
+        }
+        
+        tuningArray[currentFloat++] = 0xef;
+        tuningArray[currentFloat++] = 0xef;
+                        
+        
+        messageArraySize = currentFloat;
+                    
+        if(messageArraySize != TUNING_ARRAY_SIZE)
+        {
+            //error state
+            SPI_errors++;
+            sysexMessageInProgress = 0;
+            sysexPointer = 0;
+            sendingMessage = 0;
+            parseThatMF = 0;
+        } else 
+        {
+            sysexMessageInProgress = 0;
+            sendingMessage = 2;
+        }
+    }
+    #endif
+    else if (sysexBuffer[0] == 2) //its a copedent
+    {
+        sysexMessageInProgress = 1; // set a flag that we've started a sysex preset transfer. May take multiple sysex parse calls on the chunks to complete
+        currentFloat = 0;
+        copedentNumberToWrite = sysexBuffer[1];
+        currentCopedent = copedentNumberToWrite;
+        necks[currentNeck] = currentCopedent;
+
+              
+        
+        union breakFloat theVal;
+        uint32_t i = 2;
+        uint8_t stoppingPoint = NAME_LENGTH_IN_BYTES+2;
+        for (; i < stoppingPoint; i++)
+        {
+            //presetArray[i-2] = sysexBuffer[i] & 127; // pass on the first 14 elements as 8-bit bytes (they are the chars for the name string)
+            uint8_t tempChar = sysexBuffer[i] & 127;
+            copedentNamesArray[copedentNumberToWrite][i-2] = tempChar;
+            checkBase = EEPROM_COPEDENT_OFFSET + (COPEDENT_SIZE_IN_BYTES * copedentNumberToWrite);
+            checkStatus = EEPROM_WriteByte(tempChar, EEPROM_COPEDENT_OFFSET + (i - 2) + (COPEDENT_SIZE_IN_BYTES * copedentNumberToWrite));
+        }
+        
+        i = NAME_LENGTH_IN_BYTES + 2; // start after the name storage to store the actual values
+
+ 
+        while(i < sysexPointer)
+        {
+            for (uint32_t pedalToWrite = 0; pedalToWrite < 11; pedalToWrite++)
+            {
+                uint16_t pedalStartLoc = (pedalToWrite * 24) + NAME_LENGTH_IN_BYTES;
+                for (uint32_t stringChange = 0; stringChange < 12; stringChange++)
+                {
+                    
+                    theVal.u32 = 0;
+                    theVal.u32 |= ((sysexBuffer[i] &15) << 28);
+                    theVal.u32 |= (sysexBuffer[i+1] << 21);
+                    theVal.u32 |= (sysexBuffer[i+2] << 14);
+                    theVal.u32 |= (sysexBuffer[i+3] << 7);
+                    theVal.u32 |= (sysexBuffer[i+4] & 127);
+                    copedent[copedentNumberToWrite][pedalToWrite][stringChange] = theVal.f;
+                    uint16_t tempIntVersion = (uint16_t)((theVal.f * 256.0f) + 32768.0f);
+                    uint8_t tempHigh = tempIntVersion >> 8;
+                    uint8_t tempLow = tempIntVersion & 255;
+                    
+                    
+                    uint16_t stringStartLoc = stringChange * 2 + NAME_LENGTH_IN_BYTES;
+                    checkBase = EEPROM_COPEDENT_OFFSET + stringStartLoc + pedalStartLoc + (COPEDENT_SIZE_IN_BYTES * copedentNumberToWrite);
+                    checkStatus = EEPROM_WriteByte(tempHigh, EEPROM_COPEDENT_OFFSET + stringStartLoc + pedalStartLoc + (COPEDENT_SIZE_IN_BYTES * copedentNumberToWrite));
+                    checkStatus = EEPROM_WriteByte(tempLow, EEPROM_COPEDENT_OFFSET + stringStartLoc + pedalStartLoc + (COPEDENT_SIZE_IN_BYTES * copedentNumberToWrite) + 1);
+                    currentFloat++;
+                    i = i+5;
+                }
+                
+            }
+        }
+                        
+        
+        messageArraySize = currentFloat;
+                    
+        if(messageArraySize != COPEDENT_SIZE_IN_FLOATS)
+        {
+            //error state
+            SPI_errors++;
+            sysexMessageInProgress = 0;
+            sysexPointer = 0;
+            sendingMessage = 0;
+            parseThatMF = 0;
+        } else 
+        {
+            sysexMessageInProgress = 0;
+            //sendingMessage = 2;  // use this when we are ready to send copedents to the sd cards too
+        }
+    }
     
+    OLEDwriteInt(currentCopedent , 2, 0,FourthLine);
+    OLEDwriteString(" ", 1, OLEDgetCursor(), FourthLine);
+    OLEDwriteString((char *)&copedentNamesArray[currentCopedent][0], NAME_LENGTH_IN_BYTES, OLEDgetCursor(), FourthLine);
+    OLED_draw();
+    parsingSysex = 0;
+    sysexPointer = 0;
+    parseThatMF = 0;
 }
 
-uint8_t tempMIDI[4];
-
+volatile uint8_t tempMIDI[4];
+volatile uint8_t firstSysex = 0;
+const uint16_t sysexPointerMask = 1023;
 // this gets called if the Brain gets a MIDI message from the computer host
 void USB_callbackLocalMidiEvent(uint8 cable, uint8 *midiMsg) CYREENTRANT
 {   
@@ -1550,34 +1932,45 @@ void USB_callbackLocalMidiEvent(uint8 cable, uint8 *midiMsg) CYREENTRANT
             {
                 if (midiMsg[i] < 128)
                 {
-                    sysexBuffer[sysexPointer++] = midiMsg[i];
+                    sysexBuffer[(sysexPointer++) & sysexPointerMask] = midiMsg[i];
                 }
                 else
                 {
                     if (midiMsg[i] == USB_MIDI_EOSEX)
                     {
                         receivingSysex = 0;
-                        parsingSysex = 1;
-                        parseSysex();
+                        //parseSysex();
+                        return;
                      }
                 }
             }
-
         }
-        //TODO: should this be else if? -JS
-        if (midiMsg[USB_EVENT_BYTE0] == USB_MIDI_SYSEX)
+        else if (midiMsg[USB_EVENT_BYTE0] == USB_MIDI_SYSEX)
         {
             if (!parsingSysex)
             {
-                receivingSysex = 1;
-                sysexPointer = 0;
-                sysexBuffer[sysexPointer++] = midiMsg[1];
-                sysexBuffer[sysexPointer++] = midiMsg[2];
+                if (midiMsg[1] == 126) // special message saying that sysex multi-chunk transmission is finished. Parse it!
+                {
+                    parseThatMF = 1;
+
+                    //sysexPointer = 0;
+                }
+                else if (midiMsg[1] == 0 || midiMsg[1] == 1 || midiMsg[1] == 2)
+                {
+                    receivingSysex = 1;
+                    
+                    // if this is the first chunk, put in the first and second elements (following chunks need this data stripped until the final message gets sent)
+                    if (sysexPointer == 0)
+                    {
+                        sysexBuffer[sysexPointer++ & sysexPointerMask] = midiMsg[1];
+                        sysexBuffer[sysexPointer++ & sysexPointerMask] = midiMsg[2];
+                    }
+                }
             }
         }
-        
         cable = cable; // so it doesn't complain about unused variables
     }
 }    
+
 
 /* [] END OF FILE */
