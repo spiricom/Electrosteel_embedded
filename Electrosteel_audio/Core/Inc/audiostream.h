@@ -288,7 +288,8 @@ extern uint32_t displayBufferIndex;
 extern uint8_t numStringsThisBoard;
 extern volatile int firstString;
 extern float stringMIDIPitches[NUM_STRINGS_PER_BOARD];
-extern float paramsFromBrain[20];
+extern tExpSmooth knobSmoothers[12];
+extern tExpSmooth pedalSmoothers[10];
 #endif /* __AUDIOSTREAM_H */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

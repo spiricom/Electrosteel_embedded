@@ -62,7 +62,6 @@ uint8_t SPI_PLUCK_RX[PLUCK_BUFFER_SIZE_TIMES_TWO] __ATTR_RAM_D2;
 uint8_t SPI_LEVERS[LEVER_BUFFER_SIZE_TIMES_TWO] __ATTR_RAM_D2;
 uint8_t SPI_LEVERS_TX[LEVER_BUFFER_SIZE_TIMES_TWO] __ATTR_RAM_D2;
 volatile uint32_t myTester = 0;
-uint8_t levers[2][LEVER_BUFFER_SIZE];
 int currentLeverBuffer = 0;
 
 float random_values[256];
@@ -72,7 +71,7 @@ FILINFO fno;
 DIR dir;
 const TCHAR path = 0;
 
-#define MAX_NUM_PRESETS 50
+#define MAX_NUM_PRESETS 64
 volatile uint8_t writingState = 0;
 volatile float 	audioMasterLevel = 1.0f;
 FIL fdst;
@@ -91,7 +90,8 @@ uint32_t presetWaitingToParse = 0;
 uint32_t presetWaitingToWrite = 0;
 uint32_t presetWaitingToLoad = 0;
 
-
+volatile uint8_t macroNamesArray[MAX_NUM_PRESETS][8][14]__ATTR_RAM_D1;
+uint8_t whichMacroToSendName = 0;
 
 param params[NUM_PARAMS];
 mapping mappings[MAX_NUM_MAPPINGS];
@@ -251,7 +251,7 @@ int main(void)
 
   	if (foundOne == 0)
 	{
-	  parsePreset((NUM_PARAMS*2)+27, 0); //default preset binary
+	  parsePreset((NUM_PARAMS*2)+27+(8*14), 0); //default preset binary
 	}
 	else
 	{
@@ -260,21 +260,21 @@ int main(void)
 
     HAL_SPI_Receive_DMA(&hspi2, SPI_RX, BAR_BUFFER_SIZE_TIMES_TWO);
     HAL_SPI_Receive_DMA(&hspi5, SPI_PLUCK_RX, PLUCK_BUFFER_SIZE_TIMES_TWO);
-    //if (boardNumber != 0)
+    if (boardNumber != 0)
     {
     	HAL_SPI_Receive_DMA(&hspi1, SPI_LEVERS, LEVER_BUFFER_SIZE_TIMES_TWO);
     	//
-    	/*
 
+    	  GPIO_InitTypeDef GPIO_InitStruct = {0};
   	  	  GPIO_InitStruct.Pin = GPIO_PIN_6;
   	  	  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   	  	  GPIO_InitStruct.Pull = GPIO_PULLUP;
   	  	  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-    	 */
+
     }
-    //else
+    else
     {
-    	//HAL_SPI_TransmitReceive_DMA(&hspi1, SPI_LEVERS_TX, SPI_LEVERS, LEVER_BUFFER_SIZE_TIMES_TWO);
+    	HAL_SPI_TransmitReceive_DMA(&hspi1, SPI_LEVERS_TX, SPI_LEVERS, LEVER_BUFFER_SIZE_TIMES_TWO);
     }
     //HAL_Delay(2000); // necessary?
 
@@ -489,9 +489,19 @@ void getPresetNamesFromSDCard(void)
 					{
 						f_read(&SDFile, &buffer, f_size(&SDFile), &bytesRead);
 						f_close(&SDFile);
+						uint16_t bufferIndex = 0;
 						for (int j = 0; j < 14; j++)
 						{
-							presetNamesArray[i][j] = buffer[j];
+							presetNamesArray[i][j] = buffer[bufferIndex];
+							bufferIndex++;
+						}
+						for (int j = 0; j < 8; j++)
+						{
+							for (int k = 0; k < 14; k++)
+							{
+								macroNamesArray[i][j][k] = buffer[bufferIndex];
+								bufferIndex++;
+							}
 						}
 					}
 				}
@@ -858,7 +868,7 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 		 presetNumberToSave = SPI_LEVERS[offset + 1];
 		 uint8_t currentByte = offset+2; // first number says what it is 2nd number says which number it is
 
-		 for (int i = 0; i < 14; i++)
+		 for (int i = 0; i < 28; i++)
 		 {
 			 buffer[bufferPos++] = SPI_LEVERS[currentByte + i];
 
@@ -868,14 +878,18 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 	else if (SPI_LEVERS[offset] == ReceivingKnobs)
 	{
 		 uint8_t currentByte = offset+1;
-		 for (int i = 0; i < numStringsThisBoard; i++)
-		 {
-			for (int i = 0; i < 20; i++)
+
+			for (int i = 0; i < 12; i++)
 			{
-				paramsFromBrain[i] = SPI_LEVERS[i + currentByte] * 0.003921568627451f; //scaled 0.0 to 1.0
+				tExpSmooth_setDest(&knobSmoothers[i], (SPI_LEVERS[i + currentByte] * 0.003921568627451f)); //scaled 0.0 to 1.0
 			}
-			updateStateFromSPIMessage(currentByte);
-		 }
+			currentByte += 12;
+			for (int i = 0; i < 10; i++)
+			{
+				tExpSmooth_setDest(&pedalSmoothers[i], (SPI_LEVERS[i + currentByte ] * 0.003921568627451f)); //scaled 0.0 to 1.0
+			}
+			updateStateFromSPIMessage(offset);
+
 	}
 	else if (SPI_LEVERS[offset] == ReceivingEnd)
 	{
@@ -933,7 +947,28 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 			SPI_LEVERS_TX[offset+13] = presetNamesArray[whichPresetToSendName][11];
 			SPI_LEVERS_TX[offset+14] = presetNamesArray[whichPresetToSendName][12];
 			SPI_LEVERS_TX[offset+15] = presetNamesArray[whichPresetToSendName][13];
-			whichPresetToSendName = (whichPresetToSendName + 1) % MAX_NUM_PRESETS;
+			SPI_LEVERS_TX[offset+16] = whichMacroToSendName;
+			SPI_LEVERS_TX[offset+17] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][0];
+			SPI_LEVERS_TX[offset+18] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][1];
+			SPI_LEVERS_TX[offset+19] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][2];
+			SPI_LEVERS_TX[offset+20] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][3];
+			SPI_LEVERS_TX[offset+21] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][4];
+			SPI_LEVERS_TX[offset+22] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][5];
+			SPI_LEVERS_TX[offset+23] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][6];
+			SPI_LEVERS_TX[offset+24] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][7];
+			SPI_LEVERS_TX[offset+25] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][8];
+			SPI_LEVERS_TX[offset+26] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][9];
+			SPI_LEVERS_TX[offset+27] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][10];
+			SPI_LEVERS_TX[offset+28] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][11];
+			SPI_LEVERS_TX[offset+29] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][12];
+			SPI_LEVERS_TX[offset+30] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][13];
+			SPI_LEVERS_TX[offset+31] = 254;
+			whichMacroToSendName = (whichMacroToSendName + 1);
+			if (whichMacroToSendName >= 8)
+			{
+				whichMacroToSendName = 0;
+				whichPresetToSendName = (whichPresetToSendName + 1) % MAX_NUM_PRESETS;
+			}
 		}
 	}
 
@@ -1053,15 +1088,29 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 	//osc params
 
 
-
+	uint16_t bufferIndex = 0;
 	//read first 14 items in buffer as the 14 character string that is the name of the preset
 	for (int i = 0; i < 14; i++)
 	{
-		presetName[i] = buffer[i];
-		presetNamesArray[presetNumber][i] = buffer[i];
+		presetName[i] = buffer[bufferIndex];
+		presetNamesArray[presetNumber][i] = buffer[bufferIndex];
+		bufferIndex++;
 	}
+
+	//read now ready the 8 14-letter macro names
+	for (int j = 0; j < 8; j++)
+	{
+		for (int k = 0; k < 14; k++)
+		{
+
+			macroNamesArray[presetNumber][j][k] = buffer[bufferIndex];
+			bufferIndex++;
+		}
+	}
+
+
 	//read first element in buffer (after the 14 character name) as a count of how many parameters
-	uint16_t paramCount = (buffer[14] << 8) + buffer[15];
+	uint16_t paramCount = (buffer[bufferIndex] << 8) + buffer[bufferIndex+1];
 	if (paramCount > size)
 	{
 		//error in transmission - give up and don't parse!
@@ -1073,7 +1122,7 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 
 	//check the validity of the transfer by verifying that the param array and mapping arrays both end with the required 0xefef values
 	//should make this a real checksum
-	uint16_t paramEndCheck = (buffer[paramCount*2+16] << 8) + buffer[paramCount*2+17];
+	uint16_t paramEndCheck = (buffer[paramCount*2+bufferIndex+2] << 8) + buffer[paramCount*2+bufferIndex+3];
 	if (paramEndCheck != 0xefef)
 	{
 		//error in transmission - give up and don't parse!
@@ -1082,12 +1131,12 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 		__enable_irq();
 		return;
 	}
-	uint16_t mappingCount = (buffer[paramCount*2+18] << 8) + buffer[paramCount*2+19];
+	uint16_t mappingCount = (buffer[paramCount*2+bufferIndex+4] << 8) + buffer[paramCount*2+bufferIndex+5];
 
 
 	//20 is the 6 bytes plus the 14 characters
 	//paramCount is * 2 because they are 2 bytes per param, mappingCount * 5 because they are 5 bytes per mapping
-	uint16_t mappingEndLocation = (paramCount * 2) + 20 + (mappingCount * 5);
+	uint16_t mappingEndLocation = (paramCount * 2) + (mappingCount * 5) + bufferIndex+6;
 
 	if (mappingEndLocation > size)
 	{
@@ -1113,7 +1162,7 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 
 
 	 //move past the name characters (14 bytes) and paramcount position (2 bytes) in the buffer to start parsing the parameter data
-	uint16_t bufferIndex = 16;
+	bufferIndex = bufferIndex + 2;
 
 	//now read the parameters
 

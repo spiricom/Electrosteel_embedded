@@ -84,7 +84,8 @@ uint8_t numStringsThisBoard = NUM_STRINGS_PER_BOARD;
 tExpSmooth stringFreqSmoothers[NUM_STRINGS_PER_BOARD];
 
 tExpSmooth volumeSmoother;
-tExpSmooth knobSmoothers[4];
+tExpSmooth knobSmoothers[12];
+tExpSmooth pedalSmoothers[10];
 
 tSlide freqSlider[NUM_STRINGS_PER_BOARD];
 
@@ -200,7 +201,7 @@ union breakFloat{
 };
 
 
-float paramsFromBrain[20];
+float paramsFromBrain[29];
 uint stringInputs[NUM_STRINGS];
 
 float octave;
@@ -210,7 +211,7 @@ float stringMappedPositions[NUM_STRINGS];
 float stringFrequencies[NUM_STRINGS];
 
 float volumePedal = 0.0f;
-float knobScaled[4];
+float knobScaled[29];
 float stringMIDIPitches[NUM_STRINGS_PER_BOARD];
 //TODO:
 // frets are measured at 3 7 12 and 19   need to redo these measurements with an accurately set capo
@@ -303,10 +304,11 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 		}
 		else
 		{
-			firstString = boardNumber - 1 * NUM_STRINGS_PER_BOARD;
+			firstString = (boardNumber - 1) * NUM_STRINGS_PER_BOARD;
 			numStringsThisBoard = 2;
 		}
 	}
+
 	else //otherwise 12-string version
 	{
 
@@ -325,9 +327,13 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 
 
 	tExpSmooth_init(&volumeSmoother,0.0f, 0.0005f, &leaf);
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 12; i++)
 	{
 		tExpSmooth_init(&knobSmoothers[i],0.0f, 0.0005f, &leaf);
+	}
+	for (int i = 0; i < 10; i++)
+	{
+		tExpSmooth_init(&pedalSmoothers[i],0.0f, 0.0005f, &leaf);
 	}
 
 
@@ -406,8 +412,8 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 			tVZFilter_setSampleRate(&bell1[i][v], SAMPLE_RATE * OVERSAMPLE);
 			tCompressor_init(&comp[i][v], &leaf);
 			//tCompressor_setTables(&comp[i][v], atoDbTable, dbtoATable, 0.00001f, 4.0f, -90.0f, 30.0f, ATODB_TABLE_SIZE, DBTOA_TABLE_SIZE);
-			//tLinearDelay_initToPool(&delay1[i][v], 4000.0f, 4096, &mediumPool);
-			//tLinearDelay_initToPool(&delay2[i][v], 4000.0f, 4096, &mediumPool);
+			tLinearDelay_initToPool(&delay1[i][v], 4000.0f, 4096, &mediumPool);
+			tLinearDelay_initToPool(&delay2[i][v], 4000.0f, 4096, &mediumPool);
 			tCycle_init(&mod1[i][v], &leaf);
 			tCycle_init(&mod2[i][v], &leaf);
 			tCycle_setFreq(&mod1[i][v], 0.2f);
@@ -1280,22 +1286,14 @@ float  audioTickL(void)
 
 	//float volumeSmoothed = tExpSmooth_tick(&volumeSmoother);
 
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 12; i++)
 	{
 		knobScaled[i] = tExpSmooth_tick(&knobSmoothers[i]);
 		for (int v = 0; v < numStringsThisBoard; v++)
 		{
-			sourceValues[CTRL_SOURCE_OFFSET + i][v] = knobScaled[i];
+			sourceValues[MACRO_SOURCE_OFFSET + i][v] = knobScaled[i];
 		}
 	}
-
-
-/*
-	for (int i = 0; i < numStringsThisBoard; i++)
-	{
-		stringFrequencies[i] = tExpSmooth_tick(&stringFreqSmoothers[i]);
-	}
-*/
 
 
 	float note[numStringsThisBoard];
@@ -2230,7 +2228,26 @@ void HAL_SPI_RxHalfCpltCallback(SPI_HandleTypeDef *hspi)
 		}
 	}
 }
+void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
+{
+	interrupted = 1;
 
+	if ((SPI_LEVERS[62] == 254) && (SPI_LEVERS[63] == 253))
+	{
+		handleSPI(LEVER_BUFFER_SIZE);
+		newLevers = 1;
+	}
+	newLevers = 1;
+}
+void HAL_SPI_TxRxHalfCpltCallback(SPI_HandleTypeDef *hspi)
+{
+	interrupted = 1;
+	if ((SPI_LEVERS[30] == 254) && (SPI_LEVERS[31] == 253))
+	{
+		handleSPI(0);
+		newLevers = 1;
+	}
+}
 
 void __ATTR_ITCMRAM HAL_SAI_TxCpltCallback(SAI_HandleTypeDef *hsai)
 {
