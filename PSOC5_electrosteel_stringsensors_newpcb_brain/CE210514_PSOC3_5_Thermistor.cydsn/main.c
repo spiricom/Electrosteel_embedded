@@ -12,8 +12,8 @@
 #define COPEDENT_SIZE_IN_BYTES 278 //including name bytes
 #define COPEDENT_SIZE_IN_FLOATS 132 // not including name bytes
 #define NAME_LENGTH_IN_BYTES 14
-
-
+#define EEPROM_CALIBRATION_OFFSET (EEPROM_NECKS_OFFSET + EEPROM_COPEDENT_OFFSET + (MAX_NUM_COPEDENTS * COPEDENT_SIZE_IN_BYTES))
+#define CALIBRATION_SIZE_IN_BYTES NUM_PEDALS * 4 //for each pedal, store 2 bytes for high and 2 bytes for low
 
 #define myBufferSize 32
 void parseSysex(void);
@@ -489,18 +489,26 @@ int main(void)
         }
         for (int i = 0; i < 11; i++)
     	{
-    		int pedalStartLoc = (i*24) + NAME_LENGTH_IN_BYTES;
+    		int pedalStartLoc = (i*24);
             for (int j = 0; j < NUM_STRINGS; j++)
     		{
                 
-                int stringStartLoc = (j*2) + NAME_LENGTH_IN_BYTES;
-                uint16_t tempIntHigh = EEPROM_ReadByte(EEPROM_COPEDENT_OFFSET + stringStartLoc + pedalStartLoc + (coped*COPEDENT_SIZE_IN_BYTES));
-                uint16_t tempIntLow = EEPROM_ReadByte(EEPROM_COPEDENT_OFFSET + stringStartLoc + pedalStartLoc + 1 + (coped*COPEDENT_SIZE_IN_BYTES));
+                int stringStartLoc = (j*2);
+                uint16_t tempIntHigh = EEPROM_ReadByte(EEPROM_COPEDENT_OFFSET + stringStartLoc + pedalStartLoc + (coped*COPEDENT_SIZE_IN_BYTES) + NAME_LENGTH_IN_BYTES);
+                uint16_t tempIntLow = EEPROM_ReadByte(EEPROM_COPEDENT_OFFSET + stringStartLoc + pedalStartLoc + 1 + (coped*COPEDENT_SIZE_IN_BYTES)+ NAME_LENGTH_IN_BYTES);
                 copedent[coped][i][j] = (((float)((tempIntHigh << 8) + tempIntLow)) * 0.00390625f) - 128.0f;// (256 value range from -128 to 128, divided by 65536)
             }
     	}
     }
 
+    
+    for (int i = 0; i < NUM_PEDALS; i++)
+    {
+        pedals_low[i] = (EEPROM_ReadByte(EEPROM_CALIBRATION_OFFSET + (i*4)) << 8) + (EEPROM_ReadByte(EEPROM_CALIBRATION_OFFSET + ((i*4) + 1)) & 255);
+        pedals_high[i] = (EEPROM_ReadByte(EEPROM_CALIBRATION_OFFSET + ((i*4) + 2)) << 8) + (EEPROM_ReadByte(EEPROM_CALIBRATION_OFFSET + ((i*4) + 3)) & 255);
+    }
+    calculatePedalRatios();
+                
     //blank out the preset names array so that we can tell when we get the real names from the synth board sd card
     for (int i = 0; i < MAX_NUM_PRESETS; i++)
     {
@@ -538,6 +546,7 @@ int main(void)
     ADC_SAR_Seq_1_StartConvert();
 
             
+    currentCopedent = necks[currentNeck];
     CyDelay(10);
     
     //set up for the OLED screen's first write
@@ -1315,6 +1324,16 @@ int main(void)
                 displayCurrentPresetName();
                 calculatePedalRatios();
                 //TODO: now need to store this in EEPROM. 
+                EEPROM_WriteByte(currentCopedent, EEPROM_NECKS_OFFSET + currentNeck);
+                
+                for (int i = 0; i < NUM_PEDALS; i++)
+                {
+                     EEPROM_WriteByte((pedals_low[i] >> 8), EEPROM_CALIBRATION_OFFSET + (i*4));
+                     EEPROM_WriteByte((pedals_low[i] & 255), EEPROM_CALIBRATION_OFFSET + ((i*4) + 1));
+                     EEPROM_WriteByte((pedals_high[i] >> 8), EEPROM_CALIBRATION_OFFSET + ((i*4) + 2));
+                     EEPROM_WriteByte((pedals_high[i] & 255), EEPROM_CALIBRATION_OFFSET + ((i*4) + 3));
+                }
+
                 // also need to make this a little more hidden - maybe first edit then Enter?
             }
         }
@@ -1362,7 +1381,7 @@ int main(void)
     		stringOctave[i] = powf(2.0f,octave);
             */
     		//then apply those ratios to the fundamental frequencies
-    		float tempMIDI = (copedent[currentNeck][0][i] +
+    		float tempMIDI = (copedent[necks[currentNeck]][0][i] +
                         (copedent[currentCopedent][4][i] * pedals_float[0]) +
                         (copedent[currentCopedent][5][i] * pedals_float[1]) +
                         (copedent[currentCopedent][6][i] * pedals_float[2]) +
@@ -1970,7 +1989,7 @@ void sendMIDIAllNotesOff(void)
 
 
 volatile uint8_t checkStatus = 0;
-volatile uint8_t checkBase = 0;
+volatile uint16_t checkBase = 0;
 
 
 
@@ -2201,7 +2220,7 @@ void parseSysex(void)
         {
             for (uint32_t pedalToWrite = 0; pedalToWrite < 11; pedalToWrite++)
             {
-                uint16_t pedalStartLoc = (pedalToWrite * 24) + NAME_LENGTH_IN_BYTES;
+                uint16_t pedalStartLoc = (pedalToWrite * 24);
                 for (uint32_t stringChange = 0; stringChange < 12; stringChange++)
                 {
                     
@@ -2217,10 +2236,10 @@ void parseSysex(void)
                     uint8_t tempLow = tempIntVersion & 255;
                     
                     
-                    uint16_t stringStartLoc = stringChange * 2 + NAME_LENGTH_IN_BYTES;
-                    checkBase = EEPROM_COPEDENT_OFFSET + stringStartLoc + pedalStartLoc + (COPEDENT_SIZE_IN_BYTES * copedentNumberToWrite);
-                    checkStatus = EEPROM_WriteByte(tempHigh, EEPROM_COPEDENT_OFFSET + stringStartLoc + pedalStartLoc + (COPEDENT_SIZE_IN_BYTES * copedentNumberToWrite));
-                    checkStatus = EEPROM_WriteByte(tempLow, EEPROM_COPEDENT_OFFSET + stringStartLoc + pedalStartLoc + (COPEDENT_SIZE_IN_BYTES * copedentNumberToWrite) + 1);
+                    uint16_t stringStartLoc = stringChange * 2;
+                    checkBase = EEPROM_COPEDENT_OFFSET + stringStartLoc + pedalStartLoc + (COPEDENT_SIZE_IN_BYTES * copedentNumberToWrite) + NAME_LENGTH_IN_BYTES;
+                    checkStatus = EEPROM_WriteByte(tempHigh, checkBase);
+                    checkStatus = EEPROM_WriteByte(tempLow, checkBase + 1);
                     currentFloat++;
                     i = i+5;
                 }
