@@ -84,7 +84,8 @@ uint8_t numStringsThisBoard = NUM_STRINGS_PER_BOARD;
 tExpSmooth stringFreqSmoothers[NUM_STRINGS_PER_BOARD];
 
 tExpSmooth volumeSmoother;
-tExpSmooth knobSmoothers[4];
+tExpSmooth knobSmoothers[12];
+tExpSmooth pedalSmoothers[10];
 
 tSlide freqSlider[NUM_STRINGS_PER_BOARD];
 
@@ -200,7 +201,7 @@ union breakFloat{
 };
 
 
-float paramsFromBrain[16];
+float paramsFromBrain[29];
 uint stringInputs[NUM_STRINGS];
 
 float octave;
@@ -210,7 +211,7 @@ float stringMappedPositions[NUM_STRINGS];
 float stringFrequencies[NUM_STRINGS];
 
 float volumePedal = 0.0f;
-float knobScaled[4];
+float knobScaled[29];
 float stringMIDIPitches[NUM_STRINGS_PER_BOARD];
 //TODO:
 // frets are measured at 3 7 12 and 19   need to redo these measurements with an accurately set capo
@@ -303,10 +304,11 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 		}
 		else
 		{
-			firstString = boardNumber - 1 * NUM_STRINGS_PER_BOARD;
+			firstString = (boardNumber - 1) * NUM_STRINGS_PER_BOARD;
 			numStringsThisBoard = 2;
 		}
 	}
+
 	else //otherwise 12-string version
 	{
 
@@ -325,9 +327,13 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 
 
 	tExpSmooth_init(&volumeSmoother,0.0f, 0.0005f, &leaf);
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 12; i++)
 	{
 		tExpSmooth_init(&knobSmoothers[i],0.0f, 0.0005f, &leaf);
+	}
+	for (int i = 0; i < 10; i++)
+	{
+		tExpSmooth_init(&pedalSmoothers[i],0.0f, 0.0005f, &leaf);
 	}
 
 
@@ -406,8 +412,8 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 			tVZFilter_setSampleRate(&bell1[i][v], SAMPLE_RATE * OVERSAMPLE);
 			tCompressor_init(&comp[i][v], &leaf);
 			//tCompressor_setTables(&comp[i][v], atoDbTable, dbtoATable, 0.00001f, 4.0f, -90.0f, 30.0f, ATODB_TABLE_SIZE, DBTOA_TABLE_SIZE);
-			//tLinearDelay_initToPool(&delay1[i][v], 4000.0f, 4096, &mediumPool);
-			//tLinearDelay_initToPool(&delay2[i][v], 4000.0f, 4096, &mediumPool);
+			tLinearDelay_initToPool(&delay1[i][v], 4000.0f, 4096, &mediumPool);
+			tLinearDelay_initToPool(&delay2[i][v], 4000.0f, 4096, &mediumPool);
 			tCycle_init(&mod1[i][v], &leaf);
 			tCycle_init(&mod2[i][v], &leaf);
 			tCycle_setFreq(&mod1[i][v], 0.2f);
@@ -460,6 +466,35 @@ float octaveRatios[4] = {0.5f, 1.0f, 2.0f, 4.0f};
 int octaveIndex = 1;
 int stringOctaveIndex[4];
 const int syncMap[3] = {2, 0, 1};
+
+
+void updateStateFromSPIMessage(uint8_t offset)
+{
+	int modeBit = SPI_LEVERS[24 + offset];
+
+	neck = (modeBit >> 6) & 1;
+	dualSlider = (modeBit >> 5) & 1;
+
+	edit = (modeBit >> 4) & 1;
+	voice = SPI_LEVERS[25 + offset];
+
+	if (voice != prevVoice)
+	{
+		presetWaitingToLoad = 1;
+		presetNumberToLoad = voice;
+	}
+	prevVoice = voice;
+
+	octave = (((int32_t) (modeBit & 15) - 5 ) * 12.0f);
+	//octaveIndex = (modeBit & 15);
+	//octave = powf(2.0f,((int32_t) (modeBit & 3) - 1 ));
+
+	volumePedalInt = ((uint16_t)SPI_LEVERS[26 + offset] << 8) + ((uint16_t)SPI_LEVERS[27 + offset] & 0xff);
+	volumePedal = volumePedalInt * 0.0002442002442f;
+	tExpSmooth_setDest(&volumeSmoother,volumePedal);
+}
+
+
 uint32_t timeMIDI = 0;
 uint32_t timeFrame = 0;
 float frameLoadPercentage = 0.0f;
@@ -542,11 +577,12 @@ void audioFrame(uint16_t buffer_offset)
 	//new message format
 	// 12 strings midi pitches as 16bit numbers = 24 values, plus an identification byte and two check bytes at the end = 27 bytes.
 	//other options are
+#if 0
 	if (newLevers)
 	{
 		int currentLeverBufferL = currentLeverBuffer;
 
-		if ((SPI_LEVERS[72 + (currentLeverBufferL * 74)] == 254) && (SPI_LEVERS[73 + (currentLeverBufferL * 74)] == 253))
+		if ((SPI_LEVERS[30 + (currentLeverBufferL * 74)] == 254) && (SPI_LEVERS[31 + (currentLeverBufferL * 74)] == 253))
 		{
 			for (int i = 0; i < 16; i++)
 			{
@@ -594,7 +630,7 @@ void audioFrame(uint16_t buffer_offset)
 			tExpSmooth_setDest(&volumeSmoother,volumePedal);
 		}
 	}
-
+#endif
 
 	if (newPluck)
 	{
@@ -773,11 +809,11 @@ void __ATTR_ITCMRAM oscillator_tick(float note, int string)
 
 		uint32_t tempCountappr = DWT->CYCCNT;
 		float tempMIDI = tExpSmooth_tick(&pitchSmoother[osc][string]);
-		float tempIndexF =((tempMIDI * 100.0f) + 16384.0f);
+		float tempIndexF =((LEAF_clip(-200.0f, tempMIDI, 200.0f) * 100.0f) + 16384.0f);
 		int tempIndexI = (int)tempIndexF;
 		tempIndexF = tempIndexF -tempIndexI;
 
-		float freqToSmooth1 = mtofTable[tempIndexI];
+		float freqToSmooth1 = mtofTable[tempIndexI & 32767];
 		float freqToSmooth2 = mtofTable[(tempIndexI + 1) & 32767];
 		freqToSmooth = (freqToSmooth1 * (1.0f - tempIndexF)) + (freqToSmooth2 * tempIndexF);
 		timeApprox = DWT->CYCCNT - tempCountappr;
@@ -1250,22 +1286,14 @@ float  audioTickL(void)
 
 	//float volumeSmoothed = tExpSmooth_tick(&volumeSmoother);
 
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 12; i++)
 	{
 		knobScaled[i] = tExpSmooth_tick(&knobSmoothers[i]);
 		for (int v = 0; v < numStringsThisBoard; v++)
 		{
-			sourceValues[CTRL_SOURCE_OFFSET + i][v] = knobScaled[i];
+			sourceValues[MACRO_SOURCE_OFFSET + i][v] = knobScaled[i];
 		}
 	}
-
-
-/*
-	for (int i = 0; i < numStringsThisBoard; i++)
-	{
-		stringFrequencies[i] = tExpSmooth_tick(&stringFreqSmoothers[i]);
-	}
-*/
 
 
 	float note[numStringsThisBoard];
@@ -1380,7 +1408,7 @@ float  audioTickL(void)
 
 	return masterSample * audioMasterLevel * 0.98f;
 }
-
+#if 0
 void __ATTR_ITCMRAM sendNoteOn(uint8_t note, uint8_t velocity)
 {
 	;
@@ -1393,7 +1421,7 @@ void __ATTR_ITCMRAM sendPitchBend(uint8_t value, uint8_t ctrl)
 {
 	;
 }
-#if 0
+
 void __ATTR_ITCMRAM sendNoteOn(uint8_t note, uint8_t velocity)
 {
 	if (velocity > 0)
@@ -2146,7 +2174,11 @@ void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
 	}
 	if (hspi == &hspi1)
 	{
-
+		if ((SPI_LEVERS[62] == 254) && (SPI_LEVERS[63] == 253))
+		{
+			handleSPI(LEVER_BUFFER_SIZE);
+			newLevers = 1;
+		}
 		/*
 		for (int i = 0; i < 74; i++)
 		{
@@ -2154,7 +2186,6 @@ void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
 		}
 		*/
 		newLevers = 1;
-		currentLeverBuffer = 1;
 	}
 }
 
@@ -2190,17 +2221,33 @@ void HAL_SPI_RxHalfCpltCallback(SPI_HandleTypeDef *hspi)
 	}
 	if (hspi == &hspi1)
 	{
-		/*
-		for (int i = 0; i < 74; i++)
+		if ((SPI_LEVERS[30] == 254) && (SPI_LEVERS[31] == 253))
 		{
-			levers[0][i] = SPI_LEVERS[i];
+			handleSPI(0);
+			newLevers = 1;
 		}
-		*/
-		newLevers = 1;
-		currentLeverBuffer = 0;
 	}
 }
+void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
+{
+	interrupted = 1;
 
+	if ((SPI_LEVERS[62] == 254) && (SPI_LEVERS[63] == 253))
+	{
+		handleSPI(LEVER_BUFFER_SIZE);
+		newLevers = 1;
+	}
+	newLevers = 1;
+}
+void HAL_SPI_TxRxHalfCpltCallback(SPI_HandleTypeDef *hspi)
+{
+	interrupted = 1;
+	if ((SPI_LEVERS[30] == 254) && (SPI_LEVERS[31] == 253))
+	{
+		handleSPI(0);
+		newLevers = 1;
+	}
+}
 
 void __ATTR_ITCMRAM HAL_SAI_TxCpltCallback(SAI_HandleTypeDef *hsai)
 {

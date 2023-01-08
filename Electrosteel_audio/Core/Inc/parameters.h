@@ -18,9 +18,9 @@ typedef void (*setParam_t)(float, int, int);
 enum SPIMessage
 {
 	Blank = 0,
-	ReceivingMIDI,
+	ReceivingPitches,
 	ReceivingPreset,
-	ReceivingTuning,
+	ReceivingKnobs,
 	LoadingPreset,
 	WaitingForLoadAck,
 	ReceivingEnd =  253
@@ -56,6 +56,7 @@ enum SPIMessage
 
 #define OSC_SOURCE_OFFSET 0
 #define NOISE_SOURCE_OFFSET 3
+#define MACRO_SOURCE_OFFSET 4
 #define CTRL_SOURCE_OFFSET 12
 #define MIDI_KEY_SOURCE_OFFSET 17
 #define VELOCITY_SOURCE_OFFSET 18
