@@ -18,17 +18,18 @@
 #define myBufferSize 32
 void parseSysex(void);
 
-uint8_t sysexBuffer[1024];
+uint8_t sysexBuffer[2048];
 uint32_t sysexPointer = 0;
 uint8_t receivingSysex = 0;
 uint8_t parsingSysex = 0;
-volatile uint8_t presetArray[1024];
+volatile uint8_t presetArray[2048];
 uint8_t presetNumberToWrite = 0;
 uint8_t copedentNumberToWrite = 0;
 uint8_t sendMessageEnd = 0;
 enum presetArraySectionState
 {
     presetName = 0,
+    macroNames = 1,
     initialVals = 2,
     mapCountNext = 3,
     mapping = 4,
@@ -43,7 +44,7 @@ uint8_t sysexMessageInProgress = 0;
 
 uint8_t bufCount = 0;
 volatile uint8_t sendingMessage = 0;
-
+volatile uint8_t sendKnobs = 0;
 uint32_t currentFloat = 0;
 uint32_t mapCount = 0;
 
@@ -67,6 +68,9 @@ uint8_t prevVBUS = 0;
 volatile uint8_t USB_active = 0;
 volatile uint8_t USB_check_flag = 0;
 
+
+uint8 inBuffer[myBufferSize];
+
 uint8 myArray[myBufferSize];
 uint8 myInputArray[2];
 int32_t linearPotValue32Bit[2];
@@ -84,6 +88,7 @@ uint16_t rawAngle = 0;
 uint16_t midiSent = 0;
 uint16_t midiOverflow = 0;
 
+uint8_t macroKnobValues[8];
 
 uint8_t currentCopedent = 0;
 uint8_t necks[2] = {0,1};
@@ -106,11 +111,26 @@ void DmaRxConfiguration(void);
 #define DMA_RX_SRC_BASE             (CYDEV_PERIPH_BASE)
 #define DMA_RX_DST_BASE             (CYDEV_SRAM_BASE)
 
+void DmaTxConfiguration(void);
+
+/* DMA Configuration for DMA_TX */
+#define DMA_TX_BYTES_PER_BURST      (1u)
+#define DMA_TX_REQUEST_PER_BURST    (1u)
+#define DMA_TX_SRC_BASE             (CYDEV_SRAM_BASE)
+#define DMA_TX_DST_BASE             (CYDEV_PERIPH_BASE)
+
 #define PLUCK_BUFFER_SIZE                 (26u)
 #define BAR_BUFFER_SIZE                 (8u)
 #define STORE_TD_CFG_ONCMPLT        (1u)
 uint8 rx1Channel, rx2Channel __attribute__((aligned(32)));
-uint8 rx1TD[2], rx2TD[2] __attribute__((aligned(32)));
+uint8 rx1TD[2], rx2TD[2]  __attribute__((aligned(32)));
+
+volatile uint8 txChannel __attribute__((aligned(32)));
+volatile uint8 txTD __attribute__((aligned(32)));
+
+volatile uint8 rx3Channel __attribute__((aligned(32)));
+volatile uint8 rx3TD __attribute__((aligned(32)));
+
 
 volatile uint8 rxBufferPluck[2][PLUCK_BUFFER_SIZE] __attribute__((aligned(32)));
 volatile uint8 rxBufferBar[2][BAR_BUFFER_SIZE] __attribute__((aligned(32)));
@@ -317,13 +337,20 @@ volatile uint8_t I2Cbuff1[256];
 volatile uint8_t I2Cbuff2[16];
 volatile uint8_t send_it = 0;
 
+
+//first mux, 0x70 is first element of array. 
+//If sent to output 5 of this first mux, signal goes to 
+// the ethernet cable, and a second mux is in the foot pedal at the end of that cable. This channel is selected with the second element of the array
+//so the order of I2C communication is ( foot pedals 1-5, knee levers 1-5, volume pedal, OLED display )
 uint8_t mux_states[12][2] = {{5,0}, {5,1}, {5,2}, {5,3}, {5,4}, {0, 0}, {1, 0}, {3, 0}, {4, 0}, {2, 0}, {5, 5},{6,0}};
+uint8_t i2c_skipped[12] = {0,0,0,0,0,0,0,1,1,1,0,0}; //so that pedals and levers can be marked as skipped if communication fails because they are unconnected
 uint16_t pedals_low[10] = {2691, 2305, 2457, 526, 3738, 2307, 3014, 2190, 2793, 1318};
 uint16_t pedals_high[10] = {2797, 2405, 2580, 647, 3854, 2461, 3141, 2353, 2934, 1504};
 uint16_t deadzone = 150;
 uint16_t volumePedal = 4095;
 uint16_t processed_pedals[10];
 uint16_t prev_processed_pedals[10];
+uint8_t pedals8bit[10];
 int16_t prev_processed_volumePedal;
 int16_t processed_volumePedal;
 
@@ -339,12 +366,16 @@ float fretMeasurements[4][4] ={
 		{9490.0f, 13600.0f, 2674.0f, 0.0f}
 
 	};
-
+#define NUM_MACROS 8
 #define MAX_NUM_PRESETS 64
 int currentPresetSelection = 0;
 uint8_t presetNamesArray[MAX_NUM_PRESETS][NAME_LENGTH_IN_BYTES];
 uint8_t presetNumberToLoad = 0;
 uint8_t presetLoadedResponse[2] = {255, 0};
+
+
+uint8_t macroNamesArray[MAX_NUM_PRESETS][NUM_MACROS][NAME_LENGTH_IN_BYTES];
+
 
 
 float fretScaling[4] = {1.0f, 0.6666666666666f, 0.5f, 0.25f};
@@ -372,50 +403,13 @@ uint8_t button4Up = 0;
 uint8_t patchNum = 0;
 #define NUM_STRINGS 12
 #define NUM_PEDALS 10
-#if 0
-float pedalsInCents[NUM_PEDALS][NUM_STRINGS] =
-{
-		{-0.16f, 0.0f, 0.0f, 0.0f, 1.84f, 0.0f, -0.16f, 0.0f, 0.0f, 1.84f, 0.0f, 0.0f},
-		{0.0f, 0.0f, 116.0f, 0.0f, 0.0f, 116.0f, 0.0f, 0.0f, -14.0f, 0.0f, 116.0f, 0.0f},
-		{-16.0f, 0.0f, 0.0f, 184.0f, 184.0f, 0.0f, -16.0f, 0.0f, 0.0f, 0.0f, 0.f, 0.0f},
-		{0.0f, 0.0f, 0.0f, 0.0f, -200.0f, -200.0f, 0.0f, 0.0f, 0.0f, -200.0f, -200.0f, 0.0f},
-        {-2400.0f, -2400.0f, -2400.0f, -2400.0f, -2400.0f, -2400.0f, -2400.0f, -2400.0f, -2400.0f, -2400.0f, -2400.0f, -2400.0f},
-        {0.0f, 0.0f, 0.0f, -112.0f, 0.0f, 0.0f, 0.0f, -112.0f, 0.0f, 0.0f, 0.0f, -112.0f},
-        {0.0f, 0.0f, 0.0f, 75.0f, 0.0f, 0.0f, 0.0f, 75.0f, 0.0f, 0.0f, 0.0f, 75.0f},
-        {-14.0f, -204.0f, 0.0f, 0.0f, 0.0f, 0.0f, -14.0f, 0.0f, -134.0f, 0.0f, 0.0f, 0.0f},
-		{186.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f},
-		{0.0f, 0.0f, 0.0f, 0.0f, -100.0f, 0.0f, 0.0f, 0.0f, 0.0f, -100.0f, 0.0f, 0.0f},
-};
-float openStringMidinotes[NUM_STRINGS] = {66.04f,62.88f,67.86f, 64.0f,59.02f, 55.86f, 54.04f, 52.0f, 50.18f,  47.02f, 43.86,  40.0f };
-#endif
+
 
 #define MAX_NUM_COPEDENTS 7
 float copedent[MAX_NUM_COPEDENTS][11][NUM_STRINGS];
 uint8_t copedentNamesArray[MAX_NUM_COPEDENTS][NAME_LENGTH_IN_BYTES];
 
 float prevStringPitchBend[NUM_STRINGS];
-
-
-#if 0 
-
-
-float pedalsInCents[NUM_PEDALS][NUM_STRINGS] =
-{
-    {0.0f, 0.0f, -100.f, 0.0f, 0.0f, -100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f},
-    {0.0f, 0.0f, 0.0f, 0.0f, 200.0f, 0.0f, 0.0f, 0.0f, 200.0f, 0.0f, 0.0f, 0.0f},
-	{0.0f, 0.0f, 100.0f, 0.0f, 0.0f, 100.0f, 0.0f, 0.0f, 0.0f, 100.0f, 0.0f, 0.0f},
-	{0.0f, 0.0f, 0.0f, 200.0f, 200.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.f, 0.0f},
-	{200.0f, 100.f, 0.0f, 0.0f, 0.0f, 0.0f, 200.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f},
-    
-    {0.0f, -200.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -200.0f, 0.0f, 0.0f, 0.0f, 0.0f},
-    {0.0f, 0.0f, 0.0f, -100.0f, 0.0f, 0.0f, 0.0f, -100.0f, 0.0f, 0.0f, 0.0f, 0.0f},
-    {0.0f, -100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 300.0f, 300.0f, 0.0f, 0.0f},
-	{0.0f, 0.0f, 0.0f, 100.0f, 0.0f, 0.0f, 0.0f, 100.0f, 0.0f, 0.0f, 0.0f, 0.0f},
-	{0.0f, 0.0f, 0.0f, 0.0f, -100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f},
-};
-
-float openStringMidinotes[NUM_STRINGS] = {66.0f, 63.0f, 68.0f,  64.0f, 59.0f, 56.0f, 54.0f, 52.0f, 47.0f, 44.0f,40.0f, 35.0f };
-#endif
 
 float pedals[NUM_PEDALS][NUM_STRINGS];
 
@@ -430,31 +424,38 @@ float stringMIDI[NUM_STRINGS];
 int openStringMIDI_Int[NUM_STRINGS];
 int OLEDcount = 0;
 
-/*
-float fretMeasurements[4][2] ={
-		{53699.0f, 62199.0f},
-		{23462.0f, 30653.0f},
-		{27336.0f, 28186.0f},
-		{9460.0f, 9849.0f}
-	};
-float fretScaling[4] = {1.0f, 0.5f, 0.5f, 0.25f};
-*/
+int mainOLEDWaitingToSend = 0;
+int macroOLEDWaitingToSend = 0;
+
+int presetAlreadyDisplayed[MAX_NUM_PRESETS];
+
 float pedals_float[NUM_PEDALS] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
 
 float map(float value, float istart, float istop, float ostart, float ostop)
 {
     return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
 }
+void displayCurrentPresetName();
 
 int currentNeck = 0;
 
-int main(void)
+int editMode = 0;
+int calibrationMode = 0;
+
+void burnInitialPedalZeroPositions()
 {
     
-	CYGlobalIntEnable; 
+}
 
-    EEPROM_Start();
+void calibratePedals()
+{
+
     
+}
+
+void calculatePedalRatios()
+{
+
     //add deadzones on edges of pedal sensing
     for (int i = 0; i < NUM_PEDALS; i++)
     {
@@ -465,11 +466,15 @@ int main(void)
         pedalDiff =(float)pedals_high[i] - (float)pedals_low[i];
         pedalRatios[i] = 4095.0f / pedalDiff;
     }
-    //for (int i = 0; i < NUM_STRINGS; i++)
-    //{
-        //openStringFrequencies[i] = mtof(openStringMidinotes[i]);
-        //stringOctave[i] = 1.0f;
-   // }
+}
+int main(void)
+{
+    
+	CYGlobalIntEnable; 
+
+    EEPROM_Start();
+
+
     
     //read from eeprom which copedents are loaded on which necks
     necks[0] = EEPROM_ReadByte(EEPROM_NECKS_OFFSET);
@@ -496,13 +501,22 @@ int main(void)
     	}
     }
 
+    //blank out the preset names array so that we can tell when we get the real names from the synth board sd card
+    for (int i = 0; i < MAX_NUM_PRESETS; i++)
+    {
+        for (int j = 0; j < NAME_LENGTH_IN_BYTES; j++)
+        {
+            presetNamesArray[i][j] = 255;
+        }
+        presetAlreadyDisplayed[i] = 0;
+    }
+    
     QuadDec_1_Start();
     LED_amber1_Write(0);
     LED_amber2_Write(1);
     LED_amber3_Write(0);
     LED_amber4_Write(0);
 
-    //CyDmaChEnable(rxChannel, STORE_TD_CFG_ONCMPLT);
 
     eepromReturnValue = Em_EEPROM_Init((uint32_t)Em_EEPROM_em_EepromStorage);
     if(eepromReturnValue != CY_EM_EEPROM_SUCCESS)
@@ -510,52 +524,23 @@ int main(void)
        // HandleError();
     }
     uint8_t myArrayCounter = 0;
-    I2C_1_Start();    
+  
+    I2C_1_Start();  
     USB_SetPowerStatus(USB_DEVICE_STATUS_SELF_POWERED);
     my_Vbus_ISR_StartEx(Vbus_function);
-    if (USB_VBusPresent())
-    {
-       //restartSystemCheck();
-    }
+
     
-    SPIM_1_Start();
     LED_red1_Write(0);
     LED_green2_Write(1);
-#if 0
-        for (int i = 0; i < MAX_NUM_PRESETS; i++)
-    {
-        SPIM_2_ClearRxBuffer();
-        CyDmaChEnable(rx2Channel, STORE_TD_CFG_ONCMPLT);
-        CyDmaChEnable(tx2Channel, STORE_TD_CFG_ONCMPLT);
-        //make sure previous SPI2 transmission has completed before transferring the remaining midi data
-        while (0u == ((SPIM_2_ReadTxStatus() & SPIM_2_STS_SPI_DONE) || (SPIM_2_ReadTxStatus() & SPIM_2_STS_SPI_IDLE )))
-        {
-            ;
-        }    
-        if (rx2Buffer[0] == 253) // message that means audio IC is sending preset names)
-        {
-            uint8_t whichPresetToName = rx2Buffer[1];
-            if (whichPresetToName < MAX_NUM_PRESETS)
-            {
-                for (int i = 0; i < 14; i++)
-                {
-                    presetNamesArray[whichPresetToName][i] = rx2Buffer[i+2];
-                }
-            }
-        }
 
-        
-    }
-    #endif
     
     ADC_SAR_Seq_1_Start();
     ADC_SAR_Seq_1_StartConvert();
-    if (!USB_VBusPresent())
-    {
-       // restartSystemCheck();
-    }
+
+            
+    CyDelay(10);
     
-    CyDelay(100);
+    //set up for the OLED screen's first write
     I2Cbuff1[0] = 1<<6;
     status = I2C_MasterWriteBlocking(0x70, 1, I2C_1_MODE_COMPLETE_XFER);
 
@@ -564,6 +549,14 @@ int main(void)
     OLEDwriteString(" ", 1, OLEDgetCursor(), FourthLine);
     OLEDwriteString((char *)&copedentNamesArray[currentCopedent][0], NAME_LENGTH_IN_BYTES, OLEDgetCursor(), FourthLine);
     OLED_draw();
+    
+    //initialize the macro knob adc to scan all knobs
+    I2Cbuff1[0] = 1<<2;
+    status = I2C_MasterWriteBlocking(0x70, 1, I2C_1_MODE_COMPLETE_XFER);
+    
+    //I2Cbuff1[0] = 0xf; //message says scan single-ended mode from beginning to 8th knob (scan all knobs)
+    //status = I2C_MasterWriteBlocking(0x13, 1, I2C_1_MODE_COMPLETE_XFER);
+    
 #if 0
     while(1)
     {
@@ -629,6 +622,7 @@ int main(void)
     SPIS_1_Start();  
     SPIM_1_Start();  
     SPIS_2_Start(); 
+    DmaTxConfiguration();
     DmaRxConfiguration();
     isr_SPI1_ss_StartEx(spis_1_ss);
     isr_SPI2_ss_StartEx(spis_2_ss);
@@ -731,7 +725,7 @@ int main(void)
         }
         */    
 
-        #if 0 //sensev levers and pedals
+       //sense levers and pedals
         if (mux_states[main_counter][0] != last_mux)
         {
             I2Cbuff1[0] = 1<<mux_states[main_counter][0];
@@ -739,11 +733,15 @@ int main(void)
         }
         last_mux = mux_states[main_counter][0];
         
+        
         CyDelayUs(10);
         if (mux_states[main_counter][0] == 5)
         {
-            I2Cbuff1[0] = 1<<mux_states[main_counter][1];
-            status = I2C_MasterWriteBlocking(0x71, 1, I2C_1_MODE_COMPLETE_XFER);
+            if (!i2c_skipped[main_counter])
+            {
+                I2Cbuff1[0] = 1<<mux_states[main_counter][1];
+                status = I2C_MasterWriteBlocking(0x71, 1, I2C_1_MODE_COMPLETE_XFER);
+            }
         }
 
         CyDelayUs(10);
@@ -751,26 +749,74 @@ int main(void)
 
         if (main_counter < 10)
         {
-            //CyDelayUs(100);
-            I2Cbuff1[0] = 0x0E;
-            status = I2C_MasterWriteBlocking(0x36, 1, I2C_1_MODE_NO_STOP);
-            status = I2C_MasterReadBlocking(0x36, 2, I2C_1_MODE_REPEAT_START);
-           // CyDelayUs(100);
-            angle[main_counter] = I2Cbuff2[0] << 8;
-            angle[main_counter] +=  I2Cbuff2[1];
+            if (!i2c_skipped[main_counter])
+            {
+                //CyDelayUs(100);
+                I2Cbuff1[0] = 0x0E;
+                status = I2C_MasterWriteBlocking(0x36, 1, I2C_1_MODE_NO_STOP);
+                status = I2C_MasterReadBlocking(0x36, 2, I2C_1_MODE_REPEAT_START);
+               // CyDelayUs(100);
+                angle[main_counter] = I2Cbuff2[0] << 8;
+                angle[main_counter] +=  I2Cbuff2[1];
+                
+                if (calibrationMode)
+                {
+                    if (angle[main_counter] < pedals_low[main_counter])
+                    {
+                        pedals_low[main_counter] = angle[main_counter];
+                        
+                    }
+                    if (angle[main_counter] > pedals_high[main_counter])
+                    {
+                         pedals_high[main_counter] = angle[main_counter];
+                    }
+                }
+            }
+        }
+        
+        //in addition to the hall sensor on {2,0} (the vertical knee lever) of the muxes, there is also the knob/oled board, so scan that as well on main counter round 9
+        if (main_counter == 9)
+        {
+            if (!i2c_skipped[main_counter])
+            {
+                //scan the knob adc
+                I2Cbuff1[0] = 0x0;      
+                status = I2C_MasterReadBlocking(0x13, 16, I2C_1_MODE_COMPLETE_XFER);
+                for (int i = 0; i < NUM_MACROS; i++)
+                {
+                    macroKnobValues[i] = ((I2Cbuff1[i*2] << 8) + (I2Cbuff1[i*2] & 255)) & 4095; // necessary to AND with 4095 to eliminate the 4 preceding bits set high by default
+                }
+                //
+                if (macroOLEDWaitingToSend)
+                {
+                    //send the data to the little macro OLED screens
+                    
+                    macroOLEDWaitingToSend = 0;
+                }
+            }
+            
         }
         //otherwise it's the ADC for the foot pedal
         else if (main_counter == 10)
         {
-        //0x4D is the 7=-bit version of the MCP3221 address, might need to be shifted over by 1 to the left
-            I2Cbuff1[0] = 0x0;      
-            status = I2C_MasterReadBlocking(0x4f, 2, I2C_1_MODE_COMPLETE_XFER);
-            volumePedal = I2Cbuff2[0] << 8;
-            volumePedal +=  I2Cbuff2[1];
+            //0x4f (0x4D?) is the 7=-bit version of the MCP3221 address, might need to be shifted over by 1 to the left
+            if (!i2c_skipped[main_counter])
+            {
+                I2Cbuff1[0] = 0x0;      
+                status = I2C_MasterReadBlocking(0x4f, 2, I2C_1_MODE_COMPLETE_XFER);
+                volumePedal = I2Cbuff2[0] << 8;
+                volumePedal +=  I2Cbuff2[1];
+            }
         }
         else
-        #endif
+        if (main_counter == 11)
         { 
+            if (mainOLEDWaitingToSend)
+            {
+                OLED_draw();
+                mainOLEDWaitingToSend = 0;
+            }
+            
             #if 0
             if (OLEDcount == 0)
             {
@@ -909,6 +955,7 @@ int main(void)
                 //sendMIDIControlChange(main_counter+36, (processed_pedals[main_counter] & 127), 1);
             }
             pedals_float[main_counter] = (float)processed_pedals[main_counter] * 2.442002442002442e-4f;
+            pedals8bit[main_counter] = (float)processed_pedals[main_counter] * 0.0625f;
             prev_processed_pedals[main_counter] = processed_pedals[main_counter];
         }
         else
@@ -1019,7 +1066,7 @@ int main(void)
                 octave = 4;
 
             }
-            if ((oct1Up) && (octave > 0))
+            else if ((oct1Up) && (octave > 0))
             {
                 octave--;
             }
@@ -1058,7 +1105,7 @@ int main(void)
                 octave = 7;
 
             }
-            if ((oct4Up) && (octave < 11))
+            else if ((oct4Up) && (octave < 11))
             {
                 octave++;
 
@@ -1084,7 +1131,7 @@ int main(void)
             OLEDwriteInt(currentCopedent , 2, 0,FourthLine);
             OLEDwriteString(" ", 1, OLEDgetCursor(), FourthLine);
             OLEDwriteString((char *)&copedentNamesArray[currentCopedent][0], NAME_LENGTH_IN_BYTES, OLEDgetCursor(), FourthLine);
-            OLED_draw();
+            mainOLEDWaitingToSend = 1;
         }
         if (!neck2_button_Read())
         {
@@ -1097,7 +1144,7 @@ int main(void)
             OLEDwriteInt(currentCopedent , 2, 0,FourthLine);
             OLEDwriteString(" ", 1, OLEDgetCursor(), FourthLine);
             OLEDwriteString((char *)&copedentNamesArray[currentCopedent][0], NAME_LENGTH_IN_BYTES, OLEDgetCursor(), FourthLine);
-            OLED_draw();
+            mainOLEDWaitingToSend = 1;
         }
         
         if ((!enter_button_Read()) && (enterUp))
@@ -1112,68 +1159,164 @@ int main(void)
         }
         
         
+        if (!editMode)
+        {
         
-        if ((!button1_Read()) && (button1Up))
-        {
-            currentCopedent -= 1;
-            currentCopedent &= 31;
-            necks[currentNeck] = currentCopedent;
-            EEPROM_WriteByte(currentCopedent, EEPROM_NECKS_OFFSET + currentNeck);
-            OLEDwriteInt(currentCopedent , 2, 0,FourthLine);
-            OLEDwriteString(" ", 1, OLEDgetCursor(), FourthLine);
-            OLEDwriteString((char *)&copedentNamesArray[currentCopedent][0], NAME_LENGTH_IN_BYTES, OLEDgetCursor(), FourthLine);
-            OLED_draw();
-            button1Up = 0;
+            if ((!button1_Read()) && (button1Up))
+            {
+                currentCopedent -= 1;
+                currentCopedent &= 31;
+                necks[currentNeck] = currentCopedent;
+                EEPROM_WriteByte(currentCopedent, EEPROM_NECKS_OFFSET + currentNeck);
+                OLEDwriteInt(currentCopedent , 2, 0,FourthLine);
+                OLEDwriteString(" ", 1, OLEDgetCursor(), FourthLine);
+                OLEDwriteString((char *)&copedentNamesArray[currentCopedent][0], NAME_LENGTH_IN_BYTES, OLEDgetCursor(), FourthLine);
+                mainOLEDWaitingToSend = 1;
+                button1Up = 0;
+            }
+            else if (button1_Read())
+            {
+                button1Up = 1;
+            }
+            
+            if ((!button2_Read()) && (button2Up))
+            {
+                currentCopedent += 1;
+                currentCopedent &= 31;
+                necks[currentNeck] = currentCopedent;
+                EEPROM_WriteByte(currentCopedent, EEPROM_NECKS_OFFSET + currentNeck);
+                OLEDwriteInt(currentCopedent , 2, 0,FourthLine);
+                OLEDwriteString(" ", 1, OLEDgetCursor(), FourthLine);
+                OLEDwriteString((char *)&copedentNamesArray[currentCopedent][0], NAME_LENGTH_IN_BYTES, OLEDgetCursor(), FourthLine);
+                mainOLEDWaitingToSend = 1;
+                button2Up = 0;
+            }
+            else if (button2_Read())
+            {
+                button2Up = 1;
+            }
+            
+            if ((!button3_Read()) && (button3Up))
+            {
+                patchNum -= 1;
+                patchNum &= 63;
+                        displayCurrentPresetName();
+                button3Up = 0;
+            }
+            else if (button3_Read())
+            {
+                button3Up = 1;
+            }
+            
+            if ((!button4_Read()) && (button4Up))
+            {
+                patchNum += 1;
+                patchNum &= 63;
+                displayCurrentPresetName();
+                button4Up = 0;
+            }
+            else if (button4_Read())
+            {
+                button4Up = 1;
+            }
         }
-        else if (button1_Read())
+        //if in edit mode, then /left right up down work differently
+        else
         {
-            button1Up = 1;
-        }
         
-        if ((!button2_Read()) && (button2Up))
-        {
-            currentCopedent += 1;
-            currentCopedent &= 31;
-            necks[currentNeck] = currentCopedent;
-            EEPROM_WriteByte(currentCopedent, EEPROM_NECKS_OFFSET + currentNeck);
-            OLEDwriteInt(currentCopedent , 2, 0,FourthLine);
-            OLEDwriteString(" ", 1, OLEDgetCursor(), FourthLine);
-            OLEDwriteString((char *)&copedentNamesArray[currentCopedent][0], NAME_LENGTH_IN_BYTES, OLEDgetCursor(), FourthLine);
-            OLED_draw();
-            button2Up = 0;
+            if ((!button1_Read()) && (button1Up))
+            {
+                currentCopedent -= 1;
+                currentCopedent &= 31;
+                necks[currentNeck] = currentCopedent;
+                EEPROM_WriteByte(currentCopedent, EEPROM_NECKS_OFFSET + currentNeck);
+                OLEDwriteInt(currentCopedent , 2, 0,FourthLine);
+                OLEDwriteString(" ", 1, OLEDgetCursor(), FourthLine);
+                OLEDwriteString((char *)&copedentNamesArray[currentCopedent][0], NAME_LENGTH_IN_BYTES, OLEDgetCursor(), FourthLine);
+                mainOLEDWaitingToSend = 1;
+                button1Up = 0;
+            }
+            else if (button1_Read())
+            {
+                button1Up = 1;
+            }
+            
+            if ((!button2_Read()) && (button2Up))
+            {
+                currentCopedent += 1;
+                currentCopedent &= 31;
+                necks[currentNeck] = currentCopedent;
+                EEPROM_WriteByte(currentCopedent, EEPROM_NECKS_OFFSET + currentNeck);
+                OLEDwriteInt(currentCopedent , 2, 0,FourthLine);
+                OLEDwriteString(" ", 1, OLEDgetCursor(), FourthLine);
+                OLEDwriteString((char *)&copedentNamesArray[currentCopedent][0], NAME_LENGTH_IN_BYTES, OLEDgetCursor(), FourthLine);
+                mainOLEDWaitingToSend = 1;
+                button2Up = 0;
+            }
+            else if (button2_Read())
+            {
+                button2Up = 1;
+            }
+            
+            if ((!button3_Read()) && (button3Up))
+            {
+                patchNum -= 1;
+                patchNum &= 63;
+                        displayCurrentPresetName();
+                button3Up = 0;
+            }
+            else if (button3_Read())
+            {
+                button3Up = 1;
+            }
+            
+            if ((!button4_Read()) && (button4Up))
+            {
+                patchNum += 1;
+                patchNum &= 63;
+                displayCurrentPresetName();
+                button4Up = 0;
+            }
+            else if (button4_Read())
+            {
+                button4Up = 1;
+            }
         }
-        else if (button2_Read())
-        {
-            button2Up = 1;
-        }
-        
-        if ((!button3_Read()) && (button3Up))
-        {
-            patchNum -= 1;
-            patchNum &= 63;
-            button3Up = 0;
-        }
-        else if (button3_Read())
-        {
-            button3Up = 1;
-        }
-        
-        if ((!button4_Read()) && (button4Up))
-        {
-            patchNum += 1;
-            patchNum &= 63;
-            button4Up = 0;
-        }
-        else if (button4_Read())
-        {
-            button4Up = 1;
-        }
-        
         if ((!edit_button_Read()) && (editUp))
         {
-            voice = !voice;
-            LED_red2_Write(voice);
+            editMode = !editMode;
+            //for now edit mode is calibration mode
+            calibrationMode = !calibrationMode;
+            LED_red2_Write(editMode);
             editUp = 0;
+            if (editMode)
+            {
+                OLEDclear();
+                OLEDwriteString("CALIBRATION", 11, 2, FirstLine);
+                OLEDwriteString("MOVE PEDALS", 11, 2, SecondLine);
+                OLEDwriteString("AND LEVERS", 11, 2, ThirdLine);
+                OLEDwriteString("THEN EXIT", 11, 2, FourthLine);
+                mainOLEDWaitingToSend = 1;
+                
+                //entering calibration mode, clear the pedals low and high arrays
+                for (int i = 0; i < 10; i++)
+                {
+                    pedals_low[i] = 4095;
+                    pedals_high[i] = 0;
+                }
+            }
+            else
+            {
+                //draw normal screen
+                OLEDclear();
+                OLEDwriteInt(currentCopedent , 2, 0,FourthLine);
+                OLEDwriteString(" ", 1, OLEDgetCursor(), FourthLine);
+                OLEDwriteString((char *)&copedentNamesArray[currentCopedent][0], NAME_LENGTH_IN_BYTES, OLEDgetCursor(), FourthLine);
+                displayCurrentPresetName();
+                calculatePedalRatios();
+                //TODO: now need to store this in EEPROM. 
+                // also need to make this a little more hidden - maybe first edit then Enter?
+            }
         }
         else if (edit_button_Read())
         {
@@ -1189,14 +1332,13 @@ int main(void)
         
         for (int i=  0; i < 4; i++)
         {
-            knobs[i] = (ADC_SAR_Seq_1_GetResult16(i)/32);
-            if (i != 1)
-            {
-                knobs[i] = 127.0f - knobs[i];
-            }
+            knobs[i] = (ADC_SAR_Seq_1_GetResult16(i)/16);
+            
+            knobs[i] = 255 - knobs[i];
+            
             if (knobs[i] != prevKnobs[i])
             {
-                sendMIDIControlChange(i+17, knobs[i], 0);
+                sendMIDIControlChange(i+17, knobs[i]/2, 0);
             }
             prevKnobs[i] = knobs[i];
         }
@@ -1295,39 +1437,172 @@ int main(void)
         myArray[25] = processed_volumePedal >> 8;
         myArray[26] = processed_volumePedal & 0xff;
         */
-        myArray[0] = 1; //sending normal pitch stuff, not a preset send
-        for (int i = 0; i < 12; i++)
+                //make sure previous SPI2 transmission has completed before transferring the remaining midi date
+        while (0u == ((SPIM_1_ReadTxStatus() & SPIM_1_STS_SPI_DONE) || (SPIM_1_ReadTxStatus() & SPIM_1_STS_SPI_IDLE )))
         {
-            int scaledMIDI = roundf(stringMIDI[i] * 512.0f); // divide by 128 multiply by 65535
-            myArray[i * 2 + 1] = scaledMIDI >> 8;
-            myArray[(i * 2) + 2] = scaledMIDI & 255;
+            ;
+        }
+        if (sendingMessage == 1) //sending synthesis preset to synth board
+        {
+            if (sendMessageEnd) //send end message
+            {
+                myArray[0] = 253;
+                myArray[1] = presetNumberToWrite;
+                currentPresetSelection = presetNumberToWrite;
+                //display previous preset as loaded
+                displayCurrentPresetName();
+                //OLED_invert(0);
+                sendMessageEnd = 0;
+                sendingMessage = 0;
+                messageArraySendCount = 0;
+                myArray[30] = 254;
+                myArray[31] = 253;
+                
+            }
+            else //send chunks
+            {
+                //send the next preset Chunkkkkk
+                myArray[0] = 2;
+                myArray[1] = presetNumberToWrite;
+                for (uint i = 2 ; i < myBufferSize-2; i++)
+                {
+                    if (messageArraySendCount < messageArraySize)
+                    {
+                        myArray[i] = presetArray[messageArraySendCount++];
+                    }
+                    else
+                    {
+                        myArray[i] = 0xee; // preset end ack   - done, next send a message that s
+                        sendMessageEnd = 1;
+                    }
+                }
+                myArray[30] = 254;
+                myArray[31] = 253;
+            }    
+        }
+        else if (sendKnobs)
+        {
+            myArray[0] = 3; //sending knob stuff, not a preset send
+            for (int i = 0; i < 8; i++)
+            {
+                myArray[i + 1] = macroKnobValues[i];
+            }
+            for (int i = 0; i < 4; i++)
+            {
+                myArray[i + 9] = knobs[i];
+            }
+            for (int i = 0; i < 10; i++)
+            {
+                myArray[i + 13] = pedals8bit[i];
+            }
+            myArray[24] = octave | (voice << 4) | (dualSlider << 5) | (neck << 6);
+            myArray[25] = patchNum;
+            myArray[26] = processed_volumePedal >> 8;
+            myArray[27] = processed_volumePedal & 0xff;
+            myArray[30] = 254;
+            myArray[31] = 253;
+            
+            
+            sendKnobs = 0;
+        }
+        else
+        {
+            myArray[0] = 1; //sending normal pitch stuff, not a preset send
+            for (int i = 0; i < 12; i++)
+            {
+                int scaledMIDI = roundf(stringMIDI[i] * 512.0f); // divide by 128 multiply by 65535
+                myArray[i * 2 + 1] = scaledMIDI >> 8;
+                myArray[(i * 2) + 2] = scaledMIDI & 255;
+            }
+            
+            myArray[24] = octave | (voice << 4) | (dualSlider << 5) | (neck << 6);
+            /*
+            for (int i = 0; i < 4; i++)
+            {
+                myArray[i+49] = knobs[i];
+            }
+            */
+            myArray[25] = patchNum;
+            myArray[26] = processed_volumePedal >> 8;
+            myArray[27] = processed_volumePedal & 0xff;
+            myArray[30] = 254;
+            myArray[31] = 253;
+            
+            sendKnobs = 1; // for next time around, might make this slower though
+            /*
+            for (int i = 0; i < 16; i++)
+            {
+                myArray[i+56] = encoderVal[i];
+            }
+            */
         }
         
-        myArray[24] = octave | (voice << 4) | (dualSlider << 5) | (neck << 6);
-        /*
-        for (int i = 0; i < 4; i++)
-        {
-            myArray[i+49] = knobs[i];
-        }
-        */
-        myArray[25] = patchNum;
-        myArray[26] = processed_volumePedal >> 8;
-        myArray[27] = processed_volumePedal & 0xff;
+        
 
-        /*
-        for (int i = 0; i < 16; i++)
-        {
-            myArray[i+56] = encoderVal[i];
-        }
-        */
+/*
         for(int i = 0; i < myBufferSize; i++)
         {
             SPIM_1_WriteTxData(myArray[i]);
         }
+    */    
+        
+
+       
+        
+        
+        //parse input from synth board (names)
+        if ((inBuffer[0] == 253) && (inBuffer[31] == 254))
+        {
+            int whichPresetToStoreName = inBuffer[1];
+            int whichMacroToStoreName = inBuffer[16];
+            int bufferPointer = 2;
+            for (int i = 0; i < NAME_LENGTH_IN_BYTES; i++)
+            {
+                presetNamesArray[whichPresetToStoreName][i] = inBuffer[bufferPointer];
+                bufferPointer++;
+            }
+            bufferPointer = 17;
+            for (int i = 0; i < NAME_LENGTH_IN_BYTES; i++)
+            {
+                macroNamesArray[whichPresetToStoreName][whichMacroToStoreName][i] = inBuffer[bufferPointer];
+                bufferPointer++;
+            }
+            if ((whichPresetToStoreName == patchNum) && (whichMacroToStoreName == 7) && (!presetAlreadyDisplayed[whichPresetToStoreName]))
+            {
+                displayCurrentPresetName();
+            }
+        }
+        
+        SPIM_1_ClearRxBuffer();
+        CyDmaChEnable(rx3Channel, STORE_TD_CFG_ONCMPLT);
+        CyDmaChEnable(txChannel, STORE_TD_CFG_ONCMPLT);
+        
+
+       
+
      }
 }
 
+void DmaTxConfiguration()
+{
+    /* Init DMA, 1 byte bursts, each burst requires a request */ 
+    txChannel = DMA_4_DmaInitialize(DMA_TX_BYTES_PER_BURST, DMA_TX_REQUEST_PER_BURST, 
+                                        HI16(DMA_TX_SRC_BASE), HI16(DMA_TX_DST_BASE));
 
+    txTD = CyDmaTdAllocate();
+
+    /* Configure this Td as follows:
+    *  - Increment the source address, but not the destination address   
+    */
+    CyDmaTdSetConfiguration(txTD, myBufferSize, CY_DMA_DISABLE_TD, TD_INC_SRC_ADR);
+
+    /* From the memory to the SPIM */
+    CyDmaTdSetAddress(txTD, LO16((uint32)myArray), LO16((uint32) SPIM_1_TXDATA_PTR));
+    
+    /* Associate the TD with the channel */
+    CyDmaChSetInitialTd(txChannel, txTD); 
+   
+} 
 
 void DmaRxConfiguration()
 { 
@@ -1350,7 +1625,25 @@ void DmaRxConfiguration()
     CyDmaTdSetConfiguration(rx2TD[1], BAR_BUFFER_SIZE, DMA_DISABLE_TD, TD_INC_DST_ADR | DMA_2__TD_TERMOUT_EN);
     CyDmaTdSetAddress(rx2TD[0], LO16((uint32) SPIS_2_RXDATA_PTR), LO16((uint32) rxBufferBar[0]));
     CyDmaTdSetAddress(rx2TD[1], LO16((uint32) SPIS_2_RXDATA_PTR), LO16((uint32) rxBufferBar[1]));
+    
+        /* Init DMA, 1 byte bursts, each burst requires a request */ 
+    rx3Channel = DMA_3_DmaInitialize(DMA_RX_BYTES_PER_BURST, DMA_RX_REQUEST_PER_BURST,
+                                     HI16(DMA_RX_SRC_BASE), HI16(DMA_RX_DST_BASE));
+
+    rx3TD = CyDmaTdAllocate();
+    
+    /* Configure this Td as follows:
+    *  - Increment the destination address, but not the source address
+    */
+    CyDmaTdSetConfiguration(rx3TD, myBufferSize, CY_DMA_DISABLE_TD, TD_INC_DST_ADR);
+
+    /* From the SPIM to the memory */
+    CyDmaTdSetAddress(rx3TD, LO16((uint32)SPIM_1_RXDATA_PTR), LO16((uint32)inBuffer));
+
+    /* Associate the TD with the channel */
+    CyDmaChSetInitialTd(rx3Channel, rx3TD);
 }
+
 uint8 I2C_MasterWriteBlocking(uint8 i2CAddr, uint16 nbytes, uint8_t mode)
 {
     uint8 volatile status;
@@ -1376,6 +1669,13 @@ uint8 I2C_MasterWriteBlocking(uint8 i2CAddr, uint16 nbytes, uint8_t mode)
                     status = I2C_1_MSTAT_ERR_XFER;
                     I2C_reset();
                 }
+                
+                if (status == 0)
+                {
+                    status = I2C_1_MSTAT_ERR_XFER;
+                    I2C_reset();
+                }
+                
             } while(((status & (I2C_1_MSTAT_WR_CMPLT | I2C_1_MSTAT_ERR_XFER)) == 0u) && (status != 0u) && (timeout>0));
         }
         else
@@ -1386,6 +1686,12 @@ uint8 I2C_MasterWriteBlocking(uint8 i2CAddr, uint16 nbytes, uint8_t mode)
             I2C_reset();
         } 
     }  
+    if ((status & I2C_1_MSTAT_ERR_ADDR_NAK) || (status & I2C_1_MSTAT_ERR_XFER))
+    {
+        //mark that i2c destination to be skipped (likely unplugged) and reset the I2C module
+        i2c_skipped[main_counter] = 1;
+        I2C_reset();
+    }
     return status;
 }
 
@@ -1431,9 +1737,33 @@ uint8 I2C_MasterReadBlocking(uint8 i2CAddr, uint8 nbytes, uint8_t mode)
 
 void I2C_reset(void)
 {
+  I2C_1_Stop();
 
+  /* Disable/clear everything, then reinitialize. */
+
+  I2C_1_CFG_REG = 0x00;  // NECESSARY to get MCSR to reset and clear BUS_BUSY bit.
+
+  I2C_1_XCFG_REG = 0x00;  // not sure if necessary.
+
+  I2C_1_initVar = 0;  // MUST BE SET TO ZERO to allow I2C_1_Start() to call I2C_1_Init()
+
+  I2C_1_Start();
 }
 
+void displayCurrentPresetName()
+{
+    if (presetNamesArray[patchNum][0] != 255) //don't display if the name data still hasn't been retrieved by the SPI bus (255 is invalid initial data)
+    {
+        OLEDwriteInt(patchNum , 2, 0,FirstLine);
+        //OLEDwriteString(" ", 1, OLEDgetCursor(), FirstLine);
+        OLEDwriteString((char *)&presetNamesArray[patchNum][0], NAME_LENGTH_IN_BYTES, 0, SecondLine);
+        mainOLEDWaitingToSend = 1;
+        presetAlreadyDisplayed[patchNum] = 1;
+        //and update the macro OLED screens
+        macroOLEDWaitingToSend = 1;
+    }
+}
+    
 void checkUSB_Vbus(void)
 {
    if (USB_VBusPresent() == 0)
@@ -1652,12 +1982,9 @@ void parseSysex(void)
     //0 = it's a preset
     if (sysexBuffer[0] == 0)
     {
-        //if (sysexBuffer[2] == 0)
-        {
-            sysexMessageInProgress = 1; // set a flag that we've started a sysex preset transfer. May take multiple sysex parse calls on the chunks to complete
-            currentFloat = 0;
-            presetArraySection = presetName;
-        }
+        sysexMessageInProgress = 1; // set a flag that we've started a sysex preset transfer. May take multiple sysex parse calls on the chunks to complete
+        currentFloat = 0;
+        presetArraySection = presetName;
         presetNumberToWrite = sysexBuffer[1];
         
         union breakFloat theVal;
@@ -1668,9 +1995,24 @@ void parseSysex(void)
             presetArray[i-2] = sysexBuffer[i] & 127; // pass on the first 14 elements as 8-bit bytes (they are the chars for the name string)
             presetNamesArray[presetNumberToWrite][i-2] = sysexBuffer[i] & 127;
         }
-        uint16_t valsStart = NAME_LENGTH_IN_BYTES;
+        
+        presetArraySection = macroNames;
+
+        
+        for (int j = 0; j < NUM_MACROS; j++)
+        {
+            for (int k = 0; k < NAME_LENGTH_IN_BYTES; k++)
+            {
+                presetArray[i-2] = sysexBuffer[i] & 127; // pass on the first 14 elements as 8-bit bytes (they are the chars for the name string)
+                macroNamesArray[presetNumberToWrite][j][k] = sysexBuffer[i] & 127; // pass on the first 14 elements as 8-bit bytes (they are the chars for the name string)
+                i++;
+            }
+        }
+        
+        uint16_t valsStart = NAME_LENGTH_IN_BYTES + (NAME_LENGTH_IN_BYTES * NUM_MACROS);
         
         presetArraySection = initialVals;
+        
         for (; i < sysexPointer; i = i+5)
         {
             theVal.u32 = 0;
@@ -1770,6 +2112,7 @@ void parseSysex(void)
                         presetArraySection = presetEnd;
                         sysexMessageInProgress = 0;
                         sendingMessage = 1;
+                        patchNum = presetNumberToWrite;
                         messageArraySize = valsStart + currentFloat;
                     }
                     else
@@ -1896,17 +2239,20 @@ void parseSysex(void)
             sysexPointer = 0;
             sendingMessage = 0;
             parseThatMF = 0;
-        } else 
+        } 
+        else 
         {
             sysexMessageInProgress = 0;
             //sendingMessage = 2;  // use this when we are ready to send copedents to the sd cards too
+            
+            OLEDwriteInt(currentCopedent , 2, 0,FourthLine);
+            OLEDwriteString(" ", 1, OLEDgetCursor(), FourthLine);
+            OLEDwriteString((char *)&copedentNamesArray[currentCopedent][0], NAME_LENGTH_IN_BYTES, OLEDgetCursor(), FourthLine);
+            mainOLEDWaitingToSend = 1;
         }
     }
     
-    OLEDwriteInt(currentCopedent , 2, 0,FourthLine);
-    OLEDwriteString(" ", 1, OLEDgetCursor(), FourthLine);
-    OLEDwriteString((char *)&copedentNamesArray[currentCopedent][0], NAME_LENGTH_IN_BYTES, OLEDgetCursor(), FourthLine);
-    OLED_draw();
+
     parsingSysex = 0;
     sysexPointer = 0;
     parseThatMF = 0;
@@ -1914,7 +2260,7 @@ void parseSysex(void)
 
 volatile uint8_t tempMIDI[4];
 volatile uint8_t firstSysex = 0;
-const uint16_t sysexPointerMask = 1023;
+const uint16_t sysexPointerMask = 2047;
 // this gets called if the Brain gets a MIDI message from the computer host
 void USB_callbackLocalMidiEvent(uint8 cable, uint8 *midiMsg) CYREENTRANT
 {   
