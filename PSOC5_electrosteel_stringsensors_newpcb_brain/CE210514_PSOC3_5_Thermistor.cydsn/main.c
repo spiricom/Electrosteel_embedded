@@ -79,7 +79,7 @@ uint8_t counter = 0;
 uint8_t returnedData[myBufferSize];
 int32_t temper;
 int previousButtons[11];
-int octave = 4;
+int octave = 5;
 uint16_t angle[10];
 uint16_t prevAngle[10];
 
@@ -343,7 +343,7 @@ volatile uint8_t send_it = 0;
 // the ethernet cable, and a second mux is in the foot pedal at the end of that cable. This channel is selected with the second element of the array
 //so the order of I2C communication is ( foot pedals 1-5, knee levers 1-5, volume pedal, OLED display )
 uint8_t mux_states[12][2] = {{5,0}, {5,1}, {5,2}, {5,3}, {5,4}, {0, 0}, {1, 0}, {3, 0}, {4, 0}, {2, 0}, {5, 5},{6,0}};
-uint8_t i2c_skipped[12] = {0,0,0,0,0,0,0,1,1,1,0,0}; //so that pedals and levers can be marked as skipped if communication fails because they are unconnected
+uint8_t i2c_skipped[12] = {0,0,0,0,0,0,0,0,0,0,0,0}; //so that pedals and levers can be marked as skipped if communication fails because they are unconnected
 uint16_t pedals_low[10] = {2691, 2305, 2457, 526, 3738, 2307, 3014, 2190, 2793, 1318};
 uint16_t pedals_high[10] = {2797, 2405, 2580, 647, 3854, 2461, 3141, 2353, 2934, 1504};
 uint16_t deadzone = 150;
@@ -562,9 +562,10 @@ int main(void)
     //initialize the macro knob adc to scan all knobs
     I2Cbuff1[0] = 1<<2;
     status = I2C_MasterWriteBlocking(0x70, 1, I2C_1_MODE_COMPLETE_XFER);
-    
-    //I2Cbuff1[0] = 0xf; //message says scan single-ended mode from beginning to 8th knob (scan all knobs)
-    //status = I2C_MasterWriteBlocking(0x13, 1, I2C_1_MODE_COMPLETE_XFER);
+    main_counter = 9;
+
+    I2Cbuff1[0] = 0xf; //message says scan single-ended mode from beginning to 8th knob (scan all knobs)
+    status = I2C_MasterWriteBlocking(0x35, 1, I2C_1_MODE_COMPLETE_XFER);
     
 #if 0
     while(1)
@@ -733,7 +734,7 @@ int main(void)
             main_counter = 8;
         }
         */    
-
+        testpin3_Write(1);
        //sense levers and pedals
         if (mux_states[main_counter][0] != last_mux)
         {
@@ -756,7 +757,8 @@ int main(void)
         CyDelayUs(10);
         //if it's a hall sensor
 
-        if (main_counter < 10)
+        //temporarily don't scan vertical knee lever, should be <10 normally
+        if (main_counter < 9)
         {
             if (!i2c_skipped[main_counter])
             {
@@ -790,10 +792,11 @@ int main(void)
             {
                 //scan the knob adc
                 I2Cbuff1[0] = 0x0;      
-                status = I2C_MasterReadBlocking(0x13, 16, I2C_1_MODE_COMPLETE_XFER);
+                status = I2C_MasterReadBlocking(0x35, 16, I2C_1_MODE_COMPLETE_XFER);
                 for (int i = 0; i < NUM_MACROS; i++)
                 {
-                    macroKnobValues[i] = ((I2Cbuff1[i*2] << 8) + (I2Cbuff1[i*2] & 255)) & 4095; // necessary to AND with 4095 to eliminate the 4 preceding bits set high by default
+                   uint16_t tempInt =((I2Cbuff2[i*2] << 8) + (I2Cbuff2[i*2] & 255)) & 4095; // necessary to AND with 4095 to eliminate the 4 preceding bits set high by default
+                    macroKnobValues[i] = 255 - (tempInt >> 4); //now squish it down to 8 bit for sending (also subtract from 255 because the pot is backwards for some reason
                 }
                 //
                 if (macroOLEDWaitingToSend)
@@ -868,7 +871,7 @@ int main(void)
             }
             #endif
         }
-        
+
         /*
         I2Cbuff1[0] = 1<<main_counter;
         uint8_t status = I2C_MasterWriteBlocking(0x71, 1, I2C_1_MODE_COMPLETE_XFER);
@@ -996,7 +999,7 @@ int main(void)
         {
             main_counter = 0;
         }
-        
+        testpin3_Write(0);
         #if 0
             
             
@@ -1021,6 +1024,8 @@ int main(void)
             main_counter = 0;
         }
         #endif
+        testpin5_Write(1);
+        /*
         if ((rxBufferBar[!currentBarBuffer][6] == 254) && (rxBufferBar[!currentBarBuffer][7] == 253))
         {
             for (int i = 0; i < 2; i++)
@@ -1054,7 +1059,8 @@ int main(void)
                 prevBar[i] = bar[i];
             }
         }
-
+        */
+        testpin5_Write(0);
         for (int i = 0 ; i < numStrings; i++)
         {
             if (strings[i] != prevStrings[i])
@@ -1362,7 +1368,7 @@ int main(void)
             prevKnobs[i] = knobs[i];
         }
         
-       
+        testpin4_Write(1);
         //calculate the pitch of each string based on the current Copedent
         for (int i = 0; i < numStrings; i++)
     	{
@@ -1393,7 +1399,7 @@ int main(void)
                         (copedent[currentCopedent][1][i] * pedals_float[8]) +
                         (copedent[currentCopedent][2][i] * pedals_float[9]));
 
-            
+            /*
             float openStringMIDI  = copedent[currentCopedent][0][i];
             openStringMIDI_Int[i] = (int)openStringMIDI;
             
@@ -1407,12 +1413,13 @@ int main(void)
                 sendMIDIPitchBend((uint)pitchBendAmount, i+1);
             }
             prevStringPitchBend[i] = pitchBendAmount;
+            */
             if (tempMIDI > 0.0f)
             {
                 stringMIDI[i] = tempMIDI;
             }
     	}
-
+        testpin4_Write(0);
         if (encoder_button_Read())
         {
             encoderVal[encoderNum] += QuadDec_1_GetCounter() * 4;
@@ -1461,6 +1468,7 @@ int main(void)
         {
             ;
         }
+        testpin6_Write(1);
         if (sendingMessage == 1) //sending synthesis preset to synth board
         {
             if (sendMessageEnd) //send end message
@@ -1555,7 +1563,7 @@ int main(void)
             }
             */
         }
-        
+
         
 
 /*
@@ -1596,7 +1604,7 @@ int main(void)
         CyDmaChEnable(rx3Channel, STORE_TD_CFG_ONCMPLT);
         CyDmaChEnable(txChannel, STORE_TD_CFG_ONCMPLT);
         
-
+        testpin6_Write(0);
        
 
      }
@@ -1750,6 +1758,12 @@ uint8 I2C_MasterReadBlocking(uint8 i2CAddr, uint8 nbytes, uint8_t mode)
             status = I2C_1_MSTAT_ERR_XFER;
             I2C_reset();
         }
+    }
+    if ((status & I2C_1_MSTAT_ERR_ADDR_NAK) || (status & I2C_1_MSTAT_ERR_XFER))
+    {
+        //mark that i2c destination to be skipped (likely unplugged) and reset the I2C module
+        i2c_skipped[main_counter] = 1;
+        I2C_reset();
     }
     return status;
 }

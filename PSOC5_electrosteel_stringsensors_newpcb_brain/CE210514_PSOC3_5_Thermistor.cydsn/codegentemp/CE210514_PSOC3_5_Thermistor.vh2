@@ -2,7 +2,7 @@
 --	Conversion of CE210514_PSOC3_5_Thermistor.v to vh2:
 --
 --	Cypress Semiconductor - WARP Version 6.3 IR 41
---	Sat Jan 07 16:40:28 2023
+--	Sun Jan 08 19:24:31 2023
 --
 
 USE cypress.cypress.all;
@@ -953,7 +953,6 @@ SIGNAL tmpIO_0__testpin1_net_0 : bit;
 TERMINAL tmpSIOVREF__testpin1_net_0 : bit;
 SIGNAL tmpINTERRUPT_0__testpin1_net_0 : bit;
 SIGNAL tmpOE__testpin5_net_0 : bit;
-SIGNAL Net_1463 : bit;
 SIGNAL tmpFB_0__testpin5_net_0 : bit;
 SIGNAL tmpIO_0__testpin5_net_0 : bit;
 TERMINAL tmpSIOVREF__testpin5_net_0 : bit;
@@ -4610,7 +4609,7 @@ testpin4:cy_psoc3_pins_v1_10
 		invert_out_reset=>'0',
 		io_voltage=>"",
 		layout_mode=>"CONTIGUOUS",
-		output_conn=>"1",
+		output_conn=>"0",
 		output_sync=>"0",
 		output_clk_en=>'0',
 		output_mode=>"0",
@@ -4650,7 +4649,7 @@ testpin4:cy_psoc3_pins_v1_10
 		ovt_hyst_trim=>"0",
 		input_buffer_sel=>"00")
 	PORT MAP(oe=>(tmpOE__MISO_1_net_0),
-		y=>Net_1455,
+		y=>(zero),
 		fb=>(tmpFB_0__testpin4_net_0),
 		analog=>(open),
 		io=>(tmpIO_0__testpin4_net_0),
@@ -4896,7 +4895,7 @@ testpin5:cy_psoc3_pins_v1_10
 		invert_out_reset=>'0',
 		io_voltage=>"",
 		layout_mode=>"CONTIGUOUS",
-		output_conn=>"1",
+		output_conn=>"0",
 		output_sync=>"0",
 		output_clk_en=>'0',
 		output_mode=>"0",
@@ -4936,7 +4935,7 @@ testpin5:cy_psoc3_pins_v1_10
 		ovt_hyst_trim=>"0",
 		input_buffer_sel=>"00")
 	PORT MAP(oe=>(tmpOE__MISO_1_net_0),
-		y=>zero,
+		y=>(zero),
 		fb=>(tmpFB_0__testpin5_net_0),
 		analog=>(open),
 		io=>(tmpIO_0__testpin5_net_0),

@@ -1,5 +1,5 @@
 -- Project:   CE210514_PSOC3_5_Thermistor
--- Generated: 01/07/2023 16:40:31
+-- Generated: 01/08/2023 19:24:33
 -- PSoC Creator  4.4
 
 ENTITY CE210514_PSOC3_5_Thermistor IS
@@ -3868,7 +3868,7 @@ BEGIN
             oe_sync => "0",
             output_clk_en => 0,
             output_clock_mode => "0",
-            output_conn => "1",
+            output_conn => "0",
             output_mode => "0",
             output_reset => 0,
             output_sync => "0",
@@ -3922,12 +3922,10 @@ BEGIN
             oe_sync_mode => 0,
             logicalport => "testpin4",
             logicalport_pin_id => 0,
-            io_capabilities => "0000000000000000000000000000000000000000000000000000000000000101")
+            io_capabilities => "0000000000000000000000000000000000000000000000000000000000000001")
         PORT MAP(
             pa_out => testpin4(0)__PA,
             oe => open,
-            pin_input => Net_1455,
-            pad_out => testpin4(0)_PAD,
             pad_in => testpin4(0)_PAD,
             in_clock => open,
             in_clock_en => '1',
@@ -4234,7 +4232,7 @@ BEGIN
             oe_sync => "0",
             output_clk_en => 0,
             output_clock_mode => "0",
-            output_conn => "1",
+            output_conn => "0",
             output_mode => "0",
             output_reset => 0,
             output_sync => "0",

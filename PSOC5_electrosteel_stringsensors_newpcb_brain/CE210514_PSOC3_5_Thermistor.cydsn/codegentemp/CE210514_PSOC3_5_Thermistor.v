@@ -1,6 +1,6 @@
 // ======================================================================
 // CE210514_PSOC3_5_Thermistor.v generated from TopDesign.cysch
-// 01/07/2023 at 16:40
+// 01/08/2023 at 19:24
 // This file is auto generated. ANY EDITS YOU MAKE MAY BE LOST WHEN THIS FILE IS REGENERATED!!!
 // ======================================================================
 
@@ -2066,7 +2066,6 @@ module top ;
           wire  Net_1495;
           wire  Net_1492;
           wire  Net_1466;
-          wire  Net_1463;
           wire  Net_1397;
           wire  Net_1396;
           wire  Net_1395;
@@ -4367,7 +4366,7 @@ module top ;
 		  .oe_sync(1'b0),
 		  .output_clk_en(0),
 		  .output_clock_mode(1'b0),
-		  .output_conn(1'b1),
+		  .output_conn(1'b0),
 		  .output_mode(1'b0),
 		  .output_reset(0),
 		  .output_sync(1'b0),
@@ -4400,7 +4399,7 @@ module top ;
 		  .input_buffer_sel(2'b00))
 		testpin4
 		 (.oe(tmpOE__testpin4_net),
-		  .y({Net_1455}),
+		  .y({1'b0}),
 		  .fb({tmpFB_0__testpin4_net[0:0]}),
 		  .io({tmpIO_0__testpin4_net[0:0]}),
 		  .siovref(tmpSIOVREF__testpin4_net),
@@ -4676,7 +4675,7 @@ module top ;
 		  .oe_sync(1'b0),
 		  .output_clk_en(0),
 		  .output_clock_mode(1'b0),
-		  .output_conn(1'b1),
+		  .output_conn(1'b0),
 		  .output_mode(1'b0),
 		  .output_reset(0),
 		  .output_sync(1'b0),
@@ -4709,7 +4708,7 @@ module top ;
 		  .input_buffer_sel(2'b00))
 		testpin5
 		 (.oe(tmpOE__testpin5_net),
-		  .y({Net_1463}),
+		  .y({1'b0}),
 		  .fb({tmpFB_0__testpin5_net[0:0]}),
 		  .io({tmpIO_0__testpin5_net[0:0]}),
 		  .siovref(tmpSIOVREF__testpin5_net),
@@ -4722,8 +4721,6 @@ module top ;
 		  .out_reset({1'b0}));
 
 	assign tmpOE__testpin5_net = (`CYDEV_CHIP_MEMBER_USED == `CYDEV_CHIP_MEMBER_3A && `CYDEV_CHIP_REVISION_USED < `CYDEV_CHIP_REVISION_3A_ES3) ? ~{1'b1} : {1'b1};
-
-    assign Net_1463 = 1'h0;
 
 
 	cy_dma_v1_0
