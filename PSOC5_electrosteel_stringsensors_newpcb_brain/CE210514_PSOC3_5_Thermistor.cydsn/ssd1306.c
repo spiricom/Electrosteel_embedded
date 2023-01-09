@@ -58,8 +58,7 @@ unsigned char buffer[1024];
 
 
 #define ssd1306_swap(a, b) { int16_t t = a; a = b; b = t; }
-#define WIDTH SSD1306_LCDWIDTH
-#define HEIGHT SSD1306_LCDHEIGHT
+
 
 uint8_t displayBufferChunk[1025];
 
@@ -72,7 +71,7 @@ uint8_t OLED_i2c_address;
 uint8_t OLED_externalVCC;
 
 
-void ssd1306_begin(uint8_t vccstate)
+void ssd1306_begin(uint8_t vccstate, uint16_t width, uint16_t height)
 {
 	OLED_externalVCC = vccstate;
 
@@ -95,7 +94,7 @@ void ssd1306_begin(uint8_t vccstate)
 	ssd1306_command(0x80);                                  // the suggested ratio 0x80
 
 	ssd1306_command(SSD1306_SETMULTIPLEX);                  // 0xA8
-	ssd1306_command(SSD1306_LCDHEIGHT - 1);
+	ssd1306_command(height - 1);
 
 	ssd1306_command(SSD1306_SETDISPLAYOFFSET);              // 0xD3
 	ssd1306_command(0x0);                                   // no offset
@@ -110,31 +109,39 @@ void ssd1306_begin(uint8_t vccstate)
 	ssd1306_command(SSD1306_SEGREMAP | 0x1);
 	ssd1306_command(SSD1306_COMSCANDEC);
 
-	#if defined SSD1306_128_32
-	ssd1306_command(SSD1306_SETCOMPINS);                    // 0xDA
-	ssd1306_command(0x02);
-	ssd1306_command(SSD1306_SETCONTRAST);                   // 0x81
-	ssd1306_command(0x8F);
+	//#if defined SSD1306_128_32
+    if ((width == 128) && (height == 32))
+    {
+    	ssd1306_command(SSD1306_SETCOMPINS);                    // 0xDA
+    	ssd1306_command(0x02);
+    	ssd1306_command(SSD1306_SETCONTRAST);                   // 0x81
+    	ssd1306_command(0x8F);
+    }
 
-	#elif defined SSD1306_128_64
-	ssd1306_command(SSD1306_SETCOMPINS);                    // 0xDA
-	ssd1306_command(0x12);
-	ssd1306_command(SSD1306_SETCONTRAST);                   // 0x81
-	if (vccstate == SSD1306_EXTERNALVCC)
-	{ ssd1306_command(0x9F); }
-	else
-	{ ssd1306_command(0xCF); }
-
-	#elif defined SSD1306_96_16
-	ssd1306_command(SSD1306_SETCOMPINS);                    // 0xDA
-	ssd1306_command(0x2);   //ada x12
-	ssd1306_command(SSD1306_SETCONTRAST);                   // 0x81
-	if (vccstate == SSD1306_EXTERNALVCC)
-	{ ssd1306_command(0x10); }
-	else
-	{ ssd1306_command(0xAF); }
-
-	#endif
+	//#elif defined SSD1306_128_64
+    if ((width == 128) && (height == 64))
+    {
+    	ssd1306_command(SSD1306_SETCOMPINS);                    // 0xDA
+    	ssd1306_command(0x12);
+    	ssd1306_command(SSD1306_SETCONTRAST);                   // 0x81
+    	if (vccstate == SSD1306_EXTERNALVCC)
+    	{ ssd1306_command(0x9F); }
+    	else
+    	{ ssd1306_command(0xCF); }
+    }
+    
+    if ((width == 96) && (height == 16))
+    {
+    	//#elif defined SSD1306_96_16
+    	ssd1306_command(SSD1306_SETCOMPINS);                    // 0xDA
+    	ssd1306_command(0x2);   //ada x12
+    	ssd1306_command(SSD1306_SETCONTRAST);                   // 0x81
+    	if (vccstate == SSD1306_EXTERNALVCC)
+    	{ ssd1306_command(0x10); }
+    	else
+    	{ ssd1306_command(0xAF); }
+    }
+	//#endif
 
 	ssd1306_command(SSD1306_SETPRECHARGE);                  // 0xd9
 	if (vccstate == SSD1306_EXTERNALVCC)
@@ -191,7 +198,7 @@ void ssd1306_dim(uint8_t dim) {
 
 
 
-void ssd1306_display_full_buffer(void) {
+void ssd1306_display_full_buffer(int width, int height) {
 
 	ssd1306_home();
 
@@ -222,8 +229,6 @@ void ssd1306_display_full_buffer(void) {
     // I2C
     //height >>= 3;
     //width >>= 3;
-	unsigned char height=64;
-	unsigned char width=132; 
 	unsigned char m_row = 0;
 	unsigned char m_col = 2;
 	

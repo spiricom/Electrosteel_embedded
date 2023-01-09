@@ -42,7 +42,7 @@
 
 #include "gfx.h"
 #include <stdint.h>
-
+#include <stdlib.h>
 
         
         // Many (but maybe not all) non-AVR board installs define macros

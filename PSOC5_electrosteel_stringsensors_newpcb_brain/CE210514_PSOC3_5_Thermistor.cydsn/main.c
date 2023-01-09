@@ -14,7 +14,9 @@
 #define NAME_LENGTH_IN_BYTES 14
 #define EEPROM_CALIBRATION_OFFSET (EEPROM_NECKS_OFFSET + EEPROM_COPEDENT_OFFSET + (MAX_NUM_COPEDENTS * COPEDENT_SIZE_IN_BYTES))
 #define CALIBRATION_SIZE_IN_BYTES NUM_PEDALS * 4 //for each pedal, store 2 bytes for high and 2 bytes for low
-
+#define MACRO_CLIPPED_LENGTH 8
+#define NAME_CLIPPED_LENGTH 11
+#define COPEDENT_NAME_CLIPPED_LENGTH 8
 #define myBufferSize 32
 void parseSysex(void);
 
@@ -200,6 +202,7 @@ uint8_t prevKnobs[4];
 
 volatile uint8_t SPI2started = 0;
 
+uint8_t whichMacro = 0;
 
 CY_ISR(spis_2_ss)
 {
@@ -343,7 +346,7 @@ volatile uint8_t send_it = 0;
 // the ethernet cable, and a second mux is in the foot pedal at the end of that cable. This channel is selected with the second element of the array
 //so the order of I2C communication is ( foot pedals 1-5, knee levers 1-5, volume pedal, OLED display )
 uint8_t mux_states[12][2] = {{5,0}, {5,1}, {5,2}, {5,3}, {5,4}, {0, 0}, {1, 0}, {3, 0}, {4, 0}, {2, 0}, {5, 5},{6,0}};
-uint8_t i2c_skipped[12] = {0,0,0,0,0,0,0,0,0,0,0,0}; //so that pedals and levers can be marked as skipped if communication fails because they are unconnected
+uint8_t i2c_skipped[12] = {0,0,0,0,0,0,0,1,1,0,0,0}; //so that pedals and levers can be marked as skipped if communication fails because they are unconnected
 uint16_t pedals_low[10] = {2691, 2305, 2457, 526, 3738, 2307, 3014, 2190, 2793, 1318};
 uint16_t pedals_high[10] = {2797, 2405, 2580, 647, 3854, 2461, 3141, 2353, 2934, 1504};
 uint16_t deadzone = 150;
@@ -435,7 +438,7 @@ float map(float value, float istart, float istop, float ostart, float ostop)
 {
     return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
 }
-void displayCurrentPresetName();
+void displayCurrentPresetNameAndCopedent();
 
 int currentNeck = 0;
 
@@ -515,6 +518,14 @@ int main(void)
         for (int j = 0; j < NAME_LENGTH_IN_BYTES; j++)
         {
             presetNamesArray[i][j] = 255;
+
+        }
+        for (int j = 0; j < NUM_MACROS; j++)
+        {
+            for (int k = 0; k < NAME_LENGTH_IN_BYTES; k++)
+            {
+                macroNamesArray[i][j][k] = 255;
+            }
         }
         presetAlreadyDisplayed[i] = 0;
     }
@@ -552,13 +563,29 @@ int main(void)
     //set up for the OLED screen's first write
     I2Cbuff1[0] = 1<<6;
     status = I2C_MasterWriteBlocking(0x70, 1, I2C_1_MODE_COMPLETE_XFER);
-
-    OLED_init();
+    myGFX_init(128, 64);
+    myGFX_setFont(0);
+    OLED_init(128, 64);
     OLEDwriteInt(currentCopedent , 2, 0,FourthLine);
     OLEDwriteString(" ", 1, OLEDgetCursor(), FourthLine);
-    OLEDwriteString((char *)&copedentNamesArray[currentCopedent][0], NAME_LENGTH_IN_BYTES, OLEDgetCursor(), FourthLine);
-    OLED_draw();
+    OLEDwriteString((char *)&copedentNamesArray[currentCopedent][0], COPEDENT_NAME_CLIPPED_LENGTH, OLEDgetCursor(), FourthLine);
+    OLED_draw(128, 64);
     
+    
+    I2Cbuff1[0] = 1<<2;
+    status = I2C_MasterWriteBlocking(0x70, 1, I2C_1_MODE_COMPLETE_XFER);
+
+    for (int w = 0; w < 8; w++)
+    {
+        I2Cbuff1[0] = (1 << 3) + w;
+        status = I2C_MasterWriteBlocking(0x72, 1, I2C_1_MODE_COMPLETE_XFER); 
+        OLED_init(128, 32);
+        //OLEDwriteInt(w , 1, 0,FirstLine);
+        //OLEDwriteString(" ", 1, OLEDgetCursor(), FourthLine);
+        //OLEDwriteString((char *)&copedentNamesArray[currentCopedent][0], NAME_LENGTH_IN_BYTES, OLEDgetCursor(), FourthLine);
+       // OLED_draw(128, 32);
+    }
+
     //initialize the macro knob adc to scan all knobs
     I2Cbuff1[0] = 1<<2;
     status = I2C_MasterWriteBlocking(0x70, 1, I2C_1_MODE_COMPLETE_XFER);
@@ -799,11 +826,27 @@ int main(void)
                     macroKnobValues[i] = 255 - (tempInt >> 4); //now squish it down to 8 bit for sending (also subtract from 255 because the pot is backwards for some reason
                 }
                 //
-                if (macroOLEDWaitingToSend)
+                if (macroOLEDWaitingToSend == 2)
                 {
                     //send the data to the little macro OLED screens
                     
-                    macroOLEDWaitingToSend = 0;
+                    I2Cbuff1[0] = (1 << 3) + whichMacro;
+                    status = I2C_MasterWriteBlocking(0x72, 1, I2C_1_MODE_COMPLETE_XFER); 
+                    //OLED_init(128, 32);
+                    OLEDclear(128, 32);
+                    //OLEDwriteInt(w , 1, 0,FirstLine);
+                    //OLEDwriteString(" ", 1, OLEDgetCursor(), FourthLine);
+                    myGFX_setFont(1);
+                    //GFXsetFont(&theGFX,  &SourceCodePro_Regular14pt7b);
+                    OLEDwriteString((char *)&macroNamesArray[patchNum][whichMacro][0], MACRO_CLIPPED_LENGTH,0, SecondLine);
+                    OLED_draw(128, 32);
+
+                    whichMacro++;
+                    if (whichMacro >=8)
+                    {
+                        macroOLEDWaitingToSend = 0;
+                        whichMacro = 0;
+                    }
                 }
             }
             
@@ -825,8 +868,12 @@ int main(void)
         { 
             if (mainOLEDWaitingToSend)
             {
-                OLED_draw();
+                OLED_draw(128, 64);
                 mainOLEDWaitingToSend = 0;
+            }
+            if (macroOLEDWaitingToSend == 1)
+            {
+                macroOLEDWaitingToSend = 2;
             }
             
             #if 0
@@ -1143,23 +1190,15 @@ int main(void)
             currentCopedent = necks[currentNeck];
             LED_red1_Write(0);
             LED_green2_Write(1);
-            OLEDwriteInt(currentCopedent , 2, 0,FourthLine);
-            OLEDwriteString(" ", 1, OLEDgetCursor(), FourthLine);
-            OLEDwriteString((char *)&copedentNamesArray[currentCopedent][0], NAME_LENGTH_IN_BYTES, OLEDgetCursor(), FourthLine);
-            mainOLEDWaitingToSend = 1;
+            displayCurrentPresetNameAndCopedent();
         }
         if (!neck2_button_Read())
         {
             currentNeck = 1;
-            currentCopedent = necks[currentNeck];
-            
+            currentCopedent = necks[currentNeck];            
             LED_red1_Write(1);
-            LED_green2_Write(0);
-            EEPROM_WriteByte(currentCopedent, EEPROM_NECKS_OFFSET + currentNeck);
-            OLEDwriteInt(currentCopedent , 2, 0,FourthLine);
-            OLEDwriteString(" ", 1, OLEDgetCursor(), FourthLine);
-            OLEDwriteString((char *)&copedentNamesArray[currentCopedent][0], NAME_LENGTH_IN_BYTES, OLEDgetCursor(), FourthLine);
-            mainOLEDWaitingToSend = 1;
+            LED_green2_Write(0);          
+            displayCurrentPresetNameAndCopedent();
         }
         
         if ((!enter_button_Read()) && (enterUp))
@@ -1183,10 +1222,7 @@ int main(void)
                 currentCopedent &= 31;
                 necks[currentNeck] = currentCopedent;
                 EEPROM_WriteByte(currentCopedent, EEPROM_NECKS_OFFSET + currentNeck);
-                OLEDwriteInt(currentCopedent , 2, 0,FourthLine);
-                OLEDwriteString(" ", 1, OLEDgetCursor(), FourthLine);
-                OLEDwriteString((char *)&copedentNamesArray[currentCopedent][0], NAME_LENGTH_IN_BYTES, OLEDgetCursor(), FourthLine);
-                mainOLEDWaitingToSend = 1;
+                displayCurrentPresetNameAndCopedent();
                 button1Up = 0;
             }
             else if (button1_Read())
@@ -1200,10 +1236,8 @@ int main(void)
                 currentCopedent &= 31;
                 necks[currentNeck] = currentCopedent;
                 EEPROM_WriteByte(currentCopedent, EEPROM_NECKS_OFFSET + currentNeck);
-                OLEDwriteInt(currentCopedent , 2, 0,FourthLine);
-                OLEDwriteString(" ", 1, OLEDgetCursor(), FourthLine);
-                OLEDwriteString((char *)&copedentNamesArray[currentCopedent][0], NAME_LENGTH_IN_BYTES, OLEDgetCursor(), FourthLine);
-                mainOLEDWaitingToSend = 1;
+                
+                displayCurrentPresetNameAndCopedent();
                 button2Up = 0;
             }
             else if (button2_Read())
@@ -1215,7 +1249,7 @@ int main(void)
             {
                 patchNum -= 1;
                 patchNum &= 63;
-                        displayCurrentPresetName();
+                displayCurrentPresetNameAndCopedent();
                 button3Up = 0;
             }
             else if (button3_Read())
@@ -1227,7 +1261,7 @@ int main(void)
             {
                 patchNum += 1;
                 patchNum &= 63;
-                displayCurrentPresetName();
+                displayCurrentPresetNameAndCopedent();
                 button4Up = 0;
             }
             else if (button4_Read())
@@ -1245,10 +1279,7 @@ int main(void)
                 currentCopedent &= 31;
                 necks[currentNeck] = currentCopedent;
                 EEPROM_WriteByte(currentCopedent, EEPROM_NECKS_OFFSET + currentNeck);
-                OLEDwriteInt(currentCopedent , 2, 0,FourthLine);
-                OLEDwriteString(" ", 1, OLEDgetCursor(), FourthLine);
-                OLEDwriteString((char *)&copedentNamesArray[currentCopedent][0], NAME_LENGTH_IN_BYTES, OLEDgetCursor(), FourthLine);
-                mainOLEDWaitingToSend = 1;
+                displayCurrentPresetNameAndCopedent();
                 button1Up = 0;
             }
             else if (button1_Read())
@@ -1262,10 +1293,7 @@ int main(void)
                 currentCopedent &= 31;
                 necks[currentNeck] = currentCopedent;
                 EEPROM_WriteByte(currentCopedent, EEPROM_NECKS_OFFSET + currentNeck);
-                OLEDwriteInt(currentCopedent , 2, 0,FourthLine);
-                OLEDwriteString(" ", 1, OLEDgetCursor(), FourthLine);
-                OLEDwriteString((char *)&copedentNamesArray[currentCopedent][0], NAME_LENGTH_IN_BYTES, OLEDgetCursor(), FourthLine);
-                mainOLEDWaitingToSend = 1;
+                displayCurrentPresetNameAndCopedent();  
                 button2Up = 0;
             }
             else if (button2_Read())
@@ -1277,7 +1305,7 @@ int main(void)
             {
                 patchNum -= 1;
                 patchNum &= 63;
-                        displayCurrentPresetName();
+                displayCurrentPresetNameAndCopedent();
                 button3Up = 0;
             }
             else if (button3_Read())
@@ -1289,7 +1317,7 @@ int main(void)
             {
                 patchNum += 1;
                 patchNum &= 63;
-                displayCurrentPresetName();
+                displayCurrentPresetNameAndCopedent();
                 button4Up = 0;
             }
             else if (button4_Read())
@@ -1306,7 +1334,8 @@ int main(void)
             editUp = 0;
             if (editMode)
             {
-                OLEDclear();
+                OLEDclear(128, 64);
+                
                 OLEDwriteString("CALIBRATION", 11, 2, FirstLine);
                 OLEDwriteString("MOVE PEDALS", 11, 2, SecondLine);
                 OLEDwriteString("AND LEVERS", 11, 2, ThirdLine);
@@ -1323,15 +1352,9 @@ int main(void)
             else
             {
                 //draw normal screen
-                OLEDclear();
-                OLEDwriteInt(currentCopedent , 2, 0,FourthLine);
-                OLEDwriteString(" ", 1, OLEDgetCursor(), FourthLine);
-                OLEDwriteString((char *)&copedentNamesArray[currentCopedent][0], NAME_LENGTH_IN_BYTES, OLEDgetCursor(), FourthLine);
-                displayCurrentPresetName();
+                displayCurrentPresetNameAndCopedent();
                 calculatePedalRatios();
-                //TODO: now need to store this in EEPROM. 
-                EEPROM_WriteByte(currentCopedent, EEPROM_NECKS_OFFSET + currentNeck);
-                
+                //now need to store this in EEPROM.                
                 for (int i = 0; i < NUM_PEDALS; i++)
                 {
                      EEPROM_WriteByte((pedals_low[i] >> 8), EEPROM_CALIBRATION_OFFSET + (i*4));
@@ -1477,7 +1500,7 @@ int main(void)
                 myArray[1] = presetNumberToWrite;
                 currentPresetSelection = presetNumberToWrite;
                 //display previous preset as loaded
-                displayCurrentPresetName();
+                displayCurrentPresetNameAndCopedent();
                 //OLED_invert(0);
                 sendMessageEnd = 0;
                 sendingMessage = 0;
@@ -1596,7 +1619,7 @@ int main(void)
             }
             if ((whichPresetToStoreName == patchNum) && (whichMacroToStoreName == 7) && (!presetAlreadyDisplayed[whichPresetToStoreName]))
             {
-                displayCurrentPresetName();
+                displayCurrentPresetNameAndCopedent();
             }
         }
         
@@ -1716,7 +1739,7 @@ uint8 I2C_MasterWriteBlocking(uint8 i2CAddr, uint16 nbytes, uint8_t mode)
     if ((status & I2C_1_MSTAT_ERR_ADDR_NAK) || (status & I2C_1_MSTAT_ERR_XFER))
     {
         //mark that i2c destination to be skipped (likely unplugged) and reset the I2C module
-        i2c_skipped[main_counter] = 1;
+        //i2c_skipped[main_counter] = 1;
         I2C_reset();
     }
     return status;
@@ -1762,7 +1785,7 @@ uint8 I2C_MasterReadBlocking(uint8 i2CAddr, uint8 nbytes, uint8_t mode)
     if ((status & I2C_1_MSTAT_ERR_ADDR_NAK) || (status & I2C_1_MSTAT_ERR_XFER))
     {
         //mark that i2c destination to be skipped (likely unplugged) and reset the I2C module
-        i2c_skipped[main_counter] = 1;
+        //i2c_skipped[main_counter] = 1;
         I2C_reset();
     }
     return status;
@@ -1783,16 +1806,23 @@ void I2C_reset(void)
   I2C_1_Start();
 }
 
-void displayCurrentPresetName()
+void displayCurrentPresetNameAndCopedent()
 {
-    if (presetNamesArray[patchNum][0] != 255) //don't display if the name data still hasn't been retrieved by the SPI bus (255 is invalid initial data)
+    if (macroNamesArray[patchNum][7][0] != 255) //don't display if the name data still hasn't been retrieved by the SPI bus (255 is invalid initial data)
     {
+        OLEDclear(128, 64);
+        
+        myGFX_setFont(0);
         OLEDwriteInt(patchNum , 2, 0,FirstLine);
         //OLEDwriteString(" ", 1, OLEDgetCursor(), FirstLine);
-        OLEDwriteString((char *)&presetNamesArray[patchNum][0], NAME_LENGTH_IN_BYTES, 0, SecondLine);
+        OLEDwriteString((char *)&presetNamesArray[patchNum][0], NAME_CLIPPED_LENGTH, 0, SecondLine);
+        OLEDwriteInt(currentCopedent , 2, 0,FourthLine);
+        OLEDwriteString(" ", 1, OLEDgetCursor(), FourthLine);
+        OLEDwriteString((char *)&copedentNamesArray[currentCopedent][0], COPEDENT_NAME_CLIPPED_LENGTH, OLEDgetCursor(), FourthLine);
         mainOLEDWaitingToSend = 1;
         presetAlreadyDisplayed[patchNum] = 1;
         //and update the macro OLED screens
+        whichMacro = 0;
         macroOLEDWaitingToSend = 1;
     }
 }
@@ -2278,10 +2308,7 @@ void parseSysex(void)
             sysexMessageInProgress = 0;
             //sendingMessage = 2;  // use this when we are ready to send copedents to the sd cards too
             
-            OLEDwriteInt(currentCopedent , 2, 0,FourthLine);
-            OLEDwriteString(" ", 1, OLEDgetCursor(), FourthLine);
-            OLEDwriteString((char *)&copedentNamesArray[currentCopedent][0], NAME_LENGTH_IN_BYTES, OLEDgetCursor(), FourthLine);
-            mainOLEDWaitingToSend = 1;
+            displayCurrentPresetNameAndCopedent();
         }
     }
     
