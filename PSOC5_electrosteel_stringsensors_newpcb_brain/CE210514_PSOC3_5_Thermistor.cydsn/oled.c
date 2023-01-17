@@ -18,11 +18,49 @@
 GFX theGFX;
 char oled_buffer[32];
 
-void OLED_init(void)
+
+void myGFX_init(int width, int height)
+{
+    
+	  //initialize the graphics library that lets us write things in that display buffer
+	  GFXinit(&theGFX, width, height);
+
+	  //set up the monospaced font
+
+	  //GFXsetFont(&theGFX, &C649pt7b); //funny c64 text monospaced but very large
+	  //GFXsetFont(&theGFX, &DINAlternateBold9pt7b); //very serious and looks good - definitely not monospaced can fit 9 Ms
+	  //GFXsetFont(&theGFX, &DINCondensedBold9pt7b); // very condensed and looks good - definitely not monospaced can fit 9 Ms
+	  //GFXsetFont(&theGFX, &EuphemiaCAS7pt7b); //this one is elegant but definitely not monospaced can fit 9 Ms
+	  //GFXsetFont(&theGFX, &GillSans9pt7b); //not monospaced can fit 9 Ms
+	  //GFXsetFont(&theGFX, &Futura9pt7b); //not monospaced can fit only 7 Ms
+	  //GFXsetFont(&theGFX, &FUTRFW8pt7b); // monospaced, pretty, (my old score font) fits 8 Ms
+	  //GFXsetFont(&theGFX, &nk57_monospace_cd_rg9pt7b); //fits 12 characters, a little crammed
+	  //GFXsetFont(&theGFX, &nk57_monospace_no_rg9pt7b); // fits 10 characters
+	  //GFXsetFont(&theGFX, &nk57_monospace_no_rg7pt7b); // fits 12 characters
+	  //GFXsetFont(&theGFX, &nk57_monospace_no_bd7pt7b); //fits 12 characters
+	  //GFXsetFont(&theGFX, &nk57_monospace_cd_rg7pt7b); //fits 18 characters
+      GFXsetFont(&theGFX,&SourceCodePro_Regular9pt7b);
+	  GFXsetTextColor(&theGFX, 1, 0);
+	  GFXsetTextSize(&theGFX, 1);
+}
+
+void myGFX_setFont(int font)
+{
+    if (font == 0)
+    {
+        GFXsetFont(&theGFX,&SourceCodePro_Regular9pt7b);
+    }
+    else if (font == 1)
+    {
+         GFXsetFont(&theGFX,&SourceCodePro_Regular14pt7b);
+    }
+}
+        
+void OLED_init(uint16_t width, uint16_t height)
 {
 
 	  //start up that OLED display
-	  ssd1306_begin(SSD1306_SWITCHCAPVCC);
+	  ssd1306_begin(SSD1306_SWITCHCAPVCC, width, height);
 
     
 	  //HAL_Delay(5);
@@ -32,38 +70,6 @@ void OLED_init(void)
 	  {
 		  buffer[i] = 0;
 	  }
-
-	  
-	  //display the blank buffer on the OLED
-	  //ssd1306_display_full_buffer();
-
-	  //initialize the graphics library that lets us write things in that display buffer
-	  GFXinit(&theGFX, 128, 64);
-
-	  //set up the monospaced font
-
-	  //GFXsetFont(&theGFX, &C649pt7b); //funny c64 text monospaced but very large
-	  //GFXsetFont(&theGFX, &DINAlternateBold9pt7b); //very serious and looks good - definitely not monospaced can fit 9 Ms
-	  //GFXsetFont(&theGFX, &DINCondensedBold9pt7b); // very condensed and looks good - definitely not monospaced can fit 9 Ms
-	  GFXsetFont(&theGFX, &EuphemiaCAS7pt7b); //this one is elegant but definitely not monospaced can fit 9 Ms
-	  //GFXsetFont(&theGFX, &GillSans9pt7b); //not monospaced can fit 9 Ms
-	  //GFXsetFont(&theGFX, &Futura9pt7b); //not monospaced can fit only 7 Ms
-	  //GFXsetFont(&theGFX, &FUTRFW8pt7b); // monospaced, pretty, (my old score font) fits 8 Ms
-	  //GFXsetFont(&theGFX, &nk57_monospace_cd_rg9pt7b); //fits 12 characters, a little crammed
-	  //GFXsetFont(&theGFX, &nk57_monospace_no_rg9pt7b); // fits 10 characters
-	  //GFXsetFont(&theGFX, &nk57_monospace_no_rg7pt7b); // fits 12 characters
-	  //GFXsetFont(&theGFX, &nk57_monospace_no_bd7pt7b); //fits 12 characters
-	  //GFXsetFont(&theGFX, &nk57_monospace_cd_rg7pt7b); //fits 18 characters
-
-	  GFXsetTextColor(&theGFX, 1, 0);
-	  GFXsetTextSize(&theGFX, 1);
-
-	  //ssd1306_display_full_buffer();
-
-	  //OLEDclear();
-	  OLED_writePreset();
-	  OLED_draw();
-	  //sdd1306_invertDisplay(1);
 }
 
 
@@ -79,15 +85,15 @@ int getCursorX()
 void OLED_writePreset()
 {
 	//GFXsetFont(&theGFX, &C645pt7b);
-	OLEDclear();
-	char tempString[24];
+	//OLEDclear();
+	//char tempString[24];
 	//itoa((currentPreset+1), tempString, 10);
-	strcat(tempString, ":");
+	//strcat(tempString, ":");
 	//strcat(tempString, modeNames[currentPreset]);
-	int myLength = (int)strlen(tempString);
+	//int myLength = (int)strlen(tempString);
 	//OLEDwriteInt(0, 2, 0, FirstLine);
 	//OLEDwriteString(":", 1, 20, FirstLine);
-	OLEDwriteString("ELECTROSTEEL", 12, 0, SecondLine);
+	//OLEDwriteString("ELECTROSTEEL", 12, 0, SecondLine);
     //OLEDwriteString("4-EVA", 5, 0, SecondLine);
         //OLEDwriteString("AHHHHH", 6, 0, ThirdLine);
             //OLEDwriteString("HOOORAY!!!!", 11, 0, FourthLine);
@@ -99,13 +105,13 @@ void OLED_writePreset()
 
 void OLED_writeEditScreen()
 {
-	GFXsetFont(&theGFX, &EuphemiaCAS7pt7b);
-	OLEDclear();
-    const char* firstSet = "KNOB:SET CV PED";
-	const char* firstClear = "DOWN:CLR CV PED";
+	//GFXsetFont(&theGFX, &EuphemiaCAS7pt7b);
+	//OLEDclear();
+    //const char* firstSet = "KNOB:SET CV PED";
+	//const char* firstClear = "DOWN:CLR CV PED";
 	//if (cvAddParam[currentPreset] >= 0) OLEDwriteString(firstClear, (int)strlen(firstClear), 0, FirstLine);
 	//else OLEDwriteString(firstSet, (int)strlen(firstSet), 0, FirstLine);
-	OLEDwriteString("C:SET KEY CENTER", 16, 0, SecondLine);
+	//OLEDwriteString("C:SET KEY CENTER", 16, 0, SecondLine);
 }
 
 /*
@@ -154,9 +160,9 @@ void OLED_writeTuning()
 }
 */
 #ifndef __cplusplus
-void OLED_draw()
+void OLED_draw(uint16_t width, uint16_t height)
 {
-	ssd1306_display_full_buffer();
+	ssd1306_display_full_buffer(width, height);
 }
 
 
@@ -187,9 +193,9 @@ void OLEDdrawCircle(int16_t x0, int16_t y0, int16_t r, uint16_t color)
 }
 
 
-void OLEDclear()
+void OLEDclear(int width, int height)
 {
-	GFXfillRect(&theGFX, 0, 0, 128, 64, 0);
+	GFXfillRect(&theGFX, 0, 0, width, height, 0);
 	//ssd1306_display_full_buffer();
 }
 

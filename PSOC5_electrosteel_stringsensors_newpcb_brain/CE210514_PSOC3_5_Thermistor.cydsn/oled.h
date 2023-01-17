@@ -23,6 +23,7 @@ namespace vocodec
 #include <device.h>
 #include <stdio.h>
 #include <math.h>
+#include "gfx.h"
 extern char oled_buffer[32];
 
 typedef enum _OLEDLine
@@ -34,7 +35,10 @@ typedef enum _OLEDLine
 	NilLine
 } OLEDLine;
 
-void OLED_init(void);
+void myGFX_init(int width, int height);
+void myGFX_setFont(int font);
+
+void OLED_init(uint16_t width, uint16_t height);
 
 void initUIFunctionPointers(void);
 
@@ -74,11 +78,11 @@ void OLED_writeButtonAction(int whichButton, int whichAction);
 
 void OLED_writeTuning(void);
 
-void OLED_draw(void);
+void OLED_draw(uint16_t width, uint16_t height);
 
 void OLED_drawFirstLine(void);
 
-void OLEDclear(void);
+void OLEDclear(int width, int height);
 
 void OLEDclearLine(OLEDLine line);
 
@@ -106,6 +110,8 @@ void OLEDdrawFloatArray(float* input, float min, float max, int size, int offset
 
 int OLEDgetCursor(void);
         
+extern GFX theGFX;
+
 #ifdef __cplusplus
     }
 } // extern "C"

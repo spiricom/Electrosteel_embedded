@@ -2,7 +2,7 @@
 --	Conversion of CE210514_PSOC3_5_Thermistor.v to vh2:
 --
 --	Cypress Semiconductor - WARP Version 6.3 IR 41
---	Wed Jan 04 18:55:18 2023
+--	Mon Jan 09 13:39:31 2023
 --
 
 USE cypress.cypress.all;
@@ -107,8 +107,8 @@ SIGNAL \SPIM_1:BSPIM:cnt_enable\ : bit;
 SIGNAL \SPIM_1:BSPIM:count_6\ : bit;
 SIGNAL \SPIM_1:BSPIM:count_5\ : bit;
 SIGNAL \SPIM_1:BSPIM:cnt_tc\ : bit;
-SIGNAL Net_436 : bit;
-SIGNAL Net_434 : bit;
+SIGNAL Net_1500 : bit;
+SIGNAL Net_1497 : bit;
 SIGNAL \SPIM_1:BSPIM:sR8:Dp:ce0\ : bit;
 ATTRIBUTE port_state_att of \SPIM_1:BSPIM:sR8:Dp:ce0\:SIGNAL IS 2;
 SIGNAL \SPIM_1:BSPIM:sR8:Dp:cl0\ : bit;
@@ -251,13 +251,13 @@ TERMINAL tmpSIOVREF__SDA_1_net_0 : bit;
 SIGNAL tmpINTERRUPT_0__SDA_1_net_0 : bit;
 SIGNAL tmpOE__joy_y_net_0 : bit;
 SIGNAL tmpFB_0__joy_y_net_0 : bit;
-TERMINAL Net_537 : bit;
+TERMINAL Net_540 : bit;
 SIGNAL tmpIO_0__joy_y_net_0 : bit;
 TERMINAL tmpSIOVREF__joy_y_net_0 : bit;
 SIGNAL tmpINTERRUPT_0__joy_y_net_0 : bit;
 SIGNAL tmpOE__joy_x_net_0 : bit;
 SIGNAL tmpFB_0__joy_x_net_0 : bit;
-TERMINAL Net_536 : bit;
+TERMINAL Net_636 : bit;
 SIGNAL tmpIO_0__joy_x_net_0 : bit;
 TERMINAL tmpSIOVREF__joy_x_net_0 : bit;
 SIGNAL tmpINTERRUPT_0__joy_x_net_0 : bit;
@@ -407,8 +407,8 @@ TERMINAL Net_1148 : bit;
 TERMINAL Net_1147 : bit;
 TERMINAL Net_1146 : bit;
 TERMINAL Net_1145 : bit;
-TERMINAL Net_540 : bit;
-TERMINAL Net_636 : bit;
+TERMINAL Net_537 : bit;
+TERMINAL Net_536 : bit;
 TERMINAL \ADC_SAR_Seq_1:V_single\ : bit;
 TERMINAL \ADC_SAR_Seq_1:SAR:Net_248\ : bit;
 TERMINAL \ADC_SAR_Seq_1:SAR:Net_235\ : bit;
@@ -764,7 +764,6 @@ SIGNAL tmpOE__vBusPin_net_0 : bit;
 SIGNAL tmpIO_0__vBusPin_net_0 : bit;
 TERMINAL tmpSIOVREF__vBusPin_net_0 : bit;
 SIGNAL Net_1266 : bit;
-SIGNAL Net_2 : bit;
 SIGNAL tmpOE__oct1_net_0 : bit;
 SIGNAL tmpFB_0__oct1_net_0 : bit;
 SIGNAL tmpIO_0__oct1_net_0 : bit;
@@ -954,7 +953,6 @@ SIGNAL tmpIO_0__testpin1_net_0 : bit;
 TERMINAL tmpSIOVREF__testpin1_net_0 : bit;
 SIGNAL tmpINTERRUPT_0__testpin1_net_0 : bit;
 SIGNAL tmpOE__testpin5_net_0 : bit;
-SIGNAL Net_1463 : bit;
 SIGNAL tmpFB_0__testpin5_net_0 : bit;
 SIGNAL tmpIO_0__testpin5_net_0 : bit;
 TERMINAL tmpSIOVREF__testpin5_net_0 : bit;
@@ -1277,6 +1275,8 @@ SIGNAL tmpFB_0__edit_button_net_0 : bit;
 SIGNAL tmpIO_0__edit_button_net_0 : bit;
 TERMINAL tmpSIOVREF__edit_button_net_0 : bit;
 SIGNAL tmpINTERRUPT_0__edit_button_net_0 : bit;
+SIGNAL Net_1499 : bit;
+SIGNAL Net_1502 : bit;
 SIGNAL Net_415D : bit;
 SIGNAL \SPIM_1:BSPIM:so_send_reg\\D\ : bit;
 SIGNAL \SPIM_1:BSPIM:state_2\\D\ : bit;
@@ -2180,7 +2180,7 @@ MOSI_2:cy_psoc3_pins_v1_10
 		id=>"15cb15b3-05f2-49b1-a67e-9f121bc62871/426fcbe0-714d-4404-8fa8-581ff40c30f1",
 		source_clock_id=>"",
 		divisor=>0,
-		period=>"50000000",
+		period=>"100000000",
 		is_direct=>'0',
 		is_digital=>'1')
 	PORT MAP(clock_out=>\SPIM_1:Net_276\,
@@ -2211,7 +2211,7 @@ MOSI_2:cy_psoc3_pins_v1_10
 		clock=>\SPIM_1:BSPIM:clk_fin\,
 		status=>(zero, zero, \SPIM_1:BSPIM:tx_status_4\, \SPIM_1:BSPIM:load_rx_data\,
 			\SPIM_1:BSPIM:tx_status_2\, \SPIM_1:BSPIM:tx_status_1\, \SPIM_1:BSPIM:tx_status_0\),
-		interrupt=>Net_436);
+		interrupt=>Net_1500);
 \SPIM_1:BSPIM:RxStsReg\:cy_psoc3_statusi
 	GENERIC MAP(cy_force_order=>'1',
 		cy_md_select=>"1000000",
@@ -2220,7 +2220,7 @@ MOSI_2:cy_psoc3_pins_v1_10
 		clock=>\SPIM_1:BSPIM:clk_fin\,
 		status=>(\SPIM_1:BSPIM:rx_status_6\, \SPIM_1:BSPIM:rx_status_5\, \SPIM_1:BSPIM:rx_status_4\, zero,
 			zero, zero, zero),
-		interrupt=>Net_434);
+		interrupt=>Net_1497);
 \SPIM_1:BSPIM:sR8:Dp:u0\:cy_psoc3_dp
 	GENERIC MAP(cy_dpconfig=>"0000000000000000000000001100000000000001010000000001000100010000000000011100000000010001000000000000000101000000000000010100000011111111000000001111111111111111000000000010001000001000111100000000000000000100",
 		d0_init=>"00000000",
@@ -2911,7 +2911,7 @@ joy_y:cy_psoc3_pins_v1_10
 	PORT MAP(oe=>(tmpOE__MISO_1_net_0),
 		y=>(zero),
 		fb=>(tmpFB_0__joy_y_net_0),
-		analog=>Net_537,
+		analog=>Net_540,
 		io=>(tmpIO_0__joy_y_net_0),
 		siovref=>(tmpSIOVREF__joy_y_net_0),
 		annotation=>(open),
@@ -2981,7 +2981,7 @@ joy_x:cy_psoc3_pins_v1_10
 	PORT MAP(oe=>(tmpOE__MISO_1_net_0),
 		y=>(zero),
 		fb=>(tmpFB_0__joy_x_net_0),
-		analog=>Net_536,
+		analog=>Net_636,
 		io=>(tmpIO_0__joy_x_net_0),
 		siovref=>(tmpSIOVREF__joy_x_net_0),
 		annotation=>(open),
@@ -3678,7 +3678,7 @@ knob2:cy_psoc3_pins_v1_10
 	PORT MAP(oe=>(tmpOE__MISO_1_net_0),
 		y=>(zero),
 		fb=>(tmpFB_0__knob2_net_0),
-		analog=>Net_540,
+		analog=>Net_537,
 		io=>(tmpIO_0__knob2_net_0),
 		siovref=>(tmpSIOVREF__knob2_net_0),
 		annotation=>(open),
@@ -3748,7 +3748,7 @@ knob1:cy_psoc3_pins_v1_10
 	PORT MAP(oe=>(tmpOE__MISO_1_net_0),
 		y=>(zero),
 		fb=>(tmpFB_0__knob1_net_0),
-		analog=>Net_636,
+		analog=>Net_536,
 		io=>(tmpIO_0__knob1_net_0),
 		siovref=>(tmpSIOVREF__knob1_net_0),
 		annotation=>(open),
@@ -4113,13 +4113,6 @@ my_Vbus_ISR:cy_isr_v1_0
 	GENERIC MAP(int_type=>"10",
 		is_nmi=>'0')
 	PORT MAP(int_signal=>Net_1266);
-Sleep_isr:cy_isr_v1_0
-	GENERIC MAP(int_type=>"10",
-		is_nmi=>'0')
-	PORT MAP(int_signal=>Net_2);
-\SleepTimer:gsRef_1\:cy_gsref_v1_0
-	GENERIC MAP(guid=>"0335EFD7-9943-4db5-B556-454A5AD8A118")
-	PORT MAP(sig_out=>Net_2);
 isr_SPI2_ss:cy_isr_v1_0
 	GENERIC MAP(int_type=>"00",
 		is_nmi=>'0')
@@ -4616,7 +4609,7 @@ testpin4:cy_psoc3_pins_v1_10
 		invert_out_reset=>'0',
 		io_voltage=>"",
 		layout_mode=>"CONTIGUOUS",
-		output_conn=>"1",
+		output_conn=>"0",
 		output_sync=>"0",
 		output_clk_en=>'0',
 		output_mode=>"0",
@@ -4656,7 +4649,7 @@ testpin4:cy_psoc3_pins_v1_10
 		ovt_hyst_trim=>"0",
 		input_buffer_sel=>"00")
 	PORT MAP(oe=>(tmpOE__MISO_1_net_0),
-		y=>Net_1455,
+		y=>(zero),
 		fb=>(tmpFB_0__testpin4_net_0),
 		analog=>(open),
 		io=>(tmpIO_0__testpin4_net_0),
@@ -4902,7 +4895,7 @@ testpin5:cy_psoc3_pins_v1_10
 		invert_out_reset=>'0',
 		io_voltage=>"",
 		layout_mode=>"CONTIGUOUS",
-		output_conn=>"1",
+		output_conn=>"0",
 		output_sync=>"0",
 		output_clk_en=>'0',
 		output_mode=>"0",
@@ -4942,7 +4935,7 @@ testpin5:cy_psoc3_pins_v1_10
 		ovt_hyst_trim=>"0",
 		input_buffer_sel=>"00")
 	PORT MAP(oe=>(tmpOE__MISO_1_net_0),
-		y=>zero,
+		y=>(zero),
 		fb=>(tmpFB_0__testpin5_net_0),
 		analog=>(open),
 		io=>(tmpIO_0__testpin5_net_0),
@@ -6470,6 +6463,18 @@ edit_button:cy_psoc3_pins_v1_10
 		out_clock_en=>tmpOE__MISO_1_net_0,
 		out_reset=>zero,
 		interrupt=>tmpINTERRUPT_0__edit_button_net_0);
+DMA_3:cy_dma_v1_0
+	GENERIC MAP(drq_type=>"01",
+		num_tds=>0)
+	PORT MAP(drq=>Net_1497,
+		trq=>zero,
+		nrq=>Net_1499);
+DMA_4:cy_dma_v1_0
+	GENERIC MAP(drq_type=>"01",
+		num_tds=>0)
+	PORT MAP(drq=>Net_1500,
+		trq=>zero,
+		nrq=>Net_1502);
 Net_415:cy_dff
 	PORT MAP(d=>Net_415D,
 		clk=>\SPIM_1:BSPIM:clk_fin\,

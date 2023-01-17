@@ -1,5 +1,5 @@
 -- Project:   CE210514_PSOC3_5_Thermistor
--- Generated: 01/04/2023 18:55:20
+-- Generated: 01/09/2023 13:39:33
 -- PSoC Creator  4.4
 
 ENTITY CE210514_PSOC3_5_Thermistor IS
@@ -60,7 +60,6 @@ ENTITY CE210514_PSOC3_5_Thermistor IS
 END CE210514_PSOC3_5_Thermistor;
 
 ARCHITECTURE __DEFAULT__ OF CE210514_PSOC3_5_Thermistor IS
-    SIGNAL CTW_OUT : bit;
     SIGNAL ClockBlock_100k : bit;
     SIGNAL ClockBlock_1k : bit;
     SIGNAL ClockBlock_32k : bit;
@@ -112,6 +111,10 @@ ARCHITECTURE __DEFAULT__ OF CE210514_PSOC3_5_Thermistor IS
     ATTRIBUTE udbclken_assigned OF Net_1492 : SIGNAL IS "True";
     ATTRIBUTE global_signal OF Net_1492 : SIGNAL IS true;
     SIGNAL Net_1492_local : bit;
+    SIGNAL Net_1497 : bit;
+    SIGNAL Net_1499 : bit;
+    SIGNAL Net_1500 : bit;
+    SIGNAL Net_1502 : bit;
     SIGNAL Net_19 : bit;
     SIGNAL Net_415 : bit;
     SIGNAL Net_437 : bit;
@@ -622,6 +625,8 @@ ARCHITECTURE __DEFAULT__ OF CE210514_PSOC3_5_Thermistor IS
     ATTRIBUTE lib_model OF \QuadDec_1:bQuadDec:quad_B_delayed_1\ : LABEL IS "macrocell40";
     ATTRIBUTE lib_model OF \QuadDec_1:bQuadDec:quad_B_delayed_2\ : LABEL IS "macrocell41";
     ATTRIBUTE lib_model OF \QuadDec_1:bQuadDec:Stsreg\ : LABEL IS "statusicell8";
+    ATTRIBUTE lib_model OF DMA_3 : LABEL IS "drqcell5";
+    ATTRIBUTE lib_model OF DMA_4 : LABEL IS "drqcell6";
     ATTRIBUTE lib_model OF Net_415 : LABEL IS "macrocell42";
     ATTRIBUTE lib_model OF \SPIM_1:BSPIM:state_2\ : LABEL IS "macrocell43";
     ATTRIBUTE lib_model OF \SPIM_1:BSPIM:state_1\ : LABEL IS "macrocell44";
@@ -1050,14 +1055,6 @@ ARCHITECTURE __DEFAULT__ OF CE210514_PSOC3_5_Thermistor IS
     ATTRIBUTE udb_chain OF macrocell : COMPONENT IS "cin,cout";
     ATTRIBUTE chain_lsb OF macrocell : COMPONENT IS "cin";
     ATTRIBUTE chain_msb OF macrocell : COMPONENT IS "cout";
-    COMPONENT pmcell
-        PORT (
-            ctw_int : OUT std_ulogic;
-            ftw_int : OUT std_ulogic;
-            limact_int : OUT std_ulogic;
-            onepps_int : OUT std_ulogic;
-            pm_int : OUT std_ulogic);
-    END COMPONENT;
     COMPONENT sarcell
         PORT (
             clock : IN std_ulogic;
@@ -1195,10 +1192,10 @@ BEGIN
             clk_bus => ClockBlock_BUS_CLK_local,
             dsi_clkin_div => open,
             dsi_glb_div => open,
-            dclk_glb_0 => \SPIM_1:Net_276\,
-            dclk_0 => \SPIM_1:Net_276_local\,
-            dclk_glb_1 => Net_1492,
-            dclk_1 => Net_1492_local,
+            dclk_glb_0 => Net_1492,
+            dclk_0 => Net_1492_local,
+            dclk_glb_1 => \SPIM_1:Net_276\,
+            dclk_1 => \SPIM_1:Net_276_local\,
             dclk_glb_2 => \SPIS_2:Net_81\,
             dclk_2 => \SPIS_2:Net_81_local\,
             dclk_glb_3 => \SPIS_1:Net_81\,
@@ -2392,7 +2389,7 @@ BEGIN
             pa_out => joy_y(0)__PA,
             oe => open,
             in_clock => open,
-            pin_input => \ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_1\,
+            pin_input => \ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_3\,
             in_clock_en => '1',
             in_reset => '0',
             out_clock => open,
@@ -2482,7 +2479,7 @@ BEGIN
             pa_out => joy_x(0)__PA,
             oe => open,
             in_clock => open,
-            pin_input => \ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_0\,
+            pin_input => \ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_2\,
             in_clock_en => '1',
             in_reset => '0',
             out_clock => open,
@@ -2934,7 +2931,7 @@ BEGIN
             pa_out => knob2(0)__PA,
             oe => open,
             in_clock => open,
-            pin_input => \ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_3\,
+            pin_input => \ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_1\,
             in_clock_en => '1',
             in_reset => '0',
             out_clock => open,
@@ -3024,7 +3021,7 @@ BEGIN
             pa_out => knob1(0)__PA,
             oe => open,
             in_clock => open,
-            pin_input => \ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_2\,
+            pin_input => \ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_0\,
             in_clock_en => '1',
             in_reset => '0',
             out_clock => open,
@@ -3871,7 +3868,7 @@ BEGIN
             oe_sync => "0",
             output_clk_en => 0,
             output_clock_mode => "0",
-            output_conn => "1",
+            output_conn => "0",
             output_mode => "0",
             output_reset => 0,
             output_sync => "0",
@@ -3925,12 +3922,10 @@ BEGIN
             oe_sync_mode => 0,
             logicalport => "testpin4",
             logicalport_pin_id => 0,
-            io_capabilities => "0000000000000000000000000000000000000000000000000000000000000101")
+            io_capabilities => "0000000000000000000000000000000000000000000000000000000000000001")
         PORT MAP(
             pa_out => testpin4(0)__PA,
             oe => open,
-            pin_input => Net_1455,
-            pad_out => testpin4(0)_PAD,
             pad_in => testpin4(0)_PAD,
             in_clock => open,
             in_clock_en => '1',
@@ -4237,7 +4232,7 @@ BEGIN
             oe_sync => "0",
             output_clk_en => 0,
             output_clock_mode => "0",
-            output_conn => "1",
+            output_conn => "0",
             output_mode => "0",
             output_reset => 0,
             output_sync => "0",
@@ -6353,7 +6348,8 @@ BEGIN
             status_3 => \SPIM_1:BSPIM:load_rx_data\,
             status_2 => \SPIM_1:BSPIM:tx_status_2\,
             status_1 => \SPIM_1:BSPIM:tx_status_1\,
-            status_0 => \SPIM_1:BSPIM:tx_status_0\);
+            status_0 => \SPIM_1:BSPIM:tx_status_0\,
+            interrupt => Net_1500);
 
     \SPIM_1:BSPIM:RxStsReg\:statusicell
         GENERIC MAP(
@@ -6370,7 +6366,8 @@ BEGIN
             status_3 => open,
             status_2 => open,
             status_1 => open,
-            status_0 => open);
+            status_0 => open,
+            interrupt => Net_1497);
 
     \SPIM_1:BSPIM:sR8:Dp:u0\:datapathcell
         GENERIC MAP(
@@ -6775,14 +6772,6 @@ BEGIN
             is_nmi => 0)
         PORT MAP(
             interrupt => Net_1266,
-            clock => ClockBlock_BUS_CLK);
-
-    Sleep_isr:interrupt
-        GENERIC MAP(
-            int_type => "10",
-            is_nmi => 0)
-        PORT MAP(
-            interrupt => CTW_OUT,
             clock => ClockBlock_BUS_CLK);
 
     isr_SPI2_ss:interrupt
@@ -7196,6 +7185,26 @@ BEGIN
             status_2 => \QuadDec_1:Net_1260\,
             status_1 => \QuadDec_1:Net_611\,
             status_0 => \QuadDec_1:Net_530\);
+
+    DMA_3:drqcell
+        GENERIC MAP(
+            drq_type => "01",
+            num_tds => 0)
+        PORT MAP(
+            dmareq => Net_1497,
+            termin => '0',
+            termout => Net_1499,
+            clock => ClockBlock_BUS_CLK);
+
+    DMA_4:drqcell
+        GENERIC MAP(
+            drq_type => "01",
+            num_tds => 0)
+        PORT MAP(
+            dmareq => Net_1500,
+            termin => '0',
+            termout => Net_1502,
+            clock => ClockBlock_BUS_CLK);
 
     Net_415:macrocell
         GENERIC MAP(
@@ -8872,9 +8881,5 @@ BEGIN
             main_3 => \QuadDec_1:bQuadDec:error\,
             main_4 => \QuadDec_1:bQuadDec:state_1\,
             main_5 => \QuadDec_1:bQuadDec:state_0\);
-
-    PM:pmcell
-        PORT MAP(
-            ctw_int => CTW_OUT);
 
 END __DEFAULT__;
