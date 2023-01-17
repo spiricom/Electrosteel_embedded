@@ -71,7 +71,7 @@ FILINFO fno;
 DIR dir;
 const TCHAR path = 0;
 
-#define MAX_NUM_PRESETS 64
+
 volatile uint8_t writingState = 0;
 volatile float 	audioMasterLevel = 1.0f;
 FIL fdst;
@@ -106,6 +106,10 @@ float defaultScaling = 1.0f;
 float resTable[SCALE_TABLE_SIZE];
 float envTimeTable[SCALE_TABLE_SIZE];
 float lfoRateTable[SCALE_TABLE_SIZE]__ATTR_RAM_D1;
+
+
+float midiKeyDivisor;
+float midiKeySubtractor;
 
 uint8_t volatile interruptChecker = 0;
 
@@ -1740,7 +1744,8 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 		}
 
 	}
-
+	midiKeyDivisor = 1.0f / ((params[MIDIKeyMax].realVal[0]*127.0f) - (params[MIDIKeyMin].realVal[0]*127.0f));
+	midiKeySubtractor = (params[MIDIKeyMin].realVal[0] * 127.0f);
 	//mappings parsing
 
 	//move past the countcheck elements (already checked earlier)

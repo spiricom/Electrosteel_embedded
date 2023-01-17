@@ -29,7 +29,9 @@ tMempool mediumPool;
 tMempool largePool;
 
 void audioFrame(uint16_t buffer_offset);
-uint32_t audioTick(float* samples);
+
+float  audioTickString(void);
+float  audioTickString2(void);
 
 HAL_StatusTypeDef transmit_status;
 HAL_StatusTypeDef receive_status;
@@ -88,6 +90,12 @@ tExpSmooth knobSmoothers[12];
 tExpSmooth pedalSmoothers[10];
 
 tSlide freqSlider[NUM_STRINGS_PER_BOARD];
+
+
+uint8_t randomValPointer = 0;
+
+
+uint8_t lsDecay[NUM_STRINGS_PER_BOARD];
 
 //function pointers
 shapeTick_t shapeTick[NUM_OSC];
@@ -159,8 +167,8 @@ float decayExpBufferSizeMinusOne;
  tCompressor comp[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
  tCrusher bc[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
  tLockhartWavefolder wf[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
- tLinearDelay delay1[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
- tLinearDelay delay2[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
+ //tLinearDelay delay1[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
+ //tLinearDelay delay2[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
  tCycle mod1[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
  tCycle mod2[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
  float fxMix[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
@@ -178,8 +186,7 @@ float decayExpBufferSizeMinusOne;
 float amplitude[NUM_STRINGS_PER_BOARD];
 float finalMaster[NUM_STRINGS_PER_BOARD];
 
-tSimplePoly myPoly;
-float bend;
+
 float transpose = 0.0f;
 tNoise noise[NUM_STRINGS_PER_BOARD];
 
@@ -200,6 +207,21 @@ union breakFloat{
 	uint8_t b[4];
 };
 
+//string synth stuff
+tSimpleLivingString3 livStr[NUM_STRINGS_PER_BOARD];
+tLivingString2 strings[NUM_STRINGS_PER_BOARD];
+float prevSamp[NUM_STRINGS_PER_BOARD];
+
+tADSRT fenvelopes[NUM_STRINGS_PER_BOARD];
+tADSRT envelopes[NUM_STRINGS_PER_BOARD][3];
+
+
+tVZFilter noiseFilt;
+tVZFilter noiseFilt2;
+
+tNoise myNoise;
+
+
 
 float paramsFromBrain[29];
 uint stringInputs[NUM_STRINGS];
@@ -214,15 +236,17 @@ float volumePedal = 0.0f;
 float knobScaled[29];
 float stringMIDIPitches[NUM_STRINGS_PER_BOARD];
 //TODO:
-// frets are measured at 3 7 12 and 19   need to redo these measurements with an accurately set capo
-float fretMeasurements[4][4] ={
-		{62750.0f, 61600.0f, 31785.0f, 0.0f},
-		{39600.0f, 41500.0f, 15700.0f, 0.0f},
-		{27520.0f, 30200.0f, 8458.0f, 0.0f},
-		{9490.0f, 13600.0f, 2674.0f, 0.0f}
+// frets are measured at 0, 3, 7, 12, and 19
+float fretMeasurements[5][2] ={
+		{63184.0f, 64124.0f},
+		{52266.0f, 53498.0f},
+		{39953.0f, 41704.0f},
+		{27796.0f, 30525.0f},
+		{9518.0f, 13635.0f}
 	};
 
-float fretScaling[4] = {1.0f, 0.6666666666666f, 0.5f, 0.25f};
+//
+float fretScaling[5] = {1.0f, 0.840918367346939f, 0.66744958289463f, 0.5f, 0.25f};
 
 float stringOctave[NUM_STRINGS_PER_BOARD];
 int voice = 0;
@@ -320,9 +344,9 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 	for (int i = 0; i < NUM_STRINGS_PER_BOARD; i++)
 	{
 
-		tSlide_init(&freqSlider[i], 1, 20, &leaf);
+		tSlide_init(&freqSlider[i], 2, 2, &leaf);
 
-		tExpSmooth_init(&stringFreqSmoothers[i],1.0f, 0.05f, &leaf);
+		//tExpSmooth_init(&stringFreqSmoothers[i],1.0f, 0.05f, &leaf);
 	}
 
 
@@ -356,9 +380,27 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 
 			tMBSineTri_init(&sinePaired[i][v],&leaf);
 
-			tExpSmooth_init(&pitchSmoother[i][v], 64.0f, 0.01f, &leaf);
-		}
+			tExpSmooth_init(&pitchSmoother[i][v], 64.0f, 0.02f, &leaf);
 
+
+		}
+		tSimpleLivingString3_initToPool(&livStr[v], 4, 220.0f, 17000.0f,
+					                                 0.99999f, 0.0f, 0.01f,
+					                                 0.01f, 0, &mediumPool);
+
+		tLivingString2_initToPool(&strings[v], 100.0f, 0.6f, 0.3f, .9f, 0.0f, .9999f, .9999f, 0.0f, 0.05f, 0.05f, 1, &mediumPool);
+		tLivingString2_setBrightness(&strings[v], .99f);
+		tLivingString2_setPickPos(&strings[v], .5f);
+		tLivingString2_setPrepPos(&strings[v], .4f);
+		tLivingString2_setPrepIndex(&strings[v], 0.0f);
+		tLivingString2_setPickupPos(&strings[v], 1.0f);
+
+		tADSRT_init(&fenvelopes[v], 0.0f,  50.0f, 0.0f, 200.0f, decayExpBuffer, DECAY_EXP_BUFFER_SIZE, &leaf);
+
+
+		tVZFilter_init(&noiseFilt, BandpassPeak, 1500.0f, 1.5f, &leaf);
+		tVZFilter_init(&noiseFilt2, Lowpass, 800.0f, 0.9f, &leaf);
+		tNoise_init(&myNoise, WhiteNoise, &leaf);
 		for (int i = 0; i < NUM_FILT; i++)
 		{
 			tSVF_init(&lowpass[i][v], SVFTypeLowpass, 2000.f, 0.7f, &leaf);
@@ -412,8 +454,8 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 			tVZFilter_setSampleRate(&bell1[i][v], SAMPLE_RATE * OVERSAMPLE);
 			tCompressor_init(&comp[i][v], &leaf);
 			//tCompressor_setTables(&comp[i][v], atoDbTable, dbtoATable, 0.00001f, 4.0f, -90.0f, 30.0f, ATODB_TABLE_SIZE, DBTOA_TABLE_SIZE);
-			tLinearDelay_initToPool(&delay1[i][v], 4000.0f, 4096, &mediumPool);
-			tLinearDelay_initToPool(&delay2[i][v], 4000.0f, 4096, &mediumPool);
+			//tLinearDelay_initToPool(&delay1[i][v], 4000.0f, 4096, &mediumPool);
+			//tLinearDelay_initToPool(&delay2[i][v], 4000.0f, 4096, &mediumPool);
 			tCycle_init(&mod1[i][v], &leaf);
 			tCycle_init(&mod2[i][v], &leaf);
 			tCycle_setFreq(&mod1[i][v], 0.2f);
@@ -433,7 +475,7 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 
 		for (int i = 0; i < MAX_NUM_MAPPINGS; i++)
 		{
-			tExpSmooth_init(&mapSmoothers[i][v], 0.0f, 0.01f, &leaf);
+			tExpSmooth_init(&mapSmoothers[i][v], 0.0f, 0.05f, &leaf);
 		}
 
 		tOversampler_init(&os[v], OVERSAMPLE, 0, &leaf);
@@ -466,7 +508,7 @@ float octaveRatios[4] = {0.5f, 1.0f, 2.0f, 4.0f};
 int octaveIndex = 1;
 int stringOctaveIndex[4];
 const int syncMap[3] = {2, 0, 1};
-
+float pluckPos = 0.5f;
 
 void updateStateFromSPIMessage(uint8_t offset)
 {
@@ -480,8 +522,16 @@ void updateStateFromSPIMessage(uint8_t offset)
 
 	if (voice != prevVoice)
 	{
-		presetWaitingToLoad = 1;
-		presetNumberToLoad = voice;
+		if ((voice == 63) || (voice == 62) || (voice == 61))
+		{
+			currentActivePreset = voice;
+		}
+		else
+		{
+			presetWaitingToLoad = 1;
+			presetNumberToLoad = voice;
+		}
+
 	}
 	prevVoice = voice;
 
@@ -527,9 +577,13 @@ void audioFrame(uint16_t buffer_offset)
 			{
 				stringMappedPositions[j] = map((float)stringPositions[j], fretMeasurements[1][j], fretMeasurements[2][j], fretScaling[1], fretScaling[2]);
 			}
-			else
+			else if ((stringPositions[j] >= fretMeasurements[3][j]) && (stringPositions[j] <= fretMeasurements[2][j]))
 			{
 				stringMappedPositions[j] = map((float)stringPositions[j], fretMeasurements[2][j], fretMeasurements[3][j], fretScaling[2], fretScaling[3]);
+			}
+			else
+			{
+				stringMappedPositions[j] = map((float)stringPositions[j], fretMeasurements[3][j], fretMeasurements[4][j], fretScaling[3], fretScaling[4]);
 			}
 		}
 		float myMappedPos = 0.0f;
@@ -639,7 +693,7 @@ void audioFrame(uint16_t buffer_offset)
 			if ((previousStringInputs[i] == 0) && (stringInputs[i] > 0))
 			{
 
-				float amplitz = stringInputs[i] * 0.00005f;
+				float amplitz = stringInputs[i] * 0.000025f;
 				amplitz = LEAF_clip(0.0, amplitz, 1.0f);
 				//float amplitz = stringInputs[i] * 0.000015259021897f;
 				//tExpSmooth_setVal(&smoother[i], amplitz);
@@ -665,6 +719,73 @@ void audioFrame(uint16_t buffer_offset)
 						lfoParams[LFOPhase].setParam(lfoParams[LFOPhase].realVal[i], v, i);
 					}
 				}
+				//sample and hold noise
+				sourceValues[RANDOM_SOURCE_OFFSET][i] = (random_values[randomValPointer++] * 0.5f) + 0.5f; // scale between zero and one
+				sourceValues[VELOCITY_SOURCE_OFFSET][i] = amplitz;
+				if (currentActivePreset == 63)
+				{
+					//then it's the string synth
+					//tSimpleLivingString3_setDecay(&livStr[i], 20.0f);
+					tSimpleLivingString3_pluck(&livStr[i], amplitz, pluckPos);
+					lsDecay[i] = 1;
+				}
+
+				if (currentActivePreset == 62)
+				{
+					tADSRT_on(&fenvelopes[i], amplitz);
+
+					tLivingString2_setLevMode(&strings[i], (knobScaled[0] > 0.5f));
+
+					tLivingString2_setTargetLev(&strings[i], knobScaled[1]);
+					int delayLength = (int)strings[i]->waveLengthInSamples;
+					int beforeLength = (delayLength * knobScaled[2]);
+					int afterLength = (delayLength * (1.0f - knobScaled[2]));
+					float beforePickIncrement;
+					float afterPickIncrement;
+					float pluckAmp = amplitz * 2.0f; //was 4
+					if (beforeLength > 0)
+					{
+						beforePickIncrement = pluckAmp / beforeLength;
+					}
+					else
+					{
+						beforePickIncrement = pluckAmp;
+					}
+
+					if (afterLength > 0)
+					{
+						afterPickIncrement = pluckAmp / afterLength;
+					}
+					else
+					{
+						afterPickIncrement = pluckAmp;
+					}
+
+
+					float value = 0.0f;
+					for (int j = 0; j < delayLength; j++)
+					{
+						if (j < beforeLength)
+						{
+							value += beforePickIncrement;
+							//value = tanhf(value);
+							strings[i]->delLF->buff[(j+strings[i]->delLF->outPoint) & strings[i]->delLF->bufferMask] = value * 0.5f;
+							strings[i]->delLB->buff[(j+strings[i]->delLB->outPoint) & strings[i]->delLB->bufferMask] = value * 0.5f;
+						}
+						else
+						{
+							value -= afterPickIncrement;
+							//value = tanhf(value);
+							strings[i]->delUF->buff[(j+strings[i]->delUF->outPoint) & strings[i]->delUF->bufferMask] = value * 0.5f;
+							strings[i]->delUB->buff[(j+strings[i]->delUB->outPoint) & strings[i]->delUB->bufferMask] = value * 0.5f;
+						}
+
+						//strings[i]->delayLine->buff[(j+strings[i]->delayLine->outPoint) & strings[i]->delayLine->bufferMask] = value;
+					}
+					tLivingString2_setDecay(&strings[i], knobScaled[3] * 500.0f);
+				}
+
+
 			}
 			else if ((previousStringInputs[i] > 0) && (stringInputs[i] == 0))
 			{
@@ -674,6 +795,20 @@ void audioFrame(uint16_t buffer_offset)
 				{
 					tADSRT_off(&envs[v][i]);
 				}
+				if (currentActivePreset == 63)
+				{
+					//then it's the string synth
+					//tSimpleLivingString3_setDecay(&livStr[i], 0.1f);
+					lsDecay[i] = 0;
+				}
+				else if (currentActivePreset == 62)
+				{
+					tLivingString2_setTargetLev(&strings[i], 0.0f);
+					tLivingString2_setLevMode(&strings[i], 0);
+					tLivingString2_setDecay(&strings[i], 0.2f);
+
+					tADSRT_off(&fenvelopes[i]);
+				}
 			}
 			previousStringInputs[i] = stringInputs[i];
 		}
@@ -682,15 +817,39 @@ void audioFrame(uint16_t buffer_offset)
 	if ((codecReady)&&(presetReady))
 	{
 
-		//mono operation, no need to compute right channel. Also for loop iterating by 2 instead of 1 to avoid if statement.
-		for (int i = 0; i < HALF_BUFFER_SIZE; i+=2)
+		if (currentActivePreset == 63)
 		{
-			current_sample = (int32_t)(audioTickL() * TWO_TO_23);
-			audioOutBuffer[buffer_offset + i] = current_sample;
-			audioOutBuffer[buffer_offset + i + 1] = current_sample;
-			//audioOutBuffer[buffer_offset + i + 1] = current_sample;
+			//mono operation, no need to compute right channel. Also for loop iterating by 2 instead of 1 to avoid if statement.
+			for (int i = 0; i < HALF_BUFFER_SIZE; i+=2)
+			{
+				current_sample = (int32_t)(audioTickString() * TWO_TO_23);
+				audioOutBuffer[buffer_offset + i] = current_sample;
+				audioOutBuffer[buffer_offset + i + 1] = current_sample;
+				//audioOutBuffer[buffer_offset + i + 1] = current_sample;
+			}
 		}
-
+		else if (currentActivePreset == 62)
+		{
+			//mono operation, no need to compute right channel. Also for loop iterating by 2 instead of 1 to avoid if statement.
+			for (int i = 0; i < HALF_BUFFER_SIZE; i+=2)
+			{
+				current_sample = (int32_t)(audioTickString2() * TWO_TO_23);
+				audioOutBuffer[buffer_offset + i] = current_sample;
+				audioOutBuffer[buffer_offset + i + 1] = current_sample;
+				//audioOutBuffer[buffer_offset + i + 1] = current_sample;
+			}
+		}
+		else
+		{
+			//mono operation, no need to compute right channel. Also for loop iterating by 2 instead of 1 to avoid if statement.
+			for (int i = 0; i < HALF_BUFFER_SIZE; i+=2)
+			{
+				current_sample = (int32_t)(audioTickL() * TWO_TO_23);
+				audioOutBuffer[buffer_offset + i] = current_sample;
+				audioOutBuffer[buffer_offset + i + 1] = current_sample;
+				//audioOutBuffer[buffer_offset + i + 1] = current_sample;
+			}
+		}
 
 	}
 	timeFrame = DWT->CYCCNT - tempCountFrame;
@@ -1284,7 +1443,7 @@ float  audioTickL(void)
 
 	//samples[0]= 0.0f;
 
-	//float volumeSmoothed = tExpSmooth_tick(&volumeSmoother);
+	float volumeSmoothed = tExpSmooth_tick(&volumeSmoother);
 
 	for (int i = 0; i < 12; i++)
 	{
@@ -1307,6 +1466,8 @@ float  audioTickL(void)
 		//tempIndex = (tempFreq * )
 		//note[v] = ftom(stringFrequencies[v] * octaveRatios[stringOctaveIndex[v]]);
 		note[v] = stringMIDIPitches[v] + stringOctave[v];
+		sourceValues[MIDI_KEY_SOURCE_OFFSET][v] = (note[v] - midiKeySubtractor) * midiKeyDivisor;
+
 		if (note[v] < 0.0f)
 		{
 			note[v] = 0.0f;
@@ -1383,9 +1544,22 @@ float  audioTickL(void)
 		}
 
 
-		sample = tSVF_tick(&finalLowpass[v], sample) * 0.5f;
+		sample = tSVF_tick(&finalLowpass[v], sample) * 0.25f;
 		masterSample += sample;
+
+		float volIdx = LEAF_clip(47.0f, ((volumeSmoothed * 80.0f) + 47.0f), 127.0f);
+		int volIdxInt = (int) volIdx;
+		float alpha = volIdx-volIdxInt;
+		int volIdxIntPlus = (volIdxInt + 1) & 127;
+		float omAlpha = 1.0f - alpha;
+		float outVol = volumeAmps128[volIdxInt] * omAlpha;
+		outVol += volumeAmps128[volIdxIntPlus] * alpha;
+
+		masterSample *= outVol;
+
 		masterSample *= finalMaster[v] ;
+
+		masterSample = LEAF_clip(-1.0f, masterSample, 1.0f);
 	}
 
 
@@ -1487,6 +1661,187 @@ void __ATTR_ITCMRAM sendPitchBend(uint8_t value, uint8_t ctrl)
 
 
 
+float  audioTickString(void)
+{
+	float temp = 0.0f;
+	float note[numStringsThisBoard];
+
+	float volumeSmoothed = tExpSmooth_tick(&volumeSmoother);
+
+	for (int i = 0; i < 12; i++)
+	{
+		knobScaled[i] = tExpSmooth_tick(&knobSmoothers[i]);
+	}
+	pluckPos = knobScaled[9];
+
+	for (int i = 0; i < numStringsThisBoard; i++)
+	{
+		note[i] = stringMIDIPitches[i] + stringOctave[i];
+		//sourceValues[MIDI_KEY_SOURCE_OFFSET][v] = (note[v] - midiKeySubtractor) * midiKeyDivisor;
+
+		if (note[i] < 0.0f)
+		{
+			note[i] = 0.0f;
+		}
+
+		float finalFreq = mtof(note[i]) * invMapping[i] ;
+		float dampFreq = faster_mtof((knobScaled[11] * 140.0f)+60.0f);
+		float decay = 0.1f;
+		if (lsDecay[i])
+		{
+			decay = (knobScaled[10] * 800.0f) + 0.5f;
+		}
+		tSimpleLivingString3_setPickupPoint(&livStr[i], knobScaled[8]);
+		tSimpleLivingString3_setDecay(&livStr[i], decay);
+		tSimpleLivingString3_setDampFreq(&livStr[i], dampFreq);
+
+
+		tSimpleLivingString3_setTargetLev(&livStr[i], knobScaled[0]);
+		tSimpleLivingString3_setLevSmoothFactor(&livStr[i], knobScaled[1] * 0.1f);
+		tSimpleLivingString3_setLevStrength(&livStr[i], knobScaled[2] * 0.1f);
+		tSimpleLivingString3_setLevMode(&livStr[i], knobScaled[3] > 0.5f);
+		tSimpleLivingString3_setFreq(&livStr[i], finalFreq);
+		temp += tSimpleLivingString3_tick(&livStr[i], 0.0f);
+	}
+
+	float volIdx = LEAF_clip(47.0f, ((volumeSmoothed * 80.0f) + 47.0f), 127.0f);
+	int volIdxInt = (int) volIdx;
+	float alpha = volIdx-volIdxInt;
+	int volIdxIntPlus = (volIdxInt + 1) & 127;
+	float omAlpha = 1.0f - alpha;
+	float outVol = volumeAmps128[volIdxInt] * omAlpha;
+	outVol += volumeAmps128[volIdxIntPlus] * alpha;
+
+	temp *= outVol;
+
+	return temp;
+}
+
+
+
+float  audioTickString2(void)
+{
+	float temp = 0.0f;
+	float note[numStringsThisBoard];
+
+	float volumeSmoothed = tExpSmooth_tick(&volumeSmoother);
+
+	for (int i = 0; i < 12; i++)
+	{
+		knobScaled[i] = tExpSmooth_tick(&knobSmoothers[i]);
+	}
+
+	for (int i = 0; i < numStringsThisBoard; i++)
+	{
+		note[i] = stringMIDIPitches[i] + stringOctave[i];
+		//sourceValues[MIDI_KEY_SOURCE_OFFSET][v] = (note[v] - midiKeySubtractor) * midiKeyDivisor;
+
+		if (note[i] < 0.0f)
+		{
+			note[i] = 0.0f;
+		}
+
+		float filtNoise = tVZFilter_tickEfficient(&noiseFilt, tNoise_tick(&myNoise));
+		filtNoise += tVZFilter_tickEfficient(&noiseFilt2, tNoise_tick(&myNoise));
+
+
+		float env = tADSRT_tick(&fenvelopes[i]); //noise envelope
+
+		tLivingString2_setPickupPos(&strings[i],0.9999f);
+
+		tVZFilter_setFreq(&noiseFilt, faster_mtof(knobScaled[5] * 128.0f));
+		tVZFilter_setFreq(&noiseFilt2,faster_mtof(knobScaled[6] * 128.0f));
+
+
+
+		if (stringInputs[i] > 0)
+		{
+			//tLivingString2_setLevMode(&strings[i], (knobScaled[0] > 0.5f));
+
+			//tLivingString2_setTargetLev(&strings[i], knobScaled[1]);
+		}
+
+		else
+		{
+
+			//tLivingString2_setTargetLev(&strings[i], 0.0f);
+			//tLivingString2_setLevMode(&strings[i], 0);
+		}
+
+		tLivingString2_setLevSmoothFactor(&strings[i], knobScaled[7] * 0.1f);
+
+		tLivingString2_setLevStrength(&strings[i], knobScaled[8] * 0.1f);
+
+		tLivingString2_setBrightness(&strings[i], knobScaled[9]);
+		tLivingString2_setPickPos(&strings[i], knobScaled[2]);
+
+		tLivingString2_setPrepPos(&strings[i], (knobScaled[11] * 0.8f) + 0.1f);
+
+
+		float tempMIDI = note[i];
+		float tempIndexF =((LEAF_clip(-200.0f, tempMIDI, 200.0f) * 100.0f) + 16384.0f);
+		int tempIndexI = (int)tempIndexF;
+		tempIndexF = tempIndexF -tempIndexI;
+
+		float freqToSmooth1 = mtofTable[tempIndexI & 32767];
+		float freqToSmooth2 = mtofTable[(tempIndexI + 1) & 32767];
+		float freqToSmooth = (freqToSmooth1 * (1.0f - tempIndexF)) + (freqToSmooth2 * tempIndexF);
+		float finalFreq = freqToSmooth * invMapping[i] ;
+
+		tLivingString2_setFreq(&strings[i], finalFreq);
+
+
+		if (knobScaled[4] > 0.5f)
+		{
+			tLivingString2_setPrepIndex(&strings[i], knobScaled[10] * env);
+		}
+		else
+		{
+			tLivingString2_setPrepIndex(&strings[i], knobScaled[10]);
+		}
+
+
+		//tCycle_setFreq(&sines[i], stringFrequencies[i]);
+		//tTriangle_setFreq(&tris[i], stringFrequencies[i]);
+		//tADSRT_setDecay(&fenvelopes[i], knobScaled[2] * 22000.0f);
+
+
+		//float tempSamp = (tCycle_tick(&sines[i])) * 0.5f;
+		/*
+		for (int j = 0; j< NUM_OSCS; j++)
+		{
+			tSawtooth_setFreq(&Ssaws[i][j], stringFrequencies[i] * detunes[j]);
+			tempSamp += (tSawtooth_tick(&Ssaws[i][j]) * 0.5f);//filtNoise * theEnv) * env);
+		}
+		*/
+		//tempSamp = tEfficientSVF_tick(&filts2[i], tempSamp * env);
+		//tLivingString2_udpateDelays(&strings[i]);
+		float tempSamp = (tLivingString2_tick(&strings[i],(filtNoise * env)));// + (prevSamp[i] * (0.001f * knobScaled[5]))));//filtNoise * theEnv) * env);
+		prevSamp[i] = 0.0f;
+		for (int j = 0; j < NUM_STRINGS_PER_BOARD; j++)
+		{
+			if (j != i) //put sympathetic resonance in all strings but yourself
+			{
+				prevSamp[j]+=tempSamp * volumeSmoothed;
+			}
+		}
+
+
+		temp += tempSamp;
+	}
+
+	float volIdx = LEAF_clip(47.0f, ((volumeSmoothed * 80.0f) + 47.0f), 127.0f);
+	int volIdxInt = (int) volIdx;
+	float alpha = volIdx-volIdxInt;
+	int volIdxIntPlus = (volIdxInt + 1) & 127;
+	float omAlpha = 1.0f - alpha;
+	float outVol = volumeAmps128[volIdxInt] * omAlpha;
+	outVol += volumeAmps128[volIdxIntPlus] * alpha;
+
+	temp *= outVol;
+
+	return LEAF_clip(-1.0f, temp * 0.9f, 1.0f);
+}
 
 
 
@@ -1803,11 +2158,12 @@ void __ATTR_ITCMRAM chorusParam4(float value, int v, int string)
 
 float __ATTR_ITCMRAM chorusTick(float sample, int v, int string)
 {
-	tLinearDelay_setDelay(&delay1[v][string], param1[v][string] * .707f * (1.0f + param2[v][string] * tCycle_tick(&mod1[v][string])));
-    tLinearDelay_setDelay(&delay2[v][string], param1[v][string] * .5f * (1.0f - param2[v][string] * tCycle_tick(&mod2[v][string])));
-    float temp = tLinearDelay_tick(&delay1[v][string], sample) - sample;
-    temp += tLinearDelay_tick(&delay2[v][string], sample) - sample;
+	//tLinearDelay_setDelay(&delay1[v][string], param1[v][string] * .707f * (1.0f + param2[v][string] * tCycle_tick(&mod1[v][string])));
+    //tLinearDelay_setDelay(&delay2[v][string], param1[v][string] * .5f * (1.0f - param2[v][string] * tCycle_tick(&mod2[v][string])));
+    //float temp = tLinearDelay_tick(&delay1[v][string], sample) - sample;
+    //temp += tLinearDelay_tick(&delay2[v][string], sample) - sample;
     //temp = tHighpass_tick(&dcBlock1[v], temp);
+	float temp = 0.0f;
     return -temp;
 }
 
@@ -2117,7 +2473,7 @@ void __ATTR_ITCMRAM noiseSetFreq(float value, int v, int string)
 uint32_t timeNoise = 0;
 uint32_t timeRandom = 0;
 
-uint8_t randomValPointer = 0;
+
 void __ATTR_ITCMRAM noise_tick(int string)
 {
 	uint32_t tempCount9 = DWT->CYCCNT;
@@ -2131,7 +2487,7 @@ void __ATTR_ITCMRAM noise_tick(int string)
 	sample = tVZFilter_tickEfficient(&noiseBell1[string], sample);
 	sample = sample * amp;
 	float normSample = (sample + 1.f) * 0.5f;
-	sourceValues[3][string] = normSample;
+	sourceValues[NOISE_SOURCE_OFFSET][string] = normSample;
 	noiseOuts[0][string] = sample * filterSend *  enabled;
 	noiseOuts[1][string] = sample * (1.f-filterSend) * enabled ;
 

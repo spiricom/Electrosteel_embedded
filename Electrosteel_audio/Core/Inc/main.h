@@ -86,9 +86,10 @@ extern uint8_t SPI_PLUCK_RX[PLUCK_BUFFER_SIZE_TIMES_TWO];
 extern uint8_t SPI_LEVERS[LEVER_BUFFER_SIZE_TIMES_TWO];
 extern uint8_t levers[2][LEVER_BUFFER_SIZE];
 extern int currentLeverBuffer;
-
-
-
+#define MAX_NUM_PRESETS 64
+extern float midiKeyDivisor;
+extern float midiKeySubtractor;
+extern uint8_t currentActivePreset;
 #define NUM_PARAMS numParams
 #define MAX_NUM_MAPPINGS 32
 extern param params[NUM_PARAMS];
@@ -101,6 +102,9 @@ extern float random_values[256];
 extern uint32_t presetWaitingToLoad;
 extern uint8_t presetNumberToLoad;
 extern uint8_t boardNumber;
+
+extern volatile uint8_t presetNamesArray[MAX_NUM_PRESETS][14]__ATTR_RAM_D1;
+extern volatile uint8_t macroNamesArray[MAX_NUM_PRESETS][8][14]__ATTR_RAM_D1;
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
