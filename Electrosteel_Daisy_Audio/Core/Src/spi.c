@@ -181,7 +181,7 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* spiHandle)
     __HAL_LINKDMA(spiHandle,hdmarx,hdma_spi1_rx);
 
     /* SPI1_TX Init */
-    hdma_spi1_tx.Instance = DMA1_Stream7;
+    hdma_spi1_tx.Instance = DMA1_Stream0;
     hdma_spi1_tx.Init.Request = DMA_REQUEST_SPI1_TX;
     hdma_spi1_tx.Init.Direction = DMA_MEMORY_TO_PERIPH;
     hdma_spi1_tx.Init.PeriphInc = DMA_PINC_DISABLE;
@@ -249,7 +249,7 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* spiHandle)
     hdma_spi6_rx.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
     hdma_spi6_rx.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
     hdma_spi6_rx.Init.Mode = DMA_CIRCULAR;
-    hdma_spi6_rx.Init.Priority = DMA_PRIORITY_HIGH;
+    hdma_spi6_rx.Init.Priority = DMA_PRIORITY_VERY_HIGH;
     if (HAL_DMA_Init(&hdma_spi6_rx) != HAL_OK)
     {
       Error_Handler();

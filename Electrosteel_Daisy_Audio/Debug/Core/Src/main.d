@@ -20,8 +20,6 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_mdma.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_exti.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_cortex.h \
- ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_dac.h \
- ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_dac_ex.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_flash.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_flash_ex.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_hsem.h \
@@ -41,17 +39,7 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_ll_fmc.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi_ex.h \
- ../Core/Inc/parameters.h ../Core/Inc/dac.h ../Core/Inc/main.h \
- ../Core/Inc/dma.h ../FATFS/App/fatfs.h \
- ../Middlewares/Third_Party/FatFs/src/ff.h \
- ../Middlewares/Third_Party/FatFs/src/integer.h ../FATFS/Target/ffconf.h \
- ../FATFS/Target/bsp_driver_sd.h ../FATFS/Target/fatfs_platform.h \
- ../Middlewares/Third_Party/FatFs/src/ff_gen_drv.h \
- ../Middlewares/Third_Party/FatFs/src/diskio.h \
- ../Middlewares/Third_Party/FatFs/src/ff.h ../FATFS/Target/sd_diskio.h \
- ../Core/Inc/i2c.h ../Core/Inc/quadspi.h ../Core/Inc/rng.h \
- ../Core/Inc/sai.h ../Core/Inc/sdmmc.h ../Core/Inc/spi.h \
- ../Core/Inc/gpio.h ../Core/Inc/fmc.h \
+ ../Core/Inc/parameters.h ../Core/Inc/audio.h \
  /Users/jeffsnyder/dev/LEAF/leaf/leaf.h \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-global.h \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-mempool.h \
@@ -83,7 +71,17 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-sampling.h \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-physical.h \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-electrical.h \
- ../Core/Inc/codec.h ../Core/Inc/audio.h
+ ../Core/Inc/main.h ../Core/Inc/bdma.h ../Core/Inc/dma.h \
+ ../FATFS/App/fatfs.h ../Middlewares/Third_Party/FatFs/src/ff.h \
+ ../Middlewares/Third_Party/FatFs/src/integer.h ../FATFS/Target/ffconf.h \
+ ../FATFS/Target/bsp_driver_sd.h ../FATFS/Target/fatfs_platform.h \
+ ../Middlewares/Third_Party/FatFs/src/ff_gen_drv.h \
+ ../Middlewares/Third_Party/FatFs/src/diskio.h \
+ ../Middlewares/Third_Party/FatFs/src/ff.h ../FATFS/Target/sd_diskio.h \
+ ../Core/Inc/i2c.h ../Core/Inc/quadspi.h ../Core/Inc/rng.h \
+ ../Core/Inc/sai.h ../Core/Inc/sdmmc.h ../Core/Inc/spi.h \
+ ../Core/Inc/gpio.h ../Core/Inc/fmc.h ../Core/Inc/audio.h \
+ ../Core/Inc/codec.h
 ../Core/Inc/main.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h:
 ../Core/Inc/stm32h7xx_hal_conf.h:
@@ -106,8 +104,6 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_mdma.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_exti.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_cortex.h:
-../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_dac.h:
-../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_dac_ex.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_flash.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_flash_ex.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_hsem.h:
@@ -128,27 +124,7 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi_ex.h:
 ../Core/Inc/parameters.h:
-../Core/Inc/dac.h:
-../Core/Inc/main.h:
-../Core/Inc/dma.h:
-../FATFS/App/fatfs.h:
-../Middlewares/Third_Party/FatFs/src/ff.h:
-../Middlewares/Third_Party/FatFs/src/integer.h:
-../FATFS/Target/ffconf.h:
-../FATFS/Target/bsp_driver_sd.h:
-../FATFS/Target/fatfs_platform.h:
-../Middlewares/Third_Party/FatFs/src/ff_gen_drv.h:
-../Middlewares/Third_Party/FatFs/src/diskio.h:
-../Middlewares/Third_Party/FatFs/src/ff.h:
-../FATFS/Target/sd_diskio.h:
-../Core/Inc/i2c.h:
-../Core/Inc/quadspi.h:
-../Core/Inc/rng.h:
-../Core/Inc/sai.h:
-../Core/Inc/sdmmc.h:
-../Core/Inc/spi.h:
-../Core/Inc/gpio.h:
-../Core/Inc/fmc.h:
+../Core/Inc/audio.h:
 /Users/jeffsnyder/dev/LEAF/leaf/leaf.h:
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-global.h:
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-mempool.h:
@@ -180,5 +156,26 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-sampling.h:
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-physical.h:
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-electrical.h:
-../Core/Inc/codec.h:
+../Core/Inc/main.h:
+../Core/Inc/bdma.h:
+../Core/Inc/dma.h:
+../FATFS/App/fatfs.h:
+../Middlewares/Third_Party/FatFs/src/ff.h:
+../Middlewares/Third_Party/FatFs/src/integer.h:
+../FATFS/Target/ffconf.h:
+../FATFS/Target/bsp_driver_sd.h:
+../FATFS/Target/fatfs_platform.h:
+../Middlewares/Third_Party/FatFs/src/ff_gen_drv.h:
+../Middlewares/Third_Party/FatFs/src/diskio.h:
+../Middlewares/Third_Party/FatFs/src/ff.h:
+../FATFS/Target/sd_diskio.h:
+../Core/Inc/i2c.h:
+../Core/Inc/quadspi.h:
+../Core/Inc/rng.h:
+../Core/Inc/sai.h:
+../Core/Inc/sdmmc.h:
+../Core/Inc/spi.h:
+../Core/Inc/gpio.h:
+../Core/Inc/fmc.h:
 ../Core/Inc/audio.h:
+../Core/Inc/codec.h:

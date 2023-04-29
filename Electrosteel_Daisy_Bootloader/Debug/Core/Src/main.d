@@ -38,8 +38,8 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Middlewares/Third_Party/FatFs/src/ff_gen_drv.h \
  ../Middlewares/Third_Party/FatFs/src/diskio.h \
  ../Middlewares/Third_Party/FatFs/src/ff.h ../FATFS/Target/sd_diskio.h \
- ../Core/Inc/quadspi.h ../Core/Inc/main.h ../Core/Inc/sdmmc.h \
- ../Core/Inc/gpio.h ../Core/Inc/flash.h
+ ../Core/Inc/i2c.h ../Core/Inc/main.h ../Core/Inc/quadspi.h \
+ ../Core/Inc/sdmmc.h ../Core/Inc/gpio.h ../Core/Inc/flash.h
 ../Core/Inc/main.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h:
 ../Core/Inc/stm32h7xx_hal_conf.h:
@@ -84,8 +84,9 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Middlewares/Third_Party/FatFs/src/diskio.h:
 ../Middlewares/Third_Party/FatFs/src/ff.h:
 ../FATFS/Target/sd_diskio.h:
-../Core/Inc/quadspi.h:
+../Core/Inc/i2c.h:
 ../Core/Inc/main.h:
+../Core/Inc/quadspi.h:
 ../Core/Inc/sdmmc.h:
 ../Core/Inc/gpio.h:
 ../Core/Inc/flash.h:

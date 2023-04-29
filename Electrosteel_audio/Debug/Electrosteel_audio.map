@@ -7248,16 +7248,16 @@ LOAD /Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.id
  *fill*         0x000000002001ca48     0x3000 
                 0x000000002001fa48                . = ALIGN (0x8)
 
-.RAM_D1         0x0000000024000000    0x7efc0
+.RAM_D1         0x0000000024000000    0x44640
  *(.RAM_D1)
- .RAM_D1        0x0000000024000000    0x7b040 ./Core/Src/audiostream.o
+ .RAM_D1        0x0000000024000000    0x406c0 ./Core/Src/audiostream.o
                 0x0000000024000000                mappingToMIDITable
                 0x0000000024008020                mtofTable
                 0x0000000024028020                medium_memory
- .RAM_D1        0x000000002407b040     0x3f80 ./Core/Src/main.o
-                0x000000002407b040                presetNamesArray
-                0x000000002407b3c0                lfoRateTable
-                0x000000002407d3c0                macroNamesArray
+ .RAM_D1        0x00000000240406c0     0x3f80 ./Core/Src/main.o
+                0x00000000240406c0                presetNamesArray
+                0x0000000024040a40                lfoRateTable
+                0x0000000024042a40                macroNamesArray
 
 .RAM_D2         0x0000000030000000     0x11e0
  *(.RAM_D2)

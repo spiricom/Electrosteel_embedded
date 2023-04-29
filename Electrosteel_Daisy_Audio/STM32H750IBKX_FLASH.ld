@@ -10,8 +10,8 @@ MEMORY
 	FLASH (RX)    : ORIGIN = 0x08000000, LENGTH = 128K
 	DTCMRAM (RWX) : ORIGIN = 0x20000000, LENGTH = 128K
 	SRAM (RWX)    : ORIGIN = 0x24000000, LENGTH = 512K
-	RAM_D2_DMA (RWX) : ORIGIN = 0x30000000, LENGTH = 32K
-	RAM_D2 (RWX)  : ORIGIN = 0x30008000, LENGTH = 256K
+	RAM_D2_DMA (RWX) : ORIGIN = 0x30000000, LENGTH = 128K
+	RAM_D2 (RWX)  : ORIGIN = 0x30020000, LENGTH = 128K
 	RAM_D3 (RWX)  : ORIGIN = 0x38000000, LENGTH = 64K
 	BACKUP_SRAM (RWX)  : ORIGIN = 0x38800000, LENGTH = 4K
 	ITCMRAM (RWX) : ORIGIN = 0x00000000, LENGTH = 1K
@@ -123,6 +123,20 @@ SECTIONS
 
 		PROVIDE(__sram2_bss_end__ = _esram2_bss);
 	} > RAM_D2
+	
+	.sram3_bss (NOLOAD) :
+	{
+		. = ALIGN(4);
+		_ssram3_bss = .;
+
+		PROVIDE(__sram3_bss_start__ = _sram3_bss);
+		*(.sram3_bss)
+		*(.sram3_bss*)
+		. = ALIGN(4);
+		_esram3_bss = .;
+
+		PROVIDE(__sram3_bss_end__ = _esram3_bss);
+	} > RAM_D3
 	
 	.userflash (NOLOAD) :
 	{    
