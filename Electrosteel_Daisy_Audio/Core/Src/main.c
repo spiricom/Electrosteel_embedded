@@ -59,8 +59,8 @@
 
 
 uint8_t SPI_PLUCK_RX[PLUCK_BUFFER_SIZE_TIMES_TWO] __ATTR_RAM_D3;
-uint8_t SPI_LEVERS[LEVER_BUFFER_SIZE_TIMES_TWO] __ATTR_RAM_D2;
-uint8_t SPI_LEVERS_TX[LEVER_BUFFER_SIZE_TIMES_TWO] __ATTR_RAM_D2;
+uint8_t SPI_LEVERS[LEVER_BUFFER_SIZE_TIMES_TWO] __ATTR_RAM_D2_DMA;
+uint8_t SPI_LEVERS_TX[LEVER_BUFFER_SIZE_TIMES_TWO] __ATTR_RAM_D2_DMA;
 volatile uint32_t myTester = 0;
 int currentLeverBuffer = 0;
 
@@ -80,22 +80,22 @@ uint8_t resetFlag = 0;
 volatile uint8_t writingState = 0;
 volatile float 	audioMasterLevel = 1.0f;
 FIL fdst;
-uint8_t buffer[4096];
+uint8_t buffer[4096] __ATTR_RAM_D2_DMA;
 volatile uint16_t bufferPos = 0;
 FRESULT res;
 
-uint8_t presetNumberToSave;
-uint8_t presetNumberToLoad = 11;
-uint8_t tuningNumberToSave;
-uint8_t currentActivePreset = 0;
-uint8_t presetName[14];
-volatile uint8_t presetNamesArray[MAX_NUM_PRESETS][14]__ATTR_RAM_D1;
-uint8_t whichPresetToSendName = 0;
-uint32_t presetWaitingToParse = 0;
-uint32_t presetWaitingToWrite = 0;
-uint32_t presetWaitingToLoad = 0;
+volatile uint8_t presetNumberToSave;
+volatile uint8_t presetNumberToLoad = 11;
+volatile uint8_t tuningNumberToSave;
+volatile uint8_t currentActivePreset = 0;
+volatile uint8_t presetName[14];
+volatile uint8_t presetNamesArray[MAX_NUM_PRESETS][14]__ATTR_RAM_D2;
+volatile uint8_t whichPresetToSendName = 0;
+volatile uint32_t presetWaitingToParse = 0;
+volatile uint32_t presetWaitingToWrite = 0;
+volatile uint32_t presetWaitingToLoad = 0;
 
-volatile uint8_t macroNamesArray[MAX_NUM_PRESETS][8][14]__ATTR_RAM_D1;
+volatile uint8_t macroNamesArray[MAX_NUM_PRESETS][8][14]__ATTR_RAM_D2;
 uint8_t whichMacroToSendName = 0;
 
 param params[NUM_PARAMS];
@@ -110,7 +110,7 @@ float defaultScaling = 1.0f;
 #define SCALE_TABLE_SIZE 2048
 float resTable[SCALE_TABLE_SIZE];
 float envTimeTable[SCALE_TABLE_SIZE];
-float lfoRateTable[SCALE_TABLE_SIZE]__ATTR_RAM_D1;
+float lfoRateTable[SCALE_TABLE_SIZE]__ATTR_RAM_D2;
 
 
 float midiKeyDivisor;
@@ -124,11 +124,14 @@ uint8_t loadFailed = 0;
 uint32_t volatile myTestInt = 0;
 uint8_t boardNumber = 0;
 
+uint8_t volatile i2cSending = 0;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 void PeriphCommonClock_Config(void);
+static void MPU_Config(void);
 /* USER CODE BEGIN PFP */
 void MPU_Conf(void);
 void SDRAM_init(void);
@@ -166,11 +169,14 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-  MPU_Conf();
+  //MPU_Conf();
   /* USER CODE END 1 */
 
+  /* MPU Configuration--------------------------------------------------------*/
+  MPU_Config();
+
   /* Enable I-Cache---------------------------------------------------------*/
- // SCB_EnableICache();
+  //SCB_EnableICache();
 
   /* Enable D-Cache---------------------------------------------------------*/
   SCB_EnableDCache();
@@ -210,7 +216,23 @@ int main(void)
   MX_SPI6_Init();
   MX_RNG_Init();
   /* USER CODE BEGIN 2 */
+	int bit0 = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_15);
+	int bit1 = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_14);
+	int bit2 = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_2);
+	boardNumber = ((bit0 << 1)+(bit1 << 2)+(bit2));
 
+	if (boardNumber == 0)
+	{
+		  HAL_NVIC_DisableIRQ(EXTI15_10_IRQn);
+
+		GPIO_InitTypeDef GPIO_InitStruct = {0};
+	  	  GPIO_InitStruct.Pin = GPIO_PIN_12;
+	  	  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+	  	 GPIO_InitStruct.Pull = GPIO_NOPULL;
+	  	  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+	  	  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
+	}
 
   /* Enable write access to Backup domain */
    PWR->CR1 |= PWR_CR1_DBP;
@@ -260,8 +282,12 @@ int main(void)
   LEAF_generate_table_skew_non_sym(envTimeTable, 0.0f, 20000.0f, 4000.0f, SCALE_TABLE_SIZE);
   LEAF_generate_table_skew_non_sym(lfoRateTable, 0.0f, 30.0f, 2.0f, SCALE_TABLE_SIZE);
 
-  getPresetNamesFromSDCard();
-  foundOne  = checkForSDCardPreset(presetNumberToLoad);
+  //only board 0 has access to the SD card
+  if (boardNumber == 0)
+  {
+	  getPresetNamesFromSDCard();
+	  foundOne  = checkForSDCardPreset(presetNumberToLoad);
+  }
 
   SDRAM_init();
 
@@ -311,7 +337,13 @@ int main(void)
   {
 	  if (presetWaitingToLoad > 0)
 	  {
-		  checkForSDCardPreset(presetNumberToLoad);
+		  if (boardNumber == 0)
+		  {
+			  if (!i2cSending)
+			  {
+				  checkForSDCardPreset(presetNumberToLoad);
+			  }
+		  }
 	  }
 
 	  if (presetWaitingToParse > 0)
@@ -321,7 +353,10 @@ int main(void)
 
 	  else if (presetWaitingToWrite > 0)
 	  {
-		  writePresetToSDCard(presetWaitingToWrite);
+		  if (boardNumber == 0)
+		  {
+			  writePresetToSDCard(presetWaitingToWrite);
+		  }
 	  }
 	  uint32_t rand;
 	  HAL_RNG_GenerateRandomNumber(&hrng, &rand);
@@ -548,12 +583,13 @@ void getPresetNamesFromSDCard(void)
 static int checkForSDCardPreset(uint8_t numberToLoad)
 {
 	int found = 0;
+	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0, GPIO_PIN_SET);
 	if(BSP_SD_IsDetected())
 	{
 		diskBusy = 1;
 		loadFailed = 0;
 		//HAL_Delay(300);
-
+		presetWaitingToLoad = 0;
 		disk_initialize(0);
 
 	    disk_status(0);
@@ -602,8 +638,21 @@ static int checkForSDCardPreset(uint8_t numberToLoad)
 	{
 		loadFailed = 1;
 	}
-	presetWaitingToLoad = 0;
+	//if you succeeded, send the data to the other boards
+	else
+	{
+
+
+		  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
+	  	  HAL_Delay(1);
+	  	  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
+	  	  HAL_Delay(1);
+	  	  i2cSending = 1;
+	  	  HAL_I2C_Master_Transmit_DMA(&hi2c1, 0, buffer, 4096);
+	}
+
 	diskBusy = 0;
+	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0, GPIO_PIN_RESET);
 	return found;
 }
 
@@ -734,6 +783,7 @@ void SDRAM_init()
 void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 {
 	interruptChecker = 1;
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
 	// if the first number is a 1 then it's a midi note/ctrl/bend message
 	if (SPI_LEVERS[offset] == ReceivingPitches)
 	{
@@ -747,7 +797,9 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 				stringMIDIPitches[i] = myPitch;
 			}
 		 }
+			HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_SET);
 		 updateStateFromSPIMessage(offset);
+		 HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_RESET);
 		 //HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
 	}
 	// if the first number is a 2 then it's a preset write
@@ -788,7 +840,9 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 			{
 				tExpSmooth_setDest(&pedalSmoothers[i], (SPI_LEVERS[i + currentByte ] * 0.003921568627451f)); //scaled 0.0 to 1.0
 			}
+			HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_SET);
 			updateStateFromSPIMessage(offset);
+			HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_RESET);
 
 	}
 	else if (SPI_LEVERS[offset] == ReceivingEnd)
@@ -871,7 +925,8 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 			}
 		}
 	}
-
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_RESET);
 }
 
 float __ATTR_ITCMRAM scaleDefault(float input)
@@ -1971,30 +2026,39 @@ void FlushECC(void *ptr, int bytes)
 	}
 }
 
+void HAL_I2C_SlaveRxCpltCallback(I2C_HandleTypeDef *hi2c)
+{
+	presetWaitingToParse = 4096;
+}
+
+void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c)
+{
+	i2cSending = 0;
+}
+
 // EXTI Line12 External Interrupt ISR Handler CallBackFun
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
 
-	/*if(GPIO_Pin == GPIO_PIN_12) // If The INT Source Is EXTI Line12
+
+	if(GPIO_Pin == GPIO_PIN_12) // If The INT Source Is EXTI Line12
     {
 
-
-    	  if(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_12) == 0)
+		if(boardNumber != 0)
+		{
+    	  if(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_12) == 1)
     	  {
-    		  HAL_SPI_Abort(&hspi1);
-    		  __HAL_SPI_CLEAR_OVRFLAG(&hspi1);
+    		  //wait for the signal pin to go low, then recieve
+    		  while(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_12) == 1)
+    		  {
+    			  ;
+    		  }
+    		  HAL_I2C_Slave_Receive_DMA(&hi2c1, buffer, 4096);
     	  }
-    	  else
-    	  {
-    		  for (int i = 0; i < 32; i++)
-			  {
-				  SPI_TX[i] = i;
-			  }
+		}
 
-			  HAL_SPI_TransmitReceive_DMA(&hspi1, SPI_TX, SPI_RX, 32);
-    	  }
     }
-    */
+
     if(GPIO_Pin == GPIO_PIN_3) // If The INT Source Is EXTI Line3
     {
     	  if(HAL_GPIO_ReadPin(GPIOG, GPIO_PIN_3) == 1) //button is pressed, wait
@@ -2026,6 +2090,113 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 }
 
 /* USER CODE END 4 */
+
+/* MPU Configuration */
+
+void MPU_Config(void)
+{
+  MPU_Region_InitTypeDef MPU_InitStruct = {0};
+
+  /* Disables the MPU */
+  HAL_MPU_Disable();
+
+  /** Initializes and configures the Region and the memory to be protected
+  */
+  MPU_InitStruct.Enable = MPU_REGION_ENABLE;
+  MPU_InitStruct.Number = MPU_REGION_NUMBER0;
+  MPU_InitStruct.BaseAddress = 0x0;
+  MPU_InitStruct.Size = MPU_REGION_SIZE_4GB;
+  MPU_InitStruct.SubRegionDisable = 0x87;
+  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
+  MPU_InitStruct.AccessPermission = MPU_REGION_NO_ACCESS;
+  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_DISABLE;
+  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
+  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
+  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
+
+  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+
+  /** Initializes and configures the Region and the memory to be protected
+  */
+  MPU_InitStruct.Number = MPU_REGION_NUMBER1;
+  MPU_InitStruct.BaseAddress = 0x024000000;
+  MPU_InitStruct.Size = MPU_REGION_SIZE_256KB;
+  MPU_InitStruct.SubRegionDisable = 0x0;
+  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL1;
+  MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
+  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_ENABLE;
+  MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
+  MPU_InitStruct.IsCacheable = MPU_ACCESS_CACHEABLE;
+  MPU_InitStruct.IsBufferable = MPU_ACCESS_BUFFERABLE;
+
+  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+
+  /** Initializes and configures the Region and the memory to be protected
+  */
+  MPU_InitStruct.Number = MPU_REGION_NUMBER2;
+  MPU_InitStruct.BaseAddress = 0x24040000;
+  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
+
+  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+
+  /** Initializes and configures the Region and the memory to be protected
+  */
+  MPU_InitStruct.Number = MPU_REGION_NUMBER3;
+  MPU_InitStruct.BaseAddress = 0x30000000;
+  MPU_InitStruct.Size = MPU_REGION_SIZE_1KB;
+  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
+  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
+
+  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+
+  /** Initializes and configures the Region and the memory to be protected
+  */
+  MPU_InitStruct.Number = MPU_REGION_NUMBER4;
+  MPU_InitStruct.BaseAddress = 0x30002000;
+  MPU_InitStruct.Size = MPU_REGION_SIZE_256KB;
+  MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
+  MPU_InitStruct.IsCacheable = MPU_ACCESS_CACHEABLE;
+
+  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+
+  /** Initializes and configures the Region and the memory to be protected
+  */
+  MPU_InitStruct.Number = MPU_REGION_NUMBER5;
+  MPU_InitStruct.BaseAddress = 0x38000000;
+  MPU_InitStruct.Size = MPU_REGION_SIZE_64KB;
+  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
+  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
+
+  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+
+  /** Initializes and configures the Region and the memory to be protected
+  */
+  MPU_InitStruct.Number = MPU_REGION_NUMBER6;
+  MPU_InitStruct.BaseAddress = 0x38800000;
+  MPU_InitStruct.Size = MPU_REGION_SIZE_4KB;
+  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
+
+  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+
+  /** Initializes and configures the Region and the memory to be protected
+  */
+  MPU_InitStruct.Number = MPU_REGION_NUMBER7;
+  MPU_InitStruct.BaseAddress = 0xc0000000;
+  MPU_InitStruct.Size = MPU_REGION_SIZE_64MB;
+  MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
+
+  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+
+  /** Initializes and configures the Region and the memory to be protected
+  */
+  MPU_InitStruct.Number = MPU_REGION_NUMBER8;
+  MPU_InitStruct.BaseAddress = 0x90040000;
+
+  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+  /* Enables the MPU */
+  HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
+
+}
 
 /**
   * @brief  This function is executed in case of error occurrence.

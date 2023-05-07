@@ -25,7 +25,7 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  10 ._user_heap_stack 00006004  20019a44  08039290  00059a44  2**0
                   ALLOC
- 11 .RAM_D1       00044640  24000000  24000000  00060000  2**5
+ 11 .RAM_D1       0007efc0  24000000  24000000  00060000  2**5
                   ALLOC
  12 .RAM_D2       000011e0  30000000  30000000  00060000  2**5
                   ALLOC
@@ -33,23 +33,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  14 .ARM.attributes 0000002e  00000000  00000000  00050820  2**0
                   CONTENTS, READONLY
- 15 .debug_info   00084654  00000000  00000000  0005084e  2**0
+ 15 .debug_info   00084655  00000000  00000000  0005084e  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_abbrev 00009920  00000000  00000000  000d4ea2  2**0
+ 16 .debug_abbrev 00009913  00000000  00000000  000d4ea3  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_loc    00079eff  00000000  00000000  000de7c2  2**0
+ 17 .debug_loc    00079eff  00000000  00000000  000de7b6  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_aranges 000038c8  00000000  00000000  001586c8  2**3
+ 18 .debug_aranges 000038c8  00000000  00000000  001586b8  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_ranges 0000f6a8  00000000  00000000  0015bf90  2**3
+ 19 .debug_ranges 0000f6a8  00000000  00000000  0015bf80  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .debug_line   0005ab39  00000000  00000000  0016b638  2**0
+ 20 .debug_line   0005ab39  00000000  00000000  0016b628  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 21 .debug_str    00011a95  00000000  00000000  001c6171  2**0
+ 21 .debug_str    00011a95  00000000  00000000  001c6161  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 22 .comment      000000c5  00000000  00000000  001d7c06  2**0
+ 22 .comment      000000c5  00000000  00000000  001d7bf6  2**0
                   CONTENTS, READONLY
- 23 .debug_frame  0000c8e4  00000000  00000000  001d7ccc  2**2
+ 23 .debug_frame  0000c8e4  00000000  00000000  001d7cbc  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -763,7 +763,7 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
  8000a38:	20005b08 	.word	0x20005b08
  8000a3c:	08005ec9 	.word	0x08005ec9
  8000a40:	457ff000 	.word	0x457ff000
- 8000a44:	000186a0 	.word	0x000186a0
+ 8000a44:	00053020 	.word	0x00053020
  8000a48:	24028020 	.word	0x24028020
  8000a4c:	20005410 	.word	0x20005410
  8000a50:	60000000 	.word	0x60000000
@@ -11445,7 +11445,7 @@ void blankFunction(float a, int b, int c)
  8005d32:	bd10      	pop	{r4, pc}
  8005d34:	00000000 	.word	0x00000000
  8005d38:	44ffe000 	.word	0x44ffe000
- 8005d3c:	24040a40 	.word	0x24040a40
+ 8005d3c:	2407b3c0 	.word	0x2407b3c0
 
 08005d40 <SystemClock_Config>:
 {
@@ -12116,8 +12116,8 @@ float randomNumber(void) {
  80063da:	e5f0      	b.n	8005fbe <getPresetNamesFromSDCard+0xaa>
  80063dc:	20014d96 	.word	0x20014d96
  80063e0:	300001e0 	.word	0x300001e0
- 80063e4:	240406c0 	.word	0x240406c0
- 80063e8:	24042a40 	.word	0x24042a40
+ 80063e4:	2407b040 	.word	0x2407b040
+ 80063e8:	2407d3c0 	.word	0x2407d3c0
  80063ec:	200195d8 	.word	0x200195d8
 
 080063f0 <SDRAM_init>:
@@ -12606,7 +12606,7 @@ float randomNumber(void) {
  80067ac:	30000100 	.word	0x30000100
  80067b0:	20012cdc 	.word	0x20012cdc
  80067b4:	20018d71 	.word	0x20018d71
- 80067b8:	240406c0 	.word	0x240406c0
+ 80067b8:	2407b040 	.word	0x2407b040
  80067bc:	20018d72 	.word	0x20018d72
  80067c0:	20012d1c 	.word	0x20012d1c
  80067c4:	2000071c 	.word	0x2000071c
@@ -12620,7 +12620,7 @@ float randomNumber(void) {
  80067e4:	3b000080 	.word	0x3b000080
  80067e8:	20012b50 	.word	0x20012b50
  80067ec:	20018d70 	.word	0x20018d70
- 80067f0:	24042a40 	.word	0x24042a40
+ 80067f0:	2407d3c0 	.word	0x2407d3c0
 		if(writingState == ReceivingPreset)
  80067f4:	4b24      	ldr	r3, [pc, #144]	; (8006888 <handleSPI+0x404>)
  80067f6:	781a      	ldrb	r2, [r3, #0]
@@ -13077,8 +13077,8 @@ __STATIC_FORCEINLINE void __disable_irq(void)
  8006c74:	30000000 	.word	0x30000000
  8006c78:	2000071c 	.word	0x2000071c
  8006c7c:	20016954 	.word	0x20016954
- 8006c80:	240406c0 	.word	0x240406c0
- 8006c84:	24042a40 	.word	0x24042a40
+ 8006c80:	2407b040 	.word	0x2407b040
+ 8006c84:	2407d3c0 	.word	0x2407d3c0
  8006c88:	f886 3068 	strb.w	r3, [r6, #104]	; 0x68
  8006c8c:	f894 3077 	ldrb.w	r3, [r4, #119]	; 0x77
  8006c90:	f886 3069 	strb.w	r3, [r6, #105]	; 0x69
@@ -16153,7 +16153,7 @@ __STATIC_FORCEINLINE void __DSB(void)
  80084dc:	469c4000 	.word	0x469c4000
  80084e0:	00000000 	.word	0x00000000
  80084e4:	20012d70 	.word	0x20012d70
- 80084e8:	24040a40 	.word	0x24040a40
+ 80084e8:	2407b3c0 	.word	0x2407b3c0
  80084ec:	20014e98 	.word	0x20014e98
  80084f0:	20018e7c 	.word	0x20018e7c
  80084f4:	20018f14 	.word	0x20018f14

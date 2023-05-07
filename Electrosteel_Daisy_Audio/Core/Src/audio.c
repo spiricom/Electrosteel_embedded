@@ -18,8 +18,8 @@
 #include "audio.h"
 #include "arm_math.h"
 //the audio buffers are put in the D2 RAM area because that is a memory location that the DMA has access to.
-int32_t audioOutBuffer[AUDIO_BUFFER_SIZE] __ATTR_RAM_D2;
-int32_t audioInBuffer[AUDIO_BUFFER_SIZE] __ATTR_RAM_D2;
+int32_t audioOutBuffer[AUDIO_BUFFER_SIZE] __ATTR_RAM_D2_DMA;
+int32_t audioInBuffer[AUDIO_BUFFER_SIZE] __ATTR_RAM_D2_DMA;
 
 
 char small_memory[SMALL_MEM_SIZE];
@@ -40,10 +40,11 @@ uint32_t codecReady = 0;
 
 uint32_t frameCounter = 0;
 
-int stringPositions[4];
+volatile int stringPositions[4];
+volatile int stringPositionsPrev[4];
 
 int newPluck = 0;
-int newBar = 0;
+volatile int newBar = 0;
 
 uint8_t pluck[26];
 uint8_t bar[8];
@@ -73,8 +74,8 @@ volatile int lastStringPlusOne = 0;
 float mtofTable[MTOF_TABLE_SIZE]__ATTR_RAM_D2;
 float mappingToMIDITable[MAPPING_TABLE_SIZE]__ATTR_RAM_D2;
 
-//float atoDbTable[ATODB_TABLE_SIZE]__ATTR_RAM_D1;
-//float dbtoATable[DBTOA_TABLE_SIZE]__ATTR_RAM_D1;
+float atoDbTable[ATODB_TABLE_SIZE]__ATTR_RAM_D2;
+float dbtoATable[DBTOA_TABLE_SIZE]__ATTR_RAM_D2;
 
 float midiTableMappingScalar = 1.0f;
 float barInMIDI[NUM_STRINGS_PER_BOARD];
@@ -167,8 +168,8 @@ float decayExpBufferSizeMinusOne;
  tCompressor comp[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
  tCrusher bc[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
  tLockhartWavefolder wf[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
- //tLinearDelay delay1[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
- //tLinearDelay delay2[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
+ tLinearDelay delay1[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
+ tLinearDelay delay2[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
  tCycle mod1[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
  tCycle mod2[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
  float fxMix[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
@@ -319,8 +320,8 @@ float fretMeasurements[5][2] ={
 float fretScaling[5] = {1.0f, 0.840918367346939f, 0.66744958289463f, 0.5f, 0.25f};
 
 float stringOctave[NUM_STRINGS_PER_BOARD];
-int voice = 0;
-int prevVoice = 0;
+volatile int voice = 0;
+volatile int prevVoice = 0;
 int dualSlider = 0;
 int neck = 0;
 
@@ -428,8 +429,8 @@ void audioInit()
 		{
 			randomFactors[i] = randomNumber() + 0.5f;
 		}
-	//LEAF_generate_atodb(atoDbTable, ATODB_TABLE_SIZE, 0.00001f, 1.0f);
-	//LEAF_generate_dbtoa(dbtoATable, DBTOA_TABLE_SIZE, -90.0f, 30.0f);
+	LEAF_generate_atodb(atoDbTable, ATODB_TABLE_SIZE, 0.00001f, 1.0f);
+	LEAF_generate_dbtoa(dbtoATable, DBTOA_TABLE_SIZE, -90.0f, 30.0f);
 
 	LEAF_generate_mtof(mtofTable, -163.8375f, 163.8375f,  MTOF_TABLE_SIZE); //mtof table for fast calc
 
@@ -446,10 +447,7 @@ void audioInit()
     }
 
 
-	int bit0 = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_15);
-	int bit1 = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_14);
-	int bit2 = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_2);
-	boardNumber = ((bit0 << 1)+(bit1 << 2)+(bit2));
+
 
 
 	if (numStrings == 6)
@@ -493,8 +491,8 @@ void audioInit()
 
 		for (int j = 0; j < NUM_OVERTONES; j++)
 		{
-			tCycle_initToPool(&additive[i][j], &mediumPool);
-			tADSRT_initToPool(&additiveEnv[i][j], 5.0f, partialDecays[j] * 1000.0f, 0.0f, 150.0f, decayExpBuffer, DECAY_EXP_BUFFER_SIZE, &mediumPool);
+			tCycle_init(&additive[i][j], &leaf);
+			tADSRT_init(&additiveEnv[i][j], 5.0f, partialDecays[j] * 1000.0f, 0.0f, 150.0f, decayExpBuffer, DECAY_EXP_BUFFER_SIZE, &leaf);
 		}
 		//tExpSmooth_init(&stringFreqSmoothers[i],1.0f, 0.05f, &leaf);
 	}
@@ -536,7 +534,7 @@ void audioInit()
 		}
 		tSimpleLivingString3_initToPool(&livStr[v], 4, 220.0f, 17000.0f,
 					                                 0.99999f, 0.0f, 0.01f,
-					                                 0.01f, 0, &largePool);
+					                                 0.01f, 0, &mediumPool);
 
 		tLivingString2_initToPool(&strings[v], 100.0f, 0.6f, 0.3f, .9f, 0.0f, .9999f, .9999f, 0.0f, 0.05f, 0.05f, 1, &largePool);
 		tLivingString2_setBrightness(&strings[v], .99f);
@@ -603,9 +601,9 @@ void audioInit()
 			tVZFilter_setSampleRate(&shelf2[i][v], SAMPLE_RATE * OVERSAMPLE);
 			tVZFilter_setSampleRate(&bell1[i][v], SAMPLE_RATE * OVERSAMPLE);
 			tCompressor_init(&comp[i][v], &leaf);
-			//tCompressor_setTables(&comp[i][v], atoDbTable, dbtoATable, 0.00001f, 4.0f, -90.0f, 30.0f, ATODB_TABLE_SIZE, DBTOA_TABLE_SIZE);
-			//tLinearDelay_initToPool(&delay1[i][v], 4000.0f, 4096, &mediumPool);
-			//tLinearDelay_initToPool(&delay2[i][v], 4000.0f, 4096, &mediumPool);
+			tCompressor_setTables(&comp[i][v], atoDbTable, dbtoATable, 0.00001f, 4.0f, -90.0f, 30.0f, ATODB_TABLE_SIZE, DBTOA_TABLE_SIZE);
+			tLinearDelay_initToPool(&delay1[i][v], 4000.0f, 4096, &largePool);
+			tLinearDelay_initToPool(&delay2[i][v], 4000.0f, 4096, &largePool);
 			tCycle_init(&mod1[i][v], &leaf);
 			tCycle_init(&mod2[i][v], &leaf);
 			tCycle_setFreq(&mod1[i][v], 0.2f);
@@ -687,7 +685,12 @@ void updateStateFromSPIMessage(uint8_t offset)
 	volumePedalInt = ((uint16_t)SPI_LEVERS[26 + offset] << 8) + ((uint16_t)SPI_LEVERS[27 + offset] & 0xff);
 	volumePedal = volumePedalInt * 0.0002442002442f;
 	stringPositions[0] = ((uint16_t)SPI_LEVERS[28 + offset] << 8) + ((uint16_t)SPI_LEVERS[29 + offset] & 0xff);
-	newBar = 1;
+	if (stringPositions[0] != stringPositionsPrev[0])
+	{
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_SET);
+		newBar = 1;
+	}
+	stringPositionsPrev[0] = stringPositions[0];
 	tExpSmooth_setDest(&volumeSmoother,volumePedal);
 }
 
@@ -699,7 +702,7 @@ float frameLoadMultiplier = 1.0f / (10000.0f * AUDIO_FRAME_SIZE);
 
 void audioFrame(uint16_t buffer_offset)
 {
-
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_SET);
 	uint32_t tempCountFrame = DWT->CYCCNT;
 
 	int32_t current_sample = 0;
@@ -710,6 +713,7 @@ void audioFrame(uint16_t buffer_offset)
 
 	if (newBar)
 	{
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_SET);
 		for (int j = 0; j < 2; j++)
 		{
 
@@ -755,7 +759,7 @@ void audioFrame(uint16_t buffer_offset)
 				myMappedPos =  stringMappedPositions[0];
 			}
 
-			myMappedPos = tSlide_tick(&freqSlider[i], myMappedPos);
+			//myMappedPos = tSlide_tick(&freqSlider[i], myMappedPos);
 			invMapping[i] = (1.0f / myMappedPos);
 
 			int barTableIndex = (int)(((invMapping[i] - 1.0f) * midiTableMappingScalar) + 0.5f);
@@ -773,6 +777,7 @@ void audioFrame(uint16_t buffer_offset)
 			//tExpSmooth_setDest(&stringFreqSmoothers[i], tempFreq);
 		}
 		newBar = 0;
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_RESET);
 	}
 
 
@@ -1132,7 +1137,7 @@ void audioFrame(uint16_t buffer_offset)
 	timeFrame = DWT->CYCCNT - tempCountFrame;
 
 	frameLoadPercentage = (float)timeFrame * frameLoadMultiplier;
-
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_RESET);
 }
 
 
@@ -1246,7 +1251,7 @@ void __ATTR_ITCMRAM oscillator_tick(float note, int string)
 		uint32_t tempCountappr = DWT->CYCCNT;
 		float tempMIDI = tExpSmooth_tick(&pitchSmoother[osc][string]);
 
-#if 0
+
 		float tempIndexF =((LEAF_clip(-200.0f, tempMIDI, 200.0f) * 100.0f) + MTOF_TABLE_SIZE_DIV_TWO);
 		int tempIndexI = (int)tempIndexF;
 		tempIndexF = tempIndexF -tempIndexI;
@@ -1254,8 +1259,8 @@ void __ATTR_ITCMRAM oscillator_tick(float note, int string)
 		float freqToSmooth1 = mtofTable[tempIndexI & MTOF_TABLE_SIZE_MINUS_ONE];
 		float freqToSmooth2 = mtofTable[(tempIndexI + 1) & MTOF_TABLE_SIZE_MINUS_ONE];
 		freqToSmooth = (freqToSmooth1 * (1.0f - tempIndexF)) + (freqToSmooth2 * tempIndexF);
-#endif
-		freqToSmooth = mtof(tempMIDI);
+
+		//freqToSmooth = mtof(tempMIDI);
 		timeApprox = DWT->CYCCNT - tempCountappr;
 
 		float finalFreq = (freqToSmooth * invMapping[string] * freqMult[osc][string]) + freqOffset;

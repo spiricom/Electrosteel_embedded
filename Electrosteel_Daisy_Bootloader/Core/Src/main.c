@@ -65,10 +65,10 @@ void qspi_enable_memory_mapped();
 FILINFO fno;
 DIR dir;
 
-uint8_t tempBinaryBuffer[524281] __ATTR_SRAM;
+uint8_t tempBinaryBuffer[262144] __ATTR_SRAM;
 UINT bytesRead = 0;
 uint32_t binSize = 4000;
-uint8_t flash_mem[524281] __ATTR_QSPI;
+uint8_t flash_mem[262144] __ATTR_QSPI;
 uint8_t volatile bootloaderFlag[32] __ATTR_USER_FLASH;
 uint8_t bootloader_button_pressed = 0;
 
@@ -142,12 +142,6 @@ int main(void)
 
   /* USER CODE END 1 */
 
-  /* Enable I-Cache---------------------------------------------------------*/
-  //SCB_EnableICache();
-
-  /* Enable D-Cache---------------------------------------------------------*/
-  //SCB_EnableDCache();
-
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
@@ -166,7 +160,10 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-	  MX_QUADSPI_Init();
+  MX_QUADSPI_Init();
+  //MX_SDMMC1_SD_Init();
+  //MX_FATFS_Init();
+  //MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
 
   /* Enable write access to Backup domain */
@@ -182,13 +179,20 @@ int main(void)
  	int bit1 = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_14);
  	int bit2 = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_2);
  	boardNumber = ((bit0 << 1)+(bit1 << 2)+(bit2));
+ 	if (boardNumber == 0)
+ 	{
+ 		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
+ 	}
     //if (*(__IO uint32_t*)(0x38800000+36) != 12345678)
 	  qspi_initialize(INDIRECT_POLLING);
+
      if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_6) == 0)
      {
     	 bootloader_button_pressed = 1;
     	 {
     		  MX_I2C1_Init();
+    		  MX_SDMMC1_SD_Init();
+    		  MX_FATFS_Init();
     		  //set up the master send control pin to signal other daisies to listen to I2C bus
     		  GPIO_InitTypeDef GPIO_InitStruct = {0};
     		  GPIO_InitStruct.Pin = GPIO_PIN_12;
@@ -207,8 +211,8 @@ int main(void)
     	   		  HAL_Delay(200);
     	   	  }
 
-    	   	  MX_SDMMC1_SD_Init();
-    	   	  MX_FATFS_Init();
+    	   	  //MX_SDMMC1_SD_Init();
+    	   	  //MX_FATFS_Init();
 
 
 
@@ -228,45 +232,44 @@ int main(void)
     	 		  qspi_enable_memory_mapped();
     	 	  }
     	 	  //copy qspi flash code into SRAM location on every boot.
-    	 	  for (int i = 0; i < 500000; i++)
+    	 	  for (int i = 0; i < 262144; i++)
     	 	  {
     	 		  tempBinaryBuffer[i] = flash_mem[i];
     	 	  }
+    	 	 HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
+    	 	 HAL_Delay(1);
 
-				HAL_I2C_Master_Transmit(&hi2c1, 0, tempBinaryBuffer, 65535,
-						2147483648);
-				HAL_I2C_Master_Transmit(&hi2c1, 0, tempBinaryBuffer+65535, 65535,
-						2147483648);
-				HAL_I2C_Master_Transmit(&hi2c1, 0, tempBinaryBuffer+131070, 65535,
-						2147483648);
-				HAL_I2C_Master_Transmit(&hi2c1, 0, tempBinaryBuffer+196605, 65535,
-						2147483648);
-				HAL_I2C_Master_Transmit(&hi2c1, 0, tempBinaryBuffer+262140, 65535,
-						2147483648);
-				HAL_I2C_Master_Transmit(&hi2c1, 0, tempBinaryBuffer+327675, 65535,
-						2147483648);
-				HAL_I2C_Master_Transmit(&hi2c1, 0, tempBinaryBuffer+393210, 65535,
-						2147483648);
-				HAL_I2C_Master_Transmit(&hi2c1, 0, tempBinaryBuffer+458745, 65535,
-						2147483648);
+			HAL_I2C_Master_Transmit(&hi2c1, 0, tempBinaryBuffer, 65535,
+					10000);
+			HAL_Delay(100);
+			HAL_I2C_Master_Transmit(&hi2c1, 0, tempBinaryBuffer+65535, 65535,
+					10000);
+			HAL_Delay(100);
+			HAL_I2C_Master_Transmit(&hi2c1, 0, tempBinaryBuffer+131070, 65535,
+					10000);
+			HAL_Delay(100);
+			HAL_I2C_Master_Transmit(&hi2c1, 0, tempBinaryBuffer+196605, 65535,
+					10000);
 
 
+			HAL_Delay(10000);
     	 	  HAL_QSPI_MspDeInit(&hqspi);
+      	 	  HAL_I2C_DeInit(&hi2c1);
     	 	  HAL_SD_MspDeInit(&hsd1);
     	 	  HAL_RCC_DeInit();
-      	 	  HAL_I2C_DeInit(&hi2c1);
     	 	  HAL_DeInit();
     	 	  SysTick->CTRL = 0;
     	 	  SysTick->LOAD = 0;
     	 	  SysTick->VAL  = 0;
 
 
-
+/*
     	 	  for (int i = 0; i < 32; i++)
     	 	  {
     	 		  bootloaderFlag[i] = 232;
     	 	  }
     	 	  FlushECC(&bootloaderFlag,  32);
+    	 	  */
 
     	 	  HAL_NVIC_SystemReset();
     	 	  //JumpToApplication = (pFunction) (*(__IO uint32_t*) (APPLICATION_ADDRESS+4));
@@ -291,7 +294,7 @@ int main(void)
 			  qspi_enable_memory_mapped();
 		  }
 		  //copy qspi flash code into SRAM location on every boot.
-		  for (int i = 0; i < 500000; i++)
+		  for (int i = 0; i < 262144; i++)
 		  {
 			  tempBinaryBuffer[i] = flash_mem[i];
 		  }
@@ -299,12 +302,23 @@ int main(void)
 
 		  HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
 		  JumpToApplication = (pFunction) (*(__IO uint32_t*) (APPLICATION_ADDRESS+4));
+
+		  if ((JumpToApplication > 0x30000000) ||  (JumpToApplication < 0x24000000) )
+		  {
+			  //out of range, not a valid firmware
+			  while(1)
+			  {
+				  ;
+			  }
+		  }
+	 	  HAL_QSPI_MspDeInit(&hqspi);
+		  HAL_RCC_DeInit();
+		  HAL_DeInit();
 		  __set_MSP(*(__IO uint32_t*) APPLICATION_ADDRESS);
 		  __disable_irq();
 
 
-		  HAL_RCC_DeInit();
-		  HAL_DeInit();
+
 		  SysTick->CTRL = 0;
 		  SysTick->LOAD = 0;
 		  SysTick->VAL  = 0;
@@ -957,7 +971,7 @@ static void FS_FileOperations(void)
 					//write to local SRAM, then copy that to QSPI flash for more permanent storage
 					f_read(&SDFile, &tempBinaryBuffer, f_size(&SDFile), &bytesRead);
 
-					if (bytesRead < 500000)
+					if (bytesRead < 262144)
 					{
 						qspi_Erase(QSPI_START, QSPI_START+bytesRead);
 						qspi_Write(QSPI_START, bytesRead,(uint8_t*)tempBinaryBuffer);
@@ -992,21 +1006,21 @@ static void MPU_Config (void)
   MPU_InitStruct.Enable = MPU_REGION_ENABLE;
   MPU_InitStruct.BaseAddress = 0x00;
   MPU_InitStruct.Size = MPU_REGION_SIZE_4GB;
-  MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
+  MPU_InitStruct.AccessPermission = MPU_REGION_NO_ACCESS;
   MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
   MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
-  MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
+  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
   MPU_InitStruct.Number = MPU_REGION_NUMBER0;
   MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
   MPU_InitStruct.SubRegionDisable = 0x87;
-  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_ENABLE;
+  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_DISABLE;
 
   HAL_MPU_ConfigRegion(&MPU_InitStruct);
 
 
   MPU_InitStruct.Enable = MPU_REGION_ENABLE;
   MPU_InitStruct.BaseAddress = 0x90000000;
-  MPU_InitStruct.Size = MPU_REGION_SIZE_128MB;
+  MPU_InitStruct.Size = MPU_REGION_SIZE_8MB;
   MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
   MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
   MPU_InitStruct.IsCacheable = MPU_ACCESS_CACHEABLE;
@@ -1031,46 +1045,49 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 	{
 		if(GPIO_Pin == GPIO_PIN_12) // If The INT Source Is EXTI Line12
 		{
-			HAL_I2C_Slave_Receive(&hi2c1, tempBinaryBuffer, 65535,
-					2147483648);
-			HAL_I2C_Slave_Receive(&hi2c1, tempBinaryBuffer+65535, 65535,
-					2147483648);
-			HAL_I2C_Slave_Receive(&hi2c1, tempBinaryBuffer+131070, 65535,
-					2147483648);
-			HAL_I2C_Slave_Receive(&hi2c1, tempBinaryBuffer+196605, 65535,
-					2147483648);
-			HAL_I2C_Slave_Receive(&hi2c1, tempBinaryBuffer+262140, 65535,
-					2147483648);
-			HAL_I2C_Slave_Receive(&hi2c1, tempBinaryBuffer+327675, 65535,
-					2147483648);
-			HAL_I2C_Slave_Receive(&hi2c1, tempBinaryBuffer+393210, 65535,
-					2147483648);
-			HAL_I2C_Slave_Receive(&hi2c1, tempBinaryBuffer+458745, 65535,
-					2147483648);
+			MX_I2C1_Init();
+			while(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_12) ==  1)
+			{
+				;
+				//wait for pin to go back low
+			}
 
-			qspi_Erase(QSPI_START, QSPI_START+524281);
-			qspi_Write(QSPI_START, 524280,(uint8_t*)tempBinaryBuffer);
+			HAL_I2C_Slave_Receive(&hi2c1, tempBinaryBuffer, 65535,
+					10000);
+			HAL_Delay(98);
+			HAL_I2C_Slave_Receive(&hi2c1, tempBinaryBuffer+65535, 65535,
+					10000);
+			HAL_Delay(98);
+			HAL_I2C_Slave_Receive(&hi2c1, tempBinaryBuffer+131070, 65535,
+					10000);
+			HAL_Delay(98);
+			HAL_I2C_Slave_Receive(&hi2c1, tempBinaryBuffer+196605, 65535,
+					10000);
+
+
+			qspi_Erase(QSPI_START, QSPI_START+262144);
+			qspi_Write(QSPI_START, 262144,(uint8_t*)tempBinaryBuffer);
 			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
 			memory_already_mapped = 1;
 
 
   	 	  HAL_QSPI_MspDeInit(&hqspi);
+    	  HAL_I2C_DeInit(&hi2c1);
   	 	  HAL_SD_MspDeInit(&hsd1);
   	 	  HAL_RCC_DeInit();
-  	 	  HAL_I2C_DeInit(&hi2c1);
   	 	  HAL_DeInit();
   	 	  SysTick->CTRL = 0;
   	 	  SysTick->LOAD = 0;
   	 	  SysTick->VAL  = 0;
 
 
-
+/*
   	 	  for (int i = 0; i < 32; i++)
   	 	  {
   	 		  bootloaderFlag[i] = 232;
   	 	  }
   	 	  FlushECC(&bootloaderFlag,  32);
-
+*/
   	 	  HAL_NVIC_SystemReset();
 
 		}

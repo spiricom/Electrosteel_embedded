@@ -53,11 +53,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
-
-
 uint8_t SPI_RX[BAR_BUFFER_SIZE_TIMES_TWO] __ATTR_RAM_D2;
-
 uint8_t SPI_PLUCK_RX[PLUCK_BUFFER_SIZE_TIMES_TWO] __ATTR_RAM_D2;
 uint8_t SPI_LEVERS[LEVER_BUFFER_SIZE_TIMES_TWO] __ATTR_RAM_D2;
 uint8_t SPI_LEVERS_TX[LEVER_BUFFER_SIZE_TIMES_TWO] __ATTR_RAM_D2;

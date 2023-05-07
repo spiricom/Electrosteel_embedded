@@ -37,9 +37,10 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-#define __ATTR_RAM_D1	__attribute__ ((section(".sram2_bss"))) __attribute__ ((aligned (32)))
-#define __ATTR_RAM_D2	__attribute__ ((section(".sram1_bss"))) __attribute__ ((aligned (32)))
-#define __ATTR_RAM_D3	__attribute__ ((section(".sram3_bss"))) __attribute__ ((aligned (32)))
+#define __ATTR_RAM_D1	__attribute__ ((section(".sram1_bss"))) __attribute__ ((aligned (32)))
+#define __ATTR_RAM_D2_DMA	__attribute__ ((section(".sram2_bss"))) __attribute__ ((aligned (32)))
+#define __ATTR_RAM_D2	__attribute__ ((section(".sram3_bss"))) __attribute__ ((aligned (32)))
+#define __ATTR_RAM_D3	__attribute__ ((section(".sram4_bss"))) __attribute__ ((aligned (32)))
 #define __ATTR_USER_FLASH	__attribute__ ((section(".userflash"))) __attribute__ ((aligned (32)))
 #define __ATTR_SDRAM	__attribute__ ((section(".sdram_bss"))) __attribute__ ((aligned (32)))
 #define __ATTR_DTCMRAM	__attribute__ ((section(".dtcmram_bss"))) __attribute__ ((aligned (32)))
@@ -88,7 +89,7 @@ extern int currentLeverBuffer;
 #define MAX_NUM_PRESETS 64
 extern float midiKeyDivisor;
 extern float midiKeySubtractor;
-extern uint8_t currentActivePreset;
+extern volatile uint8_t currentActivePreset;
 #define NUM_PARAMS numParams
 #define MAX_NUM_MAPPINGS 32
 extern param params[NUM_PARAMS];
@@ -98,13 +99,13 @@ extern uint8_t numMappings;
 extern uint8_t diskBusy;
 extern uint8_t volatile interruptChecker;
 extern float random_values[256];
-extern uint32_t presetWaitingToLoad;
-extern uint8_t presetNumberToLoad;
+extern volatile uint32_t presetWaitingToLoad;
+extern volatile uint8_t presetNumberToLoad;
 extern uint8_t boardNumber;
 extern uint8_t currentRandom;
 
-extern volatile uint8_t presetNamesArray[MAX_NUM_PRESETS][14]__ATTR_RAM_D1;
-extern volatile uint8_t macroNamesArray[MAX_NUM_PRESETS][8][14]__ATTR_RAM_D1;
+extern volatile uint8_t presetNamesArray[MAX_NUM_PRESETS][14]__ATTR_RAM_D2;
+extern volatile uint8_t macroNamesArray[MAX_NUM_PRESETS][8][14]__ATTR_RAM_D2;
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
