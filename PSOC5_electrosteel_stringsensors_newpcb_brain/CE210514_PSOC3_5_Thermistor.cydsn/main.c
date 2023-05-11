@@ -450,11 +450,6 @@ void burnInitialPedalZeroPositions()
     
 }
 
-void calibratePedals()
-{
-
-    
-}
 
 void calculatePedalRatios()
 {
@@ -477,8 +472,8 @@ int main(void)
 
     EEPROM_Start();
 
-
     
+    CyDelay(2000);
     //read from eeprom which copedents are loaded on which necks
     necks[0] = EEPROM_ReadByte(EEPROM_NECKS_OFFSET);
     necks[1] = EEPROM_ReadByte(EEPROM_NECKS_OFFSET + 1);
@@ -655,7 +650,7 @@ int main(void)
 
     status = I2C_MasterWriteBlocking(0x48, 3, I2C_1_MODE_COMPLETE_XFER);
     #endif
-    
+
     SPIS_1_Start();  
     SPIM_1_Start();  
     SPIS_2_Start(); 
@@ -792,21 +787,37 @@ int main(void)
                 //CyDelayUs(100);
                 I2Cbuff1[0] = 0x0E;
                 status = I2C_MasterWriteBlocking(0x36, 1, I2C_1_MODE_NO_STOP);
-                status = I2C_MasterReadBlocking(0x36, 2, I2C_1_MODE_REPEAT_START);
-               // CyDelayUs(100);
-                angle[main_counter] = I2Cbuff2[0] << 8;
-                angle[main_counter] +=  I2Cbuff2[1];
-                
-                if (calibrationMode)
+                if (status == 0)
                 {
-                    if (angle[main_counter] < pedals_low[main_counter])
+                    status = I2C_MasterReadBlocking(0x36, 2, I2C_1_MODE_REPEAT_START);
+                }
+                if (status  == 0)
+                {
+                    //CyDelayUs(100);
+                    angle[main_counter] = I2Cbuff2[0] << 8;
+                    angle[main_counter] +=  I2Cbuff2[1];
+                    
+                    if (calibrationMode)
                     {
-                        pedals_low[main_counter] = angle[main_counter];
-                        
-                    }
-                    if (angle[main_counter] > pedals_high[main_counter])
-                    {
-                         pedals_high[main_counter] = angle[main_counter];
+                        if (angle[main_counter] < pedals_low[main_counter])
+                        {
+                            if (main_counter == 0)
+                            {
+                                if (angle[main_counter] != 0)
+                                {
+                                     pedals_low[main_counter] = angle[main_counter];
+                                }
+                            }
+                            else
+                            {
+                                pedals_low[main_counter] = angle[main_counter];
+                            }
+                            
+                        }
+                        if (angle[main_counter] > pedals_high[main_counter])
+                        {
+                             pedals_high[main_counter] = angle[main_counter];
+                        }
                     }
                 }
             }
@@ -820,32 +831,35 @@ int main(void)
                 //scan the knob adc
                 I2Cbuff1[0] = 0x0;      
                 status = I2C_MasterReadBlocking(0x35, 16, I2C_1_MODE_COMPLETE_XFER);
-                for (int i = 0; i < NUM_MACROS; i++)
+                if (status == 0)
                 {
-                   uint16_t tempInt =((I2Cbuff2[i*2] << 8) + (I2Cbuff2[i*2] & 255)) & 4095; // necessary to AND with 4095 to eliminate the 4 preceding bits set high by default
-                    macroKnobValues[i] = 255 - (tempInt >> 4); //now squish it down to 8 bit for sending (also subtract from 255 because the pot is backwards for some reason
-                }
-                //
-                if (macroOLEDWaitingToSend == 2)
-                {
-                    //send the data to the little macro OLED screens
-                    
-                    I2Cbuff1[0] = (1 << 3) + whichMacro;
-                    status = I2C_MasterWriteBlocking(0x72, 1, I2C_1_MODE_COMPLETE_XFER); 
-                    //OLED_init(128, 32);
-                    OLEDclear(128, 32);
-                    //OLEDwriteInt(w , 1, 0,FirstLine);
-                    //OLEDwriteString(" ", 1, OLEDgetCursor(), FourthLine);
-                    myGFX_setFont(1);
-                    //GFXsetFont(&theGFX,  &SourceCodePro_Regular14pt7b);
-                    OLEDwriteString((char *)&macroNamesArray[patchNum][whichMacro][0], MACRO_CLIPPED_LENGTH,0, SecondLine);
-                    OLED_draw(128, 32);
-
-                    whichMacro++;
-                    if (whichMacro >=8)
+                    for (int i = 0; i < NUM_MACROS; i++)
                     {
-                        macroOLEDWaitingToSend = 0;
-                        whichMacro = 0;
+                       uint16_t tempInt =((I2Cbuff2[i*2] << 8) + (I2Cbuff2[i*2] & 255)) & 4095; // necessary to AND with 4095 to eliminate the 4 preceding bits set high by default
+                        macroKnobValues[i] = 255 - (tempInt >> 4); //now squish it down to 8 bit for sending (also subtract from 255 because the pot is backwards for some reason
+                    }
+                    //
+                    if (macroOLEDWaitingToSend == 2)
+                    {
+                        //send the data to the little macro OLED screens
+                        
+                        I2Cbuff1[0] = (1 << 3) + whichMacro;
+                        status = I2C_MasterWriteBlocking(0x72, 1, I2C_1_MODE_COMPLETE_XFER); 
+                        //OLED_init(128, 32);
+                        OLEDclear(128, 32);
+                        //OLEDwriteInt(w , 1, 0,FirstLine);
+                        //OLEDwriteString(" ", 1, OLEDgetCursor(), FourthLine);
+                        myGFX_setFont(1);
+                        //GFXsetFont(&theGFX,  &SourceCodePro_Regular14pt7b);
+                        OLEDwriteString((char *)&macroNamesArray[patchNum][whichMacro][0], MACRO_CLIPPED_LENGTH,0, SecondLine);
+                        OLED_draw(128, 32);
+
+                        whichMacro++;
+                        if (whichMacro >=8)
+                        {
+                            macroOLEDWaitingToSend = 0;
+                            whichMacro = 0;
+                        }
                     }
                 }
             }
@@ -859,8 +873,11 @@ int main(void)
             {
                 I2Cbuff1[0] = 0x0;      
                 status = I2C_MasterReadBlocking(0x4f, 2, I2C_1_MODE_COMPLETE_XFER);
-                volumePedal = I2Cbuff2[0] << 8;
-                volumePedal +=  I2Cbuff2[1];
+                if (status == 0)
+                {
+                    volumePedal = I2Cbuff2[0] << 8;
+                    volumePedal +=  I2Cbuff2[1];
+                }
             }
         }
         else
@@ -1072,13 +1089,13 @@ int main(void)
         }
         #endif
         testpin5_Write(1);
-        /*
+        
         if ((rxBufferBar[!currentBarBuffer][6] == 254) && (rxBufferBar[!currentBarBuffer][7] == 253))
         {
             for (int i = 0; i < 2; i++)
             {
                 bar[i] = ((rxBufferBar[!currentBarBuffer][i*2] << 8) + rxBufferBar[!currentBarBuffer][(i*2)+1]);    
-    
+                /*
                 if (bar[i] != prevBar[i])
                 {
     				if ((bar[i] == 65535) || (bar[i] > fretMeasurements[0][i]))
@@ -1103,10 +1120,11 @@ int main(void)
 
                     invStringMappedPositions[i] = 1.0f / stringMappedPositions[i];
                 }
+                */
                 prevBar[i] = bar[i];
             }
         }
-        */
+        
         testpin5_Write(0);
         for (int i = 0 ; i < numStrings; i++)
         {
@@ -1334,6 +1352,7 @@ int main(void)
             editUp = 0;
             if (editMode)
             {
+                #if 0
                 OLEDclear(128, 64);
                 
                 OLEDwriteString("CALIBRATION", 11, 2, FirstLine);
@@ -1341,13 +1360,14 @@ int main(void)
                 OLEDwriteString("AND LEVERS", 11, 2, ThirdLine);
                 OLEDwriteString("THEN EXIT", 11, 2, FourthLine);
                 mainOLEDWaitingToSend = 1;
-                
+                                #endif
                 //entering calibration mode, clear the pedals low and high arrays
                 for (int i = 0; i < 10; i++)
                 {
                     pedals_low[i] = 4095;
                     pedals_high[i] = 0;
                 }
+
             }
             else
             {
@@ -1549,6 +1569,8 @@ int main(void)
             myArray[25] = patchNum;
             myArray[26] = processed_volumePedal >> 8;
             myArray[27] = processed_volumePedal & 0xff;
+            myArray[28] = bar[0] >> 8;
+            myArray[29] = bar[0] & 0xff;
             myArray[30] = 254;
             myArray[31] = 253;
             
@@ -1566,15 +1588,11 @@ int main(void)
             }
             
             myArray[24] = octave | (voice << 4) | (dualSlider << 5) | (neck << 6);
-            /*
-            for (int i = 0; i < 4; i++)
-            {
-                myArray[i+49] = knobs[i];
-            }
-            */
             myArray[25] = patchNum;
             myArray[26] = processed_volumePedal >> 8;
             myArray[27] = processed_volumePedal & 0xff;
+            myArray[28] = bar[0] >> 8;
+            myArray[29] = bar[0] & 0xff;
             myArray[30] = 254;
             myArray[31] = 253;
             
@@ -1697,6 +1715,7 @@ void DmaRxConfiguration()
 uint8 I2C_MasterWriteBlocking(uint8 i2CAddr, uint16 nbytes, uint8_t mode)
 {
     uint8 volatile status;
+    uint8_t error = 0;
     uint32_t timeout = 50000;
     status = I2C_1_MasterClearStatus();
     if(!(status & I2C_1_MSTAT_ERR_XFER))
@@ -1713,17 +1732,20 @@ uint8 I2C_MasterWriteBlocking(uint8 i2CAddr, uint16 nbytes, uint8_t mode)
                 if (status == I2C_1_MSTAT_ERR_XFER)
                 {
                     I2C_reset();
+                    error = 1;
                 }
                 if (timeout == 0)
                 {
                     status = I2C_1_MSTAT_ERR_XFER;
                     I2C_reset();
+                    error = 1;
                 }
                 
                 if (status == 0)
                 {
                     status = I2C_1_MSTAT_ERR_XFER;
                     I2C_reset();
+                    error = 1;
                 }
                 
             } while(((status & (I2C_1_MSTAT_WR_CMPLT | I2C_1_MSTAT_ERR_XFER)) == 0u) && (status != 0u) && (timeout>0));
@@ -1734,6 +1756,7 @@ uint8 I2C_MasterWriteBlocking(uint8 i2CAddr, uint16 nbytes, uint8_t mode)
             *  I2CM_MasterStatus() error output */
             status = I2C_1_MSTAT_ERR_XFER;
             I2C_reset();
+            error = 1;
         } 
     }  
     if ((status & I2C_1_MSTAT_ERR_ADDR_NAK) || (status & I2C_1_MSTAT_ERR_XFER))
@@ -1741,14 +1764,16 @@ uint8 I2C_MasterWriteBlocking(uint8 i2CAddr, uint16 nbytes, uint8_t mode)
         //mark that i2c destination to be skipped (likely unplugged) and reset the I2C module
         //i2c_skipped[main_counter] = 1;
         I2C_reset();
+        error = 1;
     }
-    return status;
+    return error;
 }
 
 uint8 I2C_MasterReadBlocking(uint8 i2CAddr, uint8 nbytes, uint8_t mode)
 {
     uint8 volatile status;
     uint32_t timeout = 50000;
+    uint8_t error = 0;
     status = I2C_1_MasterClearStatus();
     if(!(status & I2C_1_MSTAT_ERR_XFER))
     {
@@ -1766,11 +1791,13 @@ uint8 I2C_MasterReadBlocking(uint8 i2CAddr, uint8 nbytes, uint8_t mode)
                 {
                     I2C_1_GENERATE_STOP_MANUAL;
                     I2C_reset();
+                    error = 1;
                 }
                 if (timeout == 0)
                 {
                     status = I2C_1_MSTAT_ERR_XFER;
                     I2C_reset();
+                    error = 1;
                 }
             } while(((status & (I2C_1_MSTAT_RD_CMPLT | I2C_1_MSTAT_ERR_XFER)) == 0u) && (status != 0u) && (timeout>0));
         }
@@ -1780,6 +1807,7 @@ uint8 I2C_MasterReadBlocking(uint8 i2CAddr, uint8 nbytes, uint8_t mode)
             *  I2CM_MasterStatus() error output */
             status = I2C_1_MSTAT_ERR_XFER;
             I2C_reset();
+            error = 1;
         }
     }
     if ((status & I2C_1_MSTAT_ERR_ADDR_NAK) || (status & I2C_1_MSTAT_ERR_XFER))
@@ -1787,8 +1815,9 @@ uint8 I2C_MasterReadBlocking(uint8 i2CAddr, uint8 nbytes, uint8_t mode)
         //mark that i2c destination to be skipped (likely unplugged) and reset the I2C module
         //i2c_skipped[main_counter] = 1;
         I2C_reset();
+        error = 1;
     }
-    return status;
+    return error;
 }
 
 void I2C_reset(void)

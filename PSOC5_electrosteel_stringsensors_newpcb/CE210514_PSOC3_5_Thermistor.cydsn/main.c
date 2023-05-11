@@ -85,6 +85,7 @@ int main(void)
     SPIM_1_Start();
     SPIM_2_Start();
     
+    CyDelay(2000);
     CapSense_Start();     
     
     CyDelay(500);
