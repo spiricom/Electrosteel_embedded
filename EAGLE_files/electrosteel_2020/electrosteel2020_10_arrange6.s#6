@@ -51749,6 +51749,12 @@ Source: GLX-S-88M.pdf</description>
 </part>
 <part name="V17" library="custom" deviceset="3V3D5" device=""/>
 <part name="V160" library="custom" deviceset="3V3D5" device=""/>
+<part name="SC7" library="adafruit" deviceset="PINHD-1X1" device="">
+<attribute name="PARTNO" value="*DNP"/>
+</part>
+<part name="SD7" library="adafruit" deviceset="PINHD-1X1" device="">
+<attribute name="PARTNO" value="*DNP"/>
+</part>
 </parts>
 <sheets>
 <sheet>
@@ -56582,6 +56588,16 @@ Source: GLX-S-88M.pdf</description>
 </instance>
 <instance part="V160" gate="G$1" x="317.5" y="284.48" smashed="yes">
 <attribute name="VALUE" x="313.69" y="285.115" size="1.778" layer="96" ratio="12"/>
+</instance>
+<instance part="SC7" gate="G$1" x="381" y="259.08" smashed="yes" rot="R90">
+<attribute name="PARTNO" x="381" y="259.08" size="1.778" layer="96" rot="R90" display="off"/>
+<attribute name="NAME" x="377.825" y="252.73" size="1.778" layer="95" rot="R90"/>
+<attribute name="VALUE" x="386.08" y="252.73" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="SD7" gate="G$1" x="378.46" y="243.84" smashed="yes" rot="R90">
+<attribute name="PARTNO" x="378.46" y="243.84" size="1.778" layer="96" rot="R90" display="off"/>
+<attribute name="NAME" x="375.285" y="237.49" size="1.778" layer="95" rot="R90"/>
+<attribute name="VALUE" x="383.54" y="237.49" size="1.778" layer="96" rot="R90"/>
 </instance>
 </instances>
 <busses>
@@ -65225,6 +65241,22 @@ Source: GLX-S-88M.pdf</description>
 <pinref part="3V3A_0B" gate="G$1" pin="1"/>
 <wire x1="314.96" y1="-421.64" x2="330.2" y2="-421.64" width="0.1524" layer="91"/>
 <wire x1="330.2" y1="-421.64" x2="330.2" y2="-416.56" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$311" class="0">
+<segment>
+<pinref part="U19" gate="G$1" pin="SD7"/>
+<pinref part="SD7" gate="G$1" pin="1"/>
+<wire x1="375.92" y1="246.38" x2="378.46" y2="246.38" width="0.1524" layer="91"/>
+<wire x1="378.46" y1="246.38" x2="378.46" y2="241.3" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$312" class="0">
+<segment>
+<pinref part="U19" gate="G$1" pin="SC7"/>
+<pinref part="SC7" gate="G$1" pin="1"/>
+<wire x1="375.92" y1="259.08" x2="381" y2="259.08" width="0.1524" layer="91"/>
+<wire x1="381" y1="259.08" x2="381" y2="256.54" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>

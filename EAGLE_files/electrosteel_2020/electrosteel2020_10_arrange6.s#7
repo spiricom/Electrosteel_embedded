@@ -51741,6 +51741,14 @@ Source: GLX-S-88M.pdf</description>
 <part name="-15VA" library="Connector" library_urn="urn:adsk.eagle:library:16378166" deviceset="PINHD-1X1" device="" package3d_urn="urn:adsk.eagle:package:22485/2">
 <attribute name="PARTNO" value="*DNP"/>
 </part>
+<part name="R210" library="Resistor" library_urn="urn:adsk.eagle:library:16378527" deviceset="R-US_" device="R0603" value="1.5k">
+<attribute name="PARTNO" value="ESR03EZPJ152"/>
+</part>
+<part name="R215" library="Resistor" library_urn="urn:adsk.eagle:library:16378527" deviceset="R-US_" device="R0603" value="1.5k">
+<attribute name="PARTNO" value="ESR03EZPJ152"/>
+</part>
+<part name="V17" library="custom" deviceset="3V3D5" device=""/>
+<part name="V160" library="custom" deviceset="3V3D5" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -56558,6 +56566,22 @@ Source: GLX-S-88M.pdf</description>
 <attribute name="NAME" x="188.595" y="-240.03" size="1.778" layer="95" rot="R270"/>
 <attribute name="VALUE" x="180.34" y="-240.03" size="1.778" layer="96" rot="R270"/>
 <attribute name="PARTNO" x="185.42" y="-246.38" size="1.778" layer="96" rot="R180" display="off"/>
+</instance>
+<instance part="R210" gate="G$1" x="330.2" y="233.68" smashed="yes" rot="R90">
+<attribute name="PARTNO" x="330.2" y="233.68" size="1.778" layer="96" rot="R180" display="off"/>
+<attribute name="NAME" x="328.7014" y="229.87" size="1.778" layer="95" rot="R90"/>
+<attribute name="VALUE" x="333.502" y="229.87" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="R215" gate="G$1" x="317.5" y="276.86" smashed="yes" rot="R90">
+<attribute name="PARTNO" x="317.5" y="276.86" size="1.778" layer="96" rot="R180" display="off"/>
+<attribute name="NAME" x="316.0014" y="273.05" size="1.778" layer="95" rot="R90"/>
+<attribute name="VALUE" x="320.802" y="273.05" size="1.778" layer="96" rot="R90"/>
+</instance>
+<instance part="V17" gate="G$1" x="335.28" y="231.14" smashed="yes">
+<attribute name="VALUE" x="331.47" y="231.775" size="1.778" layer="96" ratio="12"/>
+</instance>
+<instance part="V160" gate="G$1" x="317.5" y="284.48" smashed="yes">
+<attribute name="VALUE" x="313.69" y="285.115" size="1.778" layer="96" ratio="12"/>
 </instance>
 </instances>
 <busses>
@@ -61577,6 +61601,15 @@ Source: GLX-S-88M.pdf</description>
 <pinref part="R158" gate="G$1" pin="2"/>
 <pinref part="V151" gate="G$1" pin="3V3D5"/>
 </segment>
+<segment>
+<pinref part="R215" gate="G$1" pin="2"/>
+<pinref part="V160" gate="G$1" pin="3V3D5"/>
+</segment>
+<segment>
+<pinref part="R210" gate="G$1" pin="1"/>
+<pinref part="V17" gate="G$1" pin="3V3D5"/>
+<wire x1="330.2" y1="228.6" x2="335.28" y2="228.6" width="0.1524" layer="91"/>
+</segment>
 </net>
 <net name="3V3A4" class="0">
 <segment>
@@ -62631,9 +62664,10 @@ Source: GLX-S-88M.pdf</description>
 </net>
 <net name="SCL_B" class="0">
 <segment>
-<wire x1="322.58" y1="271.78" x2="340.36" y2="271.78" width="0.1524" layer="91"/>
+<wire x1="317.5" y1="271.78" x2="340.36" y2="271.78" width="0.1524" layer="91"/>
 <pinref part="U19" gate="G$1" pin="SCL"/>
 <label x="322.58" y="271.78" size="1.778" layer="95"/>
+<pinref part="R215" gate="G$1" pin="1"/>
 </segment>
 <segment>
 <pinref part="U2" gate="G4" pin="P15[3]"/>
@@ -62643,9 +62677,13 @@ Source: GLX-S-88M.pdf</description>
 </net>
 <net name="SDA_B" class="0">
 <segment>
-<wire x1="322.58" y1="241.3" x2="340.36" y2="241.3" width="0.1524" layer="91"/>
+<wire x1="322.58" y1="241.3" x2="330.2" y2="241.3" width="0.1524" layer="91"/>
 <pinref part="U19" gate="G$1" pin="SDA"/>
 <label x="325.12" y="241.3" size="1.778" layer="95"/>
+<pinref part="R210" gate="G$1" pin="2"/>
+<wire x1="330.2" y1="241.3" x2="340.36" y2="241.3" width="0.1524" layer="91"/>
+<wire x1="330.2" y1="241.3" x2="330.2" y2="238.76" width="0.1524" layer="91"/>
+<junction x="330.2" y="241.3"/>
 </segment>
 <segment>
 <pinref part="U2" gate="G4" pin="P15[2]"/>

@@ -55231,12 +55231,10 @@ Source: GLX-S-88M.pdf</description>
 </instance>
 <instance part="P2" gate="-1" x="121.92" y="185.42" smashed="yes">
 <attribute name="NAME" x="122.555" y="186.055" size="1.016" layer="95" ratio="12" rot="MR0"/>
-<attribute name="VALUE" x="124.46" y="187.96" size="1.778" layer="96" ratio="12" rot="MR0"/>
-<attribute name="PART" x="124.46" y="190.5" size="1.778" layer="95" ratio="12" rot="MR0"/>
 <attribute name="PARTNO" x="121.92" y="185.42" size="1.778" layer="96" display="off"/>
 </instance>
-<instance part="P2" gate="-2" x="129.54" y="187.96" smashed="yes">
-<attribute name="NAME" x="130.175" y="188.595" size="1.016" layer="95" ratio="12" rot="MR0"/>
+<instance part="P2" gate="-2" x="134.62" y="187.96" smashed="yes">
+<attribute name="NAME" x="135.255" y="188.595" size="1.016" layer="95" ratio="12" rot="MR0"/>
 </instance>
 <instance part="P2" gate="-3" x="116.84" y="200.66" smashed="yes">
 <attribute name="NAME" x="117.475" y="201.295" size="1.016" layer="95" ratio="12" rot="MR0"/>
@@ -63391,7 +63389,7 @@ Source: GLX-S-88M.pdf</description>
 <segment>
 <pinref part="U2" gate="G2" pin="P5[4]"/>
 <pinref part="P2" gate="-2" pin="P"/>
-<wire x1="127" y1="187.96" x2="114.3" y2="187.96" width="0.1524" layer="91"/>
+<wire x1="132.08" y1="187.96" x2="114.3" y2="187.96" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$228" class="0">

@@ -346,7 +346,9 @@ typedef struct _tSimpleLivingString3
     tMempool mempool;
     float freq, waveLengthInSamples;        // the frequency of the string, determining delay length
     float dampFreq;    // frequency for the bridge LP filter, in Hz
-    float decay; // amplitude damping factor for the string (only active in mode 0)
+    float decay, userDecay; // amplitude damping factor for the string (only active in mode 0)
+    float prevDelayLength;
+    float changeGainCompensator;
     int levMode;
     float curr;
     float Uout;
@@ -355,6 +357,10 @@ typedef struct _tSimpleLivingString3
     tLinearDelay delayLineU;
     tLinearDelay delayLineL;
     tOnePole bridgeFilter;
+    tBiQuad bridgeFilter2;
+    float temp1;
+    float temp2;
+    float pickupPoint;
     tHighpass DCblocker;
     tFeedbackLeveler fbLev;
     tExpSmooth wlSmooth;
@@ -374,6 +380,7 @@ void    tSimpleLivingString3_free                (tSimpleLivingString3* const);
 
 void   tSimpleLivingString3_pluck              (tSimpleLivingString3* const pl, float input, float position);
 float   tSimpleLivingString3_tick                (tSimpleLivingString3* const, float input);
+void   tSimpleLivingString3_setPickupPoint(tSimpleLivingString3* const pl, float pickupPoint);
 float   tSimpleLivingString3_sample              (tSimpleLivingString3* const);
 void    tSimpleLivingString3_setFreq             (tSimpleLivingString3* const, float freq);
 void    tSimpleLivingString3_setWaveLength       (tSimpleLivingString3* const, float waveLength); // in samples
