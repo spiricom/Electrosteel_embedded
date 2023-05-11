@@ -486,11 +486,13 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 
 		tSlide_init(&freqSlider[i], 2, 2, &leaf);
 
+		/*
 		for (int j = 0; j < NUM_OVERTONES; j++)
 		{
 			tCycle_init(&additive[i][j], &leaf);
 			tADSRT_init(&additiveEnv[i][j], 5.0f, partialDecays[j] * 1000.0f, 0.0f, 150.0f, decayExpBuffer, DECAY_EXP_BUFFER_SIZE, &leaf);
 		}
+		*/
 		//tExpSmooth_init(&stringFreqSmoothers[i],1.0f, 0.05f, &leaf);
 	}
 
@@ -597,7 +599,7 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 			tVZFilter_setSampleRate(&shelf1[i][v], SAMPLE_RATE * OVERSAMPLE);
 			tVZFilter_setSampleRate(&shelf2[i][v], SAMPLE_RATE * OVERSAMPLE);
 			tVZFilter_setSampleRate(&bell1[i][v], SAMPLE_RATE * OVERSAMPLE);
-			tCompressor_init(&comp[i][v], &leaf);
+			//tCompressor_init(&comp[i][v], &leaf);
 			//tCompressor_setTables(&comp[i][v], atoDbTable, dbtoATable, 0.00001f, 4.0f, -90.0f, 30.0f, ATODB_TABLE_SIZE, DBTOA_TABLE_SIZE);
 			//tLinearDelay_initToPool(&delay1[i][v], 4000.0f, 4096, &mediumPool);
 			//tLinearDelay_initToPool(&delay2[i][v], 4000.0f, 4096, &mediumPool);
@@ -1021,38 +1023,40 @@ void audioFrame(uint16_t buffer_offset)
 
 
 				}
-				else if ((previousStringInputs[i] > 0) && (stringInputs[i] == 0))
+			}
+			else if ((previousStringInputs[i] > 0) && (stringInputs[i] == 0))
+			{
+				//note off
+				HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_RESET);
+				for (int v = 0; v < NUM_ENV; v++)
 				{
-					//note off
-					HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_RESET);
-					for (int v = 0; v < NUM_ENV; v++)
-					{
-						tADSRT_off(&envs[v][i]);
-					}
-					if (currentActivePreset == 63)
-					{
-						//then it's the string synth
-						//tSimpleLivingString3_setDecay(&livStr[i], 0.1f);
-						lsDecay[i] = 0;
-					}
-					else if (currentActivePreset == 62)
-					{
-						tLivingString2_setTargetLev(&strings[i], 0.0f);
-						tLivingString2_setLevMode(&strings[i], 0);
-						tLivingString2_setDecay(&strings[i], 0.2f);
+					tADSRT_off(&envs[v][i]);
+				}
+				if (currentActivePreset == 63)
+				{
+					//then it's the string synth
+					//tSimpleLivingString3_setDecay(&livStr[i], 0.1f);
+					lsDecay[i] = 0;
+				}
+				else if (currentActivePreset == 62)
+				{
+					tLivingString2_setTargetLev(&strings[i], 0.0f);
+					tLivingString2_setLevMode(&strings[i], 0);
+					tLivingString2_setDecay(&strings[i], 0.2f);
 
-						tADSRT_off(&fenvelopes[i]);
-					}
-					else if (currentActivePreset == 61)
+					tADSRT_off(&fenvelopes[i]);
+				}
+				else if (currentActivePreset == 61)
+				{
+					for (int j = 0; j < NUM_OVERTONES; j++)
 					{
-						for (int j = 0; j < NUM_OVERTONES; j++)
-						{
-							tADSRT_off(&additiveEnv[i][j]);
-						}
+						tADSRT_off(&additiveEnv[i][j]);
 					}
 				}
-				previousStringInputs[i] = stringInputs[i];
 			}
+
+
+			previousStringInputs[i] = stringInputs[i];
 			newPluck = 0;
 		}
 	}

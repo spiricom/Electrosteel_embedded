@@ -174,18 +174,27 @@ int main(void)
      }
      /*Enable BKPRAM clock*/
      __HAL_RCC_BKPRAM_CLK_ENABLE();
-
+     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_SET);
+HAL_Delay(100);
  	int bit0 = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_15);
  	int bit1 = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_14);
  	int bit2 = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_2);
  	boardNumber = ((bit0 << 1)+(bit1 << 2)+(bit2));
  	if (boardNumber == 0)
  	{
+		  //set up the master send control pin to signal other daisies to listen to I2C bus
+		  GPIO_InitTypeDef GPIO_InitStruct = {0};
+		  GPIO_InitStruct.Pin = GPIO_PIN_12;
+		  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+		  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+		  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+
+		  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
  		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
  	}
     //if (*(__IO uint32_t*)(0x38800000+36) != 12345678)
 	  qspi_initialize(INDIRECT_POLLING);
-
+	  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_RESET);
      if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_6) == 0)
      {
     	 bootloader_button_pressed = 1;
@@ -193,14 +202,7 @@ int main(void)
     		  MX_I2C1_Init();
     		  MX_SDMMC1_SD_Init();
     		  MX_FATFS_Init();
-    		  //set up the master send control pin to signal other daisies to listen to I2C bus
-    		  GPIO_InitTypeDef GPIO_InitStruct = {0};
-    		  GPIO_InitStruct.Pin = GPIO_PIN_12;
-    		  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-    		  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
-    		  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
 
-    		  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
     		  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
 
 
@@ -252,7 +254,7 @@ int main(void)
 					10000);
 
 
-			HAL_Delay(10000);
+			HAL_Delay(45000);
     	 	  HAL_QSPI_MspDeInit(&hqspi);
       	 	  HAL_I2C_DeInit(&hi2c1);
     	 	  HAL_SD_MspDeInit(&hsd1);
@@ -302,15 +304,18 @@ int main(void)
 
 		  HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
 		  JumpToApplication = (pFunction) (*(__IO uint32_t*) (APPLICATION_ADDRESS+4));
-
-		  if ((JumpToApplication > 0x30000000) ||  (JumpToApplication < 0x24000000) )
+			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_SET);
+			HAL_Delay(1);
+		  if (((uint32_t)JumpToApplication > 0x30000000) ||  ((uint32_t)JumpToApplication < 0x24000000) )
 		  {
 			  //out of range, not a valid firmware
 			  while(1)
 			  {
-				  ;
+				  HAL_Delay(2);
+				  HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_7);
 			  }
 		  }
+
 	 	  HAL_QSPI_MspDeInit(&hqspi);
 		  HAL_RCC_DeInit();
 		  HAL_DeInit();
@@ -1048,7 +1053,11 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 			MX_I2C1_Init();
 			while(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_12) ==  1)
 			{
-				;
+		  	 	  if (!memory_already_mapped)
+		  	 	  {
+		  	 		  qspi_enable_memory_mapped();
+		  	 	  }
+		  	 	  ;
 				//wait for pin to go back low
 			}
 
@@ -1069,7 +1078,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 			qspi_Write(QSPI_START, 262144,(uint8_t*)tempBinaryBuffer);
 			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
 			memory_already_mapped = 1;
-
+			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_SET);
 
   	 	  HAL_QSPI_MspDeInit(&hqspi);
     	  HAL_I2C_DeInit(&hi2c1);

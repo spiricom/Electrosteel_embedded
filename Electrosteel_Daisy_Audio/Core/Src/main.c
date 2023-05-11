@@ -55,6 +55,22 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+//PA0 handleSPI
+//PD11 newstringpos inside interrupt
+//PG9 updateSPI
+//PC0 checkSDForPreset
+//PA3 audioframe
+//PB1 newBAR recognized in audio frame
+//PA6 receiving I2C
+//PC1 PLUCK interrupt
+//PC4 LEVER interrupt
+//PB6 presetWaitingToLoad
+//PB7 presetWaitingToParse
+
+//first set pins to flip to try to understand whether secondary boards are getting the interrupt and where they are when they are silent
+// then try to reprogram both PSOC and other STM32 to wait 2 seconds before sending data, to avoid SPI interrupts screwing init up.
+
+
 
 
 
@@ -176,7 +192,7 @@ int main(void)
   MPU_Config();
 
   /* Enable I-Cache---------------------------------------------------------*/
-  //SCB_EnableICache();
+  SCB_EnableICache();
 
   /* Enable D-Cache---------------------------------------------------------*/
   SCB_EnableDCache();
@@ -198,7 +214,7 @@ int main(void)
 
   /* USER CODE BEGIN SysInit */
 
-  HAL_Delay(500);
+  //HAL_Delay(500);
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -216,6 +232,7 @@ int main(void)
   MX_SPI6_Init();
   MX_RNG_Init();
   /* USER CODE BEGIN 2 */
+  HAL_Delay(500);
 	int bit0 = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_15);
 	int bit1 = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_14);
 	int bit2 = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_2);
@@ -286,7 +303,8 @@ int main(void)
   if (boardNumber == 0)
   {
 	  getPresetNamesFromSDCard();
-	  foundOne  = checkForSDCardPreset(presetNumberToLoad);
+	  //foundOne  = checkForSDCardPreset(presetNumberToLoad);
+	  presetWaitingToLoad = 1;
   }
 
   SDRAM_init();
@@ -337,6 +355,7 @@ int main(void)
   {
 	  if (presetWaitingToLoad > 0)
 	  {
+		  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_SET);
 		  if (boardNumber == 0)
 		  {
 			  if (!i2cSending)
@@ -344,11 +363,14 @@ int main(void)
 				  checkForSDCardPreset(presetNumberToLoad);
 			  }
 		  }
+		  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_RESET);
 	  }
 
 	  if (presetWaitingToParse > 0)
 	  {
+		  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_SET);
 		  parsePreset(presetWaitingToParse, presetNumberToLoad);
+		  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_RESET);
 	  }
 
 	  else if (presetWaitingToWrite > 0)
@@ -1071,6 +1093,8 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 		//error in transmission - give up and don't parse!
 		audioMasterLevel = 1.0f;
 		presetWaitingToParse = 0;
+		 presetReady = 1;
+
 		__enable_irq();
 		return;
 	}
@@ -1083,7 +1107,9 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 		//error in transmission - give up and don't parse!
 		audioMasterLevel = 1.0f;
 		presetWaitingToParse = 0;
+		 presetReady = 1;
 		__enable_irq();
+
 		return;
 	}
 	uint16_t mappingCount = (buffer[paramCount*2+bufferIndex+4] << 8) + buffer[paramCount*2+bufferIndex+5];
@@ -1098,7 +1124,9 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 		//error in transmission - give up and don't parse!
 		audioMasterLevel = 1.0f;
 		presetWaitingToParse = 0;
+		 presetReady = 1;
 		__enable_irq();
+
 		return;
 	}
 
@@ -1108,7 +1136,9 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 		//error in transmission - give up and don't parse!
 		audioMasterLevel = 1.0f;
 		presetWaitingToParse = 0;
+		 presetReady = 1;
 		__enable_irq();
+
 		return;
 	}
 
@@ -1812,6 +1842,7 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 	filterToTick = totalFilters;
 	__enable_irq();
 	presetReady = 1;
+	diskBusy = 0;
 }
 
 
@@ -2025,15 +2056,22 @@ void FlushECC(void *ptr, int bytes)
 		}while(flush_ptr != end_ptr);
 	}
 }
-
+uint8_t volatile I2CErrors = 0;
 void HAL_I2C_SlaveRxCpltCallback(I2C_HandleTypeDef *hi2c)
 {
+	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET);
 	presetWaitingToParse = 4096;
 }
+
 
 void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c)
 {
 	i2cSending = 0;
+}
+void HAL_I2C_ErrorCallback(I2C_HandleTypeDef *hi2c)
+{
+	i2cSending = 0;
+	I2CErrors++;
 }
 
 // EXTI Line12 External Interrupt ISR Handler CallBackFun
@@ -2053,6 +2091,9 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     		  {
     			  ;
     		  }
+    		  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET);
+    		  diskBusy = 1;
+    		  presetReady = 0;
     		  HAL_I2C_Slave_Receive_DMA(&hi2c1, buffer, 4096);
     	  }
 		}
@@ -2143,9 +2184,10 @@ void MPU_Config(void)
   */
   MPU_InitStruct.Number = MPU_REGION_NUMBER3;
   MPU_InitStruct.BaseAddress = 0x30000000;
-  MPU_InitStruct.Size = MPU_REGION_SIZE_1KB;
+  MPU_InitStruct.Size = MPU_REGION_SIZE_8KB;
   MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
   MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
+  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
 
   HAL_MPU_ConfigRegion(&MPU_InitStruct);
 
@@ -2156,6 +2198,7 @@ void MPU_Config(void)
   MPU_InitStruct.Size = MPU_REGION_SIZE_256KB;
   MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
   MPU_InitStruct.IsCacheable = MPU_ACCESS_CACHEABLE;
+  MPU_InitStruct.IsBufferable = MPU_ACCESS_BUFFERABLE;
 
   HAL_MPU_ConfigRegion(&MPU_InitStruct);
 

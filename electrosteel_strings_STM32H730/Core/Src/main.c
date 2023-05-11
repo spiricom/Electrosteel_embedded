@@ -160,6 +160,8 @@ int main(void)
 
    HAL_SPI_Receive_DMA(&hspi2, SPI_RX, 8);
 
+   //wait for synth boards to load code from QSPI to SRAM
+   HAL_Delay(2000);
    //HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO_PIN_SET);
    HAL_Delay(10);
 

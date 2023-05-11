@@ -59,6 +59,9 @@ default.size.stdout \
 OBJDUMP_LIST += \
 Electrosteel_audio.list \
 
+OBJCOPY_BIN += \
+Electrosteel_audio.bin \
+
 
 # All Target
 all: main-build
@@ -82,12 +85,17 @@ Electrosteel_audio.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DE
 	@echo 'Finished building: $@'
 	@echo ' '
 
+Electrosteel_audio.bin: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objcopy  -O binary $(EXECUTABLES) "Electrosteel_audio.bin"
+	@echo 'Finished building: $@'
+	@echo ' '
+
 # Other Targets
 clean:
-	-$(RM) Electrosteel_audio.elf Electrosteel_audio.list Electrosteel_audio.map default.size.stdout
+	-$(RM) Electrosteel_audio.bin Electrosteel_audio.elf Electrosteel_audio.list Electrosteel_audio.map default.size.stdout
 	-@echo ' '
 
-secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)
+secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST) $(OBJCOPY_BIN)
 
 fail-specified-linker-script-missing:
 	@echo 'Error: Cannot find the specified linker script. Check the linker settings in the build configuration.'
