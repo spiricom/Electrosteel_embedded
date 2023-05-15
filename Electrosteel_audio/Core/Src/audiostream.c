@@ -1580,7 +1580,7 @@ float  audioTickL(void)
 		}
 	}
 
-	return masterSample * audioMasterLevel * 0.98f;
+	return masterSample * audioMasterLevel * 0.98f * 0.5f;
 }
 #if 0
 void __ATTR_ITCMRAM sendNoteOn(uint8_t note, uint8_t velocity)
@@ -1712,7 +1712,7 @@ float  audioTickString(void)
 	float outVol = volumeAmps128[volIdxInt] * omAlpha;
 	outVol += volumeAmps128[volIdxIntPlus] * alpha;
 
-	temp *= outVol;
+	temp *= outVol * 0.5f;
 
 	return temp;
 }
@@ -1838,7 +1838,7 @@ float  audioTickString2(void)
 	float outVol = volumeAmps128[volIdxInt] * omAlpha;
 	outVol += volumeAmps128[volIdxIntPlus] * alpha;
 
-	temp *= outVol;
+	temp *= outVol * 0.5f;
 
 	return LEAF_clip(-1.0f, temp * 0.9f, 1.0f);
 }
