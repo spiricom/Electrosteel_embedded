@@ -5,6 +5,12 @@
 
 ENTRY(Reset_Handler)
 
+/* Highest address of the user mode stack */
+_estack = ORIGIN(DTCMRAM) + LENGTH(DTCMRAM);    /* end of RAM */
+/* Generate a link error if heap and stack don't fit into RAM */
+_Min_Heap_Size = 0x4000;      /* required amount of heap  */
+_Min_Stack_Size = 0x8000; /* required amount of stack */
+
 MEMORY
 {
 	FLASH (RX)    : ORIGIN = 0x08000000, LENGTH = 128K
@@ -111,6 +117,21 @@ SECTIONS
 	} > RAM_D1
 
 
+	.sram2_dma_bss (NOLOAD) :
+	{
+		. = ALIGN(4);
+		_ssram2_dma_bss = .;
+
+		PROVIDE(__sram2_dma_bss_start__ = _sram2_dma_bss);
+		*(.sram2_dma_bss)
+		*(.sram2_dma_bss*)
+		. = ALIGN(4);
+		_esram2_dma_bss = .;
+
+		PROVIDE(__sram2_dma_bss_end__ = _esram2_dma_bss);
+	} > RAM_D2_DMA
+
+
 	.sram2_bss (NOLOAD) :
 	{
 		. = ALIGN(4);
@@ -120,12 +141,11 @@ SECTIONS
 		*(.sram2_bss)
 		*(.sram2_bss*)
 		. = ALIGN(4);
-		_esram1_bss = .;
+		_esram2_bss = .;
 
 		PROVIDE(__sram2_bss_end__ = _esram2_bss);
-	} > RAM_D2_DMA
-
-
+	} > RAM_D2
+	
 	.sram3_bss (NOLOAD) :
 	{
 		. = ALIGN(4);
@@ -138,20 +158,6 @@ SECTIONS
 		_esram3_bss = .;
 
 		PROVIDE(__sram3_bss_end__ = _esram3_bss);
-	} > RAM_D2
-	
-	.sram4_bss (NOLOAD) :
-	{
-		. = ALIGN(4);
-		_ssram4_bss = .;
-
-		PROVIDE(__sram4_bss_start__ = _sram4_bss);
-		*(.sram4_bss)
-		*(.sram4_bss*)
-		. = ALIGN(4);
-		_esram4_bss = .;
-
-		PROVIDE(__sram4_bss_end__ = _esram4_bss);
 	} > RAM_D3
 	
 	.userflash (NOLOAD) :
@@ -191,20 +197,6 @@ SECTIONS
 
 		PROVIDE(__bss_end__ = _ebss);
 	} > DTCMRAM 
-
-	.dtcmram_bss (NOLOAD) :
-	{
-		. = ALIGN(4);
-		_sdtcmram_bss = .;
-
-		PROVIDE(__dtcmram_bss_start__ = _sdtcmram_bss);
-		*(.dtcmram_bss)
-		*(.dtcmram_bss*)
-		. = ALIGN(4);
-		_edtcmram_bss = .;
-
-		PROVIDE(__dtcmram_bss_end__ = _edtcmram_bss);
-	} > DTCMRAM
 
 
 	/* add a section that we can put functions into ITCMRAM for faster execution 

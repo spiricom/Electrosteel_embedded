@@ -34,11 +34,11 @@
 #include "main.h"
 
 
-#define AUDIO_FRAME_SIZE      32
+#define AUDIO_FRAME_SIZE      8
 #define HALF_BUFFER_SIZE      AUDIO_FRAME_SIZE * 2 //number of samples per half of the "double-buffer" (twice the audio frame size because there are interleaved samples for both left and right channels)
 #define AUDIO_BUFFER_SIZE     AUDIO_FRAME_SIZE * 4 //number of samples in the whole data structure (four times the audio frame size because of stereo and also double-buffering/ping-ponging)
-#define SMALL_MEM_SIZE 73000
-#define MED_MEM_SIZE 262000//180000
+#define SMALL_MEM_SIZE 60000
+#define MED_MEM_SIZE 260000//180000
 #define LARGE_MEM_SIZE 67108864 //64 MBytes - size of SDRAM IC
 #define MTOF_TABLE_SIZE	32768
 #define MTOF_TABLE_SIZE_MINUS_ONE 32767
@@ -282,6 +282,8 @@ extern int32_t audioOutBuffer[AUDIO_BUFFER_SIZE];
 extern int32_t audioInBuffer[AUDIO_BUFFER_SIZE];
 extern uint32_t codecReady;
 extern int presetReady;
+extern volatile int voice;
+extern volatile int prevVoice;
 extern uint8_t oscToTick;
 extern uint8_t filterToTick;
 extern uint8_t overSampled;

@@ -94,10 +94,6 @@ void HAL_SAI_MspInit(SAI_HandleTypeDef* saiHandle)
     if (SAI1_client == 0)
     {
        __HAL_RCC_SAI1_CLK_ENABLE();
-
-    /* Peripheral interrupt init*/
-    HAL_NVIC_SetPriority(SAI1_IRQn, 4, 0);
-    HAL_NVIC_EnableIRQ(SAI1_IRQn);
     }
     SAI1_client ++;
 
@@ -124,7 +120,7 @@ void HAL_SAI_MspInit(SAI_HandleTypeDef* saiHandle)
     hdma_sai1_a.Init.PeriphDataAlignment = DMA_PDATAALIGN_WORD;
     hdma_sai1_a.Init.MemDataAlignment = DMA_MDATAALIGN_WORD;
     hdma_sai1_a.Init.Mode = DMA_CIRCULAR;
-    hdma_sai1_a.Init.Priority = DMA_PRIORITY_MEDIUM;
+    hdma_sai1_a.Init.Priority = DMA_PRIORITY_VERY_HIGH;
     hdma_sai1_a.Init.FIFOMode = DMA_FIFOMODE_ENABLE;
     hdma_sai1_a.Init.FIFOThreshold = DMA_FIFO_THRESHOLD_1QUARTERFULL;
     hdma_sai1_a.Init.MemBurst = DMA_MBURST_SINGLE;
@@ -155,10 +151,6 @@ void HAL_SAI_MspInit(SAI_HandleTypeDef* saiHandle)
       if (SAI1_client == 0)
       {
        __HAL_RCC_SAI1_CLK_ENABLE();
-
-      /* Peripheral interrupt init*/
-      HAL_NVIC_SetPriority(SAI1_IRQn, 4, 0);
-      HAL_NVIC_EnableIRQ(SAI1_IRQn);
       }
     SAI1_client ++;
 
@@ -182,7 +174,7 @@ void HAL_SAI_MspInit(SAI_HandleTypeDef* saiHandle)
     hdma_sai1_b.Init.PeriphDataAlignment = DMA_PDATAALIGN_WORD;
     hdma_sai1_b.Init.MemDataAlignment = DMA_MDATAALIGN_WORD;
     hdma_sai1_b.Init.Mode = DMA_CIRCULAR;
-    hdma_sai1_b.Init.Priority = DMA_PRIORITY_MEDIUM;
+    hdma_sai1_b.Init.Priority = DMA_PRIORITY_VERY_HIGH;
     hdma_sai1_b.Init.FIFOMode = DMA_FIFOMODE_ENABLE;
     hdma_sai1_b.Init.FIFOThreshold = DMA_FIFO_THRESHOLD_1QUARTERFULL;
     hdma_sai1_b.Init.MemBurst = DMA_MBURST_SINGLE;
@@ -210,7 +202,6 @@ void HAL_SAI_MspDeInit(SAI_HandleTypeDef* saiHandle)
       {
       /* Peripheral clock disable */
        __HAL_RCC_SAI1_CLK_DISABLE();
-      HAL_NVIC_DisableIRQ(SAI1_IRQn);
       }
 
     /**SAI1_A_Block_A GPIO Configuration
@@ -231,7 +222,6 @@ void HAL_SAI_MspDeInit(SAI_HandleTypeDef* saiHandle)
       {
       /* Peripheral clock disable */
       __HAL_RCC_SAI1_CLK_DISABLE();
-      HAL_NVIC_DisableIRQ(SAI1_IRQn);
       }
 
     /**SAI1_B_Block_B GPIO Configuration
