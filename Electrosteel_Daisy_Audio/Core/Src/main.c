@@ -126,7 +126,7 @@ float defaultScaling = 1.0f;
 #define SCALE_TABLE_SIZE 2048
 float resTable[SCALE_TABLE_SIZE];
 float envTimeTable[SCALE_TABLE_SIZE];
-float lfoRateTable[SCALE_TABLE_SIZE]__ATTR_RAM_D2;
+float lfoRateTable[SCALE_TABLE_SIZE];
 
 
 float midiKeyDivisor;
@@ -153,7 +153,7 @@ void MPU_Conf(void);
 void SDRAM_init(void);
 static int checkForSDCardPreset(uint8_t value);
 static void writePresetToSDCard(int fileSize);
-void parsePreset(int size, int presetNumber);
+void __ATTR_ITCMRAM parsePreset(int size, int presetNumber);
 void getPresetNamesFromSDCard(void);
 
 
@@ -240,7 +240,7 @@ int main(void)
 
 	if (boardNumber == 0)
 	{
-		  HAL_NVIC_DisableIRQ(EXTI15_10_IRQn);
+		  //HAL_NVIC_DisableIRQ(EXTI15_10_IRQn);
 
 		GPIO_InitTypeDef GPIO_InitStruct = {0};
 	  	  GPIO_InitStruct.Pin = GPIO_PIN_12;
@@ -299,7 +299,7 @@ int main(void)
   LEAF_generate_table_skew_non_sym(envTimeTable, 0.0f, 20000.0f, 4000.0f, SCALE_TABLE_SIZE);
   LEAF_generate_table_skew_non_sym(lfoRateTable, 0.0f, 30.0f, 2.0f, SCALE_TABLE_SIZE);
 
-  for (int i = 0; i < 5; i++)
+  for (int i = 0; i < 3; i++)
   {
 	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
 	  HAL_Delay(10);
@@ -364,7 +364,6 @@ int main(void)
     if (boardNumber !=0)
     {
     	HAL_I2C_Slave_Receive_IT(&hi2c1, buffer, 4096);
-    	waitForNewPresetDataOverI2C();
     }
   /* USER CODE END 2 */
 
@@ -531,7 +530,7 @@ void PeriphCommonClock_Config(void)
 
 /* USER CODE BEGIN 4 */
 
-float randomNumber(void) {
+float __ATTR_ITCMRAM randomNumber(void) {
 
 	uint32_t rand;
 	HAL_RNG_GenerateRandomNumber(&hrng, &rand);
@@ -557,7 +556,13 @@ void getPresetNamesFromSDCard(void)
 {
 	if(BSP_SD_IsDetected())
 	{
+		for (int i = 0; i < AUDIO_BUFFER_SIZE; i+=2)
+		{
+			audioOutBuffer[i] = 0;
+			audioOutBuffer[i + 1] = 0;
+		}
 		diskBusy = 1;
+
 		loadFailed = 0;
 		//HAL_Delay(300);
 
@@ -636,6 +641,11 @@ static int checkForSDCardPreset(uint8_t numberToLoad)
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0, GPIO_PIN_SET);
 	if(BSP_SD_IsDetected())
 	{
+		for (int i = 0; i < AUDIO_BUFFER_SIZE; i+=2)
+		{
+			audioOutBuffer[i] = 0;
+			audioOutBuffer[i + 1] = 0;
+		}
 		diskBusy = 1;
 		loadFailed = 0;
 		//HAL_Delay(300);
@@ -723,6 +733,11 @@ static void writePresetToSDCard(int fileSize)
 		{
 			//if(res == FR_OK)
 			{
+				for (int i = 0; i < AUDIO_BUFFER_SIZE; i+=2)
+				{
+					audioOutBuffer[i] = 0;
+					audioOutBuffer[i + 1] = 0;
+				}
 				diskBusy = 1;
 				//make sure the number is not above 2 digits
 			    if (presetNumberToSave > 99)
@@ -865,6 +880,11 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 		 if (writingState != ReceivingPreset)
 		 {
 			 writingState = ReceivingPreset; // set the flag to let the mcu know that a preset write is in progress
+				for (int i = 0; i < AUDIO_BUFFER_SIZE; i+=2)
+				{
+					audioOutBuffer[i] = 0;
+					audioOutBuffer[i + 1] = 0;
+				}
 			 diskBusy = 1;
 			 audioMasterLevel = 0.0f;
 			 //write the raw data as a preset number on the SD card
@@ -2091,14 +2111,6 @@ void FlushECC(void *ptr, int bytes)
 	}
 }
 
-void waitForNewPresetDataOverI2C(void)
-{
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET);
-	diskBusy = 1;
-	presetReady = 0;
-
-	receivingI2C = 1;
-}
 
 uint8_t volatile I2CErrors = 0;
 void __ATTR_ITCMRAM HAL_I2C_SlaveRxCpltCallback(I2C_HandleTypeDef *hi2c)
@@ -2174,7 +2186,7 @@ void MPU_Config(void)
   */
   MPU_InitStruct.Number = MPU_REGION_NUMBER2;
   MPU_InitStruct.BaseAddress = 0x24040000;
-  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
+  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_DISABLE;
 
   HAL_MPU_ConfigRegion(&MPU_InitStruct);
 
@@ -2183,6 +2195,7 @@ void MPU_Config(void)
   MPU_InitStruct.Number = MPU_REGION_NUMBER3;
   MPU_InitStruct.BaseAddress = 0x30000000;
   MPU_InitStruct.Size = MPU_REGION_SIZE_8KB;
+  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
   MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
   MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
 

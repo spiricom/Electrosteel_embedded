@@ -62,7 +62,6 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
 float randomNumber(void);
-void waitForNewPresetDataOverI2C(void);
 void CycleCounterInit( void );
 void __ATTR_ITCMRAM handleSPI (uint8_t offset);
 /* USER CODE END EFP */
