@@ -40,11 +40,11 @@ uint32_t codecReady = 0;
 
 uint32_t frameCounter = 0;
 
-volatile int stringPositions[4] __ATTR_RAM_D2_DMA;
-volatile int stringPositionsPrev[4] __ATTR_RAM_D2_DMA;
+volatile int stringPositions[4];// __ATTR_RAM_D2_DMA;
+volatile int stringPositionsPrev[4];// __ATTR_RAM_D2_DMA;
 
-volatile int newPluck __ATTR_RAM_D2_DMA = 0 ;
-volatile int newBar __ATTR_RAM_D2_DMA = 0 ;
+volatile int newPluck = 0 ;
+volatile int newBar = 0 ;
 
 uint8_t oscToTick = NUM_OSC;
 uint8_t filterToTick = NUM_FILT;
@@ -2727,49 +2727,43 @@ void __ATTR_ITCMRAM noise_tick(int string)
 void __ATTR_ITCMRAM HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
 {
 	interrupted = 1;
-	//SCB_InvalidateDCache();
-	if (hspi == &hspi6)
+	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_SET);
+	SCB_InvalidateDCache_by_Addr((uint32_t*)(((uint32_t)SPI_PLUCK_RX) & ~(uint32_t)0x1F), PLUCK_BUFFER_SIZE_TIMES_TWO+32);
+	if ((SPI_PLUCK_RX[26] == 254) && (SPI_PLUCK_RX[51] == 253))
 	{
-		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_SET);
-		if ((SPI_PLUCK_RX[26] == 254) && (SPI_PLUCK_RX[51] == 253))
+
+		for (int i = 0; i < numStringsThisBoard; i++)
 		{
 
-			for (int i = 0; i < numStringsThisBoard; i++)
-			{
-
-				stringInputs[i] = (SPI_PLUCK_RX[((i+firstString)*2)+ 27] << 8) + SPI_PLUCK_RX[((i+firstString)*2)+ 28];
-			}
+			stringInputs[i] = (SPI_PLUCK_RX[((i+firstString)*2)+ 27] << 8) + SPI_PLUCK_RX[((i+firstString)*2)+ 28];
 		}
-		newPluck = 1;
-		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_RESET);
 	}
+	newPluck = 1;
+	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_RESET);
 }
 
 void __ATTR_ITCMRAM HAL_SPI_RxHalfCpltCallback(SPI_HandleTypeDef *hspi)
 {
 	interrupted = 1;
-	//SCB_InvalidateDCache();
-	if (hspi == &hspi6)
+	SCB_InvalidateDCache_by_Addr((uint32_t*)(((uint32_t)SPI_PLUCK_RX) & ~(uint32_t)0x1F), PLUCK_BUFFER_SIZE_TIMES_TWO+32);
+	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_SET);
+	if ((SPI_PLUCK_RX[0] == 254) && (SPI_PLUCK_RX[25] == 253))
 	{
-		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_SET);
-		if ((SPI_PLUCK_RX[0] == 254) && (SPI_PLUCK_RX[25] == 253))
+
+		for (int i = 0; i < numStringsThisBoard; i++)
 		{
 
-			for (int i = 0; i < numStringsThisBoard; i++)
-			{
-
-				stringInputs[i] = (SPI_PLUCK_RX[((i+firstString)*2)+ 1] << 8) + SPI_PLUCK_RX[((i+firstString)*2)+ 2];
-			}
+			stringInputs[i] = (SPI_PLUCK_RX[((i+firstString)*2)+ 1] << 8) + SPI_PLUCK_RX[((i+firstString)*2)+ 2];
 		}
-		newPluck = 1;
-		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_RESET);
 	}
+	newPluck = 1;
+	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_RESET);
 }
 
 void __ATTR_ITCMRAM HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
 {
 	interrupted = 1;
-	//SCB_InvalidateDCache();
+	SCB_InvalidateDCache_by_Addr((uint32_t*)(((uint32_t)SPI_LEVERS) & ~(uint32_t)0x1F), LEVER_BUFFER_SIZE_TIMES_TWO+32);
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_SET);
 	if ((SPI_LEVERS[62] == 254) && (SPI_LEVERS[63] == 253))
 	{
@@ -2782,6 +2776,7 @@ void __ATTR_ITCMRAM HAL_SPI_TxRxHalfCpltCallback(SPI_HandleTypeDef *hspi)
 {
 	interrupted = 1;
 	//SCB_InvalidateDCache();
+	SCB_InvalidateDCache_by_Addr((uint32_t*)(((uint32_t)SPI_LEVERS) & ~(uint32_t)0x1F), LEVER_BUFFER_SIZE_TIMES_TWO+32);
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_SET);
 	if ((SPI_LEVERS[30] == 254) && (SPI_LEVERS[31] == 253))
 	{

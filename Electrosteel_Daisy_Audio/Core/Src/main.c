@@ -1900,20 +1900,8 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 }
 
 
-/////
 
 
-#if 0
-void  __ATTR_ITCMRAM HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
-{
-	handleSPI(16);
-}
-
-void __ATTR_ITCMRAM HAL_SPI_TxRxHalfCpltCallback(SPI_HandleTypeDef *hspi)
-{
-	handleSPI(0);
-}
-#endif
 
 // helper function to initialize measuring unit (cycle counter) */
 void CycleCounterInit( void )
@@ -1932,153 +1920,6 @@ void CycleCounterInit( void )
   DWT->CTRL = 0x40000001;
 
 }
-
-
-void MPU_Conf(void)
-{
-	//code from Keshikan https://github.com/keshikan/STM32H7_DMA_sample
-  //Thanks, Keshikan! This solves the issues with accessing the SRAM in the D2 area properly. -JS
-	//should test the different possible settings to see what works best while avoiding needing to manually clear the cache -JS
-
-	MPU_Region_InitTypeDef MPU_InitStruct;
-
-	  HAL_MPU_Disable();
-
-	  MPU_InitStruct.Enable = MPU_REGION_ENABLE;
-
-	  //D2 Domain�SRAM1
-	  MPU_InitStruct.BaseAddress = 0x30000000;
-	  // Increased region size to 256k. In Keshikan's code, this was 512 bytes (that's all that application needed).
-	  // Each audio buffer takes up the frame size * 8 (16 bits makes it *2 and stereo makes it *2 and double buffering makes it *2)
-	  // So a buffer size for read/write of 4096 would take up 64k = 4096*8 * 2 (read and write).
-	  // I increased that to 256k so that there would be room for the ADC knob inputs and other peripherals that might require DMA access.
-	  // we have a total of 256k in SRAM1 (128k, 0x30000000-0x30020000) and SRAM2 (128k, 0x30020000-0x3004000) of D2 domain.
-	  // There is an SRAM3 in D2 domain as well (32k, 0x30040000-0x3004800) that is currently not mapped by the MPU (memory protection unit) controller.
-
-	  MPU_InitStruct.Size = MPU_REGION_SIZE_128KB;
-
-	  MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
-
-	  //Shared Device
-	  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
-	  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
-	  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
-	  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
-
-	  //AN4838
-//	  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL1;
-//	  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
-//	  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
-//	  MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
-
-	  MPU_InitStruct.Number = MPU_REGION_NUMBER0;
-
-	  MPU_InitStruct.SubRegionDisable = 0x00;
-
-
-	  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_ENABLE;
-
-
-	  HAL_MPU_ConfigRegion(&MPU_InitStruct);
-
-
-	  //now set up D3 domain RAM
-	  MPU_InitStruct.Enable = MPU_REGION_ENABLE;
-	  //D2 Domain�SRAM1
-	  MPU_InitStruct.BaseAddress = 0x38000000;
-	  MPU_InitStruct.Size = MPU_REGION_SIZE_64KB;
-	  MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
-	  //AN4838
-	  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
-	  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
-	  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
-	  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
-
-	  MPU_InitStruct.Number = MPU_REGION_NUMBER1;
-
-	  MPU_InitStruct.SubRegionDisable = 0x00;
-
-	  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_ENABLE;
-
-	  HAL_MPU_ConfigRegion(&MPU_InitStruct);
-
-	  MPU_InitStruct.Enable = MPU_REGION_ENABLE;
-
-	  //BackupSRAM
-	  MPU_InitStruct.BaseAddress = 0x38800000;
-	  MPU_InitStruct.Size = MPU_REGION_SIZE_4KB;
-
-	  MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
-
-	  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
-	  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
-	  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
-	  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
-
-	  MPU_InitStruct.Number = MPU_REGION_NUMBER2;
-	  MPU_InitStruct.SubRegionDisable = 0x00;
-	  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_ENABLE;
-	  HAL_MPU_ConfigRegion(&MPU_InitStruct);
-
-
-
-
-	  //SRAM for code execution not sure if TEX1 or TEX0 is better but probably doesn't matter because this memory is never written to, only read
-	  MPU_InitStruct.Enable = MPU_REGION_ENABLE;
-	  MPU_InitStruct.BaseAddress = 0x24000000;
-	  MPU_InitStruct.Size = MPU_REGION_SIZE_512KB;
-
-	  MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
-
-	  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL1;
-	  MPU_InitStruct.IsCacheable = MPU_ACCESS_CACHEABLE;
-	  MPU_InitStruct.IsBufferable = MPU_ACCESS_BUFFERABLE;
-	  MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
-
-	  MPU_InitStruct.Number = MPU_REGION_NUMBER3;
-	  MPU_InitStruct.SubRegionDisable = 0x00;
-	  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_ENABLE;
-	  HAL_MPU_ConfigRegion(&MPU_InitStruct);
-
-
-	  //SDRAM as strongly ordered to avoid speculative fetches that might stall the external memory if interrupted
-	  MPU_InitStruct.Enable = MPU_REGION_ENABLE;
-	  MPU_InitStruct.BaseAddress = 0xc0000000;
-	  MPU_InitStruct.Size = MPU_REGION_SIZE_64MB;
-
-	  MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
-
-	  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
-	  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
-	  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
-	  MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
-
-	  MPU_InitStruct.Number = MPU_REGION_NUMBER4;
-	  MPU_InitStruct.SubRegionDisable = 0x00;
-	  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_DISABLE;
-	  HAL_MPU_ConfigRegion(&MPU_InitStruct);
-
-
-	  //QSPI as strongly ordered to avoid speculative fetches that might stall the external memory if interrupted
-	  MPU_InitStruct.Enable = MPU_REGION_ENABLE;
-	  MPU_InitStruct.BaseAddress = 0x90040000;
-	  MPU_InitStruct.Size = MPU_REGION_SIZE_64MB;
-
-	  MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
-
-	  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
-	  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
-	  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
-	  MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
-
-	  MPU_InitStruct.Number = MPU_REGION_NUMBER5;
-	  MPU_InitStruct.SubRegionDisable = 0x00;
-	  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_DISABLE;
-	  HAL_MPU_ConfigRegion(&MPU_InitStruct);
-
-	  HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
-}
-
 
 
 void FlushECC(void *ptr, int bytes)
@@ -2116,10 +1957,10 @@ uint8_t volatile I2CErrors = 0;
 void __ATTR_ITCMRAM HAL_I2C_SlaveRxCpltCallback(I2C_HandleTypeDef *hi2c)
 {
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET);
-	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
-	  HAL_Delay(2);
-	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
-	  HAL_Delay(2);
+	  //HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
+	  //HAL_Delay(2);
+	  //HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
+	  //HAL_Delay(2);
 	presetWaitingToParse = 4096;
 
 	HAL_I2C_Slave_Receive_IT(&hi2c1, buffer, 4096);
