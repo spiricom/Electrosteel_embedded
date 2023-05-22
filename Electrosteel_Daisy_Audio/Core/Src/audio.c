@@ -2385,12 +2385,12 @@ void __ATTR_ITCMRAM chorusParam4(float value, int v, int string)
 
 float __ATTR_ITCMRAM chorusTick(float sample, int v, int string)
 {
-	//tLinearDelay_setDelay(&delay1[v][string], param1[v][string] * .707f * (1.0f + param2[v][string] * tCycle_tick(&mod1[v][string])));
-    //tLinearDelay_setDelay(&delay2[v][string], param1[v][string] * .5f * (1.0f - param2[v][string] * tCycle_tick(&mod2[v][string])));
-    //float temp = tLinearDelay_tick(&delay1[v][string], sample) - sample;
-    //temp += tLinearDelay_tick(&delay2[v][string], sample) - sample;
-    //temp = tHighpass_tick(&dcBlock1[v], temp);
-	float temp = 0.0f;
+	tLinearDelay_setDelay(&delay1[v][string], param1[v][string] * .707f * (1.0f + param2[v][string] * tCycle_tick(&mod1[v][string])));
+    tLinearDelay_setDelay(&delay2[v][string], param1[v][string] * .5f * (1.0f - param2[v][string] * tCycle_tick(&mod2[v][string])));
+    float temp = tLinearDelay_tick(&delay1[v][string], sample) - sample;
+    temp += tLinearDelay_tick(&delay2[v][string], sample) - sample;
+    temp = tHighpass_tick(&dcBlock1[v][string], temp);
+	//float temp = 0.0f;
     return -temp;
 }
 
@@ -2731,7 +2731,6 @@ void __ATTR_ITCMRAM HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
 	SCB_InvalidateDCache_by_Addr((uint32_t*)(((uint32_t)SPI_PLUCK_RX) & ~(uint32_t)0x1F), PLUCK_BUFFER_SIZE_TIMES_TWO+32);
 	if ((SPI_PLUCK_RX[26] == 254) && (SPI_PLUCK_RX[51] == 253))
 	{
-
 		for (int i = 0; i < numStringsThisBoard; i++)
 		{
 
@@ -2769,6 +2768,7 @@ void __ATTR_ITCMRAM HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
 	{
 		handleSPI(LEVER_BUFFER_SIZE);
 	}
+	SCB_CleanDCache_by_Addr((uint32_t*)(((uint32_t)SPI_LEVERS) & ~(uint32_t)0x1F), LEVER_BUFFER_SIZE_TIMES_TWO+32);
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_RESET);
 }
 
@@ -2782,6 +2782,7 @@ void __ATTR_ITCMRAM HAL_SPI_TxRxHalfCpltCallback(SPI_HandleTypeDef *hspi)
 	{
 		handleSPI(0);
 	}
+	SCB_CleanDCache_by_Addr((uint32_t*)(((uint32_t)SPI_LEVERS) & ~(uint32_t)0x1F), LEVER_BUFFER_SIZE_TIMES_TWO+32);
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_RESET);
 }
 
@@ -2790,6 +2791,7 @@ void __ATTR_ITCMRAM HAL_SAI_TxCpltCallback(SAI_HandleTypeDef *hsai)
 	if (!diskBusy)
 		//SCB_InvalidateDCache();
 	audioFrame(HALF_BUFFER_SIZE);
+	SCB_CleanDCache_by_Addr((uint32_t*)(((uint32_t)audioOutBuffer) & ~(uint32_t)0x1F), AUDIO_BUFFER_SIZE+32);
 }
 
 void __ATTR_ITCMRAM HAL_SAI_TxHalfCpltCallback(SAI_HandleTypeDef *hsai)
@@ -2797,6 +2799,7 @@ void __ATTR_ITCMRAM HAL_SAI_TxHalfCpltCallback(SAI_HandleTypeDef *hsai)
 	if (!diskBusy)
 		//SCB_InvalidateDCache();
 	audioFrame(0);
+	SCB_CleanDCache_by_Addr((uint32_t*)(((uint32_t)audioOutBuffer) & ~(uint32_t)0x1F), AUDIO_BUFFER_SIZE+32);
 }
 
 void __ATTR_ITCMRAM HAL_SAI_ErrorCallback(SAI_HandleTypeDef *hsai)

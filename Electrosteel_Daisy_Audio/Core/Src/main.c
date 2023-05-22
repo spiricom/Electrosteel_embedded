@@ -375,6 +375,7 @@ int main(void)
 	  {
 		  if (presetWaitingToLoad > 0)
 		  {
+			  /*
 			  //HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_SET);
 			  for (int i = 0; i < 2; i++)
 			  {
@@ -383,12 +384,13 @@ int main(void)
 				  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
 				  HAL_Delay(1);
 			  }
+			  */
 			  if (!i2cSending)
 			  {
-				  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
-				  HAL_Delay(2);
-				  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
-				  HAL_Delay(2);
+				  //HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
+				  //HAL_Delay(2);
+				  //HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
+				  //HAL_Delay(2);
 				  checkForSDCardPreset(presetNumberToLoad);
 			  }
 			  //HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_RESET);
