@@ -410,6 +410,14 @@ int main(void)
 		  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_RESET);
 	  }
 
+	  if ((stringInputs[0] == 0) && (stringInputs[1] == 0))
+	  {
+	  	  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
+	  }
+	  else
+	  {
+		  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
+	  }
 
 	  uint32_t rand;
 	  HAL_RNG_GenerateRandomNumber(&hrng, &rand);
@@ -417,7 +425,7 @@ int main(void)
 	  if (rand > TWO_TO_31)
 	  {
 		  myTestInt++;
-		  HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
+		  //HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
 	  }
 	  float floatrand = (float)rand * INV_TWO_TO_32 ;
 	  random_values[currentRandom++] = (floatrand * 2.0f) - 1.0f;

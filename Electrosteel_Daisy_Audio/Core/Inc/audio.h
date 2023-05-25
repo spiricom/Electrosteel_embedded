@@ -295,6 +295,7 @@ extern volatile int firstString;
 extern volatile float stringMIDIPitches[NUM_STRINGS_PER_BOARD];
 extern tExpSmooth knobSmoothers[12];
 extern tExpSmooth pedalSmoothers[10];
+extern uint stringInputs[NUM_STRINGS] ;
 #endif /* __AUDIOSTREAM_H */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

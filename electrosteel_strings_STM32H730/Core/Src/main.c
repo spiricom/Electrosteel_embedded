@@ -161,7 +161,7 @@ int main(void)
    HAL_SPI_Receive_DMA(&hspi2, SPI_RX, 8);
 
    //wait for synth boards to load code from QSPI to SRAM
-   HAL_Delay(2000);
+   HAL_Delay(10);
    //HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO_PIN_SET);
    HAL_Delay(10);
 
@@ -169,14 +169,14 @@ int main(void)
 
    for (int i = 0; i < NUM_STRINGS; i++)
    {
-   	tThreshold_init(&threshold[i],1000.0f, 1200.0f, &leaf);
-   	tSlide_init(&fastSlide[i],1.0f,500.0f, &leaf); //1110
-   	tSlide_init(&slowSlide[i],1.0f,1100.0f, &leaf); //1110
+   	tThreshold_init(&threshold[i],700.0f, 1300.0f, &leaf);
+   	tSlide_init(&fastSlide[i],1.0f,400.0f, &leaf); //1110
+   	tSlide_init(&slowSlide[i],1.0f,700.0f, &leaf); //1110
 
    	for (int j = 0; j < FILTER_ORDER; j++)
    	{
-   		tVZFilter_init(&opticalLowpass[i][j], Lowpass, 1000.0f, 0.6f, &leaf);
-   		tHighpass_init(&opticalHighpass[i][j], 10.0f, &leaf);
+   		tVZFilter_init(&opticalLowpass[i][j], Lowpass, 6000.0f, 0.8f, &leaf);
+   		tHighpass_init(&opticalHighpass[i][j], 100.0f, &leaf);
    	}
    }
 
@@ -752,7 +752,7 @@ int attackDetectPeak2 (int whichString, int tempInt)
 	{
 		// a highpass filter, remove any slow moving signal (effectively centers the signal around zero and gets rid of the signal that isn't high frequency vibration) cutoff of 100Hz, // applied 8 times to get rid of a lot of low frequency bumbling around
 		tempSamp = tHighpass_tick(&opticalHighpass[whichString][k], tempSamp);
-		tempSamp = tVZFilter_tick(&opticalLowpass[whichString][k], tempSamp * 2.0f);
+		tempSamp = tVZFilter_tick(&opticalLowpass[whichString][k], tempSamp * 1.0f);
 	}
 
 	float tempAbs = fabsf(tempSamp);
@@ -774,7 +774,7 @@ int attackDetectPeak2 (int whichString, int tempInt)
 	integerVersions[whichString] = integerVersion;
 	threshOut = tThreshold_tick(&threshold[whichString], integerVersion);
 
-	if ((slope > .5f) && (threshOut > 0))
+	if ((slope > .3f) && (threshOut > 0))
 	{
 		armed[whichString] = 1;
 	}

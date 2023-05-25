@@ -835,6 +835,7 @@ void __ATTR_ITCMRAM audioFrame(uint16_t buffer_offset)
 		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_RESET);
 	}
 
+
 	if (newPluck)
 	{
 		for (int i = 0; i < numStringsThisBoard; i++)
@@ -1804,7 +1805,7 @@ float __ATTR_ITCMRAM audioTickL(void)
 		}
 
 
-		sample = tSVF_tick(&finalLowpass[v], sample) * 0.45f;
+		sample = tSVF_tick(&finalLowpass[v], sample) * 0.25f;
 		masterSample += sample;
 
 		float volIdx = LEAF_clip(47.0f, ((volumeSmoothed * 80.0f) + 47.0f), 127.0f);
