@@ -79,6 +79,11 @@ tSlide fastSlide[NUM_STRINGS];
 tSlide slowSlide[NUM_STRINGS];
 tThreshold threshold[NUM_STRINGS];
 
+
+
+
+
+
 int RHbits[2] = {0,0};
 
 /* USER CODE END PV */
@@ -175,8 +180,8 @@ int main(void)
 
    	for (int j = 0; j < FILTER_ORDER; j++)
    	{
-   		tVZFilter_init(&opticalLowpass[i][j], Lowpass, 6000.0f, 0.8f, &leaf);
-   		tHighpass_init(&opticalHighpass[i][j], 100.0f, &leaf);
+   		tVZFilter_init(&opticalLowpass[i][j], Lowpass, 18000.0f, 0.8f, &leaf);//6000
+   		tHighpass_init(&opticalHighpass[i][j], 10.0f, &leaf);//100
    	}
    }
 
@@ -189,6 +194,10 @@ int main(void)
    HAL_ADC_Start_DMA(&hadc1,(uint32_t*)&ADC_values1,NUM_ADC_CHANNELS * ADC_BUFFER_SIZE);
    //HAL_ADC_Start_DMA(&hadc2,(uint16_t*)&ADC_values2,NUM_ADC_CHANNELS * ADC_BUFFER_SIZE);
    //HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
+
+
+
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -752,7 +761,7 @@ int attackDetectPeak2 (int whichString, int tempInt)
 	{
 		// a highpass filter, remove any slow moving signal (effectively centers the signal around zero and gets rid of the signal that isn't high frequency vibration) cutoff of 100Hz, // applied 8 times to get rid of a lot of low frequency bumbling around
 		tempSamp = tHighpass_tick(&opticalHighpass[whichString][k], tempSamp);
-		tempSamp = tVZFilter_tick(&opticalLowpass[whichString][k], tempSamp * 1.0f);
+		//tempSamp = tVZFilter_tick(&opticalLowpass[whichString][k], tempSamp * 1.0f);
 	}
 
 	float tempAbs = fabsf(tempSamp);
@@ -761,7 +770,7 @@ int attackDetectPeak2 (int whichString, int tempInt)
 	Dsmoothed2 = tSlide_tick(&slowSlide[whichString], Dsmoothed);
 	Dsmoothed2 = LEAF_clip(0.0f, Dsmoothed2, 1.0f);
 	//dbSmoothed2 = atodb(Dsmoothed2);
-	dbSmoothed2 = LEAF_clip(-45.0f, atodbTable[(uint32_t)(Dsmoothed2 * ATODB_TABLE_SIZE_MINUS_ONE)], 12.0f);
+	dbSmoothed2 = LEAF_clip(-39.0f, atodbTable[(uint32_t)(Dsmoothed2 * ATODB_TABLE_SIZE_MINUS_ONE)], 12.0f);//45
 	if (whichString == 0)
 	{
 		dbSmoothedStorage = dbSmoothed2;
@@ -774,7 +783,7 @@ int attackDetectPeak2 (int whichString, int tempInt)
 	integerVersions[whichString] = integerVersion;
 	threshOut = tThreshold_tick(&threshold[whichString], integerVersion);
 
-	if ((slope > .3f) && (threshOut > 0))
+	if ((slope > .5f) && (threshOut > 0))//.3
 	{
 		armed[whichString] = 1;
 	}
@@ -791,7 +800,7 @@ int attackDetectPeak2 (int whichString, int tempInt)
 		{
 			downCounter[whichString]++;
 		}
-		if (downCounter[whichString] > 128)
+		if (downCounter[whichString] > 256)
 		{
 			//found a peak?
 			output = stringMaxes[whichString];
@@ -813,7 +822,7 @@ uint16_t stringTouchRH[NUM_STRINGS];
 int didPlucked[NUM_STRINGS];
 int stringSounding[NUM_STRINGS];
 
-int howManyFrames = 48000;
+int howManyFrames = 400;
 int brokedIt = 0;
 int didPlucked2[NUM_STRINGS];
 int pluckDelay[NUM_STRINGS];
@@ -886,6 +895,7 @@ void ADC_Frame(int offset)
 	{
 		SPI_PLUCK_TX[0] = 254;
 		SPI_PLUCK_TX[25] = 253;
+		SCB_CleanDCache_by_Addr((uint32_t*)(((uint32_t)SPI_PLUCK_TX) & ~(uint32_t)0x1F), 26+32);
 		HAL_SPI_Transmit_DMA(&hspi1, SPI_PLUCK_TX, 26);
 	}
 

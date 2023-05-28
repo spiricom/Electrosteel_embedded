@@ -142,6 +142,8 @@ uint8_t boardNumber = 0;
 
 uint8_t volatile i2cSending = 0;
 
+const char* specialModeNames[3];
+const char* specialModeMacroNames[3][8];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -325,6 +327,57 @@ int main(void)
   codec_init(&hi2c2);
 
   audioInit();
+
+
+
+
+  specialModeNames[0] = "PHYS STR1     ";
+  specialModeMacroNames[0][0] = "TargetLev     ";
+  specialModeMacroNames[0][1] = "LevSmooth     ";
+  specialModeMacroNames[0][2] = "LevStrengt    ";
+  specialModeMacroNames[0][3] = "LevMode       ";
+  specialModeMacroNames[0][4] = "              ";
+  specialModeMacroNames[0][5] = "              ";
+  specialModeMacroNames[0][6] = "              ";
+  specialModeMacroNames[0][7] = "              ";
+
+  specialModeNames[1] = "PHYS STR2     ";
+  specialModeMacroNames[1][0] = "FBLev On      ";
+  specialModeMacroNames[1][1] = "TargetLev     ";
+  specialModeMacroNames[1][2] = "PickPos       ";
+  specialModeMacroNames[1][3] = "Decay         ";
+  specialModeMacroNames[1][4] = "Touch         ";
+  specialModeMacroNames[1][5] = "Noise1        ";
+  specialModeMacroNames[1][6] = "Noise2        ";
+  specialModeMacroNames[1][7] = "LevSmooth     ";
+
+  specialModeNames[2] = "ADDITIVE      ";
+  specialModeMacroNames[2][0] = "Noise1        ";
+  specialModeMacroNames[2][1] = "Noise2        ";
+  specialModeMacroNames[2][2] = "Tone          ";
+  specialModeMacroNames[2][3] = "Decay         ";
+  specialModeMacroNames[2][4] = "Stretch       ";
+  specialModeMacroNames[2][5] = "RandDecy      ";
+  specialModeMacroNames[2][6] = "RandGain      ";
+  specialModeMacroNames[2][7] = "NoiseVol      ";
+
+
+  for (int i = 0; i < 3; i++)
+  {
+	  for (int j = 0; j < 14; j++)
+	  {
+		  presetNamesArray[63-i][j] = specialModeNames[i][j];
+	  }
+	  for (int k = 0; k < 8; k++)
+	  {
+		  for (int j = 0; j < 14; j++)
+		  {
+			  macroNamesArray[63-i][k][j] = specialModeMacroNames[i][k][j];
+		  }
+	  }
+  }
+
+
 	//now to send all the necessary messages to the codec
 
   //HAL_Delay(1000);

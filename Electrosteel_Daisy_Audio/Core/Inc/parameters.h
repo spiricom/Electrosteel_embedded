@@ -52,7 +52,7 @@ enum SPIMessage
 
 //mapping array defines
 #define NUM_POSSIBLE_HOOKS 3
-#define NUM_SOURCES 28
+#define NUM_SOURCES 38
 
 #define OSC_SOURCE_OFFSET 0
 #define NOISE_SOURCE_OFFSET 3
@@ -63,6 +63,7 @@ enum SPIMessage
 #define RANDOM_SOURCE_OFFSET 19
 #define ENV_SOURCE_OFFSET 20
 #define LFO_SOURCE_OFFSET 24
+#define PEDAL_SOURCE_OFFSET 28
 
 
 //struct for every parameter
