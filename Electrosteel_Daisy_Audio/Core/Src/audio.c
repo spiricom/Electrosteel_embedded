@@ -102,13 +102,13 @@ lfoShapeTick_t lfoShapeTick[NUM_LFOS];
 effectTick_t effectTick[NUM_EFFECT];
 
 //oscillators
-tMBSaw saw[NUM_OSC][NUM_STRINGS_PER_BOARD];
-tMBPulse pulse[NUM_OSC][NUM_STRINGS_PER_BOARD];
+tPBSaw saw[NUM_OSC][NUM_STRINGS_PER_BOARD];
+tPBPulse pulse[NUM_OSC][NUM_STRINGS_PER_BOARD];
 tCycle sine[NUM_OSC][NUM_STRINGS_PER_BOARD];
-tMBTriangle tri[NUM_OSC][NUM_STRINGS_PER_BOARD];
+tPBTriangle tri[NUM_OSC][NUM_STRINGS_PER_BOARD];
 
 // Using seperate objects for pairs to easily maintain phase relation
-tMBSawPulse sawPaired[NUM_OSC][NUM_STRINGS_PER_BOARD];
+tPBSaw sawPaired[NUM_OSC][NUM_STRINGS_PER_BOARD];
 tMBSineTri sinePaired[NUM_OSC][NUM_STRINGS_PER_BOARD];
 
 //noise
@@ -515,15 +515,15 @@ void audioInit()
 
 		for(int i = 0; i < NUM_OSC; i++)
 		{
-			tMBSaw_init(&saw[i][v],  &leaf);
+			tPBSaw_init(&saw[i][v],  &leaf);
 
-			tMBPulse_init(&pulse[i][v], &leaf);
+			tPBPulse_init(&pulse[i][v], &leaf);
 
 			tCycle_init(&sine[i][v],  &leaf);
 
-			tMBTriangle_init(&tri[i][v],  &leaf);
+			tPBTriangle_init(&tri[i][v],  &leaf);
 
-			tMBSawPulse_init(&sawPaired[i][v], &leaf);
+			tPBSaw_init(&sawPaired[i][v], &leaf);
 
 			tMBSineTri_init(&sinePaired[i][v],&leaf);
 
@@ -1264,14 +1264,14 @@ void __ATTR_ITCMRAM oscillator_tick(float note, int string)
 
 void __ATTR_ITCMRAM  sawSquareTick(float* sample, int v, float freq, float shape, int sync, int string)
 {
-    tMBSawPulse_setFreq(&sawPaired[v][string], freq);
-    tMBSawPulse_setShape(&sawPaired[v][string], shape);
-    if (sync)
+	tPBSaw_setFreq(&sawPaired[v][string], freq);
+    //tSawtooth_setShape(&sawPaired[v][string], shape);
+    //if (sync)
     {
-    	tMBSawPulse_sync(&sawPaired[v][string], sourceValues[syncMap[OSC_SOURCE_OFFSET + v]][string]);
+    	//tMBSawPulse_sync(&sawPaired[v][string], sourceValues[syncMap[OSC_SOURCE_OFFSET + v]][string]);
 
     }
-    *sample += tMBSawPulse_tick(&sawPaired[v][string]) * 2.f;
+    *sample += tPBSaw_tick(&sawPaired[v][string]) * 2.f;
 }
 
 void __ATTR_ITCMRAM  sineTriTick(float* sample, int v, float freq, float shape, int sync, int string)
@@ -1287,23 +1287,23 @@ void __ATTR_ITCMRAM  sineTriTick(float* sample, int v, float freq, float shape, 
 
 void __ATTR_ITCMRAM  sawTick(float* sample, int v, float freq, float shape, int sync, int string)
 {
-    tMBSaw_setFreq(&saw[v][string], freq);
-    if (sync)
-	{
-		tMBSaw_sync(&saw[v][string], sourceValues[syncMap[OSC_SOURCE_OFFSET + v]][string]);
-	}
-    *sample += tMBSaw_tick(&saw[v][string]) * 2.f;;
+    tPBSaw_setFreq(&saw[v][string], freq);
+    //if (sync)
+	//{
+	//	tPBSaw_sync(&saw[v][string], sourceValues[syncMap[OSC_SOURCE_OFFSET + v]][string]);
+	//}
+    *sample += tPBSaw_tick(&saw[v][string]) * 2.f;;
 }
 
 void __ATTR_ITCMRAM  pulseTick(float* sample, int v, float freq, float shape, int sync, int string)
 {
-    tMBPulse_setFreq(&pulse[v][string], freq);
-    tMBPulse_setWidth(&pulse[v][string], shape);
-    if (sync)
-	{
-		tMBPulse_sync(&pulse[v][string], sourceValues[syncMap[OSC_SOURCE_OFFSET + v]][string]);
-	}
-    *sample += tMBPulse_tick(&pulse[v][string]) * 2.f;;
+    tPBPulse_setFreq(&pulse[v][string], freq);
+    tPBPulse_setWidth(&pulse[v][string], shape);
+    //if (sync)
+	//{
+	//	tPBPulse_sync(&pulse[v][string], sourceValues[syncMap[OSC_SOURCE_OFFSET + v]][string]);
+	//}
+    *sample += tPBPulse_tick(&pulse[v][string]) * 2.f;;
 }
 
 void __ATTR_ITCMRAM  sineTick(float* sample, int v, float freq, float shape, int sync, int string)
@@ -1314,13 +1314,13 @@ void __ATTR_ITCMRAM  sineTick(float* sample, int v, float freq, float shape, int
 
 void __ATTR_ITCMRAM  triTick(float* sample, int v, float freq, float shape, int sync, int string)
 {
-    tMBTriangle_setFreq(&tri[v][string], freq);
-    tMBTriangle_setWidth(&tri[v][string], shape);
-    if (sync)
-	{
-		tMBTriangle_sync(&tri[v][string], sourceValues[syncMap[OSC_SOURCE_OFFSET + v]][string]);
-	}
-    *sample += tMBTriangle_tick(&tri[v][string]) * 2.0f;;
+    tPBTriangle_setFreq(&tri[v][string], freq);
+    tPBTriangle_setSkew(&tri[v][string], shape);
+    //if (sync)
+	//{
+	//	tMBTriangle_sync(&tri[v][string], sourceValues[syncMap[OSC_SOURCE_OFFSET + v]][string]);
+	//}
+    *sample += tPBTriangle_tick(&tri[v][string]) * 2.0f;;
 }
 
 void __ATTR_ITCMRAM  userTick(float* sample, int v, float freq, float shape, int sync, int string)
