@@ -87,6 +87,7 @@ extern int currentLeverBuffer;
 #define MAX_NUM_PRESETS 64
 extern float midiKeyDivisor;
 extern float midiKeySubtractor;
+extern uint8_t effectsActive[4];
 extern volatile uint8_t currentActivePreset;
 #define NUM_PARAMS numParams
 #define MAX_NUM_MAPPINGS 32

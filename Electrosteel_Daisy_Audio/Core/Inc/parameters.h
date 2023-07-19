@@ -23,6 +23,8 @@ enum SPIMessage
 	ReceivingKnobs,
 	LoadingPreset,
 	WaitingForLoadAck,
+	ReceivingSingleParamChange,
+	ReceivingMappingChange,
 	ReceivingEnd =  253
 };
 //selectable type number of possible values
@@ -218,6 +220,8 @@ typedef enum _FXType
 } FXType;
 
 
+
+//TODO: remove M1 through Ped, shouldn't be params or destinations
 enum ParamNames
 {
 	MIDIKeyMax,
@@ -375,6 +379,7 @@ enum ParamNames
 	OutputAmp,
 	OutputTone,
 	FXOrder,
+	PedalControlsMaster,
 	numParams
 };
 

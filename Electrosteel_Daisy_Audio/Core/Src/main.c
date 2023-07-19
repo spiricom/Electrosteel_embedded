@@ -118,6 +118,8 @@ param params[NUM_PARAMS];
 mapping mappings[MAX_NUM_MAPPINGS];
 uint8_t numMappings = 0;
 
+uint8_t effectsActive[4] = {0,0,0,0};
+
 filterSetter filterSetters[NUM_FILT];
 lfoSetter lfoSetters[NUM_LFOS];
 effectSetter effectSetters[NUM_EFFECT];
@@ -128,7 +130,7 @@ float resTable[SCALE_TABLE_SIZE];
 float envTimeTable[SCALE_TABLE_SIZE];
 float lfoRateTable[SCALE_TABLE_SIZE];
 
-
+int oscsEnabled[3] = {0,0,0};
 float midiKeyDivisor;
 float midiKeySubtractor;
 
@@ -195,7 +197,7 @@ int main(void)
   MPU_Config();
 
   /* Enable I-Cache---------------------------------------------------------*/
-  SCB_EnableICache();
+ // SCB_EnableICache();
 
   /* Enable D-Cache---------------------------------------------------------*/
   SCB_EnableDCache();
@@ -653,12 +655,12 @@ void getPresetNamesFromSDCard(void)
 					finalString[2] = charBuf[1];
 					finalString[1] = charBuf[0];
 					finalString[0] = '0';
-					strcat(finalString, ".ebp");
+					strcat(finalString, "*.ebp");
 				}
 
 				else
 				{
-					strcat(charBuf, ".ebp");
+					strcat(charBuf, "*.ebp");
 					strcpy(finalString, charBuf);
 				}
 
@@ -734,12 +736,12 @@ static int checkForSDCardPreset(uint8_t numberToLoad)
 				finalString[2] = charBuf[1];
 				finalString[1] = charBuf[0];
 				finalString[0] = '0';
-				strcat(finalString, ".ebp");
+				strcat(finalString, "*.ebp");
 			}
 
 			else
 			{
-				strcat(charBuf, ".ebp");
+				strcat(charBuf, "*.ebp");
 				strcpy(finalString, charBuf);
 			}
 
@@ -916,161 +918,6 @@ void SDRAM_init()
 
 }
 
-
-void __ATTR_ITCMRAM handleSPI (uint8_t offset)
-{
-	interruptChecker = 1;
-
-	// if the first number is a 1 then it's a midi note/ctrl/bend message
-	if (SPI_LEVERS[offset] == ReceivingPitches)
-	{
-		 uint8_t currentByte = offset+1;
-		 for (int i = 0; i < numStringsThisBoard; i++)
-		 {
-			float myPitch = (float)(SPI_LEVERS[((i+firstString) * 2) + currentByte] << 8) + SPI_LEVERS[((i+firstString) * 2) + 1 + currentByte];
-			myPitch = myPitch * 0.001953154802777f; //(128 / 65535) scale the 16 bit integer into midinotes.
-			if ((myPitch > 0.0f) && (myPitch < 140.0f))
-			{
-				stringMIDIPitches[i] = myPitch;
-			}
-		 }
-			HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_SET);
-		 updateStateFromSPIMessage(offset);
-		 HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_RESET);
-		 //HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
-	}
-	// if the first number is a 2 then it's a preset write
-	else if (SPI_LEVERS[offset] == ReceivingPreset)
-	{
-		//got a new preset to write to memory
-		 //HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
-
-		 //if you aren't already writing a preset to memory, start the process
-		 if (writingState != ReceivingPreset)
-		 {
-			 writingState = ReceivingPreset; // set the flag to let the mcu know that a preset write is in progress
-				for (int i = 0; i < AUDIO_BUFFER_SIZE; i+=2)
-				{
-					audioOutBuffer[i] = 0;
-					audioOutBuffer[i + 1] = 0;
-				}
-			 diskBusy = 1;
-			 audioMasterLevel = 0.0f;
-			 //write the raw data as a preset number on the SD card
-			 bufferPos = 0;
-		 }
-		 presetNumberToSave = SPI_LEVERS[offset + 1];
-		 uint8_t currentByte = offset+2; // first number says what it is 2nd number says which number it is
-
-		 for (int i = 0; i < 28; i++)
-		 {
-			 buffer[bufferPos++] = SPI_LEVERS[currentByte + i];
-
-		 }
-		 //HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
-	}
-	else if (SPI_LEVERS[offset] == ReceivingKnobs)
-	{
-		 uint8_t currentByte = offset+1;
-
-			for (int i = 0; i < 12; i++)
-			{
-				tExpSmooth_setDest(&knobSmoothers[i], (SPI_LEVERS[i + currentByte] * 0.003921568627451f)); //scaled 0.0 to 1.0
-			}
-			currentByte += 12;
-			for (int i = 0; i < 10; i++)
-			{
-				tExpSmooth_setDest(&pedalSmoothers[i], (SPI_LEVERS[i + currentByte ] * 0.003921568627451f)); //scaled 0.0 to 1.0
-			}
-			HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_SET);
-			updateStateFromSPIMessage(offset);
-			HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_RESET);
-
-	}
-	else if (SPI_LEVERS[offset] == ReceivingEnd)
-	{
-		if(writingState == ReceivingPreset)
-		{
-			 writingState = 0;
-			 presetNumberToLoad = presetNumberToSave;
-			 /* Parse into Audio Params */
-			 presetWaitingToParse = bufferPos;
-			 presetWaitingToWrite = bufferPos;
-		}
-	}
-/*
-	else if (SPI_LEVERS[offset] == LoadingPreset)
-	{
-		uint8_t loadNumber = SPI_LEVERS[offset+1];
-		if (loadNumber < MAX_NUM_PRESETS)
-		{
-			presetNumberToLoad = loadNumber;
-			whichPresetToSendName = loadNumber;
-			presetWaitingToLoad = 1;
-		}
-	}
-	if (SPI_LEVERS[offset] == WaitingForLoadAck)
-	{
-		SPI_LEVERS[offset] = 252;
-		if(!loadFailed)
-		{
-			SPI_LEVERS[offset+1] = currentActivePreset;//this will change to the loaded preset number when parsing is finished
-		}
-		else
-		{
-			SPI_LEVERS[offset+1] = 254; //load failed
-			SPI_LEVERS[offset+2] = currentActivePreset; //tell the PSOC that it needs to show the old currently active preset, since the new load failed.
-		}
-	}
-	*/
-	//else
-	{
-		if (boardNumber == 0)
-		{
-			SPI_LEVERS_TX[offset] = 253; //special byte that says this is a preset name;
-			SPI_LEVERS_TX[offset+1] = whichPresetToSendName;
-			SPI_LEVERS_TX[offset+2] = presetNamesArray[whichPresetToSendName][0];
-			SPI_LEVERS_TX[offset+3] = presetNamesArray[whichPresetToSendName][1];
-			SPI_LEVERS_TX[offset+4] = presetNamesArray[whichPresetToSendName][2];
-			SPI_LEVERS_TX[offset+5] = presetNamesArray[whichPresetToSendName][3];
-			SPI_LEVERS_TX[offset+6] = presetNamesArray[whichPresetToSendName][4];
-			SPI_LEVERS_TX[offset+7] = presetNamesArray[whichPresetToSendName][5];
-			SPI_LEVERS_TX[offset+8] = presetNamesArray[whichPresetToSendName][6];
-			SPI_LEVERS_TX[offset+9] = presetNamesArray[whichPresetToSendName][7];
-			SPI_LEVERS_TX[offset+10] = presetNamesArray[whichPresetToSendName][8];
-			SPI_LEVERS_TX[offset+11] = presetNamesArray[whichPresetToSendName][9];
-			SPI_LEVERS_TX[offset+12] = presetNamesArray[whichPresetToSendName][10];
-			SPI_LEVERS_TX[offset+13] = presetNamesArray[whichPresetToSendName][11];
-			SPI_LEVERS_TX[offset+14] = presetNamesArray[whichPresetToSendName][12];
-			SPI_LEVERS_TX[offset+15] = presetNamesArray[whichPresetToSendName][13];
-			SPI_LEVERS_TX[offset+16] = whichMacroToSendName;
-			SPI_LEVERS_TX[offset+17] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][0];
-			SPI_LEVERS_TX[offset+18] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][1];
-			SPI_LEVERS_TX[offset+19] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][2];
-			SPI_LEVERS_TX[offset+20] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][3];
-			SPI_LEVERS_TX[offset+21] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][4];
-			SPI_LEVERS_TX[offset+22] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][5];
-			SPI_LEVERS_TX[offset+23] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][6];
-			SPI_LEVERS_TX[offset+24] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][7];
-			SPI_LEVERS_TX[offset+25] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][8];
-			SPI_LEVERS_TX[offset+26] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][9];
-			SPI_LEVERS_TX[offset+27] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][10];
-			SPI_LEVERS_TX[offset+28] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][11];
-			SPI_LEVERS_TX[offset+29] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][12];
-			SPI_LEVERS_TX[offset+30] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][13];
-			SPI_LEVERS_TX[offset+31] = 254;
-			whichMacroToSendName = (whichMacroToSendName + 1);
-			if (whichMacroToSendName >= 8)
-			{
-				whichMacroToSendName = 0;
-				whichPresetToSendName = (whichPresetToSendName + 1) % MAX_NUM_PRESETS;
-			}
-		}
-	}
-
-	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_RESET);
-}
-
 float __ATTR_ITCMRAM scaleDefault(float input)
 {
 	input = LEAF_clip(0.f, input, 1.f);
@@ -1171,11 +1018,548 @@ void __ATTR_ITCMRAM blankFunction(float a, int b, int c)
 	;
 }
 
+void setEffectsFunctions(FXType effectType, int i)
+{
+	effectsActive[i] = 1;
+	switch (effectType)
+	{
+		  case None:
+			  effectTick[i] = &blankTick;
+			  effectSetters[i].setParam1 = &blankFunction;
+			  effectSetters[i].setParam2 = &blankFunction;
+			  effectSetters[i].setParam3 = &blankFunction;
+			  effectSetters[i].setParam4 = &blankFunction;
+			  effectSetters[i].setParam5 = &blankFunction;
+			  effectsActive[i] = 0;
+			  break;
+		  case Softclip:
+			  effectTick[i] = &softClipTick;
+			  effectSetters[i].setParam1 = &clipperGainSet;
+			  effectSetters[i].setParam2 = &offsetParam2;
+			  effectSetters[i].setParam3 = &param3Soft;
+			  effectSetters[i].setParam4 = &param4Linear;
+			  effectSetters[i].setParam5 = &blankFunction;
+
+			  break;
+		  case Hardclip:
+			  effectTick[i] = &hardClipTick;
+			  effectSetters[i].setParam1 = &clipperGainSet;
+			  effectSetters[i].setParam2 = &offsetParam2;
+			  effectSetters[i].setParam3 = &param3Hard;
+			  effectSetters[i].setParam4 = &param4Linear;
+			  effectSetters[i].setParam5 = &blankFunction;
+			  break;
+		  case ABSaturator:
+			  effectTick[i] = &satTick;
+			  effectSetters[i].setParam1 = &clipperGainSet;
+			  effectSetters[i].setParam2 = &offsetParam2;
+			  effectSetters[i].setParam3 = &param3Linear;
+			  effectSetters[i].setParam4 = &param4Linear;
+			  effectSetters[i].setParam5 = &blankFunction;
+			  break;
+		  case Tanh:
+			  effectTick[i] = &tanhTick;
+			  effectSetters[i].setParam1 = &clipperGainSet;
+			  effectSetters[i].setParam2 = &offsetParam2;
+			  effectSetters[i].setParam3 = &param3Linear;
+			  effectSetters[i].setParam4 = &param4Linear;
+			  effectSetters[i].setParam5 = &blankFunction;
+			  break;
+		  case Shaper:
+			  effectTick[i] = &shaperTick;
+			  effectSetters[i].setParam1 = &clipperGainSet;
+			  effectSetters[i].setParam2 = &offsetParam2;
+			  effectSetters[i].setParam3 = &param3Linear;
+			  effectSetters[i].setParam4 = &param4Linear;
+			  effectSetters[i].setParam5 = &blankFunction;
+			  break;
+		  case Compressor:
+			  effectTick[i] = &compressorTick;
+			  effectSetters[i].setParam1 = &compressorParam1;
+			  effectSetters[i].setParam2 = &compressorParam2;
+			  effectSetters[i].setParam3 = &compressorParam3;
+			  effectSetters[i].setParam4 = &compressorParam4;
+			  effectSetters[i].setParam5 = &compressorParam5;
+			  break;
+		  case Chorus:
+			  effectTick[i] = &chorusTick;
+			  effectSetters[i].setParam1 = &chorusParam1;
+			  effectSetters[i].setParam2 = &chorusParam2;
+			  effectSetters[i].setParam3 = &chorusParam3;
+			  effectSetters[i].setParam4 = &chorusParam4;
+			  effectSetters[i].setParam5 = &blankFunction;
+			  break;
+		  case Bitcrush:
+			  effectTick[i] = &bcTick;
+			  effectSetters[i].setParam1 = &clipperGainSet;
+			  effectSetters[i].setParam2 = &param2Linear;
+			  effectSetters[i].setParam3 = &param3BC;
+			  effectSetters[i].setParam4 = &param4Linear;
+			  effectSetters[i].setParam5 = &param5Linear;
+			  break;
+		  case TiltFilter:
+			  effectTick[i] = &tiltFilterTick;
+			  effectSetters[i].setParam1 = &tiltParam1;
+			  effectSetters[i].setParam2 = &tiltParam2;
+			  effectSetters[i].setParam3 = &tiltParam3;
+			  effectSetters[i].setParam4 = &tiltParam4;
+			  effectSetters[i].setParam5 = &param5Linear;
+			  break;
+		  case Wavefolder:
+			  effectTick[i] = &wavefolderTick;
+			  effectSetters[i].setParam1 = &wavefolderParam1;
+			  effectSetters[i].setParam2 = &offsetParam2;
+			  effectSetters[i].setParam3 = &wavefolderParam3;
+			  effectSetters[i].setParam4 = &param4Linear;
+			  effectSetters[i].setParam5 = &param5Linear;
+			  break;
+		  case FXLowpass :
+			  effectTick[i] = &FXlowpassTick;
+			  effectSetters[i].setParam1 = &FXLowpassParam1;
+			  effectSetters[i].setParam2 = &blankFunction;
+			  effectSetters[i].setParam3 = &FXLowpassParam3;
+			  effectSetters[i].setParam4 = &blankFunction;;
+			  effectSetters[i].setParam5 = &blankFunction;;
+			  break;
+		  case FXHighpass :
+			  effectTick[i] = &FXhighpassTick;
+			  effectSetters[i].setParam1 = &FXHighpassParam1;
+			  effectSetters[i].setParam2 = &blankFunction;
+			  effectSetters[i].setParam3 = &FXHighpassParam3;
+			  effectSetters[i].setParam4 = &blankFunction;
+			  effectSetters[i].setParam5 = &blankFunction;
+			  break;
+		  case FXBandpass :
+			  effectTick[i] = &FXbandpassTick;
+			  effectSetters[i].setParam1 = &FXBandpassParam1;
+			  effectSetters[i].setParam2 = &blankFunction;
+			  effectSetters[i].setParam3 = &FXBandpassParam3;
+			  effectSetters[i].setParam4 = &blankFunction;
+			  effectSetters[i].setParam5 = &blankFunction;
+			  break;
+		  case FXDiode :
+			  effectTick[i] = &FXdiodeLowpassTick;
+			  effectSetters[i].setParam1 = &FXDiodeParam1;
+			  effectSetters[i].setParam2 = &blankFunction;
+			  effectSetters[i].setParam3 = &FXDiodeParam3;
+			  effectSetters[i].setParam4 = &blankFunction;
+			  effectSetters[i].setParam5 = &blankFunction;
+			  break;
+		  case FXPeak :
+			  effectTick[i] = &FXVZpeakTick;
+			  effectSetters[i].setParam1 = &FXPeakParam1;
+			  effectSetters[i].setParam2 = &FXPeakParam2;
+			  effectSetters[i].setParam3 = &FXPeakParam3;
+			  effectSetters[i].setParam4 = &blankFunction;
+			  effectSetters[i].setParam5 = &blankFunction;
+			  break;
+		  case FXLowShelf :
+			  effectTick[i] = &FXVZlowshelfTick;
+			  effectSetters[i].setParam1 = &FXLowShelfParam1;
+			  effectSetters[i].setParam2 = &FXLowShelfParam2;
+			  effectSetters[i].setParam3 = &FXLowShelfParam3;
+			  effectSetters[i].setParam4 = &blankFunction;
+			  effectSetters[i].setParam5 = &blankFunction;
+			  break;
+		  case FXHighShelf :
+			  effectTick[i] = FXVZhighshelfTick;
+			  effectSetters[i].setParam1 = &FXHighShelfParam1;;
+			  effectSetters[i].setParam2 = &FXHighShelfParam2;;
+			  effectSetters[i].setParam3 = &FXHighShelfParam3;;
+			  effectSetters[i].setParam4 = &blankFunction;;
+			  effectSetters[i].setParam5 = &blankFunction;;
+			  break;
+		  case FXNotch :
+			  effectTick[i] = FXVZbandrejectTick;
+			  effectSetters[i].setParam1 = &FXNotchParam1;;
+			  effectSetters[i].setParam2 = &FXNotchParam2;;
+			  effectSetters[i].setParam3 = &FXNotchParam3;;
+			  effectSetters[i].setParam4 = &blankFunction;;
+			  effectSetters[i].setParam5 = &blankFunction;;
+			  break;
+		  case FXLadder :
+			  effectTick[i] = &FXLadderLowpassTick;
+			  effectSetters[i].setParam1 = &FXLadderParam1;;
+			  effectSetters[i].setParam2 = &blankFunction;;
+			  effectSetters[i].setParam3 = &FXLadderParam3;;
+			  effectSetters[i].setParam4 = &blankFunction;;
+			  effectSetters[i].setParam5 = &blankFunction;;
+			  break;
+		  default:
+			  break;
+	}
+}
+
+void setOscilllatorShapes(int oscshape, int i)
+{
+	switch (oscshape)
+	{
+		  case 0:
+			  shapeTick[i] = &sawSquareTick;
+			  break;
+		  case 1:
+			  shapeTick[i] = &sineTriTick;
+			  break;
+		  case 2:
+			  shapeTick[i] = &sawTick;
+			  break;
+		  case 3:
+			  shapeTick[i] = &pulseTick;
+			  break;
+		  case 4:
+			  shapeTick[i] = &sineTick;
+			  break;
+		  case 5:
+			  shapeTick[i] = &triTick;
+			  break;
+		  case 6:
+			  shapeTick[i] = &userTick;
+			  break;
+		  default:
+			  break;
+	}
+}
+void setFilterTypes(int filterType, int i)
+{
+	switch (filterType)
+		{
+			  case 0:
+				  filterTick[i] = &lowpassTick;
+				  filterSetters[i].setQ = &lowpassSetQ;
+				  filterSetters[i].setGain = &lowpassSetGain;
+				  break;
+			  case 1:
+				  filterTick[i] = &highpassTick;
+				  filterSetters[i].setQ = &highpassSetQ;
+				  filterSetters[i].setGain = &highpassSetGain;
+				  break;
+			  case 2:
+				  filterTick[i] = &bandpassTick;
+				  filterSetters[i].setQ = &bandpassSetQ;
+				  filterSetters[i].setGain = &bandpassSetGain;
+				  break;
+			  case 3:
+				  filterTick[i] = &diodeLowpassTick;
+				  filterSetters[i].setQ = &diodeLowpassSetQ;
+				  filterSetters[i].setGain = &diodeLowpassSetGain;
+				  break;
+			  case 4:
+				  filterTick[i] = &VZpeakTick;
+				  filterSetters[i].setQ = &VZpeakSetQ;
+				  filterSetters[i].setGain = &VZpeakSetGain;
+				  break;
+			  case 5:
+				  filterTick[i] = &VZlowshelfTick;
+				  filterSetters[i].setQ = &VZlowshelfSetQ;
+				  filterSetters[i].setGain = &VZlowshelfSetGain;
+				  break;
+			  case 6:
+				  filterTick[i] = &VZhighshelfTick;
+				  filterSetters[i].setQ = &VZhighshelfSetQ;
+				  filterSetters[i].setGain = &VZhighshelfSetGain;
+				  break;
+			  case 7:
+				  filterTick[i] = &VZbandrejectTick;
+				  filterSetters[i].setQ = &VZbandrejectSetQ;
+				  filterSetters[i].setGain = &VZbandrejectSetGain;
+				  break;
+			  case 8:
+				  filterTick[i] = &LadderLowpassTick;
+				  filterSetters[i].setQ = &LadderLowpassSetQ;
+				  filterSetters[i].setGain = &LadderLowpassSetGain;
+				  break;
+			  default:
+				  break;
+		}
+}
+
+void setLFOShapes(int LFOShape, int i)
+{
+	switch(LFOShape)
+	{
+		case SineTriLFOShapeSet:
+			lfoShapeTick[i] = &lfoSineTriTick;
+			lfoSetters[i].setRate = &lfoSineTriSetRate;
+			lfoSetters[i].setShape = &lfoSineTriSetShape;
+			lfoSetters[i].setPhase = &lfoSineTriSetPhase;
+			break;
+		case SawPulseLFOShapeSet:
+			lfoShapeTick[i] = &lfoSawSquareTick;
+			lfoSetters[i].setRate = &lfoSawSquareSetRate;
+			lfoSetters[i].setShape = &lfoSawSquareSetShape;
+			lfoSetters[i].setPhase = &lfoSawSquareSetPhase;
+			break;
+		case SineLFOShapeSet:
+			lfoShapeTick[i] = &lfoSineTick;
+			lfoSetters[i].setRate = &lfoSineSetRate;
+			lfoSetters[i].setShape = &lfoSineSetShape;
+			lfoSetters[i].setPhase = &lfoSineSetPhase;
+			break;
+		case TriLFOShapeSet:
+			lfoShapeTick[i] = &lfoTriTick;
+			lfoSetters[i].setRate = &lfoTriSetRate;
+			lfoSetters[i].setShape = &lfoTriSetShape;
+			lfoSetters[i].setPhase = &lfoTriSetPhase;
+			break;
+		case SawLFOShapeSet:
+			lfoShapeTick[i] = &lfoSawTick;
+			lfoSetters[i].setRate = &lfoSawSetRate;
+			lfoSetters[i].setShape = &lfoSawSetShape;
+			lfoSetters[i].setPhase = &lfoSawSetPhase;
+			break;
+		case PulseLFOShapeSet:
+			lfoShapeTick[i] = &lfoPulseTick;
+			lfoSetters[i].setRate = &lfoPulseSetRate;
+			lfoSetters[i].setShape = &lfoPulseSetShape;
+			lfoSetters[i].setPhase = &lfoPulseSetPhase;
+			break;
+	}
+}
+
+void __ATTR_ITCMRAM handleSPI (uint8_t offset)
+{
+	interruptChecker = 1;
+
+	// if the first number is a 1 then it's a midi note/ctrl/bend message
+	if (SPI_LEVERS[offset] == ReceivingPitches)
+	{
+		 uint8_t currentByte = offset+1;
+		 for (int i = 0; i < numStringsThisBoard; i++)
+		 {
+			float myPitch = (float)(SPI_LEVERS[((i+firstString) * 2) + currentByte] << 8) + SPI_LEVERS[((i+firstString) * 2) + 1 + currentByte];
+			myPitch = myPitch * 0.001953154802777f; //(128 / 65535) scale the 16 bit integer into midinotes.
+			if ((myPitch > 0.0f) && (myPitch < 140.0f))
+			{
+				stringMIDIPitches[i] = myPitch;
+			}
+		 }
+		 HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_SET);
+		 whichBar = 0;
+		 updateStateFromSPIMessage(offset);
+		 HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_RESET);
+		 //HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
+	}
+	// if the first number is a 2 then it's a preset write
+	else if (SPI_LEVERS[offset] == ReceivingPreset)
+	{
+		//got a new preset to write to memory
+		 //HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
+
+		 //if you aren't already writing a preset to memory, start the process
+		 if (writingState != ReceivingPreset)
+		 {
+			 writingState = ReceivingPreset; // set the flag to let the mcu know that a preset write is in progress
+				for (int i = 0; i < AUDIO_BUFFER_SIZE; i+=2)
+				{
+					audioOutBuffer[i] = 0;
+					audioOutBuffer[i + 1] = 0;
+				}
+			 diskBusy = 1;
+			 audioMasterLevel = 0.0f;
+			 //write the raw data as a preset number on the SD card
+			 bufferPos = 0;
+		 }
+		 presetNumberToSave = SPI_LEVERS[offset + 1];
+		 uint8_t currentByte = offset+2; // first number says what it is 2nd number says which number it is
+
+		 for (int i = 0; i < 28; i++)
+		 {
+			 buffer[bufferPos++] = SPI_LEVERS[currentByte + i];
+
+		 }
+		 //HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
+	}
+	else if (SPI_LEVERS[offset] == ReceivingKnobs)
+	{
+		 uint8_t currentByte = offset+1;
+
+			for (int i = 0; i < 12; i++)
+			{
+				tExpSmooth_setDest(&knobSmoothers[i], (SPI_LEVERS[i + currentByte] * 0.003921568627451f)); //scaled 0.0 to 1.0
+			}
+			currentByte += 12;
+			for (int i = 0; i < 10; i++)
+			{
+				tExpSmooth_setDest(&pedalSmoothers[i], (SPI_LEVERS[i + currentByte ] * 0.003921568627451f)); //scaled 0.0 to 1.0
+			}
+			HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_SET);
+			whichBar = 1;
+			updateStateFromSPIMessage(offset);
+			HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_RESET);
+
+	}
+	else if (SPI_LEVERS[offset] == ReceivingEnd)
+	{
+		if(writingState == ReceivingPreset)
+		{
+			 writingState = 0;
+			 presetNumberToLoad = presetNumberToSave;
+			 /* Parse into Audio Params */
+			 presetWaitingToParse = bufferPos;
+			 presetWaitingToWrite = bufferPos;
+		}
+	}
+
+	else if (SPI_LEVERS[offset] == ReceivingSingleParamChange)
+	{
+		uint8_t currentByte = offset+1;
+
+		uint16_t whichParam = ((SPI_LEVERS[currentByte]<< 8) + SPI_LEVERS[currentByte+1]);
+		currentByte = currentByte + 2;
+
+
+		for (int v = 0; v < NUM_STRINGS_PER_BOARD; v++)
+		{
+			//get the zero-to-one-value
+			params[whichParam].zeroToOneVal[v] = INV_TWO_TO_16 * ((SPI_LEVERS[currentByte] << 8) + SPI_LEVERS[currentByte+1]);
+
+			if ((whichParam == Effect1FXType) || (whichParam == Effect2FXType) || (whichParam == Effect3FXType) || (whichParam == Effect4FXType))
+			{
+				uint8_t whichEffect = (whichParam - Effect1FXType) / EffectParamsNum;
+				FXType effectType = roundf(params[whichParam].zeroToOneVal[v] * (NUM_EFFECT_TYPES-1));
+				param *FXAlias = &params[whichParam + 1];
+
+				if (effectType > FXLowpass)
+				{
+					FXAlias[2].scaleFunc = &scaleFilterResonance;
+				}
+				setEffectsFunctions(effectType, whichEffect);
+				FXAlias[0].setParam = effectSetters[whichEffect].setParam1;
+				FXAlias[1].setParam = effectSetters[whichEffect].setParam2;
+				FXAlias[2].setParam = effectSetters[whichEffect].setParam3;
+				FXAlias[3].setParam = effectSetters[whichEffect].setParam4;
+				FXAlias[4].setParam = effectSetters[whichEffect].setParam5;
+			}
+			//set the real value based on the scale function
+			params[whichParam].realVal[v] = params[whichParam].scaleFunc(params[whichParam].zeroToOneVal[v]);
+			//set the actual parameter
+			params[whichParam].setParam(params[whichParam].realVal[v], params[whichParam].objectNumber, v);
+
+			if ((whichParam == Osc1ShapeSet) || (whichParam == Osc2ShapeSet) || (whichParam == Osc3ShapeSet))
+			{
+				int whichOsc =(whichParam - Osc1ShapeSet) / OscParamsNum;
+				int oscshape = roundf(params[whichParam].realVal[0] * (NUM_OSC_SHAPES-1));
+				setOscilllatorShapes(oscshape, whichOsc);
+			}
+			if ((whichParam == Osc1) || (whichParam == Osc2) ||(whichParam == Osc3))
+			{
+				int whichOsc = (whichParam - Osc1) / OscParamsNum;
+				if (params[whichParam].realVal[0]  > 0.5f)
+				{
+					oscsEnabled[whichOsc] = 1;
+				}
+				else
+				{
+					oscsEnabled[whichOsc] = 0;
+				}
+				int enabledCount = 0;
+
+				for (int j = 0; j < 3; j++)
+				{
+					enabledCount += oscsEnabled[j];
+				}
+				oscAmpMult = oscAmpMultArray[enabledCount];
+			}
+			if ((whichParam == Filter1Type) || (whichParam == Filter1Type))
+			{
+				int whichFilter = (whichParam - Filter1Type) / FilterParamsNum;
+				int filterType = roundf(params[whichParam].realVal[0] * (NUM_FILTER_TYPES-1));
+				setFilterTypes(filterType, whichFilter);
+			}
+			if ((whichParam == LFO1Shape) || (whichParam == LFO2Shape) || (whichParam == LFO3Shape) || (whichParam == LFO4Shape))
+			{
+				int whichLFO = (whichParam - LFO1Shape) / LFOParamsNum;
+				int LFOShape = roundf(params[whichParam].realVal[0] * (NUM_LFO_SHAPES-1));
+				setLFOShapes(LFOShape, whichLFO);
+			}
+		}
+		if ((whichParam == MIDIKeyMax) || (whichParam == MIDIKeyMin))
+		{
+			midiKeyDivisor = 1.0f / ((params[MIDIKeyMax].realVal[0]*127.0f) - (params[MIDIKeyMin].realVal[0]*127.0f));
+			midiKeySubtractor = (params[MIDIKeyMin].realVal[0] * 127.0f);
+		}
+	}
+/*
+	else if (SPI_LEVERS[offset] == LoadingPreset)
+	{
+		uint8_t loadNumber = SPI_LEVERS[offset+1];
+		if (loadNumber < MAX_NUM_PRESETS)
+		{
+			presetNumberToLoad = loadNumber;
+			whichPresetToSendName = loadNumber;
+			presetWaitingToLoad = 1;
+		}
+	}
+	if (SPI_LEVERS[offset] == WaitingForLoadAck)
+	{
+		SPI_LEVERS[offset] = 252;
+		if(!loadFailed)
+		{
+			SPI_LEVERS[offset+1] = currentActivePreset;//this will change to the loaded preset number when parsing is finished
+		}
+		else
+		{
+			SPI_LEVERS[offset+1] = 254; //load failed
+			SPI_LEVERS[offset+2] = currentActivePreset; //tell the PSOC that it needs to show the old currently active preset, since the new load failed.
+		}
+	}
+	*/
+	//else
+	{
+		if (boardNumber == 0)
+		{
+			SPI_LEVERS_TX[offset] = 253; //special byte that says this is a preset name;
+			SPI_LEVERS_TX[offset+1] = whichPresetToSendName;
+			SPI_LEVERS_TX[offset+2] = presetNamesArray[whichPresetToSendName][0];
+			SPI_LEVERS_TX[offset+3] = presetNamesArray[whichPresetToSendName][1];
+			SPI_LEVERS_TX[offset+4] = presetNamesArray[whichPresetToSendName][2];
+			SPI_LEVERS_TX[offset+5] = presetNamesArray[whichPresetToSendName][3];
+			SPI_LEVERS_TX[offset+6] = presetNamesArray[whichPresetToSendName][4];
+			SPI_LEVERS_TX[offset+7] = presetNamesArray[whichPresetToSendName][5];
+			SPI_LEVERS_TX[offset+8] = presetNamesArray[whichPresetToSendName][6];
+			SPI_LEVERS_TX[offset+9] = presetNamesArray[whichPresetToSendName][7];
+			SPI_LEVERS_TX[offset+10] = presetNamesArray[whichPresetToSendName][8];
+			SPI_LEVERS_TX[offset+11] = presetNamesArray[whichPresetToSendName][9];
+			SPI_LEVERS_TX[offset+12] = presetNamesArray[whichPresetToSendName][10];
+			SPI_LEVERS_TX[offset+13] = presetNamesArray[whichPresetToSendName][11];
+			SPI_LEVERS_TX[offset+14] = presetNamesArray[whichPresetToSendName][12];
+			SPI_LEVERS_TX[offset+15] = presetNamesArray[whichPresetToSendName][13];
+			SPI_LEVERS_TX[offset+16] = whichMacroToSendName;
+			SPI_LEVERS_TX[offset+17] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][0];
+			SPI_LEVERS_TX[offset+18] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][1];
+			SPI_LEVERS_TX[offset+19] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][2];
+			SPI_LEVERS_TX[offset+20] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][3];
+			SPI_LEVERS_TX[offset+21] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][4];
+			SPI_LEVERS_TX[offset+22] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][5];
+			SPI_LEVERS_TX[offset+23] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][6];
+			SPI_LEVERS_TX[offset+24] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][7];
+			SPI_LEVERS_TX[offset+25] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][8];
+			SPI_LEVERS_TX[offset+26] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][9];
+			SPI_LEVERS_TX[offset+27] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][10];
+			SPI_LEVERS_TX[offset+28] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][11];
+			SPI_LEVERS_TX[offset+29] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][12];
+			SPI_LEVERS_TX[offset+30] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][13];
+			SPI_LEVERS_TX[offset+31] = 254;
+			whichMacroToSendName = (whichMacroToSendName + 1);
+			if (whichMacroToSendName >= 8)
+			{
+				whichMacroToSendName = 0;
+				whichPresetToSendName = (whichPresetToSendName + 1) % MAX_NUM_PRESETS;
+			}
+		}
+	}
+
+	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_RESET);
+}
+
+
 
 void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 {
 	//turn off the volume while changing parameters
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
+	uint16_t presetVersionNumber = 0;
+
 	 __disable_irq();
 	 presetReady = 0;
 	 for (int i = 0; i < AUDIO_BUFFER_SIZE; i++)
@@ -1187,6 +1571,25 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 
 
 	uint16_t bufferIndex = 0;
+
+
+	//should add an indicator at the beginning of the version number.
+	// maybe 4 bytes:
+		// [0] = 17   marker1 letting the parser know that a preset version number will follow
+	    // [1] = 18   marker2 letting the parser know that a preset version number will follow
+	    // [2] = version number major (i.e. the 01 in 1.04)
+	    // [3] = version number minor (i.e. the 04 in 1.04)
+
+	//if a version number is indicated, then set the presetVersionNumber value for later use, otherwise use default versionNumber of 0
+	if (buffer[bufferIndex] == 17)
+	{
+		if (buffer[bufferIndex + 1] == 18)
+		{
+			presetVersionNumber = ((buffer[bufferIndex + 2] << 8) + buffer[bufferIndex + 3]);
+		}
+		bufferIndex = 4;
+	}
+
 	//read first 14 items in buffer as the 14 character string that is the name of the preset
 	for (int i = 0; i < 14; i++)
 	{
@@ -1342,20 +1745,20 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 	//params[OutputAmp].scaleFunc = &scaleTwo;
 	params[OutputTone].scaleFunc  = &scaleFinalLowpass;
 	for (int i = 0; i < NUM_EFFECT; i++)
+	{
+		for (int v = 0; v < NUM_STRINGS_PER_BOARD; v++)
 		{
-			for (int v = 0; v < NUM_STRINGS_PER_BOARD; v++)
+			FXType effectType = roundf(params[Effect1FXType + (EffectParamsNum * i)].zeroToOneVal[v] * (NUM_EFFECT_TYPES-1));
+			param *FXAlias = &params[Effect1Param1 + (EffectParamsNum*i)];
+
+
+			if (effectType > FXLowpass) // this assumes filters are the last effects
 			{
-				FXType effectType = roundf(params[Effect1FXType + (EffectParamsNum * i)].realVal[v] * (NUM_EFFECT_TYPES-1));
-				param *FXAlias = &params[Effect1Param1 + (EffectParamsNum*i)];
-
-
-				if (effectType > FXLowpass)
-				{
-					FXAlias[2].scaleFunc = &scaleFilterResonance;
-				}
+				FXAlias[2].scaleFunc = &scaleFilterResonance;
 			}
-
+			setEffectsFunctions(effectType, i);
 		}
+	}
 	for (int v = 0; v < NUM_STRINGS_PER_BOARD; v++)
 	{
 		for (int i = 0; i < NUM_PARAMS; i++)
@@ -1368,35 +1771,15 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 	for (int i = 0; i < NUM_OSC; i++)
 	{
 		int oscshape = roundf(params[Osc1ShapeSet + (OscParamsNum * i)].realVal[0] * (NUM_OSC_SHAPES-1));
-		switch (oscshape)
-		{
-			  case 0:
-				  shapeTick[i] = &sawSquareTick;
-				  break;
-			  case 1:
-				  shapeTick[i] = &sineTriTick;
-				  break;
-			  case 2:
-				  shapeTick[i] = &sawTick;
-				  break;
-			  case 3:
-				  shapeTick[i] = &pulseTick;
-				  break;
-			  case 4:
-				  shapeTick[i] = &sineTick;
-				  break;
-			  case 5:
-				  shapeTick[i] = &triTick;
-				  break;
-			  case 6:
-				  shapeTick[i] = &userTick;
-				  break;
-			  default:
-				  break;
-		}
+		setOscilllatorShapes(oscshape, i);
 		if (params[Osc1 + (OscParamsNum * i)].realVal[0]  > 0.5f)
 		{
 			enabledCount++;
+			oscsEnabled[i] = 1;
+		}
+		else
+		{
+			oscsEnabled[i] = 0;
 		}
 	}
 	//set amplitude of oscillators based on how many are enabled
@@ -1405,272 +1788,13 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 	for (int i = 0; i < NUM_FILT; i++)
 	{
 		int filterType = roundf(params[Filter1Type + (i * FilterParamsNum)].realVal[0] * (NUM_FILTER_TYPES-1));
-		switch (filterType)
-		{
-			  case 0:
-				  filterTick[i] = &lowpassTick;
-				  filterSetters[i].setQ = &lowpassSetQ;
-				  filterSetters[i].setGain = &lowpassSetGain;
-				  break;
-			  case 1:
-				  filterTick[i] = &highpassTick;
-				  filterSetters[i].setQ = &highpassSetQ;
-				  filterSetters[i].setGain = &highpassSetGain;
-				  break;
-			  case 2:
-				  filterTick[i] = &bandpassTick;
-				  filterSetters[i].setQ = &bandpassSetQ;
-				  filterSetters[i].setGain = &bandpassSetGain;
-				  break;
-			  case 3:
-				  filterTick[i] = &diodeLowpassTick;
-				  filterSetters[i].setQ = &diodeLowpassSetQ;
-				  filterSetters[i].setGain = &diodeLowpassSetGain;
-				  break;
-			  case 4:
-				  filterTick[i] = &VZpeakTick;
-				  filterSetters[i].setQ = &VZpeakSetQ;
-				  filterSetters[i].setGain = &VZpeakSetGain;
-				  break;
-			  case 5:
-				  filterTick[i] = &VZlowshelfTick;
-				  filterSetters[i].setQ = &VZlowshelfSetQ;
-				  filterSetters[i].setGain = &VZlowshelfSetGain;
-				  break;
-			  case 6:
-				  filterTick[i] = &VZhighshelfTick;
-				  filterSetters[i].setQ = &VZhighshelfSetQ;
-				  filterSetters[i].setGain = &VZhighshelfSetGain;
-				  break;
-			  case 7:
-				  filterTick[i] = &VZbandrejectTick;
-				  filterSetters[i].setQ = &VZbandrejectSetQ;
-				  filterSetters[i].setGain = &VZbandrejectSetGain;
-				  break;
-			  case 8:
-				  filterTick[i] = &LadderLowpassTick;
-				  filterSetters[i].setQ = &LadderLowpassSetQ;
-				  filterSetters[i].setGain = &LadderLowpassSetGain;
-				  break;
-			  default:
-				  break;
-		}
+		setFilterTypes(filterType, i);
 	}
 
 	for (int i = 0; i < NUM_LFOS; i++)
 	{
-		int LFOType = roundf(params[LFO1ShapeSet + (i * LFOParamsNum)].realVal[0] * (NUM_LFO_SHAPES-1));
-		switch(LFOType)
-		{
-			case SineTriLFOShapeSet:
-				lfoShapeTick[i] = &lfoSineTriTick;
-				lfoSetters[i].setRate = &lfoSineTriSetRate;
-				lfoSetters[i].setShape = &lfoSineTriSetShape;
-				lfoSetters[i].setPhase = &lfoSineTriSetPhase;
-				break;
-			case SawPulseLFOShapeSet:
-				lfoShapeTick[i] = &lfoSawSquareTick;
-				lfoSetters[i].setRate = &lfoSawSquareSetRate;
-				lfoSetters[i].setShape = &lfoSawSquareSetShape;
-				lfoSetters[i].setPhase = &lfoSawSquareSetPhase;
-				break;
-			case SineLFOShapeSet:
-				lfoShapeTick[i] = &lfoSineTick;
-				lfoSetters[i].setRate = &lfoSineSetRate;
-				lfoSetters[i].setShape = &lfoSineSetShape;
-				lfoSetters[i].setPhase = &lfoSineSetPhase;
-				break;
-			case TriLFOShapeSet:
-				lfoShapeTick[i] = &lfoTriTick;
-				lfoSetters[i].setRate = &lfoTriSetRate;
-				lfoSetters[i].setShape = &lfoTriSetShape;
-				lfoSetters[i].setPhase = &lfoTriSetPhase;
-				break;
-			case SawLFOShapeSet:
-				lfoShapeTick[i] = &lfoSawTick;
-				lfoSetters[i].setRate = &lfoSawSetRate;
-				lfoSetters[i].setShape = &lfoSawSetShape;
-				lfoSetters[i].setPhase = &lfoSawSetPhase;
-				break;
-			case PulseLFOShapeSet:
-				lfoShapeTick[i] = &lfoPulseTick;
-				lfoSetters[i].setRate = &lfoPulseSetRate;
-				lfoSetters[i].setShape = &lfoPulseSetShape;
-				lfoSetters[i].setPhase = &lfoPulseSetPhase;
-				break;
-		}
-	}
-	uint8_t totalEffects = 4; //currently doesn't pay attention to skipped effects out of order
-
-	for (int i = 0; i < NUM_EFFECT; i++)
-	{
-		FXType effectType = roundf(params[Effect1FXType + (EffectParamsNum * i)].realVal[0] * (NUM_EFFECT_TYPES-1));
-		switch (effectType)
-		{
-			  case None:
-				  effectTick[i] = &blankTick;
-				  effectSetters[i].setParam1 = &blankFunction;
-				  effectSetters[i].setParam2 = &blankFunction;
-				  effectSetters[i].setParam3 = &blankFunction;
-				  effectSetters[i].setParam4 = &blankFunction;
-				  effectSetters[i].setParam5 = &blankFunction;
-				  totalEffects--;
-				  break;
-			  case Softclip:
-				  effectTick[i] = &softClipTick;
-				  effectSetters[i].setParam1 = &clipperGainSet;
-				  effectSetters[i].setParam2 = &offsetParam2;
-				  effectSetters[i].setParam3 = &param3Soft;
-				  effectSetters[i].setParam4 = &param4Linear;
-				  effectSetters[i].setParam5 = &blankFunction;
-				  break;
-			  case Hardclip:
-				  effectTick[i] = &hardClipTick;
-				  effectSetters[i].setParam1 = &clipperGainSet;
-				  effectSetters[i].setParam2 = &offsetParam2;
-				  effectSetters[i].setParam3 = &param3Hard;
-				  effectSetters[i].setParam4 = &param4Linear;
-				  effectSetters[i].setParam5 = &blankFunction;
-				  break;
-			  case ABSaturator:
-				  effectTick[i] = &satTick;
-				  effectSetters[i].setParam1 = &clipperGainSet;
-				  effectSetters[i].setParam2 = &offsetParam2;
-				  effectSetters[i].setParam3 = &param3Linear;
-				  effectSetters[i].setParam4 = &param4Linear;
-				  effectSetters[i].setParam5 = &blankFunction;
-				  break;
-			  case Tanh:
-				  effectTick[i] = &tanhTick;
-				  effectSetters[i].setParam1 = &clipperGainSet;
-				  effectSetters[i].setParam2 = &offsetParam2;
-				  effectSetters[i].setParam3 = &param3Linear;
-				  effectSetters[i].setParam4 = &param4Linear;
-				  effectSetters[i].setParam5 = &blankFunction;
-				  break;
-			  case Shaper:
-				  effectTick[i] = &shaperTick;
-				  effectSetters[i].setParam1 = &clipperGainSet;
-				  effectSetters[i].setParam2 = &offsetParam2;
-				  effectSetters[i].setParam3 = &param3Linear;
-				  effectSetters[i].setParam4 = &param4Linear;
-				  effectSetters[i].setParam5 = &blankFunction;
-				  break;
-			  case Compressor:
-				  effectTick[i] = &compressorTick;
-				  effectSetters[i].setParam1 = &compressorParam1;
-				  effectSetters[i].setParam2 = &compressorParam2;
-				  effectSetters[i].setParam3 = &compressorParam3;
-				  effectSetters[i].setParam4 = &compressorParam4;
-				  effectSetters[i].setParam5 = &compressorParam5;
-				  break;
-			  case Chorus:
-				  effectTick[i] = &chorusTick;
-				  effectSetters[i].setParam1 = &chorusParam1;
-				  effectSetters[i].setParam2 = &chorusParam2;
-				  effectSetters[i].setParam3 = &chorusParam3;
-				  effectSetters[i].setParam4 = &chorusParam4;
-				  effectSetters[i].setParam5 = &blankFunction;
-				  break;
-			  case Bitcrush:
-				  effectTick[i] = &bcTick;
-				  effectSetters[i].setParam1 = &clipperGainSet;
-				  effectSetters[i].setParam2 = &param2Linear;
-				  effectSetters[i].setParam3 = &param3BC;
-				  effectSetters[i].setParam4 = &param4Linear;
-				  effectSetters[i].setParam5 = &param5Linear;
-				  break;
-			  case TiltFilter:
-				  effectTick[i] = &tiltFilterTick;
-				  effectSetters[i].setParam1 = &tiltParam1;
-				  effectSetters[i].setParam2 = &tiltParam2;
-				  effectSetters[i].setParam3 = &tiltParam3;
-				  effectSetters[i].setParam4 = &tiltParam4;
-				  effectSetters[i].setParam5 = &param5Linear;
-				  break;
-			  case Wavefolder:
-				  effectTick[i] = &wavefolderTick;
-				  effectSetters[i].setParam1 = &wavefolderParam1;
-				  effectSetters[i].setParam2 = &offsetParam2;
-				  effectSetters[i].setParam3 = &wavefolderParam3;
-				  effectSetters[i].setParam4 = &param4Linear;
-				  effectSetters[i].setParam5 = &param5Linear;
-				  break;
-			  case FXLowpass :
-				  effectTick[i] = &FXlowpassTick;
-				  effectSetters[i].setParam1 = &FXLowpassParam1;
-				  effectSetters[i].setParam2 = &blankFunction;
-				  effectSetters[i].setParam3 = &FXLowpassParam3;
-				  effectSetters[i].setParam4 = &blankFunction;;
-				  effectSetters[i].setParam5 = &blankFunction;;
-				  break;
-			  case FXHighpass :
-				  effectTick[i] = &FXhighpassTick;
-				  effectSetters[i].setParam1 = &FXHighpassParam1;
-				  effectSetters[i].setParam2 = &blankFunction;
-				  effectSetters[i].setParam3 = &FXHighpassParam3;
-				  effectSetters[i].setParam4 = &blankFunction;
-				  effectSetters[i].setParam5 = &blankFunction;
-				  break;
-			  case FXBandpass :
-				  effectTick[i] = &FXbandpassTick;
-				  effectSetters[i].setParam1 = &FXBandpassParam1;
-				  effectSetters[i].setParam2 = &blankFunction;
-				  effectSetters[i].setParam3 = &FXBandpassParam3;
-				  effectSetters[i].setParam4 = &blankFunction;
-				  effectSetters[i].setParam5 = &blankFunction;
-				  break;
-			  case FXDiode :
-				  effectTick[i] = &FXdiodeLowpassTick;
-				  effectSetters[i].setParam1 = &FXDiodeParam1;
-				  effectSetters[i].setParam2 = &blankFunction;
-				  effectSetters[i].setParam3 = &FXDiodeParam3;
-				  effectSetters[i].setParam4 = &blankFunction;
-				  effectSetters[i].setParam5 = &blankFunction;
-				  break;
-			  case FXPeak :
-				  effectTick[i] = &FXVZpeakTick;
-				  effectSetters[i].setParam1 = &FXPeakParam1;
-				  effectSetters[i].setParam2 = &FXPeakParam2;
-				  effectSetters[i].setParam3 = &FXPeakParam3;
-				  effectSetters[i].setParam4 = &blankFunction;
-				  effectSetters[i].setParam5 = &blankFunction;
-				  break;
-			  case FXLowShelf :
-				  effectTick[i] = &FXVZlowshelfTick;
-				  effectSetters[i].setParam1 = &FXLowShelfParam1;
-				  effectSetters[i].setParam2 = &FXLowShelfParam2;
-				  effectSetters[i].setParam3 = &FXLowShelfParam3;
-				  effectSetters[i].setParam4 = &blankFunction;
-				  effectSetters[i].setParam5 = &blankFunction;
-				  break;
-			  case FXHighShelf :
-				  effectTick[i] = FXVZhighshelfTick;
-				  effectSetters[i].setParam1 = &FXHighShelfParam1;;
-				  effectSetters[i].setParam2 = &FXHighShelfParam2;;
-				  effectSetters[i].setParam3 = &FXHighShelfParam3;;
-				  effectSetters[i].setParam4 = &blankFunction;;
-				  effectSetters[i].setParam5 = &blankFunction;;
-				  break;
-			  case FXNotch :
-				  effectTick[i] = FXVZbandrejectTick;
-				  effectSetters[i].setParam1 = &FXNotchParam1;;
-				  effectSetters[i].setParam2 = &FXNotchParam2;;
-				  effectSetters[i].setParam3 = &FXNotchParam3;;
-				  effectSetters[i].setParam4 = &blankFunction;;
-				  effectSetters[i].setParam5 = &blankFunction;;
-				  break;
-			  case FXLadder :
-				  effectTick[i] = &FXLadderLowpassTick;
-				  effectSetters[i].setParam1 = &FXLadderParam1;;
-				  effectSetters[i].setParam2 = &blankFunction;;
-				  effectSetters[i].setParam3 = &FXLadderParam3;;
-				  effectSetters[i].setParam4 = &blankFunction;;
-				  effectSetters[i].setParam5 = &blankFunction;;
-				  break;
-			  default:
-				  break;
-		}
+		int LFOShape = roundf(params[LFO1ShapeSet + (i * LFOParamsNum)].realVal[0] * (NUM_LFO_SHAPES-1));
+		setLFOShapes(LFOShape, i);
 	}
 
 
@@ -1959,7 +2083,6 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 	audioMasterLevel = 1.0f;
 	oscToTick = NUM_OSC;
 	overSampled = 1;
-	numEffectToTick = totalEffects;
 	filterToTick = totalFilters;
 	__enable_irq();
 	presetReady = 1;
