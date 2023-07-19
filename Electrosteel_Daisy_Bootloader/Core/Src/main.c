@@ -52,11 +52,11 @@
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+static void MPU_Config(void);
 /* USER CODE BEGIN PFP */
-static void MPU_Config (void);
 static void FS_FileOperations(void);
 void qspi_initialize(uint8_t mode);
-
+__attribute__((noreturn)) static void boot_to(uint32_t addr);
 void qspi_enable_memory_mapped();
 /* USER CODE END PFP */
 
@@ -82,7 +82,7 @@ pFunction JumpToApplication;
 
 
 #define APPLICATION_ADDRESS (uint32_t)0x24000000
-uint8_t memory_already_mapped = 0;
+volatile uint8_t memory_already_mapped = 0;
 uint8_t boardNumber = 255;
 
 void FlushECC(void *ptr, int bytes)
@@ -138,9 +138,16 @@ uint8_t BSP_SD_IsDetected(void)
 int main(void)
 {
   /* USER CODE BEGIN 1 */
+	  /* Enable I-Cache---------------------------------------------------------*/
+	  //SCB_EnableICache();
 
+	  /* Enable D-Cache---------------------------------------------------------*/
+	  //SCB_EnableDCache();
 
   /* USER CODE END 1 */
+
+  /* MPU Configuration--------------------------------------------------------*/
+  MPU_Config();
 
   /* MCU Configuration--------------------------------------------------------*/
 
@@ -174,34 +181,41 @@ int main(void)
      }
      /*Enable BKPRAM clock*/
      __HAL_RCC_BKPRAM_CLK_ENABLE();
-
+     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_SET);
+     //HAL_Delay(100);
  	int bit0 = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_15);
  	int bit1 = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_14);
  	int bit2 = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_2);
  	boardNumber = ((bit0 << 1)+(bit1 << 2)+(bit2));
  	if (boardNumber == 0)
  	{
+		  //set up the master send control pin to signal other daisies to listen to I2C bus
+		  HAL_NVIC_DisableIRQ(EXTI15_10_IRQn);
+
+ 		GPIO_InitTypeDef GPIO_InitStruct = {0};
+		  GPIO_InitStruct.Pin = GPIO_PIN_12;
+		  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+		  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+		  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+
+		  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
  		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
  	}
     //if (*(__IO uint32_t*)(0x38800000+36) != 12345678)
 	  qspi_initialize(INDIRECT_POLLING);
-
+	  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_RESET);
+	  HAL_Delay(100);
      if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_6) == 0)
      {
     	 bootloader_button_pressed = 1;
     	 {
+   		  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
+
     		  MX_I2C1_Init();
     		  MX_SDMMC1_SD_Init();
     		  MX_FATFS_Init();
-    		  //set up the master send control pin to signal other daisies to listen to I2C bus
-    		  GPIO_InitTypeDef GPIO_InitStruct = {0};
-    		  GPIO_InitStruct.Pin = GPIO_PIN_12;
-    		  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-    		  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
-    		  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
 
-    		  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-    		  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
+
 
 
     		  int i = 6;
@@ -232,30 +246,36 @@ int main(void)
     	 		  qspi_enable_memory_mapped();
     	 	  }
     	 	  //copy qspi flash code into SRAM location on every boot.
-    	 	  for (int i = 0; i < 262144; i++)
+    	 	  for (int i = 0; i < 262140; i++)
     	 	  {
     	 		  tempBinaryBuffer[i] = flash_mem[i];
+    	 	  }
+    	 	  //wait for button to go up
+    	 	  while(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_6) == 0)
+    	 	  {
+    	 		  ;
     	 	  }
     	 	 HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
     	 	 HAL_Delay(1);
 
-			HAL_I2C_Master_Transmit(&hi2c1, 0, tempBinaryBuffer, 65535,
+			HAL_I2C_Master_Transmit(&hi2c1, 34<<1, tempBinaryBuffer, 65535,
 					10000);
 			HAL_Delay(100);
-			HAL_I2C_Master_Transmit(&hi2c1, 0, tempBinaryBuffer+65535, 65535,
+			HAL_I2C_Master_Transmit(&hi2c1, 34<<1, tempBinaryBuffer+65535, 65535,
 					10000);
 			HAL_Delay(100);
-			HAL_I2C_Master_Transmit(&hi2c1, 0, tempBinaryBuffer+131070, 65535,
+			HAL_I2C_Master_Transmit(&hi2c1, 34<<1, tempBinaryBuffer+131070, 65535,
 					10000);
 			HAL_Delay(100);
-			HAL_I2C_Master_Transmit(&hi2c1, 0, tempBinaryBuffer+196605, 65535,
+			HAL_I2C_Master_Transmit(&hi2c1, 34<<1, tempBinaryBuffer+196605, 65535,
 					10000);
 
 
-			HAL_Delay(10000);
+			HAL_Delay(6000);
     	 	  HAL_QSPI_MspDeInit(&hqspi);
       	 	  HAL_I2C_DeInit(&hi2c1);
     	 	  HAL_SD_MspDeInit(&hsd1);
+
     	 	  HAL_RCC_DeInit();
     	 	  HAL_DeInit();
     	 	  SysTick->CTRL = 0;
@@ -286,15 +306,16 @@ int main(void)
 		  while(i--)
 		  {
 			  HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
-			  HAL_Delay(20);
+			  HAL_Delay(40);
 		  }
-
+		  HAL_Delay(2000);
 		  if (!memory_already_mapped)
 		  {
 			  qspi_enable_memory_mapped();
+
 		  }
 		  //copy qspi flash code into SRAM location on every boot.
-		  for (int i = 0; i < 262144; i++)
+		  for (int i = 0; i < 262140; i++)
 		  {
 			  tempBinaryBuffer[i] = flash_mem[i];
 		  }
@@ -302,21 +323,60 @@ int main(void)
 
 		  HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
 		  JumpToApplication = (pFunction) (*(__IO uint32_t*) (APPLICATION_ADDRESS+4));
-
-		  if ((JumpToApplication > 0x30000000) ||  (JumpToApplication < 0x24000000) )
+			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_SET);
+			HAL_Delay(1);
+		  if (((uint32_t)JumpToApplication > 0x30000000) ||  ((uint32_t)JumpToApplication < 0x24000000) )
 		  {
 			  //out of range, not a valid firmware
 			  while(1)
 			  {
-				  ;
+				  if (memory_already_mapped)
+				  {
+					  qspi_initialize(INDIRECT_POLLING);
+				  }
+				  HAL_Delay(2);
+				  HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_7);
+
 			  }
 		  }
+		  //boot_to(D1_AXISRAM_BASE);
 	 	  HAL_QSPI_MspDeInit(&hqspi);
+
 		  HAL_RCC_DeInit();
 		  HAL_DeInit();
-		  __set_MSP(*(__IO uint32_t*) APPLICATION_ADDRESS);
 		  __disable_irq();
 
+		   NVIC->ICER[0] = 0xFFFFFFFF;
+		    NVIC->ICER[1] = 0xFFFFFFFF;
+		    NVIC->ICER[2] = 0xFFFFFFFF;
+		    NVIC->ICER[3] = 0xFFFFFFFF;
+		    NVIC->ICER[4] = 0xFFFFFFFF;
+		    NVIC->ICER[5] = 0xFFFFFFFF;
+		    NVIC->ICER[6] = 0xFFFFFFFF;
+		    NVIC->ICER[7] = 0xFFFFFFFF;
+
+		    NVIC->ICPR[0] = 0xFFFFFFFF;
+		    NVIC->ICPR[1] = 0xFFFFFFFF;
+		    NVIC->ICPR[2] = 0xFFFFFFFF;
+		    NVIC->ICPR[3] = 0xFFFFFFFF;
+		    NVIC->ICPR[4] = 0xFFFFFFFF;
+		    NVIC->ICPR[5] = 0xFFFFFFFF;
+		    NVIC->ICPR[6] = 0xFFFFFFFF;
+		    NVIC->ICPR[7] = 0xFFFFFFFF;
+
+		    SysTick->CTRL = 0;
+		    SysTick->LOAD = 0; // Needed?
+		    SysTick->VAL = 0;  // Needed?
+		    SCB->ICSR |= SCB_ICSR_PENDSTCLR_Msk;
+
+		    SCB->SHCSR &= ~(SCB_SHCSR_USGFAULTENA_Msk | //
+		                    SCB_SHCSR_BUSFAULTENA_Msk | //
+		                    SCB_SHCSR_MEMFAULTENA_Msk);
+
+		  __set_MSP(*(__IO uint32_t*) APPLICATION_ADDRESS);
+		  __set_PSP(*(__IO uint32_t*) APPLICATION_ADDRESS);
+		  SCB->VTOR = APPLICATION_ADDRESS;
+		    __set_CONTROL(0);
 
 
 		  SysTick->CTRL = 0;
@@ -369,10 +429,6 @@ void SystemClock_Config(void)
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE0);
 
   while(!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY)) {}
-
-  /** Macro to configure the PLL clock source
-  */
-  __HAL_RCC_PLL_PLLSOURCE_CONFIG(RCC_PLLSOURCE_HSE);
 
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
@@ -703,6 +759,7 @@ void qspi_enable_memory_mapped()
 	    {
 	    	qspi_error();
 	    }
+	    memory_already_mapped = 1;
 }
 
 void qspi_initialize(uint8_t mode)
@@ -716,6 +773,10 @@ void qspi_initialize(uint8_t mode)
 	if (mode == MEMORY_MAPPED)
 	{
 		qspi_enable_memory_mapped();
+	}
+	else
+	{
+		memory_already_mapped = 0;
 	}
 }
 
@@ -971,12 +1032,11 @@ static void FS_FileOperations(void)
 					//write to local SRAM, then copy that to QSPI flash for more permanent storage
 					f_read(&SDFile, &tempBinaryBuffer, f_size(&SDFile), &bytesRead);
 
-					if (bytesRead < 262144)
+					if (bytesRead < 262140)
 					{
 						qspi_Erase(QSPI_START, QSPI_START+bytesRead);
 						qspi_Write(QSPI_START, bytesRead,(uint8_t*)tempBinaryBuffer);
 						HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
-						memory_already_mapped = 1;
 					}
 
 					f_close(&SDFile);
@@ -995,49 +1055,6 @@ static void FS_FileOperations(void)
 }
 
 
-static void MPU_Config (void)
-{
-  MPU_Region_InitTypeDef MPU_InitStruct;
-
-  /* Disable the MPU */
-  HAL_MPU_Disable();
-
-  /* Configure the MPU as Strongly ordered for not defined regions */
-  MPU_InitStruct.Enable = MPU_REGION_ENABLE;
-  MPU_InitStruct.BaseAddress = 0x00;
-  MPU_InitStruct.Size = MPU_REGION_SIZE_4GB;
-  MPU_InitStruct.AccessPermission = MPU_REGION_NO_ACCESS;
-  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
-  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
-  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
-  MPU_InitStruct.Number = MPU_REGION_NUMBER0;
-  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
-  MPU_InitStruct.SubRegionDisable = 0x87;
-  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_DISABLE;
-
-  HAL_MPU_ConfigRegion(&MPU_InitStruct);
-
-
-  MPU_InitStruct.Enable = MPU_REGION_ENABLE;
-  MPU_InitStruct.BaseAddress = 0x90000000;
-  MPU_InitStruct.Size = MPU_REGION_SIZE_8MB;
-  MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
-  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
-  MPU_InitStruct.IsCacheable = MPU_ACCESS_CACHEABLE;
-  MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
-  MPU_InitStruct.Number = MPU_REGION_NUMBER2;
-  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
-  MPU_InitStruct.SubRegionDisable = 0x0;
-  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_ENABLE;
-  HAL_MPU_ConfigRegion(&MPU_InitStruct);
-
-
-
-  /* Enable the MPU */
-  HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
-}
-
-
 // EXTI Line12 External Interrupt ISR Handler CallBackFun
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
@@ -1048,7 +1065,6 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 			MX_I2C1_Init();
 			while(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_12) ==  1)
 			{
-				;
 				//wait for pin to go back low
 			}
 
@@ -1065,17 +1081,20 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 					10000);
 
 
-			qspi_Erase(QSPI_START, QSPI_START+262144);
-			qspi_Write(QSPI_START, 262144,(uint8_t*)tempBinaryBuffer);
+			qspi_Erase(QSPI_START, QSPI_START+262140);
+			qspi_Write(QSPI_START, 262140,(uint8_t*)tempBinaryBuffer);
 			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
-			memory_already_mapped = 1;
+			  if (!memory_already_mapped)
+			  {
+				  qspi_enable_memory_mapped();
 
+			  }
+			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_SET);
 
-  	 	  HAL_QSPI_MspDeInit(&hqspi);
     	  HAL_I2C_DeInit(&hi2c1);
-  	 	  HAL_SD_MspDeInit(&hsd1);
-  	 	  HAL_RCC_DeInit();
-  	 	  HAL_DeInit();
+	 	  HAL_QSPI_MspDeInit(&hqspi);
+		  HAL_RCC_DeInit();
+		  HAL_DeInit();
   	 	  SysTick->CTRL = 0;
   	 	  SysTick->LOAD = 0;
   	 	  SysTick->VAL  = 0;
@@ -1094,7 +1113,79 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 	}
 }
 
+
+
+__attribute__((noreturn)) static void boot_to(uint32_t addr)
+{
+    const uint32_t *vtor = (uint32_t *)addr;
+    __disable_irq();
+   // SCB_InvalidateDCache();
+   // SCB_InvalidateICache();
+    NVIC->ICER[0] = 0xFFFFFFFF;
+    NVIC->ICER[1] = 0xFFFFFFFF;
+    NVIC->ICER[2] = 0xFFFFFFFF;
+    NVIC->ICER[3] = 0xFFFFFFFF;
+    NVIC->ICER[4] = 0xFFFFFFFF;
+    NVIC->ICER[5] = 0xFFFFFFFF;
+    NVIC->ICER[6] = 0xFFFFFFFF;
+    NVIC->ICER[7] = 0xFFFFFFFF;
+
+    NVIC->ICPR[0] = 0xFFFFFFFF;
+    NVIC->ICPR[1] = 0xFFFFFFFF;
+    NVIC->ICPR[2] = 0xFFFFFFFF;
+    NVIC->ICPR[3] = 0xFFFFFFFF;
+    NVIC->ICPR[4] = 0xFFFFFFFF;
+    NVIC->ICPR[5] = 0xFFFFFFFF;
+    NVIC->ICPR[6] = 0xFFFFFFFF;
+    NVIC->ICPR[7] = 0xFFFFFFFF;
+
+    SysTick->CTRL = 0;
+    SysTick->LOAD = 0; // Needed?
+    SysTick->VAL = 0;  // Needed?
+    SCB->ICSR |= SCB_ICSR_PENDSTCLR_Msk;
+
+    SCB->SHCSR &= ~(SCB_SHCSR_USGFAULTENA_Msk | //
+                    SCB_SHCSR_BUSFAULTENA_Msk | //
+                    SCB_SHCSR_MEMFAULTENA_Msk);
+    SCB->VTOR = addr;
+    __set_MSP(vtor[0]);
+    __set_PSP(vtor[0]);
+    __set_CONTROL(0);
+    void (*entry)(void) __attribute__((noreturn)) = (void *)vtor[1];
+    entry();
+    for (;;)
+        ;
+}
 /* USER CODE END 4 */
+
+/* MPU Configuration */
+
+void MPU_Config(void)
+{
+  MPU_Region_InitTypeDef MPU_InitStruct = {0};
+
+  /* Disables the MPU */
+  HAL_MPU_Disable();
+
+  /** Initializes and configures the Region and the memory to be protected
+  */
+  MPU_InitStruct.Enable = MPU_REGION_ENABLE;
+  MPU_InitStruct.Number = MPU_REGION_NUMBER0;
+  MPU_InitStruct.BaseAddress = 0x90000000;
+  MPU_InitStruct.Size = MPU_REGION_SIZE_8MB;
+  MPU_InitStruct.SubRegionDisable = 0x0;
+  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
+  MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
+  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_ENABLE;
+  MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
+  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
+  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
+
+  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+  /* Enables the MPU */
+  HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
+
+}
 
 /**
   * @brief  This function is executed in case of error occurrence.

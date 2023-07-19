@@ -23,7 +23,6 @@
 #include "dma.h"
 #include "fatfs.h"
 #include "i2c.h"
-#include "quadspi.h"
 #include "rng.h"
 #include "sai.h"
 #include "sdmmc.h"
@@ -55,6 +54,21 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+//PA0 parseComplete  and initial counter 32
+//PD11 newstringpos inside interrupt 33
+//PG9 updateSPI 34
+//PC0 checkSDForPreset 22
+//PA3 audioframe  23
+//PB1 newBAR recognized in audio frame  24
+//PA6 receiving I2C 26
+//PC1 PLUCK interrupt  27
+//PC4 LEVER interrupt  28
+//PB7 presetWaitingToParse 15
+
+//first set pins to flip to try to understand whether secondary boards are getting the interrupt and where they are when they are silent
+// then try to reprogram both PSOC and other STM32 to wait 2 seconds before sending data, to avoid SPI interrupts screwing init up.
+
+
 
 
 
@@ -71,6 +85,8 @@ FILINFO fno;
 DIR dir;
 const TCHAR path = 0;
 
+
+uint8_t receivingI2C = 0;
 
 uint8_t bootloaderFlag[32] __ATTR_USER_FLASH;
 uint8_t buttonPressed = 0;
@@ -102,6 +118,8 @@ param params[NUM_PARAMS];
 mapping mappings[MAX_NUM_MAPPINGS];
 uint8_t numMappings = 0;
 
+uint8_t effectsActive[4] = {0,0,0,0};
+
 filterSetter filterSetters[NUM_FILT];
 lfoSetter lfoSetters[NUM_LFOS];
 effectSetter effectSetters[NUM_EFFECT];
@@ -110,9 +128,9 @@ float defaultScaling = 1.0f;
 #define SCALE_TABLE_SIZE 2048
 float resTable[SCALE_TABLE_SIZE];
 float envTimeTable[SCALE_TABLE_SIZE];
-float lfoRateTable[SCALE_TABLE_SIZE]__ATTR_RAM_D2;
+float lfoRateTable[SCALE_TABLE_SIZE];
 
-
+int oscsEnabled[3] = {0,0,0};
 float midiKeyDivisor;
 float midiKeySubtractor;
 
@@ -126,6 +144,8 @@ uint8_t boardNumber = 0;
 
 uint8_t volatile i2cSending = 0;
 
+const char* specialModeNames[3];
+const char* specialModeMacroNames[3][8];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -137,7 +157,7 @@ void MPU_Conf(void);
 void SDRAM_init(void);
 static int checkForSDCardPreset(uint8_t value);
 static void writePresetToSDCard(int fileSize);
-void parsePreset(int size, int presetNumber);
+void __ATTR_ITCMRAM parsePreset(int size, int presetNumber);
 void getPresetNamesFromSDCard(void);
 
 
@@ -169,14 +189,15 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-  //MPU_Conf();
+	//SCB_CleanInvalidateDCache();
+	//SCB_InvalidateICache();
   /* USER CODE END 1 */
 
   /* MPU Configuration--------------------------------------------------------*/
   MPU_Config();
 
   /* Enable I-Cache---------------------------------------------------------*/
-  //SCB_EnableICache();
+ // SCB_EnableICache();
 
   /* Enable D-Cache---------------------------------------------------------*/
   SCB_EnableDCache();
@@ -198,7 +219,7 @@ int main(void)
 
   /* USER CODE BEGIN SysInit */
 
-  HAL_Delay(500);
+  //HAL_Delay(500);
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -206,7 +227,6 @@ int main(void)
   MX_DMA_Init();
   MX_BDMA_Init();
   MX_I2C2_Init();
-  MX_QUADSPI_Init();
   MX_SAI1_Init();
   MX_SDMMC1_SD_Init();
   MX_SPI1_Init();
@@ -216,6 +236,7 @@ int main(void)
   MX_SPI6_Init();
   MX_RNG_Init();
   /* USER CODE BEGIN 2 */
+  HAL_Delay(500);
 	int bit0 = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_15);
 	int bit1 = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_14);
 	int bit2 = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_2);
@@ -223,7 +244,7 @@ int main(void)
 
 	if (boardNumber == 0)
 	{
-		  HAL_NVIC_DisableIRQ(EXTI15_10_IRQn);
+		  //HAL_NVIC_DisableIRQ(EXTI15_10_IRQn);
 
 		GPIO_InitTypeDef GPIO_InitStruct = {0};
 	  	  GPIO_InitStruct.Pin = GPIO_PIN_12;
@@ -242,11 +263,11 @@ int main(void)
    }
    /*Enable BKPRAM clock*/
    __HAL_RCC_BKPRAM_CLK_ENABLE();
-   __HAL_RCC_D2SRAM1_CLK_ENABLE();
+  // __HAL_RCC_D2SRAM1_CLK_ENABLE();
 
-   __HAL_RCC_D2SRAM2_CLK_ENABLE();
+  // __HAL_RCC_D2SRAM2_CLK_ENABLE();
 
-   __HAL_RCC_D2SRAM3_CLK_ENABLE();
+  // __HAL_RCC_D2SRAM3_CLK_ENABLE();
   //LED off
   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
 
@@ -282,31 +303,97 @@ int main(void)
   LEAF_generate_table_skew_non_sym(envTimeTable, 0.0f, 20000.0f, 4000.0f, SCALE_TABLE_SIZE);
   LEAF_generate_table_skew_non_sym(lfoRateTable, 0.0f, 30.0f, 2.0f, SCALE_TABLE_SIZE);
 
+  for (int i = 0; i < 3; i++)
+  {
+	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
+	  HAL_Delay(10);
+	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
+	  HAL_Delay(10);
+  }
   //only board 0 has access to the SD card
   if (boardNumber == 0)
   {
 	  getPresetNamesFromSDCard();
-	  foundOne  = checkForSDCardPreset(presetNumberToLoad);
+	  //foundOne  = checkForSDCardPreset(presetNumberToLoad);
+	  presetWaitingToLoad = 1;
+	  diskBusy = 1;
   }
+  else
+  {
+	  diskBusy = 1;
+  }
+
 
   SDRAM_init();
 
   codec_init(&hi2c2);
 
   audioInit();
+
+
+
+
+  specialModeNames[0] = "PHYS STR1     ";
+  specialModeMacroNames[0][0] = "TargetLev     ";
+  specialModeMacroNames[0][1] = "LevSmooth     ";
+  specialModeMacroNames[0][2] = "LevStrengt    ";
+  specialModeMacroNames[0][3] = "LevMode       ";
+  specialModeMacroNames[0][4] = "              ";
+  specialModeMacroNames[0][5] = "              ";
+  specialModeMacroNames[0][6] = "              ";
+  specialModeMacroNames[0][7] = "              ";
+
+  specialModeNames[1] = "PHYS STR2     ";
+  specialModeMacroNames[1][0] = "FBLev On      ";
+  specialModeMacroNames[1][1] = "TargetLev     ";
+  specialModeMacroNames[1][2] = "PickPos       ";
+  specialModeMacroNames[1][3] = "Decay         ";
+  specialModeMacroNames[1][4] = "Touch         ";
+  specialModeMacroNames[1][5] = "Noise1        ";
+  specialModeMacroNames[1][6] = "Noise2        ";
+  specialModeMacroNames[1][7] = "LevSmooth     ";
+
+  specialModeNames[2] = "ADDITIVE      ";
+  specialModeMacroNames[2][0] = "Noise1        ";
+  specialModeMacroNames[2][1] = "Noise2        ";
+  specialModeMacroNames[2][2] = "Tone          ";
+  specialModeMacroNames[2][3] = "Decay         ";
+  specialModeMacroNames[2][4] = "Stretch       ";
+  specialModeMacroNames[2][5] = "RandDecy      ";
+  specialModeMacroNames[2][6] = "RandGain      ";
+  specialModeMacroNames[2][7] = "NoiseVol      ";
+
+
+  for (int i = 0; i < 3; i++)
+  {
+	  for (int j = 0; j < 14; j++)
+	  {
+		  presetNamesArray[63-i][j] = specialModeNames[i][j];
+	  }
+	  for (int k = 0; k < 8; k++)
+	  {
+		  for (int j = 0; j < 14; j++)
+		  {
+			  macroNamesArray[63-i][k][j] = specialModeMacroNames[i][k][j];
+		  }
+	  }
+  }
+
+
 	//now to send all the necessary messages to the codec
 
   //HAL_Delay(1000);
-
+/*
   	if (foundOne == 0)
 	{
-	  parsePreset((NUM_PARAMS*2)+27+(8*14), 0); //default preset binary
+	  //parsePreset((NUM_PARAMS*2)+27+(8*14), 0); //default preset binary
+  		diskBusy = 1;
 	}
 	else
 	{
 	  parsePreset(presetWaitingToParse, presetNumberToLoad);
 	}
-
+*/
     //HAL_SPI_Receive_DMA(&hspi2, SPI_RX, BAR_BUFFER_SIZE_TIMES_TWO);
     HAL_SPI_Receive_DMA(&hspi6, SPI_PLUCK_RX, PLUCK_BUFFER_SIZE_TIMES_TWO);
     //if (boardNumber != 0)
@@ -325,46 +412,75 @@ int main(void)
     {
     	HAL_SPI_TransmitReceive_DMA(&hspi1, SPI_LEVERS_TX, SPI_LEVERS, LEVER_BUFFER_SIZE_TIMES_TWO);
     }
-    //HAL_Delay(2000); // necessary?
+    //HAL_Delay(20 00); // necessary?
 
 
     audioStart(&hsai_BlockB1, &hsai_BlockA1);
+    if (boardNumber !=0)
+    {
+    	HAL_I2C_Slave_Receive_IT(&hi2c1, buffer, 4096);
+    }
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  if (presetWaitingToLoad > 0)
+	  if (boardNumber == 0)
 	  {
-		  if (boardNumber == 0)
+		  if (presetWaitingToLoad > 0)
 		  {
+			  /*
+			  //HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_SET);
+			  for (int i = 0; i < 2; i++)
+			  {
+				  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
+				  HAL_Delay(1);
+				  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
+				  HAL_Delay(1);
+			  }
+			  */
 			  if (!i2cSending)
 			  {
+				  //HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
+				  //HAL_Delay(2);
+				  //HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
+				  //HAL_Delay(2);
 				  checkForSDCardPreset(presetNumberToLoad);
+			  }
+			  //HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_RESET);
+		  }
+		  else if (presetWaitingToWrite > 0)
+		  {
+			  if (boardNumber == 0)
+			  {
+				  writePresetToSDCard(presetWaitingToWrite);
 			  }
 		  }
 	  }
-
 	  if (presetWaitingToParse > 0)
 	  {
+		  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_SET);
 		  parsePreset(presetWaitingToParse, presetNumberToLoad);
+		  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_RESET);
 	  }
 
-	  else if (presetWaitingToWrite > 0)
+	  if ((stringInputs[0] == 0) && (stringInputs[1] == 0))
 	  {
-		  if (boardNumber == 0)
-		  {
-			  writePresetToSDCard(presetWaitingToWrite);
-		  }
+	  	  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
 	  }
+	  else
+	  {
+		  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
+	  }
+
 	  uint32_t rand;
 	  HAL_RNG_GenerateRandomNumber(&hrng, &rand);
 
 	  if (rand > TWO_TO_31)
 	  {
 		  myTestInt++;
-		  HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
+		  //HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
 	  }
 	  float floatrand = (float)rand * INV_TWO_TO_32 ;
 	  random_values[currentRandom++] = (floatrand * 2.0f) - 1.0f;
@@ -399,10 +515,6 @@ void SystemClock_Config(void)
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE0);
 
   while(!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY)) {}
-
-  /** Macro to configure the PLL clock source
-  */
-  __HAL_RCC_PLL_PLLSOURCE_CONFIG(RCC_PLLSOURCE_HSE);
 
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
@@ -457,12 +569,12 @@ void PeriphCommonClock_Config(void)
   PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_FMC|RCC_PERIPHCLK_SDMMC
                               |RCC_PERIPHCLK_SAI1;
   PeriphClkInitStruct.PLL2.PLL2M = 1;
-  PeriphClkInitStruct.PLL2.PLL2N = 10;
+  PeriphClkInitStruct.PLL2.PLL2N = 37;
   PeriphClkInitStruct.PLL2.PLL2P = 8;
   PeriphClkInitStruct.PLL2.PLL2Q = 2;
-  PeriphClkInitStruct.PLL2.PLL2R = 1;
+  PeriphClkInitStruct.PLL2.PLL2R = 3;
   PeriphClkInitStruct.PLL2.PLL2RGE = RCC_PLL2VCIRANGE_3;
-  PeriphClkInitStruct.PLL2.PLL2VCOSEL = RCC_PLL2VCOMEDIUM;
+  PeriphClkInitStruct.PLL2.PLL2VCOSEL = RCC_PLL2VCOWIDE;
   PeriphClkInitStruct.PLL2.PLL2FRACN = 4096;
   PeriphClkInitStruct.PLL3.PLL3M = 1;
   PeriphClkInitStruct.PLL3.PLL3N = 12;
@@ -483,7 +595,7 @@ void PeriphCommonClock_Config(void)
 
 /* USER CODE BEGIN 4 */
 
-float randomNumber(void) {
+float __ATTR_ITCMRAM randomNumber(void) {
 
 	uint32_t rand;
 	HAL_RNG_GenerateRandomNumber(&hrng, &rand);
@@ -497,10 +609,10 @@ uint8_t BSP_SD_IsDetected(void)
 {
   __IO uint8_t status = SD_PRESENT;
 
-  if (BSP_PlatformIsDetected() == 0x0)
-  {
-    status = SD_NOT_PRESENT;
-  }
+  //if (BSP_PlatformIsDetected() == 0x0)
+  //{
+  //  status = SD_NOT_PRESENT;
+  //}
 
   return status;
 }
@@ -509,7 +621,13 @@ void getPresetNamesFromSDCard(void)
 {
 	if(BSP_SD_IsDetected())
 	{
+		for (int i = 0; i < AUDIO_BUFFER_SIZE; i+=2)
+		{
+			audioOutBuffer[i] = 0;
+			audioOutBuffer[i + 1] = 0;
+		}
 		diskBusy = 1;
+
 		loadFailed = 0;
 		//HAL_Delay(300);
 
@@ -537,12 +655,12 @@ void getPresetNamesFromSDCard(void)
 					finalString[2] = charBuf[1];
 					finalString[1] = charBuf[0];
 					finalString[0] = '0';
-					strcat(finalString, ".ebp");
+					strcat(finalString, "*.ebp");
 				}
 
 				else
 				{
-					strcat(charBuf, ".ebp");
+					strcat(charBuf, "*.ebp");
 					strcpy(finalString, charBuf);
 				}
 
@@ -583,9 +701,16 @@ void getPresetNamesFromSDCard(void)
 static int checkForSDCardPreset(uint8_t numberToLoad)
 {
 	int found = 0;
+	prevVoice = numberToLoad;
+	voice = numberToLoad;
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0, GPIO_PIN_SET);
 	if(BSP_SD_IsDetected())
 	{
+		for (int i = 0; i < AUDIO_BUFFER_SIZE; i+=2)
+		{
+			audioOutBuffer[i] = 0;
+			audioOutBuffer[i + 1] = 0;
+		}
 		diskBusy = 1;
 		loadFailed = 0;
 		//HAL_Delay(300);
@@ -611,12 +736,12 @@ static int checkForSDCardPreset(uint8_t numberToLoad)
 				finalString[2] = charBuf[1];
 				finalString[1] = charBuf[0];
 				finalString[0] = '0';
-				strcat(finalString, ".ebp");
+				strcat(finalString, "*.ebp");
 			}
 
 			else
 			{
-				strcat(charBuf, ".ebp");
+				strcat(charBuf, "*.ebp");
 				strcpy(finalString, charBuf);
 			}
 
@@ -643,12 +768,15 @@ static int checkForSDCardPreset(uint8_t numberToLoad)
 	{
 
 
-		  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
-	  	  HAL_Delay(1);
-	  	  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
-	  	  HAL_Delay(1);
+		  //HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
+	  	 // HAL_Delay(1);
+	  	  //HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
+	  	 // HAL_Delay(1);
 	  	  i2cSending = 1;
-	  	  HAL_I2C_Master_Transmit_DMA(&hi2c1, 0, buffer, 4096);
+	  	__disable_irq();
+	  	  HAL_I2C_Master_Transmit(&hi2c1, 34<<1, buffer, 4096, 10000);
+	  	__enable_irq();
+	  	i2cSending = 0;
 	}
 
 	diskBusy = 0;
@@ -670,6 +798,11 @@ static void writePresetToSDCard(int fileSize)
 		{
 			//if(res == FR_OK)
 			{
+				for (int i = 0; i < AUDIO_BUFFER_SIZE; i+=2)
+				{
+					audioOutBuffer[i] = 0;
+					audioOutBuffer[i + 1] = 0;
+				}
 				diskBusy = 1;
 				//make sure the number is not above 2 digits
 			    if (presetNumberToSave > 99)
@@ -712,17 +845,22 @@ static void writePresetToSDCard(int fileSize)
 	__enable_irq();
 }
 
+
+//excellent resource on sdram configuration in cubemx
+//https://community.st.com/s/article/How-to-set-up-the-FMC-peripheral-to-interface-with-the-SDRAM-IS42S16800F-6BLI-from-ISSI
+//datasheet for memory used on daisy = https://www.issi.com/WW/pdf/42-45SM-RM-VM32160E.pdf
+
 #define SDRAM_MODEREG_BURST_LENGTH_2 ((1 << 0))
 #define SDRAM_MODEREG_BURST_LENGTH_4 ((1 << 1))
 
 #define SDRAM_MODEREG_BURST_TYPE_SEQUENTIAL ((0 << 3))
 
-#define SDRAM_MODEREG_CAS_LATENCY_3 ((1 << 4) | (1 << 5))
-
-#define SDRAM_MODEREG_OPERATING_MODE_STANDARD ()
+#define SDRAM_MODEREG_CAS_LATENCY_2 ((1 << 5))
 
 #define SDRAM_MODEREG_WRITEBURST_MODE_SINGLE ((1 << 9))
 #define SDRAM_MODEREG_WRITEBURST_MODE_PROG_BURST ((0 << 9))
+
+#define SDRAM_MODEREG_OPERATING_MODE_STANDARD ((0 << 13)|(0 << 14))
 
 void SDRAM_init()
 {
@@ -738,8 +876,8 @@ void SDRAM_init()
 	        /* Send the command */
 	        HAL_SDRAM_SendCommand(&hsdram1, &Command, 0x1000);
 
-	        /* Step 4: Insert 100 ms delay */
-	        HAL_Delay(100);
+	        /* Step 4: Insert 100 us delay */
+	        HAL_Delay(1);
 
 
 	        /* Step 5: Configure a PALL (precharge all) command */
@@ -754,7 +892,7 @@ void SDRAM_init()
 	        /* Step 6 : Configure a Auto-Refresh command */
 	        Command.CommandMode            = FMC_SDRAM_CMD_AUTOREFRESH_MODE;
 	        Command.CommandTarget          = FMC_SDRAM_CMD_TARGET_BANK1;
-	        Command.AutoRefreshNumber      = 4;
+	        Command.AutoRefreshNumber      = 2;
 	        Command.ModeRegisterDefinition = 0;
 
 	        /* Send the command */
@@ -762,9 +900,9 @@ void SDRAM_init()
 
 	        /* Step 7: Program the external memory mode register */
 	        tmpmrd = (uint32_t)SDRAM_MODEREG_BURST_LENGTH_4
-	                 | SDRAM_MODEREG_BURST_TYPE_SEQUENTIAL | SDRAM_MODEREG_CAS_LATENCY_3
-	                 | SDRAM_MODEREG_WRITEBURST_MODE_SINGLE;
-	        //SDRAM_MODEREG_OPERATING_MODE_STANDARD | // Used in example, but can't find reference except for "Test Mode"
+	                 | SDRAM_MODEREG_BURST_TYPE_SEQUENTIAL | SDRAM_MODEREG_CAS_LATENCY_2
+	                 | SDRAM_MODEREG_WRITEBURST_MODE_SINGLE | SDRAM_MODEREG_OPERATING_MODE_STANDARD;
+	        // // Used in example, but can't find reference except for "Test Mode"
 
 	        Command.CommandMode            = FMC_SDRAM_CMD_LOAD_MODE;
 	        Command.CommandTarget          = FMC_SDRAM_CMD_TARGET_BANK1;
@@ -775,158 +913,9 @@ void SDRAM_init()
 	        HAL_SDRAM_SendCommand(&hsdram1, &Command, 0x1000);
 
 	        //HAL_SDRAM_ProgramRefreshRate(hsdram, 0x56A - 20);
-	        HAL_SDRAM_ProgramRefreshRate(&hsdram1, 0x81A - 20);
+	        HAL_SDRAM_ProgramRefreshRate(&hsdram1, 762); // ((64ms / 8192) * 100MHz) - 20
+	        //8192 is 2^numberofrows (which is 13 in the case of the sdram)
 
-}
-
-
-void __ATTR_ITCMRAM handleSPI (uint8_t offset)
-{
-	interruptChecker = 1;
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
-	// if the first number is a 1 then it's a midi note/ctrl/bend message
-	if (SPI_LEVERS[offset] == ReceivingPitches)
-	{
-		 uint8_t currentByte = offset+1;
-		 for (int i = 0; i < numStringsThisBoard; i++)
-		 {
-			float myPitch = (float)(SPI_LEVERS[((i+firstString) * 2) + currentByte] << 8) + SPI_LEVERS[((i+firstString) * 2) + 1 + currentByte];
-			myPitch = myPitch * 0.001953154802777f; //(128 / 65535) scale the 16 bit integer into midinotes.
-			if ((myPitch > 0.0f) && (myPitch < 140.0f))
-			{
-				stringMIDIPitches[i] = myPitch;
-			}
-		 }
-			HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_SET);
-		 updateStateFromSPIMessage(offset);
-		 HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_RESET);
-		 //HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
-	}
-	// if the first number is a 2 then it's a preset write
-	else if (SPI_LEVERS[offset] == ReceivingPreset)
-	{
-		//got a new preset to write to memory
-		 //HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
-
-		 //if you aren't already writing a preset to memory, start the process
-		 if (writingState != ReceivingPreset)
-		 {
-			 writingState = ReceivingPreset; // set the flag to let the mcu know that a preset write is in progress
-			 diskBusy = 1;
-			 audioMasterLevel = 0.0f;
-			 //write the raw data as a preset number on the SD card
-			 bufferPos = 0;
-		 }
-		 presetNumberToSave = SPI_LEVERS[offset + 1];
-		 uint8_t currentByte = offset+2; // first number says what it is 2nd number says which number it is
-
-		 for (int i = 0; i < 28; i++)
-		 {
-			 buffer[bufferPos++] = SPI_LEVERS[currentByte + i];
-
-		 }
-		 //HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
-	}
-	else if (SPI_LEVERS[offset] == ReceivingKnobs)
-	{
-		 uint8_t currentByte = offset+1;
-
-			for (int i = 0; i < 12; i++)
-			{
-				tExpSmooth_setDest(&knobSmoothers[i], (SPI_LEVERS[i + currentByte] * 0.003921568627451f)); //scaled 0.0 to 1.0
-			}
-			currentByte += 12;
-			for (int i = 0; i < 10; i++)
-			{
-				tExpSmooth_setDest(&pedalSmoothers[i], (SPI_LEVERS[i + currentByte ] * 0.003921568627451f)); //scaled 0.0 to 1.0
-			}
-			HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_SET);
-			updateStateFromSPIMessage(offset);
-			HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_RESET);
-
-	}
-	else if (SPI_LEVERS[offset] == ReceivingEnd)
-	{
-		if(writingState == ReceivingPreset)
-		{
-			 writingState = 0;
-			 presetNumberToLoad = presetNumberToSave;
-			 /* Parse into Audio Params */
-			 presetWaitingToParse = bufferPos;
-			 presetWaitingToWrite = bufferPos;
-		}
-	}
-/*
-	else if (SPI_LEVERS[offset] == LoadingPreset)
-	{
-		uint8_t loadNumber = SPI_LEVERS[offset+1];
-		if (loadNumber < MAX_NUM_PRESETS)
-		{
-			presetNumberToLoad = loadNumber;
-			whichPresetToSendName = loadNumber;
-			presetWaitingToLoad = 1;
-		}
-	}
-	if (SPI_LEVERS[offset] == WaitingForLoadAck)
-	{
-		SPI_LEVERS[offset] = 252;
-		if(!loadFailed)
-		{
-			SPI_LEVERS[offset+1] = currentActivePreset;//this will change to the loaded preset number when parsing is finished
-		}
-		else
-		{
-			SPI_LEVERS[offset+1] = 254; //load failed
-			SPI_LEVERS[offset+2] = currentActivePreset; //tell the PSOC that it needs to show the old currently active preset, since the new load failed.
-		}
-	}
-	*/
-	//else
-	{
-		if (boardNumber == 0)
-		{
-			SPI_LEVERS_TX[offset] = 253; //special byte that says this is a preset name;
-			SPI_LEVERS_TX[offset+1] = whichPresetToSendName;
-			SPI_LEVERS_TX[offset+2] = presetNamesArray[whichPresetToSendName][0];
-			SPI_LEVERS_TX[offset+3] = presetNamesArray[whichPresetToSendName][1];
-			SPI_LEVERS_TX[offset+4] = presetNamesArray[whichPresetToSendName][2];
-			SPI_LEVERS_TX[offset+5] = presetNamesArray[whichPresetToSendName][3];
-			SPI_LEVERS_TX[offset+6] = presetNamesArray[whichPresetToSendName][4];
-			SPI_LEVERS_TX[offset+7] = presetNamesArray[whichPresetToSendName][5];
-			SPI_LEVERS_TX[offset+8] = presetNamesArray[whichPresetToSendName][6];
-			SPI_LEVERS_TX[offset+9] = presetNamesArray[whichPresetToSendName][7];
-			SPI_LEVERS_TX[offset+10] = presetNamesArray[whichPresetToSendName][8];
-			SPI_LEVERS_TX[offset+11] = presetNamesArray[whichPresetToSendName][9];
-			SPI_LEVERS_TX[offset+12] = presetNamesArray[whichPresetToSendName][10];
-			SPI_LEVERS_TX[offset+13] = presetNamesArray[whichPresetToSendName][11];
-			SPI_LEVERS_TX[offset+14] = presetNamesArray[whichPresetToSendName][12];
-			SPI_LEVERS_TX[offset+15] = presetNamesArray[whichPresetToSendName][13];
-			SPI_LEVERS_TX[offset+16] = whichMacroToSendName;
-			SPI_LEVERS_TX[offset+17] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][0];
-			SPI_LEVERS_TX[offset+18] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][1];
-			SPI_LEVERS_TX[offset+19] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][2];
-			SPI_LEVERS_TX[offset+20] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][3];
-			SPI_LEVERS_TX[offset+21] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][4];
-			SPI_LEVERS_TX[offset+22] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][5];
-			SPI_LEVERS_TX[offset+23] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][6];
-			SPI_LEVERS_TX[offset+24] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][7];
-			SPI_LEVERS_TX[offset+25] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][8];
-			SPI_LEVERS_TX[offset+26] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][9];
-			SPI_LEVERS_TX[offset+27] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][10];
-			SPI_LEVERS_TX[offset+28] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][11];
-			SPI_LEVERS_TX[offset+29] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][12];
-			SPI_LEVERS_TX[offset+30] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][13];
-			SPI_LEVERS_TX[offset+31] = 254;
-			whichMacroToSendName = (whichMacroToSendName + 1);
-			if (whichMacroToSendName >= 8)
-			{
-				whichMacroToSendName = 0;
-				whichPresetToSendName = (whichPresetToSendName + 1) % MAX_NUM_PRESETS;
-			}
-		}
-	}
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_RESET);
 }
 
 float __ATTR_ITCMRAM scaleDefault(float input)
@@ -1024,15 +1013,553 @@ float __ATTR_ITCMRAM scaleFinalLowpass(float input)
 }
 
 
-void blankFunction(float a, int b, int c)
+void __ATTR_ITCMRAM blankFunction(float a, int b, int c)
 {
 	;
 }
+
+void setEffectsFunctions(FXType effectType, int i)
+{
+	effectsActive[i] = 1;
+	switch (effectType)
+	{
+		  case None:
+			  effectTick[i] = &blankTick;
+			  effectSetters[i].setParam1 = &blankFunction;
+			  effectSetters[i].setParam2 = &blankFunction;
+			  effectSetters[i].setParam3 = &blankFunction;
+			  effectSetters[i].setParam4 = &blankFunction;
+			  effectSetters[i].setParam5 = &blankFunction;
+			  effectsActive[i] = 0;
+			  break;
+		  case Softclip:
+			  effectTick[i] = &softClipTick;
+			  effectSetters[i].setParam1 = &clipperGainSet;
+			  effectSetters[i].setParam2 = &offsetParam2;
+			  effectSetters[i].setParam3 = &param3Soft;
+			  effectSetters[i].setParam4 = &param4Linear;
+			  effectSetters[i].setParam5 = &blankFunction;
+
+			  break;
+		  case Hardclip:
+			  effectTick[i] = &hardClipTick;
+			  effectSetters[i].setParam1 = &clipperGainSet;
+			  effectSetters[i].setParam2 = &offsetParam2;
+			  effectSetters[i].setParam3 = &param3Hard;
+			  effectSetters[i].setParam4 = &param4Linear;
+			  effectSetters[i].setParam5 = &blankFunction;
+			  break;
+		  case ABSaturator:
+			  effectTick[i] = &satTick;
+			  effectSetters[i].setParam1 = &clipperGainSet;
+			  effectSetters[i].setParam2 = &offsetParam2;
+			  effectSetters[i].setParam3 = &param3Linear;
+			  effectSetters[i].setParam4 = &param4Linear;
+			  effectSetters[i].setParam5 = &blankFunction;
+			  break;
+		  case Tanh:
+			  effectTick[i] = &tanhTick;
+			  effectSetters[i].setParam1 = &clipperGainSet;
+			  effectSetters[i].setParam2 = &offsetParam2;
+			  effectSetters[i].setParam3 = &param3Linear;
+			  effectSetters[i].setParam4 = &param4Linear;
+			  effectSetters[i].setParam5 = &blankFunction;
+			  break;
+		  case Shaper:
+			  effectTick[i] = &shaperTick;
+			  effectSetters[i].setParam1 = &clipperGainSet;
+			  effectSetters[i].setParam2 = &offsetParam2;
+			  effectSetters[i].setParam3 = &param3Linear;
+			  effectSetters[i].setParam4 = &param4Linear;
+			  effectSetters[i].setParam5 = &blankFunction;
+			  break;
+		  case Compressor:
+			  effectTick[i] = &compressorTick;
+			  effectSetters[i].setParam1 = &compressorParam1;
+			  effectSetters[i].setParam2 = &compressorParam2;
+			  effectSetters[i].setParam3 = &compressorParam3;
+			  effectSetters[i].setParam4 = &compressorParam4;
+			  effectSetters[i].setParam5 = &compressorParam5;
+			  break;
+		  case Chorus:
+			  effectTick[i] = &chorusTick;
+			  effectSetters[i].setParam1 = &chorusParam1;
+			  effectSetters[i].setParam2 = &chorusParam2;
+			  effectSetters[i].setParam3 = &chorusParam3;
+			  effectSetters[i].setParam4 = &chorusParam4;
+			  effectSetters[i].setParam5 = &blankFunction;
+			  break;
+		  case Bitcrush:
+			  effectTick[i] = &bcTick;
+			  effectSetters[i].setParam1 = &clipperGainSet;
+			  effectSetters[i].setParam2 = &param2Linear;
+			  effectSetters[i].setParam3 = &param3BC;
+			  effectSetters[i].setParam4 = &param4Linear;
+			  effectSetters[i].setParam5 = &param5Linear;
+			  break;
+		  case TiltFilter:
+			  effectTick[i] = &tiltFilterTick;
+			  effectSetters[i].setParam1 = &tiltParam1;
+			  effectSetters[i].setParam2 = &tiltParam2;
+			  effectSetters[i].setParam3 = &tiltParam3;
+			  effectSetters[i].setParam4 = &tiltParam4;
+			  effectSetters[i].setParam5 = &param5Linear;
+			  break;
+		  case Wavefolder:
+			  effectTick[i] = &wavefolderTick;
+			  effectSetters[i].setParam1 = &wavefolderParam1;
+			  effectSetters[i].setParam2 = &offsetParam2;
+			  effectSetters[i].setParam3 = &wavefolderParam3;
+			  effectSetters[i].setParam4 = &param4Linear;
+			  effectSetters[i].setParam5 = &param5Linear;
+			  break;
+		  case FXLowpass :
+			  effectTick[i] = &FXlowpassTick;
+			  effectSetters[i].setParam1 = &FXLowpassParam1;
+			  effectSetters[i].setParam2 = &blankFunction;
+			  effectSetters[i].setParam3 = &FXLowpassParam3;
+			  effectSetters[i].setParam4 = &blankFunction;;
+			  effectSetters[i].setParam5 = &blankFunction;;
+			  break;
+		  case FXHighpass :
+			  effectTick[i] = &FXhighpassTick;
+			  effectSetters[i].setParam1 = &FXHighpassParam1;
+			  effectSetters[i].setParam2 = &blankFunction;
+			  effectSetters[i].setParam3 = &FXHighpassParam3;
+			  effectSetters[i].setParam4 = &blankFunction;
+			  effectSetters[i].setParam5 = &blankFunction;
+			  break;
+		  case FXBandpass :
+			  effectTick[i] = &FXbandpassTick;
+			  effectSetters[i].setParam1 = &FXBandpassParam1;
+			  effectSetters[i].setParam2 = &blankFunction;
+			  effectSetters[i].setParam3 = &FXBandpassParam3;
+			  effectSetters[i].setParam4 = &blankFunction;
+			  effectSetters[i].setParam5 = &blankFunction;
+			  break;
+		  case FXDiode :
+			  effectTick[i] = &FXdiodeLowpassTick;
+			  effectSetters[i].setParam1 = &FXDiodeParam1;
+			  effectSetters[i].setParam2 = &blankFunction;
+			  effectSetters[i].setParam3 = &FXDiodeParam3;
+			  effectSetters[i].setParam4 = &blankFunction;
+			  effectSetters[i].setParam5 = &blankFunction;
+			  break;
+		  case FXPeak :
+			  effectTick[i] = &FXVZpeakTick;
+			  effectSetters[i].setParam1 = &FXPeakParam1;
+			  effectSetters[i].setParam2 = &FXPeakParam2;
+			  effectSetters[i].setParam3 = &FXPeakParam3;
+			  effectSetters[i].setParam4 = &blankFunction;
+			  effectSetters[i].setParam5 = &blankFunction;
+			  break;
+		  case FXLowShelf :
+			  effectTick[i] = &FXVZlowshelfTick;
+			  effectSetters[i].setParam1 = &FXLowShelfParam1;
+			  effectSetters[i].setParam2 = &FXLowShelfParam2;
+			  effectSetters[i].setParam3 = &FXLowShelfParam3;
+			  effectSetters[i].setParam4 = &blankFunction;
+			  effectSetters[i].setParam5 = &blankFunction;
+			  break;
+		  case FXHighShelf :
+			  effectTick[i] = FXVZhighshelfTick;
+			  effectSetters[i].setParam1 = &FXHighShelfParam1;;
+			  effectSetters[i].setParam2 = &FXHighShelfParam2;;
+			  effectSetters[i].setParam3 = &FXHighShelfParam3;;
+			  effectSetters[i].setParam4 = &blankFunction;;
+			  effectSetters[i].setParam5 = &blankFunction;;
+			  break;
+		  case FXNotch :
+			  effectTick[i] = FXVZbandrejectTick;
+			  effectSetters[i].setParam1 = &FXNotchParam1;;
+			  effectSetters[i].setParam2 = &FXNotchParam2;;
+			  effectSetters[i].setParam3 = &FXNotchParam3;;
+			  effectSetters[i].setParam4 = &blankFunction;;
+			  effectSetters[i].setParam5 = &blankFunction;;
+			  break;
+		  case FXLadder :
+			  effectTick[i] = &FXLadderLowpassTick;
+			  effectSetters[i].setParam1 = &FXLadderParam1;;
+			  effectSetters[i].setParam2 = &blankFunction;;
+			  effectSetters[i].setParam3 = &FXLadderParam3;;
+			  effectSetters[i].setParam4 = &blankFunction;;
+			  effectSetters[i].setParam5 = &blankFunction;;
+			  break;
+		  default:
+			  break;
+	}
+}
+
+void setOscilllatorShapes(int oscshape, int i)
+{
+	switch (oscshape)
+	{
+		  case 0:
+			  shapeTick[i] = &sawSquareTick;
+			  break;
+		  case 1:
+			  shapeTick[i] = &sineTriTick;
+			  break;
+		  case 2:
+			  shapeTick[i] = &sawTick;
+			  break;
+		  case 3:
+			  shapeTick[i] = &pulseTick;
+			  break;
+		  case 4:
+			  shapeTick[i] = &sineTick;
+			  break;
+		  case 5:
+			  shapeTick[i] = &triTick;
+			  break;
+		  case 6:
+			  shapeTick[i] = &userTick;
+			  break;
+		  default:
+			  break;
+	}
+}
+void setFilterTypes(int filterType, int i)
+{
+	switch (filterType)
+		{
+			  case 0:
+				  filterTick[i] = &lowpassTick;
+				  filterSetters[i].setQ = &lowpassSetQ;
+				  filterSetters[i].setGain = &lowpassSetGain;
+				  break;
+			  case 1:
+				  filterTick[i] = &highpassTick;
+				  filterSetters[i].setQ = &highpassSetQ;
+				  filterSetters[i].setGain = &highpassSetGain;
+				  break;
+			  case 2:
+				  filterTick[i] = &bandpassTick;
+				  filterSetters[i].setQ = &bandpassSetQ;
+				  filterSetters[i].setGain = &bandpassSetGain;
+				  break;
+			  case 3:
+				  filterTick[i] = &diodeLowpassTick;
+				  filterSetters[i].setQ = &diodeLowpassSetQ;
+				  filterSetters[i].setGain = &diodeLowpassSetGain;
+				  break;
+			  case 4:
+				  filterTick[i] = &VZpeakTick;
+				  filterSetters[i].setQ = &VZpeakSetQ;
+				  filterSetters[i].setGain = &VZpeakSetGain;
+				  break;
+			  case 5:
+				  filterTick[i] = &VZlowshelfTick;
+				  filterSetters[i].setQ = &VZlowshelfSetQ;
+				  filterSetters[i].setGain = &VZlowshelfSetGain;
+				  break;
+			  case 6:
+				  filterTick[i] = &VZhighshelfTick;
+				  filterSetters[i].setQ = &VZhighshelfSetQ;
+				  filterSetters[i].setGain = &VZhighshelfSetGain;
+				  break;
+			  case 7:
+				  filterTick[i] = &VZbandrejectTick;
+				  filterSetters[i].setQ = &VZbandrejectSetQ;
+				  filterSetters[i].setGain = &VZbandrejectSetGain;
+				  break;
+			  case 8:
+				  filterTick[i] = &LadderLowpassTick;
+				  filterSetters[i].setQ = &LadderLowpassSetQ;
+				  filterSetters[i].setGain = &LadderLowpassSetGain;
+				  break;
+			  default:
+				  break;
+		}
+}
+
+void setLFOShapes(int LFOShape, int i)
+{
+	switch(LFOShape)
+	{
+		case SineTriLFOShapeSet:
+			lfoShapeTick[i] = &lfoSineTriTick;
+			lfoSetters[i].setRate = &lfoSineTriSetRate;
+			lfoSetters[i].setShape = &lfoSineTriSetShape;
+			lfoSetters[i].setPhase = &lfoSineTriSetPhase;
+			break;
+		case SawPulseLFOShapeSet:
+			lfoShapeTick[i] = &lfoSawSquareTick;
+			lfoSetters[i].setRate = &lfoSawSquareSetRate;
+			lfoSetters[i].setShape = &lfoSawSquareSetShape;
+			lfoSetters[i].setPhase = &lfoSawSquareSetPhase;
+			break;
+		case SineLFOShapeSet:
+			lfoShapeTick[i] = &lfoSineTick;
+			lfoSetters[i].setRate = &lfoSineSetRate;
+			lfoSetters[i].setShape = &lfoSineSetShape;
+			lfoSetters[i].setPhase = &lfoSineSetPhase;
+			break;
+		case TriLFOShapeSet:
+			lfoShapeTick[i] = &lfoTriTick;
+			lfoSetters[i].setRate = &lfoTriSetRate;
+			lfoSetters[i].setShape = &lfoTriSetShape;
+			lfoSetters[i].setPhase = &lfoTriSetPhase;
+			break;
+		case SawLFOShapeSet:
+			lfoShapeTick[i] = &lfoSawTick;
+			lfoSetters[i].setRate = &lfoSawSetRate;
+			lfoSetters[i].setShape = &lfoSawSetShape;
+			lfoSetters[i].setPhase = &lfoSawSetPhase;
+			break;
+		case PulseLFOShapeSet:
+			lfoShapeTick[i] = &lfoPulseTick;
+			lfoSetters[i].setRate = &lfoPulseSetRate;
+			lfoSetters[i].setShape = &lfoPulseSetShape;
+			lfoSetters[i].setPhase = &lfoPulseSetPhase;
+			break;
+	}
+}
+
+void __ATTR_ITCMRAM handleSPI (uint8_t offset)
+{
+	interruptChecker = 1;
+
+	// if the first number is a 1 then it's a midi note/ctrl/bend message
+	if (SPI_LEVERS[offset] == ReceivingPitches)
+	{
+		 uint8_t currentByte = offset+1;
+		 for (int i = 0; i < numStringsThisBoard; i++)
+		 {
+			float myPitch = (float)(SPI_LEVERS[((i+firstString) * 2) + currentByte] << 8) + SPI_LEVERS[((i+firstString) * 2) + 1 + currentByte];
+			myPitch = myPitch * 0.001953154802777f; //(128 / 65535) scale the 16 bit integer into midinotes.
+			if ((myPitch > 0.0f) && (myPitch < 140.0f))
+			{
+				stringMIDIPitches[i] = myPitch;
+			}
+		 }
+		 HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_SET);
+		 whichBar = 0;
+		 updateStateFromSPIMessage(offset);
+		 HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_RESET);
+		 //HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
+	}
+	// if the first number is a 2 then it's a preset write
+	else if (SPI_LEVERS[offset] == ReceivingPreset)
+	{
+		//got a new preset to write to memory
+		 //HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
+
+		 //if you aren't already writing a preset to memory, start the process
+		 if (writingState != ReceivingPreset)
+		 {
+			 writingState = ReceivingPreset; // set the flag to let the mcu know that a preset write is in progress
+				for (int i = 0; i < AUDIO_BUFFER_SIZE; i+=2)
+				{
+					audioOutBuffer[i] = 0;
+					audioOutBuffer[i + 1] = 0;
+				}
+			 diskBusy = 1;
+			 audioMasterLevel = 0.0f;
+			 //write the raw data as a preset number on the SD card
+			 bufferPos = 0;
+		 }
+		 presetNumberToSave = SPI_LEVERS[offset + 1];
+		 uint8_t currentByte = offset+2; // first number says what it is 2nd number says which number it is
+
+		 for (int i = 0; i < 28; i++)
+		 {
+			 buffer[bufferPos++] = SPI_LEVERS[currentByte + i];
+
+		 }
+		 //HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
+	}
+	else if (SPI_LEVERS[offset] == ReceivingKnobs)
+	{
+		 uint8_t currentByte = offset+1;
+
+			for (int i = 0; i < 12; i++)
+			{
+				tExpSmooth_setDest(&knobSmoothers[i], (SPI_LEVERS[i + currentByte] * 0.003921568627451f)); //scaled 0.0 to 1.0
+			}
+			currentByte += 12;
+			for (int i = 0; i < 10; i++)
+			{
+				tExpSmooth_setDest(&pedalSmoothers[i], (SPI_LEVERS[i + currentByte ] * 0.003921568627451f)); //scaled 0.0 to 1.0
+			}
+			HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_SET);
+			whichBar = 1;
+			updateStateFromSPIMessage(offset);
+			HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_RESET);
+
+	}
+	else if (SPI_LEVERS[offset] == ReceivingEnd)
+	{
+		if(writingState == ReceivingPreset)
+		{
+			 writingState = 0;
+			 presetNumberToLoad = presetNumberToSave;
+			 /* Parse into Audio Params */
+			 presetWaitingToParse = bufferPos;
+			 presetWaitingToWrite = bufferPos;
+		}
+	}
+
+	else if (SPI_LEVERS[offset] == ReceivingSingleParamChange)
+	{
+		uint8_t currentByte = offset+1;
+
+		uint16_t whichParam = ((SPI_LEVERS[currentByte]<< 8) + SPI_LEVERS[currentByte+1]);
+		currentByte = currentByte + 2;
+
+
+		for (int v = 0; v < NUM_STRINGS_PER_BOARD; v++)
+		{
+			//get the zero-to-one-value
+			params[whichParam].zeroToOneVal[v] = INV_TWO_TO_16 * ((SPI_LEVERS[currentByte] << 8) + SPI_LEVERS[currentByte+1]);
+
+			if ((whichParam == Effect1FXType) || (whichParam == Effect2FXType) || (whichParam == Effect3FXType) || (whichParam == Effect4FXType))
+			{
+				uint8_t whichEffect = (whichParam - Effect1FXType) / EffectParamsNum;
+				FXType effectType = roundf(params[whichParam].zeroToOneVal[v] * (NUM_EFFECT_TYPES-1));
+				param *FXAlias = &params[whichParam + 1];
+
+				if (effectType > FXLowpass)
+				{
+					FXAlias[2].scaleFunc = &scaleFilterResonance;
+				}
+				setEffectsFunctions(effectType, whichEffect);
+				FXAlias[0].setParam = effectSetters[whichEffect].setParam1;
+				FXAlias[1].setParam = effectSetters[whichEffect].setParam2;
+				FXAlias[2].setParam = effectSetters[whichEffect].setParam3;
+				FXAlias[3].setParam = effectSetters[whichEffect].setParam4;
+				FXAlias[4].setParam = effectSetters[whichEffect].setParam5;
+			}
+			//set the real value based on the scale function
+			params[whichParam].realVal[v] = params[whichParam].scaleFunc(params[whichParam].zeroToOneVal[v]);
+			//set the actual parameter
+			params[whichParam].setParam(params[whichParam].realVal[v], params[whichParam].objectNumber, v);
+
+			if ((whichParam == Osc1ShapeSet) || (whichParam == Osc2ShapeSet) || (whichParam == Osc3ShapeSet))
+			{
+				int whichOsc =(whichParam - Osc1ShapeSet) / OscParamsNum;
+				int oscshape = roundf(params[whichParam].realVal[0] * (NUM_OSC_SHAPES-1));
+				setOscilllatorShapes(oscshape, whichOsc);
+			}
+			if ((whichParam == Osc1) || (whichParam == Osc2) ||(whichParam == Osc3))
+			{
+				int whichOsc = (whichParam - Osc1) / OscParamsNum;
+				if (params[whichParam].realVal[0]  > 0.5f)
+				{
+					oscsEnabled[whichOsc] = 1;
+				}
+				else
+				{
+					oscsEnabled[whichOsc] = 0;
+				}
+				int enabledCount = 0;
+
+				for (int j = 0; j < 3; j++)
+				{
+					enabledCount += oscsEnabled[j];
+				}
+				oscAmpMult = oscAmpMultArray[enabledCount];
+			}
+			if ((whichParam == Filter1Type) || (whichParam == Filter1Type))
+			{
+				int whichFilter = (whichParam - Filter1Type) / FilterParamsNum;
+				int filterType = roundf(params[whichParam].realVal[0] * (NUM_FILTER_TYPES-1));
+				setFilterTypes(filterType, whichFilter);
+			}
+			if ((whichParam == LFO1Shape) || (whichParam == LFO2Shape) || (whichParam == LFO3Shape) || (whichParam == LFO4Shape))
+			{
+				int whichLFO = (whichParam - LFO1Shape) / LFOParamsNum;
+				int LFOShape = roundf(params[whichParam].realVal[0] * (NUM_LFO_SHAPES-1));
+				setLFOShapes(LFOShape, whichLFO);
+			}
+		}
+		if ((whichParam == MIDIKeyMax) || (whichParam == MIDIKeyMin))
+		{
+			midiKeyDivisor = 1.0f / ((params[MIDIKeyMax].realVal[0]*127.0f) - (params[MIDIKeyMin].realVal[0]*127.0f));
+			midiKeySubtractor = (params[MIDIKeyMin].realVal[0] * 127.0f);
+		}
+	}
+/*
+	else if (SPI_LEVERS[offset] == LoadingPreset)
+	{
+		uint8_t loadNumber = SPI_LEVERS[offset+1];
+		if (loadNumber < MAX_NUM_PRESETS)
+		{
+			presetNumberToLoad = loadNumber;
+			whichPresetToSendName = loadNumber;
+			presetWaitingToLoad = 1;
+		}
+	}
+	if (SPI_LEVERS[offset] == WaitingForLoadAck)
+	{
+		SPI_LEVERS[offset] = 252;
+		if(!loadFailed)
+		{
+			SPI_LEVERS[offset+1] = currentActivePreset;//this will change to the loaded preset number when parsing is finished
+		}
+		else
+		{
+			SPI_LEVERS[offset+1] = 254; //load failed
+			SPI_LEVERS[offset+2] = currentActivePreset; //tell the PSOC that it needs to show the old currently active preset, since the new load failed.
+		}
+	}
+	*/
+	//else
+	{
+		if (boardNumber == 0)
+		{
+			SPI_LEVERS_TX[offset] = 253; //special byte that says this is a preset name;
+			SPI_LEVERS_TX[offset+1] = whichPresetToSendName;
+			SPI_LEVERS_TX[offset+2] = presetNamesArray[whichPresetToSendName][0];
+			SPI_LEVERS_TX[offset+3] = presetNamesArray[whichPresetToSendName][1];
+			SPI_LEVERS_TX[offset+4] = presetNamesArray[whichPresetToSendName][2];
+			SPI_LEVERS_TX[offset+5] = presetNamesArray[whichPresetToSendName][3];
+			SPI_LEVERS_TX[offset+6] = presetNamesArray[whichPresetToSendName][4];
+			SPI_LEVERS_TX[offset+7] = presetNamesArray[whichPresetToSendName][5];
+			SPI_LEVERS_TX[offset+8] = presetNamesArray[whichPresetToSendName][6];
+			SPI_LEVERS_TX[offset+9] = presetNamesArray[whichPresetToSendName][7];
+			SPI_LEVERS_TX[offset+10] = presetNamesArray[whichPresetToSendName][8];
+			SPI_LEVERS_TX[offset+11] = presetNamesArray[whichPresetToSendName][9];
+			SPI_LEVERS_TX[offset+12] = presetNamesArray[whichPresetToSendName][10];
+			SPI_LEVERS_TX[offset+13] = presetNamesArray[whichPresetToSendName][11];
+			SPI_LEVERS_TX[offset+14] = presetNamesArray[whichPresetToSendName][12];
+			SPI_LEVERS_TX[offset+15] = presetNamesArray[whichPresetToSendName][13];
+			SPI_LEVERS_TX[offset+16] = whichMacroToSendName;
+			SPI_LEVERS_TX[offset+17] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][0];
+			SPI_LEVERS_TX[offset+18] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][1];
+			SPI_LEVERS_TX[offset+19] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][2];
+			SPI_LEVERS_TX[offset+20] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][3];
+			SPI_LEVERS_TX[offset+21] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][4];
+			SPI_LEVERS_TX[offset+22] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][5];
+			SPI_LEVERS_TX[offset+23] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][6];
+			SPI_LEVERS_TX[offset+24] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][7];
+			SPI_LEVERS_TX[offset+25] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][8];
+			SPI_LEVERS_TX[offset+26] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][9];
+			SPI_LEVERS_TX[offset+27] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][10];
+			SPI_LEVERS_TX[offset+28] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][11];
+			SPI_LEVERS_TX[offset+29] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][12];
+			SPI_LEVERS_TX[offset+30] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][13];
+			SPI_LEVERS_TX[offset+31] = 254;
+			whichMacroToSendName = (whichMacroToSendName + 1);
+			if (whichMacroToSendName >= 8)
+			{
+				whichMacroToSendName = 0;
+				whichPresetToSendName = (whichPresetToSendName + 1) % MAX_NUM_PRESETS;
+			}
+		}
+	}
+
+	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_RESET);
+}
+
 
 
 void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 {
 	//turn off the volume while changing parameters
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
+	uint16_t presetVersionNumber = 0;
+
 	 __disable_irq();
 	 presetReady = 0;
 	 for (int i = 0; i < AUDIO_BUFFER_SIZE; i++)
@@ -1044,6 +1571,25 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 
 
 	uint16_t bufferIndex = 0;
+
+
+	//should add an indicator at the beginning of the version number.
+	// maybe 4 bytes:
+		// [0] = 17   marker1 letting the parser know that a preset version number will follow
+	    // [1] = 18   marker2 letting the parser know that a preset version number will follow
+	    // [2] = version number major (i.e. the 01 in 1.04)
+	    // [3] = version number minor (i.e. the 04 in 1.04)
+
+	//if a version number is indicated, then set the presetVersionNumber value for later use, otherwise use default versionNumber of 0
+	if (buffer[bufferIndex] == 17)
+	{
+		if (buffer[bufferIndex + 1] == 18)
+		{
+			presetVersionNumber = ((buffer[bufferIndex + 2] << 8) + buffer[bufferIndex + 3]);
+		}
+		bufferIndex = 4;
+	}
+
 	//read first 14 items in buffer as the 14 character string that is the name of the preset
 	for (int i = 0; i < 14; i++)
 	{
@@ -1071,6 +1617,8 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 		//error in transmission - give up and don't parse!
 		audioMasterLevel = 1.0f;
 		presetWaitingToParse = 0;
+		 presetReady = 1;
+
 		__enable_irq();
 		return;
 	}
@@ -1083,7 +1631,9 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 		//error in transmission - give up and don't parse!
 		audioMasterLevel = 1.0f;
 		presetWaitingToParse = 0;
+		 presetReady = 1;
 		__enable_irq();
+
 		return;
 	}
 	uint16_t mappingCount = (buffer[paramCount*2+bufferIndex+4] << 8) + buffer[paramCount*2+bufferIndex+5];
@@ -1098,7 +1648,9 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 		//error in transmission - give up and don't parse!
 		audioMasterLevel = 1.0f;
 		presetWaitingToParse = 0;
+		 presetReady = 1;
 		__enable_irq();
+
 		return;
 	}
 
@@ -1108,7 +1660,9 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 		//error in transmission - give up and don't parse!
 		audioMasterLevel = 1.0f;
 		presetWaitingToParse = 0;
+		 presetReady = 1;
 		__enable_irq();
+
 		return;
 	}
 
@@ -1191,20 +1745,20 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 	//params[OutputAmp].scaleFunc = &scaleTwo;
 	params[OutputTone].scaleFunc  = &scaleFinalLowpass;
 	for (int i = 0; i < NUM_EFFECT; i++)
+	{
+		for (int v = 0; v < NUM_STRINGS_PER_BOARD; v++)
 		{
-			for (int v = 0; v < NUM_STRINGS_PER_BOARD; v++)
+			FXType effectType = roundf(params[Effect1FXType + (EffectParamsNum * i)].zeroToOneVal[v] * (NUM_EFFECT_TYPES-1));
+			param *FXAlias = &params[Effect1Param1 + (EffectParamsNum*i)];
+
+
+			if (effectType > FXLowpass) // this assumes filters are the last effects
 			{
-				FXType effectType = roundf(params[Effect1FXType + (EffectParamsNum * i)].realVal[v] * (NUM_EFFECT_TYPES-1));
-				param *FXAlias = &params[Effect1Param1 + (EffectParamsNum*i)];
-
-
-				if (effectType > FXLowpass)
-				{
-					FXAlias[2].scaleFunc = &scaleFilterResonance;
-				}
+				FXAlias[2].scaleFunc = &scaleFilterResonance;
 			}
-
+			setEffectsFunctions(effectType, i);
 		}
+	}
 	for (int v = 0; v < NUM_STRINGS_PER_BOARD; v++)
 	{
 		for (int i = 0; i < NUM_PARAMS; i++)
@@ -1217,35 +1771,15 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 	for (int i = 0; i < NUM_OSC; i++)
 	{
 		int oscshape = roundf(params[Osc1ShapeSet + (OscParamsNum * i)].realVal[0] * (NUM_OSC_SHAPES-1));
-		switch (oscshape)
-		{
-			  case 0:
-				  shapeTick[i] = &sawSquareTick;
-				  break;
-			  case 1:
-				  shapeTick[i] = &sineTriTick;
-				  break;
-			  case 2:
-				  shapeTick[i] = &sawTick;
-				  break;
-			  case 3:
-				  shapeTick[i] = &pulseTick;
-				  break;
-			  case 4:
-				  shapeTick[i] = &sineTick;
-				  break;
-			  case 5:
-				  shapeTick[i] = &triTick;
-				  break;
-			  case 6:
-				  shapeTick[i] = &userTick;
-				  break;
-			  default:
-				  break;
-		}
+		setOscilllatorShapes(oscshape, i);
 		if (params[Osc1 + (OscParamsNum * i)].realVal[0]  > 0.5f)
 		{
 			enabledCount++;
+			oscsEnabled[i] = 1;
+		}
+		else
+		{
+			oscsEnabled[i] = 0;
 		}
 	}
 	//set amplitude of oscillators based on how many are enabled
@@ -1254,272 +1788,13 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 	for (int i = 0; i < NUM_FILT; i++)
 	{
 		int filterType = roundf(params[Filter1Type + (i * FilterParamsNum)].realVal[0] * (NUM_FILTER_TYPES-1));
-		switch (filterType)
-		{
-			  case 0:
-				  filterTick[i] = &lowpassTick;
-				  filterSetters[i].setQ = &lowpassSetQ;
-				  filterSetters[i].setGain = &lowpassSetGain;
-				  break;
-			  case 1:
-				  filterTick[i] = &highpassTick;
-				  filterSetters[i].setQ = &highpassSetQ;
-				  filterSetters[i].setGain = &highpassSetGain;
-				  break;
-			  case 2:
-				  filterTick[i] = &bandpassTick;
-				  filterSetters[i].setQ = &bandpassSetQ;
-				  filterSetters[i].setGain = &bandpassSetGain;
-				  break;
-			  case 3:
-				  filterTick[i] = &diodeLowpassTick;
-				  filterSetters[i].setQ = &diodeLowpassSetQ;
-				  filterSetters[i].setGain = &diodeLowpassSetGain;
-				  break;
-			  case 4:
-				  filterTick[i] = &VZpeakTick;
-				  filterSetters[i].setQ = &VZpeakSetQ;
-				  filterSetters[i].setGain = &VZpeakSetGain;
-				  break;
-			  case 5:
-				  filterTick[i] = &VZlowshelfTick;
-				  filterSetters[i].setQ = &VZlowshelfSetQ;
-				  filterSetters[i].setGain = &VZlowshelfSetGain;
-				  break;
-			  case 6:
-				  filterTick[i] = &VZhighshelfTick;
-				  filterSetters[i].setQ = &VZhighshelfSetQ;
-				  filterSetters[i].setGain = &VZhighshelfSetGain;
-				  break;
-			  case 7:
-				  filterTick[i] = &VZbandrejectTick;
-				  filterSetters[i].setQ = &VZbandrejectSetQ;
-				  filterSetters[i].setGain = &VZbandrejectSetGain;
-				  break;
-			  case 8:
-				  filterTick[i] = &LadderLowpassTick;
-				  filterSetters[i].setQ = &LadderLowpassSetQ;
-				  filterSetters[i].setGain = &LadderLowpassSetGain;
-				  break;
-			  default:
-				  break;
-		}
+		setFilterTypes(filterType, i);
 	}
 
 	for (int i = 0; i < NUM_LFOS; i++)
 	{
-		int LFOType = roundf(params[LFO1ShapeSet + (i * LFOParamsNum)].realVal[0] * (NUM_LFO_SHAPES-1));
-		switch(LFOType)
-		{
-			case SineTriLFOShapeSet:
-				lfoShapeTick[i] = &lfoSineTriTick;
-				lfoSetters[i].setRate = &lfoSineTriSetRate;
-				lfoSetters[i].setShape = &lfoSineTriSetShape;
-				lfoSetters[i].setPhase = &lfoSineTriSetPhase;
-				break;
-			case SawPulseLFOShapeSet:
-				lfoShapeTick[i] = &lfoSawSquareTick;
-				lfoSetters[i].setRate = &lfoSawSquareSetRate;
-				lfoSetters[i].setShape = &lfoSawSquareSetShape;
-				lfoSetters[i].setPhase = &lfoSawSquareSetPhase;
-				break;
-			case SineLFOShapeSet:
-				lfoShapeTick[i] = &lfoSineTick;
-				lfoSetters[i].setRate = &lfoSineSetRate;
-				lfoSetters[i].setShape = &lfoSineSetShape;
-				lfoSetters[i].setPhase = &lfoSineSetPhase;
-				break;
-			case TriLFOShapeSet:
-				lfoShapeTick[i] = &lfoTriTick;
-				lfoSetters[i].setRate = &lfoTriSetRate;
-				lfoSetters[i].setShape = &lfoTriSetShape;
-				lfoSetters[i].setPhase = &lfoTriSetPhase;
-				break;
-			case SawLFOShapeSet:
-				lfoShapeTick[i] = &lfoSawTick;
-				lfoSetters[i].setRate = &lfoSawSetRate;
-				lfoSetters[i].setShape = &lfoSawSetShape;
-				lfoSetters[i].setPhase = &lfoSawSetPhase;
-				break;
-			case PulseLFOShapeSet:
-				lfoShapeTick[i] = &lfoPulseTick;
-				lfoSetters[i].setRate = &lfoPulseSetRate;
-				lfoSetters[i].setShape = &lfoPulseSetShape;
-				lfoSetters[i].setPhase = &lfoPulseSetPhase;
-				break;
-		}
-	}
-	uint8_t totalEffects = 4; //currently doesn't pay attention to skipped effects out of order
-
-	for (int i = 0; i < NUM_EFFECT; i++)
-	{
-		FXType effectType = roundf(params[Effect1FXType + (EffectParamsNum * i)].realVal[0] * (NUM_EFFECT_TYPES-1));
-		switch (effectType)
-		{
-			  case None:
-				  effectTick[i] = &blankTick;
-				  effectSetters[i].setParam1 = &blankFunction;
-				  effectSetters[i].setParam2 = &blankFunction;
-				  effectSetters[i].setParam3 = &blankFunction;
-				  effectSetters[i].setParam4 = &blankFunction;
-				  effectSetters[i].setParam5 = &blankFunction;
-				  totalEffects--;
-				  break;
-			  case Softclip:
-				  effectTick[i] = &softClipTick;
-				  effectSetters[i].setParam1 = &clipperGainSet;
-				  effectSetters[i].setParam2 = &offsetParam2;
-				  effectSetters[i].setParam3 = &param3Soft;
-				  effectSetters[i].setParam4 = &param4Linear;
-				  effectSetters[i].setParam5 = &blankFunction;
-				  break;
-			  case Hardclip:
-				  effectTick[i] = &hardClipTick;
-				  effectSetters[i].setParam1 = &clipperGainSet;
-				  effectSetters[i].setParam2 = &offsetParam2;
-				  effectSetters[i].setParam3 = &param3Hard;
-				  effectSetters[i].setParam4 = &param4Linear;
-				  effectSetters[i].setParam5 = &blankFunction;
-				  break;
-			  case ABSaturator:
-				  effectTick[i] = &satTick;
-				  effectSetters[i].setParam1 = &clipperGainSet;
-				  effectSetters[i].setParam2 = &offsetParam2;
-				  effectSetters[i].setParam3 = &param3Linear;
-				  effectSetters[i].setParam4 = &param4Linear;
-				  effectSetters[i].setParam5 = &blankFunction;
-				  break;
-			  case Tanh:
-				  effectTick[i] = &tanhTick;
-				  effectSetters[i].setParam1 = &clipperGainSet;
-				  effectSetters[i].setParam2 = &offsetParam2;
-				  effectSetters[i].setParam3 = &param3Linear;
-				  effectSetters[i].setParam4 = &param4Linear;
-				  effectSetters[i].setParam5 = &blankFunction;
-				  break;
-			  case Shaper:
-				  effectTick[i] = &shaperTick;
-				  effectSetters[i].setParam1 = &clipperGainSet;
-				  effectSetters[i].setParam2 = &offsetParam2;
-				  effectSetters[i].setParam3 = &param3Linear;
-				  effectSetters[i].setParam4 = &param4Linear;
-				  effectSetters[i].setParam5 = &blankFunction;
-				  break;
-			  case Compressor:
-				  effectTick[i] = &compressorTick;
-				  effectSetters[i].setParam1 = &compressorParam1;
-				  effectSetters[i].setParam2 = &compressorParam2;
-				  effectSetters[i].setParam3 = &compressorParam3;
-				  effectSetters[i].setParam4 = &compressorParam4;
-				  effectSetters[i].setParam5 = &compressorParam5;
-				  break;
-			  case Chorus:
-				  effectTick[i] = &chorusTick;
-				  effectSetters[i].setParam1 = &chorusParam1;
-				  effectSetters[i].setParam2 = &chorusParam2;
-				  effectSetters[i].setParam3 = &chorusParam3;
-				  effectSetters[i].setParam4 = &chorusParam4;
-				  effectSetters[i].setParam5 = &blankFunction;
-				  break;
-			  case Bitcrush:
-				  effectTick[i] = &bcTick;
-				  effectSetters[i].setParam1 = &clipperGainSet;
-				  effectSetters[i].setParam2 = &param2Linear;
-				  effectSetters[i].setParam3 = &param3BC;
-				  effectSetters[i].setParam4 = &param4Linear;
-				  effectSetters[i].setParam5 = &param5Linear;
-				  break;
-			  case TiltFilter:
-				  effectTick[i] = &tiltFilterTick;
-				  effectSetters[i].setParam1 = &tiltParam1;
-				  effectSetters[i].setParam2 = &tiltParam2;
-				  effectSetters[i].setParam3 = &tiltParam3;
-				  effectSetters[i].setParam4 = &tiltParam4;
-				  effectSetters[i].setParam5 = &param5Linear;
-				  break;
-			  case Wavefolder:
-				  effectTick[i] = &wavefolderTick;
-				  effectSetters[i].setParam1 = &wavefolderParam1;
-				  effectSetters[i].setParam2 = &offsetParam2;
-				  effectSetters[i].setParam3 = &wavefolderParam3;
-				  effectSetters[i].setParam4 = &param4Linear;
-				  effectSetters[i].setParam5 = &param5Linear;
-				  break;
-			  case FXLowpass :
-				  effectTick[i] = &FXlowpassTick;
-				  effectSetters[i].setParam1 = &FXLowpassParam1;
-				  effectSetters[i].setParam2 = &blankFunction;
-				  effectSetters[i].setParam3 = &FXLowpassParam3;
-				  effectSetters[i].setParam4 = &blankFunction;;
-				  effectSetters[i].setParam5 = &blankFunction;;
-				  break;
-			  case FXHighpass :
-				  effectTick[i] = &FXhighpassTick;
-				  effectSetters[i].setParam1 = &FXHighpassParam1;
-				  effectSetters[i].setParam2 = &blankFunction;
-				  effectSetters[i].setParam3 = &FXHighpassParam3;
-				  effectSetters[i].setParam4 = &blankFunction;
-				  effectSetters[i].setParam5 = &blankFunction;
-				  break;
-			  case FXBandpass :
-				  effectTick[i] = &FXbandpassTick;
-				  effectSetters[i].setParam1 = &FXBandpassParam1;
-				  effectSetters[i].setParam2 = &blankFunction;
-				  effectSetters[i].setParam3 = &FXBandpassParam3;
-				  effectSetters[i].setParam4 = &blankFunction;
-				  effectSetters[i].setParam5 = &blankFunction;
-				  break;
-			  case FXDiode :
-				  effectTick[i] = &FXdiodeLowpassTick;
-				  effectSetters[i].setParam1 = &FXDiodeParam1;
-				  effectSetters[i].setParam2 = &blankFunction;
-				  effectSetters[i].setParam3 = &FXDiodeParam3;
-				  effectSetters[i].setParam4 = &blankFunction;
-				  effectSetters[i].setParam5 = &blankFunction;
-				  break;
-			  case FXPeak :
-				  effectTick[i] = &FXVZpeakTick;
-				  effectSetters[i].setParam1 = &FXPeakParam1;
-				  effectSetters[i].setParam2 = &FXPeakParam2;
-				  effectSetters[i].setParam3 = &FXPeakParam3;
-				  effectSetters[i].setParam4 = &blankFunction;
-				  effectSetters[i].setParam5 = &blankFunction;
-				  break;
-			  case FXLowShelf :
-				  effectTick[i] = &FXVZlowshelfTick;
-				  effectSetters[i].setParam1 = &FXLowShelfParam1;
-				  effectSetters[i].setParam2 = &FXLowShelfParam2;
-				  effectSetters[i].setParam3 = &FXLowShelfParam3;
-				  effectSetters[i].setParam4 = &blankFunction;
-				  effectSetters[i].setParam5 = &blankFunction;
-				  break;
-			  case FXHighShelf :
-				  effectTick[i] = FXVZhighshelfTick;
-				  effectSetters[i].setParam1 = &FXHighShelfParam1;;
-				  effectSetters[i].setParam2 = &FXHighShelfParam2;;
-				  effectSetters[i].setParam3 = &FXHighShelfParam3;;
-				  effectSetters[i].setParam4 = &blankFunction;;
-				  effectSetters[i].setParam5 = &blankFunction;;
-				  break;
-			  case FXNotch :
-				  effectTick[i] = FXVZbandrejectTick;
-				  effectSetters[i].setParam1 = &FXNotchParam1;;
-				  effectSetters[i].setParam2 = &FXNotchParam2;;
-				  effectSetters[i].setParam3 = &FXNotchParam3;;
-				  effectSetters[i].setParam4 = &blankFunction;;
-				  effectSetters[i].setParam5 = &blankFunction;;
-				  break;
-			  case FXLadder :
-				  effectTick[i] = &FXLadderLowpassTick;
-				  effectSetters[i].setParam1 = &FXLadderParam1;;
-				  effectSetters[i].setParam2 = &blankFunction;;
-				  effectSetters[i].setParam3 = &FXLadderParam3;;
-				  effectSetters[i].setParam4 = &blankFunction;;
-				  effectSetters[i].setParam5 = &blankFunction;;
-				  break;
-			  default:
-				  break;
-		}
+		int LFOShape = roundf(params[LFO1ShapeSet + (i * LFOParamsNum)].realVal[0] * (NUM_LFO_SHAPES-1));
+		setLFOShapes(LFOShape, i);
 	}
 
 
@@ -1808,27 +2083,17 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 	audioMasterLevel = 1.0f;
 	oscToTick = NUM_OSC;
 	overSampled = 1;
-	numEffectToTick = totalEffects;
 	filterToTick = totalFilters;
 	__enable_irq();
 	presetReady = 1;
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
+	diskBusy = 0;
+	receivingI2C = 0;
 }
 
 
-/////
 
 
-#if 0
-void  __ATTR_ITCMRAM HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
-{
-	handleSPI(16);
-}
-
-void __ATTR_ITCMRAM HAL_SPI_TxRxHalfCpltCallback(SPI_HandleTypeDef *hspi)
-{
-	handleSPI(0);
-}
-#endif
 
 // helper function to initialize measuring unit (cycle counter) */
 void CycleCounterInit( void )
@@ -1847,153 +2112,6 @@ void CycleCounterInit( void )
   DWT->CTRL = 0x40000001;
 
 }
-
-
-void MPU_Conf(void)
-{
-	//code from Keshikan https://github.com/keshikan/STM32H7_DMA_sample
-  //Thanks, Keshikan! This solves the issues with accessing the SRAM in the D2 area properly. -JS
-	//should test the different possible settings to see what works best while avoiding needing to manually clear the cache -JS
-
-	MPU_Region_InitTypeDef MPU_InitStruct;
-
-	  HAL_MPU_Disable();
-
-	  MPU_InitStruct.Enable = MPU_REGION_ENABLE;
-
-	  //D2 Domain�SRAM1
-	  MPU_InitStruct.BaseAddress = 0x30000000;
-	  // Increased region size to 256k. In Keshikan's code, this was 512 bytes (that's all that application needed).
-	  // Each audio buffer takes up the frame size * 8 (16 bits makes it *2 and stereo makes it *2 and double buffering makes it *2)
-	  // So a buffer size for read/write of 4096 would take up 64k = 4096*8 * 2 (read and write).
-	  // I increased that to 256k so that there would be room for the ADC knob inputs and other peripherals that might require DMA access.
-	  // we have a total of 256k in SRAM1 (128k, 0x30000000-0x30020000) and SRAM2 (128k, 0x30020000-0x3004000) of D2 domain.
-	  // There is an SRAM3 in D2 domain as well (32k, 0x30040000-0x3004800) that is currently not mapped by the MPU (memory protection unit) controller.
-
-	  MPU_InitStruct.Size = MPU_REGION_SIZE_128KB;
-
-	  MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
-
-	  //Shared Device
-	  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
-	  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
-	  MPU_InitStruct.IsBufferable = MPU_ACCESS_BUFFERABLE;
-	  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
-
-	  //AN4838
-//	  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL1;
-//	  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
-//	  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
-//	  MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
-
-	  MPU_InitStruct.Number = MPU_REGION_NUMBER0;
-
-	  MPU_InitStruct.SubRegionDisable = 0x00;
-
-
-	  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_ENABLE;
-
-
-	  HAL_MPU_ConfigRegion(&MPU_InitStruct);
-
-
-	  //now set up D3 domain RAM
-	  MPU_InitStruct.Enable = MPU_REGION_ENABLE;
-	  //D2 Domain�SRAM1
-	  MPU_InitStruct.BaseAddress = 0x38000000;
-	  MPU_InitStruct.Size = MPU_REGION_SIZE_64KB;
-	  MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
-	  //AN4838
-	  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
-	  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
-	  MPU_InitStruct.IsBufferable = MPU_ACCESS_BUFFERABLE;
-	  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
-
-	  MPU_InitStruct.Number = MPU_REGION_NUMBER1;
-
-	  MPU_InitStruct.SubRegionDisable = 0x00;
-
-	  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_ENABLE;
-
-	  HAL_MPU_ConfigRegion(&MPU_InitStruct);
-
-	  MPU_InitStruct.Enable = MPU_REGION_ENABLE;
-
-	  //BackupSRAM
-	  MPU_InitStruct.BaseAddress = 0x38800000;
-	  MPU_InitStruct.Size = MPU_REGION_SIZE_4KB;
-
-	  MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
-
-	  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
-	  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
-	  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
-	  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
-
-	  MPU_InitStruct.Number = MPU_REGION_NUMBER2;
-	  MPU_InitStruct.SubRegionDisable = 0x00;
-	  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_ENABLE;
-	  HAL_MPU_ConfigRegion(&MPU_InitStruct);
-
-
-
-
-	  //SRAM for code execution not sure if TEX1 or TEX0 is better but probably doesn't matter because this memory is never written to, only read
-	  MPU_InitStruct.Enable = MPU_REGION_ENABLE;
-	  MPU_InitStruct.BaseAddress = 0x24000000;
-	  MPU_InitStruct.Size = MPU_REGION_SIZE_512KB;
-
-	  MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
-
-	  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL1;
-	  MPU_InitStruct.IsCacheable = MPU_ACCESS_CACHEABLE;
-	  MPU_InitStruct.IsBufferable = MPU_ACCESS_BUFFERABLE;
-	  MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
-
-	  MPU_InitStruct.Number = MPU_REGION_NUMBER3;
-	  MPU_InitStruct.SubRegionDisable = 0x00;
-	  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_ENABLE;
-	  HAL_MPU_ConfigRegion(&MPU_InitStruct);
-
-
-	  //SDRAM as strongly ordered to avoid speculative fetches that might stall the external memory if interrupted
-	  MPU_InitStruct.Enable = MPU_REGION_ENABLE;
-	  MPU_InitStruct.BaseAddress = 0xc0000000;
-	  MPU_InitStruct.Size = MPU_REGION_SIZE_64MB;
-
-	  MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
-
-	  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
-	  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
-	  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
-	  MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
-
-	  MPU_InitStruct.Number = MPU_REGION_NUMBER4;
-	  MPU_InitStruct.SubRegionDisable = 0x00;
-	  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_DISABLE;
-	  HAL_MPU_ConfigRegion(&MPU_InitStruct);
-
-
-	  //QSPI as strongly ordered to avoid speculative fetches that might stall the external memory if interrupted
-	  MPU_InitStruct.Enable = MPU_REGION_ENABLE;
-	  MPU_InitStruct.BaseAddress = 0x90040000;
-	  MPU_InitStruct.Size = MPU_REGION_SIZE_64MB;
-
-	  MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
-
-	  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
-	  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
-	  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
-	  MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
-
-	  MPU_InitStruct.Number = MPU_REGION_NUMBER5;
-	  MPU_InitStruct.SubRegionDisable = 0x00;
-	  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_DISABLE;
-	  HAL_MPU_ConfigRegion(&MPU_InitStruct);
-
-	  HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
-}
-
 
 
 void FlushECC(void *ptr, int bytes)
@@ -2026,68 +2144,34 @@ void FlushECC(void *ptr, int bytes)
 	}
 }
 
-void HAL_I2C_SlaveRxCpltCallback(I2C_HandleTypeDef *hi2c)
+
+uint8_t volatile I2CErrors = 0;
+void __ATTR_ITCMRAM HAL_I2C_SlaveRxCpltCallback(I2C_HandleTypeDef *hi2c)
 {
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET);
+	  //HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
+	  //HAL_Delay(2);
+	  //HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
+	  //HAL_Delay(2);
 	presetWaitingToParse = 4096;
+
+	HAL_I2C_Slave_Receive_IT(&hi2c1, buffer, 4096);
+
 }
 
-void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c)
+
+void __ATTR_ITCMRAM HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c)
 {
 	i2cSending = 0;
 }
 
-// EXTI Line12 External Interrupt ISR Handler CallBackFun
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+void __ATTR_ITCMRAM HAL_I2C_ErrorCallback(I2C_HandleTypeDef *hi2c)
 {
-
-
-	if(GPIO_Pin == GPIO_PIN_12) // If The INT Source Is EXTI Line12
-    {
-
-		if(boardNumber != 0)
-		{
-    	  if(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_12) == 1)
-    	  {
-    		  //wait for the signal pin to go low, then recieve
-    		  while(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_12) == 1)
-    		  {
-    			  ;
-    		  }
-    		  HAL_I2C_Slave_Receive_DMA(&hi2c1, buffer, 4096);
-    	  }
-		}
-
-    }
-
-    if(GPIO_Pin == GPIO_PIN_3) // If The INT Source Is EXTI Line3
-    {
-    	  if(HAL_GPIO_ReadPin(GPIOG, GPIO_PIN_3) == 1) //button is pressed, wait
-    	  {
-    		  buttonPressed = 1;
-    		  //bootloadFlag = 231;
-    		  //*(__IO uint32_t*)(0x38800000+36) = 12345678;
-    		  //SCB_CleanDCache_by_Addr (*(__IO uint32_t*)0x38800000+36, 1); //maybe needs different
-    	  }
-    	  else //button went up
-    	  {
-    		  if (buttonPressed == 1)
-    		  {
-    			  for (int i = 0; i < 32; i++)
-    			  {
-    				  bootloaderFlag[i] = 231;
-    			  }
-    			  FlushECC(&bootloaderFlag,  32);
-
-				  buttonPressed = 0;
-
-				  HAL_Delay(100);
-				  HAL_NVIC_SystemReset();
-
-
-    		  }
-    	  }
-    }
+	i2cSending = 0;
+	receivingI2C = 0;
+	I2CErrors++;
 }
+
 
 /* USER CODE END 4 */
 
@@ -2135,7 +2219,7 @@ void MPU_Config(void)
   */
   MPU_InitStruct.Number = MPU_REGION_NUMBER2;
   MPU_InitStruct.BaseAddress = 0x24040000;
-  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
+  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_DISABLE;
 
   HAL_MPU_ConfigRegion(&MPU_InitStruct);
 
@@ -2143,7 +2227,8 @@ void MPU_Config(void)
   */
   MPU_InitStruct.Number = MPU_REGION_NUMBER3;
   MPU_InitStruct.BaseAddress = 0x30000000;
-  MPU_InitStruct.Size = MPU_REGION_SIZE_1KB;
+  MPU_InitStruct.Size = MPU_REGION_SIZE_8KB;
+  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
   MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
   MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
 
@@ -2183,7 +2268,6 @@ void MPU_Config(void)
   MPU_InitStruct.Number = MPU_REGION_NUMBER7;
   MPU_InitStruct.BaseAddress = 0xc0000000;
   MPU_InitStruct.Size = MPU_REGION_SIZE_64MB;
-  MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
 
   HAL_MPU_ConfigRegion(&MPU_InitStruct);
 

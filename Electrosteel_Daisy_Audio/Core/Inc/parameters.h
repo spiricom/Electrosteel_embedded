@@ -23,6 +23,8 @@ enum SPIMessage
 	ReceivingKnobs,
 	LoadingPreset,
 	WaitingForLoadAck,
+	ReceivingSingleParamChange,
+	ReceivingMappingChange,
 	ReceivingEnd =  253
 };
 //selectable type number of possible values
@@ -52,7 +54,7 @@ enum SPIMessage
 
 //mapping array defines
 #define NUM_POSSIBLE_HOOKS 3
-#define NUM_SOURCES 28
+#define NUM_SOURCES 38
 
 #define OSC_SOURCE_OFFSET 0
 #define NOISE_SOURCE_OFFSET 3
@@ -63,6 +65,7 @@ enum SPIMessage
 #define RANDOM_SOURCE_OFFSET 19
 #define ENV_SOURCE_OFFSET 20
 #define LFO_SOURCE_OFFSET 24
+#define PEDAL_SOURCE_OFFSET 28
 
 
 //struct for every parameter
@@ -217,6 +220,8 @@ typedef enum _FXType
 } FXType;
 
 
+
+//TODO: remove M1 through Ped, shouldn't be params or destinations
 enum ParamNames
 {
 	MIDIKeyMax,
@@ -374,6 +379,7 @@ enum ParamNames
 	OutputAmp,
 	OutputTone,
 	FXOrder,
+	PedalControlsMaster,
 	numParams
 };
 
