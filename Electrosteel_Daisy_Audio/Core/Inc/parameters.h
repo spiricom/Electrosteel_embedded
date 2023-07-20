@@ -27,6 +27,13 @@ enum SPIMessage
 	ReceivingMappingChange,
 	ReceivingEnd =  253
 };
+
+enum MappingChangeTypes
+{
+	SourceID = 0,
+	Amount,
+	ScalarID
+};
 //selectable type number of possible values
 #define NUM_OSC_SHAPES 7
 #define NUM_FILTER_TYPES 9
@@ -113,6 +120,7 @@ typedef struct mapping
 	uint8_t sourceSmoothed[NUM_POSSIBLE_HOOKS];
 	float* scalarSourceValPtr[NUM_POSSIBLE_HOOKS][NUM_STRINGS_PER_BOARD];
 	float amount[NUM_POSSIBLE_HOOKS];
+	uint8_t hookActive[3];
 	uint8_t numHooks;
 } mapping;
 
