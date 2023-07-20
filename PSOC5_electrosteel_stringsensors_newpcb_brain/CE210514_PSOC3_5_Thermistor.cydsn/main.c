@@ -35,6 +35,7 @@ uint8_t singleParamToUpdateLow = 0;
 uint8_t singleParamValueHigh = 0;
 uint8_t singleParamValueLow = 0;
             
+uint8_t sendMappingChangeUpdate = 0;
             
 enum presetArraySectionState
 {
@@ -78,6 +79,7 @@ uint8_t prevVBUS = 0;
 volatile uint8_t USB_active = 0;
 volatile uint8_t USB_check_flag = 0;
 
+uint8_t mappingArray[6];
 
 uint8 inBuffer[myBufferSize];
 
@@ -1589,6 +1591,22 @@ int main(void)
             myArray[31] = 253;
             sendSingleParamUpdate = 0;
         }
+        
+        else if (sendMappingChangeUpdate)
+        {
+            myArray[0] = 7;
+            myArray[1] = mappingArray[0];
+            myArray[2] =  mappingArray[1];
+            myArray[3] =  mappingArray[2];
+            myArray[4] =  mappingArray[3];
+             myArray[5] =  mappingArray[4];
+             myArray[6] =  mappingArray[5];
+            myArray[30] = 254;
+            myArray[31] = 253;
+            sendMappingChangeUpdate = 0;
+        }
+        
+        
         else if (sendKnobs)
         {
             myArray[0] = 3; //sending knob stuff, not a preset send
@@ -2204,18 +2222,18 @@ void parseSysex(void)
             else if (presetArraySection == mapping)
             {
                 // this is the order
-                // source (int), target (int), scalarSource (arrives as -1.0f if no scalar, send as 255 if no scalar)(int), range (float -1.0 to 1.0)
+                // source (int), target (int), scalarSource (arrives as -1.0f if no scalar, send as 255 if no scalar)(int), range (float -1.0 to 1.0), slot# (in uint8_t)
                 if (numMappings < mapCountExpectation)
                 {
-                    if ((mapCount % 4) == 0)
+                    if ((mapCount % 5) == 0)
                     {
                         presetArray[valsStart + currentFloat++] = (uint8_t)theVal.f;
                     }
-                    else if  (mapCount % 4 == 1)
+                    else if  (mapCount % 5 == 1)
                     {
                         presetArray[valsStart + currentFloat++] = (uint8_t)theVal.f;
                     }
-                    else if (mapCount % 4 == 2) //check if the scalar source is -1 (if so send 255 instead of a valid source number)
+                    else if (mapCount % 5 == 2) //check if the scalar source is -1 (if so send 255 instead of a valid source number)
                     {
                         if (theVal.f < 0.0f)
                         {
@@ -2226,11 +2244,16 @@ void parseSysex(void)
                              presetArray[valsStart + currentFloat++] = (uint8_t)theVal.f;
                         }
                     }
-                    else
+                    else if (mapCount % 5 == 3)
                     {
                         int16_t intVal = (int16_t)(theVal.f * 32767.0f); //keep it signed to allow negative numbers
                         presetArray[valsStart + currentFloat++] = intVal >> 8;
                         presetArray[valsStart + currentFloat++] = intVal & 0xff;
+
+                    }
+                    else
+                    {
+                        presetArray[valsStart + currentFloat++] = (uint8_t)theVal.f;
                         numMappings++;
                     }
                     mapCount++;
@@ -2422,6 +2445,58 @@ void parseSysex(void)
         sysexMessageInProgress = 0;
         sendSingleParamUpdate = 1;
     }
+    
+     else if (sysexBuffer[0] == 4) //it's a real-time mapping change
+    {
+        sysexMessageInProgress = 1; // set a flag that we've started a sysex preset transfer. May take multiple sysex parse calls on the chunks to complete
+        union breakFloat theVal;
+        uint32_t i = 2;
+        
+        //get the destination number
+        theVal.u32 = 0;
+        theVal.u32 |= ((sysexBuffer[i] &15) << 28);
+        theVal.u32 |= (sysexBuffer[i+1] << 21);
+        theVal.u32 |= (sysexBuffer[i+2] << 14);
+        theVal.u32 |= (sysexBuffer[i+3] << 7);
+        theVal.u32 |= (sysexBuffer[i+4] & 127);
+        uint16_t roundedIndex = (uint16_t)roundf(theVal.f);
+        mappingArray[0] = (roundedIndex << 8);
+        mappingArray[1] = roundedIndex & 0xff;
+        
+        
+        mappingArray[2] = sysexBuffer[i+5]; //slot id
+        mappingArray[3] = sysexBuffer[i+6]; //mapping change type
+        
+        i = i+7;
+        
+        //get the parameter value
+        theVal.u32 = 0;
+        theVal.u32 |= ((sysexBuffer[i] &15) << 28);
+        theVal.u32 |= (sysexBuffer[i+1] << 21);
+        theVal.u32 |= (sysexBuffer[i+2] << 14);
+        theVal.u32 |= (sysexBuffer[i+3] << 7);
+        theVal.u32 |= (sysexBuffer[i+4] & 127);
+        if (mappingArray[3] == 0) // source id
+        {
+            mappingArray[4] = 0;
+            mappingArray[5] = (int16_t)(roundf(theVal.f));
+        }
+        else if (mappingArray[3] == 1) // amount
+        {
+            int16_t intVal = (int16_t)(theVal.f * 32767.0f);
+            mappingArray[4] = intVal >> 8;
+            mappingArray[5] = intVal & 0xff;
+        }
+        else // scalar source
+        {
+            mappingArray[4] = 0;
+            mappingArray[5] = (int16_t)(roundf(theVal.f));
+        }
+        
+        
+        sysexMessageInProgress = 0;
+        sendMappingChangeUpdate = 1;
+    }
 
     parsingSysex = 0;
     sysexPointer = 0;
@@ -2471,7 +2546,7 @@ void USB_callbackLocalMidiEvent(uint8 cable, uint8 *midiMsg) CYREENTRANT
 
                     //sysexPointer = 0;
                 }
-                else if (midiMsg[1] == 0 || midiMsg[1] == 1 || midiMsg[1] == 2 || midiMsg[1] == 3)
+                else if (midiMsg[1] == 0 || midiMsg[1] == 1 || midiMsg[1] == 2 || midiMsg[1] == 3 || midiMsg[1] == 4)
                 {
                     receivingSysex = 1;
                     
