@@ -1659,19 +1659,21 @@ void __ATTR_ITCMRAM tickMappings(void)
 	{
 		for (int v = 0; v < numStringsThisBoard; v++)
 		{
-
 			float unsmoothedValue = 0.0f;
 			float smoothedValue = 0.0f;
-			for (int j = 0; j < mappings[i].numHooks; j++)
+			for (int j = 0; j < 3; j++)
 			{
-				float sum = *mappings[i].sourceValPtr[j][v] * mappings[i].amount[j] * *mappings[i].scalarSourceValPtr[j][v];
-				if (mappings[i].sourceSmoothed[j])
+				if (mappings[i].hookActive[j])
 				{
-					smoothedValue += sum;
-				}
-				else
-				{
-					unsmoothedValue += sum;
+					float sum = *mappings[i].sourceValPtr[j][v] * mappings[i].amount[j] * *mappings[i].scalarSourceValPtr[j][v];
+					if (mappings[i].sourceSmoothed[j])
+					{
+						smoothedValue += sum;
+					}
+					else
+					{
+						unsmoothedValue += sum;
+					}
 				}
 			}
 			//sources are now summed - let's add the initial value

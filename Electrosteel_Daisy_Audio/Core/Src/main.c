@@ -1402,21 +1402,26 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 
 	else if (SPI_LEVERS[offset] == ReceivingSingleParamChange)
 	{
-		uint8_t currentByte = offset+1;
 
-		uint16_t whichParam = ((SPI_LEVERS[currentByte]<< 8) + SPI_LEVERS[currentByte+1]);
-		currentByte = currentByte + 2;
-
-
-		for (int v = 0; v < NUM_STRINGS_PER_BOARD; v++)
+		if (presetReady)
 		{
-			//get the zero-to-one-value
-			params[whichParam].zeroToOneVal[v] = INV_TWO_TO_16 * ((SPI_LEVERS[currentByte] << 8) + SPI_LEVERS[currentByte+1]);
+
+			uint8_t currentByte = offset+1;
+
+			uint16_t whichParam = ((SPI_LEVERS[currentByte]<< 8) + SPI_LEVERS[currentByte+1]);
+			currentByte = currentByte + 2;
+
+
+			for (int v = 0; v < NUM_STRINGS_PER_BOARD; v++)
+			{
+				//get the zero-to-one-value
+				params[whichParam].zeroToOneVal[v] = INV_TWO_TO_16 * ((SPI_LEVERS[currentByte] << 8) + SPI_LEVERS[currentByte+1]);
+			}
 
 			if ((whichParam == Effect1FXType) || (whichParam == Effect2FXType) || (whichParam == Effect3FXType) || (whichParam == Effect4FXType))
 			{
 				uint8_t whichEffect = (whichParam - Effect1FXType) / EffectParamsNum;
-				FXType effectType = roundf(params[whichParam].zeroToOneVal[v] * (NUM_EFFECT_TYPES-1));
+				FXType effectType = roundf(params[whichParam].zeroToOneVal[0] * (NUM_EFFECT_TYPES-1));
 				param *FXAlias = &params[whichParam + 1];
 
 				if (effectType > FXLowpass)
@@ -1430,11 +1435,14 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 				FXAlias[3].setParam = effectSetters[whichEffect].setParam4;
 				FXAlias[4].setParam = effectSetters[whichEffect].setParam5;
 			}
-			//set the real value based on the scale function
-			params[whichParam].realVal[v] = params[whichParam].scaleFunc(params[whichParam].zeroToOneVal[v]);
-			//set the actual parameter
-			params[whichParam].setParam(params[whichParam].realVal[v], params[whichParam].objectNumber, v);
 
+			for (int v = 0; v < NUM_STRINGS_PER_BOARD; v++)
+			{
+				//set the real value based on the scale function
+				params[whichParam].realVal[v] = params[whichParam].scaleFunc(params[whichParam].zeroToOneVal[v]);
+				//set the actual parameter
+				params[whichParam].setParam(params[whichParam].realVal[v], params[whichParam].objectNumber, v);
+			}
 			if ((whichParam == Osc1ShapeSet) || (whichParam == Osc2ShapeSet) || (whichParam == Osc3ShapeSet))
 			{
 				int whichOsc =(whichParam - Osc1ShapeSet) / OscParamsNum;
@@ -1465,19 +1473,170 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 				int whichFilter = (whichParam - Filter1Type) / FilterParamsNum;
 				int filterType = roundf(params[whichParam].realVal[0] * (NUM_FILTER_TYPES-1));
 				setFilterTypes(filterType, whichFilter);
+				int filterResParamNum = Filter1Resonance + (whichFilter * FilterParamsNum);
+				int filterGainParamNum = Filter1Gain + (whichFilter * FilterParamsNum);
+				params[filterResParamNum].setParam = filterSetters[whichFilter].setQ;
+				params[filterGainParamNum].setParam = filterSetters[whichFilter].setGain;
+
+				//set the resonance and gain params of that filter
+				for (int v = 0; v < NUM_STRINGS_PER_BOARD; v++)
+				{
+					params[filterResParamNum].setParam(params[filterResParamNum].realVal[v], params[filterResParamNum].objectNumber, v);
+					params[filterGainParamNum].setParam(params[filterGainParamNum].realVal[v], params[filterGainParamNum].objectNumber, v);
+				}
 			}
-			if ((whichParam == LFO1Shape) || (whichParam == LFO2Shape) || (whichParam == LFO3Shape) || (whichParam == LFO4Shape))
+			if ((whichParam == LFO1ShapeSet) || (whichParam == LFO2ShapeSet) || (whichParam == LFO3ShapeSet) || (whichParam == LFO4ShapeSet))
 			{
-				int whichLFO = (whichParam - LFO1Shape) / LFOParamsNum;
+				int whichLFO = (whichParam - LFO1ShapeSet) / LFOParamsNum;
 				int LFOShape = roundf(params[whichParam].realVal[0] * (NUM_LFO_SHAPES-1));
 				setLFOShapes(LFOShape, whichLFO);
+				int rateParamNum = LFO1Rate + (whichLFO * LFOParamsNum);
+				int shapeParamNum = LFO1Shape + (whichLFO * LFOParamsNum);
+				int phaseParamNum = LFO1Phase + (whichLFO * LFOParamsNum);
+				params[rateParamNum].setParam = lfoSetters[whichLFO].setRate;
+				params[shapeParamNum].setParam = lfoSetters[whichLFO].setShape;
+				params[phaseParamNum].setParam = lfoSetters[whichLFO].setPhase;
+
+				//set the lfo params for that particular new lfo shape
+				for (int v = 0; v < NUM_STRINGS_PER_BOARD; v++)
+				{
+					params[rateParamNum].setParam(params[rateParamNum].realVal[v], params[rateParamNum].objectNumber, v);
+					params[shapeParamNum].setParam(params[shapeParamNum].realVal[v], params[shapeParamNum].objectNumber, v);
+					params[phaseParamNum].setParam(params[phaseParamNum].realVal[v], params[phaseParamNum].objectNumber, v);
+				}
+			}
+			if ((whichParam == MIDIKeyMax) || (whichParam == MIDIKeyMin))
+			{
+				midiKeyDivisor = 1.0f / ((params[MIDIKeyMax].realVal[0]*127.0f) - (params[MIDIKeyMin].realVal[0]*127.0f));
+				midiKeySubtractor = (params[MIDIKeyMin].realVal[0] * 127.0f);
 			}
 		}
-		if ((whichParam == MIDIKeyMax) || (whichParam == MIDIKeyMin))
+	}
+
+	else if (SPI_LEVERS[offset] == ReceivingMappingChange)
+	{
+		if (presetReady)
 		{
-			midiKeyDivisor = 1.0f / ((params[MIDIKeyMax].realVal[0]*127.0f) - (params[MIDIKeyMin].realVal[0]*127.0f));
-			midiKeySubtractor = (params[MIDIKeyMin].realVal[0] * 127.0f);
+
+			uint8_t currentByte = offset+1;
+
+			uint16_t destNumber = ((SPI_LEVERS[currentByte]<< 8) + SPI_LEVERS[currentByte+1]);
+			uint8_t whichSlot = (SPI_LEVERS[currentByte+2]);
+			uint8_t mappingChangeType = (SPI_LEVERS[currentByte+3]);
+			int16_t mappingChangeValue = ((SPI_LEVERS[currentByte+4]<< 8) + SPI_LEVERS[currentByte+5]);
+			uint8_t whichMapping = 0;
+			uint8_t foundOne = 0;
+
+			// TODO: replace this search with explicit mapping slots instead
+				// we need to add sending of mapping slots
+
+			uint8_t lowestEmptyMapping = MAX_NUM_MAPPINGS;
+			//search to see if this destination already has other mappings
+			for (int j = 0; j < MAX_NUM_MAPPINGS; j++)
+			{
+				if (mappings[j].destNumber == destNumber)
+				{
+					//found one, use this mapping
+					whichMapping = j;
+					foundOne = 1;
+				}
+				if ((mappings[j].destNumber == 255) && (j < lowestEmptyMapping))
+				{
+					lowestEmptyMapping = j;
+				}
+			}
+			if (foundOne == 0)
+			{
+				//didn't find another mapping with this destination, start a new mapping
+				whichMapping = lowestEmptyMapping;
+				numMappings++;
+				mappings[whichMapping].destNumber = destNumber;
+				mappings[whichMapping].dest = &params[destNumber];
+			}
+
+
+	//		//if the source is bipolar (oscillators, noise, and LFOs) then double the amount because it comes in as only half the range
+	//		if ((source < 4) || ((source >= LFO_SOURCE_OFFSET) && (source < (LFO_SOURCE_OFFSET + NUM_LFOS))))
+	//		{
+	//			amountFloat *= 2.0f;
+	//		}
+
+
+			if (mappingChangeType == SourceID)
+			{
+				mappings[whichMapping].sourceSmoothed[whichSlot] = 1;
+				int source = mappingChangeValue;
+
+				if (source == 255)
+				{
+					//delete this hook
+					mappings[whichMapping].hookActive[whichSlot] = 0;
+					// if all hooks for this destination have source 255, delete this mapping
+					int countHooks = 0;
+					for (int i = 0; i < 3; i++)
+					{
+						if (mappings[whichMapping].hookActive[whichSlot] != 0)
+						{
+							countHooks++;
+						}
+						//if you just removed the only hook from a mapping, mark the mapping invalid and remove it from the list
+						//TODO: I think we are going to have to store a stack that represents which mappings are active and need to be ticked, otherwise it has to iterate all 32, now that we can remove one in the middle of the list.
+						//or we keep track of the highest number of mapping we are ticking, and always tick up to that, ignoring elements we pass that have dest set to 255.
+
+						if (countHooks == 0)
+						{
+							mappings[whichMapping].destNumber = 255;
+						}
+					}
+				}
+				else
+				{
+					mappings[whichMapping].hookActive[whichSlot] = 1;
+
+					for (int v = 0; v < NUM_STRINGS_PER_BOARD; v++)
+					{
+						mappings[whichMapping].sourceValPtr[whichSlot][v] = &sourceValues[source][v];
+						mappings[whichMapping].scalarSourceValPtr[whichSlot][v] = &defaultScaling; //blank out the scalar source, because otherwise it will point to some random function or a null pointer
+					}
+					if (source < 4) //if it's oscillators or noise (the first 4 elements of the source array), don't smooth to allow FM
+					{
+						mappings[whichMapping].sourceSmoothed[whichSlot] = 0;
+					}
+					if ((source >= LFO_SOURCE_OFFSET) && (source < (LFO_SOURCE_OFFSET + NUM_LFOS)))
+					{
+						lfoOn[source - LFO_SOURCE_OFFSET] = 1;
+					}
+					mappings[whichMapping].amount[whichSlot] = 0.0f;
+				}
+
+
+			}
+			else if (mappingChangeType == Amount)
+			{
+				mappings[whichMapping].amount[whichSlot] = (float)mappingChangeValue * INV_TWO_TO_15;
+			}
+			else if (mappingChangeType == ScalarID)
+			{
+				int scalar = mappingChangeValue;
+				for (int v = 0; v < NUM_STRINGS_PER_BOARD; v++)
+				{
+					if (scalar == 0xff)
+					{
+						mappings[whichMapping].scalarSourceValPtr[whichSlot][v] = &defaultScaling;
+					}
+					else
+					{
+						mappings[whichMapping].scalarSourceValPtr[whichSlot][v] = &sourceValues[scalar][v];
+						if ((scalar >= LFO_SOURCE_OFFSET) && (scalar < (LFO_SOURCE_OFFSET + NUM_LFOS)))
+						{
+							lfoOn[scalar - LFO_SOURCE_OFFSET] = 1;
+						}
+						//TODO: doesn't cleanly remove lfoOn settings during streaming data - after deleting an LFO used as a scalar it will keep computing the LFO. How should we remember what the source of the scalar was when removing it? -JS
+					}
+				}
+			}
 		}
+
 	}
 /*
 	else if (SPI_LEVERS[offset] == LoadingPreset)
@@ -1640,8 +1799,16 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 
 
 	//20 is the 6 bytes plus the 14 characters
-	//paramCount is * 2 because they are 2 bytes per param, mappingCount * 5 because they are 5 bytes per mapping
-	uint16_t mappingEndLocation = (paramCount * 2) + (mappingCount * 5) + bufferIndex+6;
+	uint16_t mappingEndLocation = 0;
+	if (presetVersionNumber == 0)
+	{
+		mappingEndLocation = (paramCount * 2) + (mappingCount * 5) + bufferIndex+6;
+	}
+	else
+	//paramCount is * 2 because they are 2 bytes per param, mappingCount * 6 because they are 6 bytes per mapping (changed from 5 to allow for sending of slot locations)
+	{
+		mappingEndLocation = (paramCount * 2) + (mappingCount * 6) + bufferIndex+6;
+	}
 
 	if (mappingEndLocation > size)
 	{
@@ -1985,10 +2152,14 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 	{
 		lfoOn[i] = 0;
 	}
+
 	//blank out all current mappings
 	for (int i = 0; i < MAX_NUM_MAPPINGS; i++)
 	{
 		mappings[i].destNumber = 255;
+		mappings[i].hookActive[0] = 0;
+		mappings[i].hookActive[1] = 0;
+		mappings[i].hookActive[2] = 0;
 		mappings[i].numHooks = 0;
 	}
 
@@ -2000,6 +2171,14 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 		uint8_t whichHook = 0;
 		uint8_t foundOne = 0;
 
+
+		// TODO: replace this search with explicit mapping slots instead
+			// we need to add sending of mapping slots
+
+		if (presetVersionNumber > 0)
+		{
+			whichHook = buffer[bufferIndex+5]; //slotID sent as last bit of data in new preset sending versions
+		}
 		//search to see if this destination already has other mappings
 		for (int j = 0; j < MAX_NUM_MAPPINGS; j++)
 		{
@@ -2007,7 +2186,11 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 			{
 				//found one, use this mapping and add another hook to it
 				whichMapping = j;
-				whichHook = mappings[j].numHooks;
+				//TODO: this should actually be sent with the preset
+				if (presetVersionNumber == 0)
+				{
+					whichHook = mappings[j].numHooks;
+				}
 				foundOne = 1;
 			}
 		}
@@ -2017,7 +2200,10 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 			whichMapping = numMappings;
 
 			numMappings++;
-			whichHook = 0;
+			if (presetVersionNumber == 0)
+			{
+				whichHook = 0;
+			}
 			mappings[whichMapping].destNumber = destNumber;
 			mappings[whichMapping].dest = &params[destNumber];
 
@@ -2049,7 +2235,7 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 			}
 			else
 			{
-				mappings[whichMapping].scalarSourceValPtr[whichHook][v] = &sourceValues[buffer[bufferIndex+2]][v];
+				mappings[whichMapping].scalarSourceValPtr[whichHook][v] = &sourceValues[scalar][v];
 				if ((scalar >= LFO_SOURCE_OFFSET) && (scalar < (LFO_SOURCE_OFFSET + NUM_LFOS)))
 				{
 					lfoOn[scalar - LFO_SOURCE_OFFSET] = 1;
@@ -2064,9 +2250,18 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 //			amountFloat *= 2.0f;
 //		}
 		mappings[whichMapping].amount[whichHook] = amountFloat;
+		mappings[whichMapping].hookActive[whichHook] = 1;
 		mappings[whichMapping].numHooks++;
 
-		bufferIndex += 5;
+		if (presetVersionNumber > 0)
+		{
+			bufferIndex += 6;
+		}
+		else
+		{
+			bufferIndex += 5;
+		}
+
 	}
 
 	uint8_t totalFilters = 0;
@@ -2089,6 +2284,7 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
 	diskBusy = 0;
 	receivingI2C = 0;
+
 }
 
 
