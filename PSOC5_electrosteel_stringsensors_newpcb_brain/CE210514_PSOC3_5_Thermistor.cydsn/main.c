@@ -28,6 +28,14 @@ volatile uint8_t presetArray[2048];
 uint8_t presetNumberToWrite = 0;
 uint8_t copedentNumberToWrite = 0;
 uint8_t sendMessageEnd = 0;
+
+uint8_t sendSingleParamUpdate = 0;
+uint8_t singleParamToUpdateHigh = 0;
+uint8_t singleParamToUpdateLow = 0;
+uint8_t singleParamValueHigh = 0;
+uint8_t singleParamValueLow = 0;
+            
+            
 enum presetArraySectionState
 {
     presetName = 0,
@@ -200,6 +208,9 @@ volatile int bar_index = 0;
 uint8_t knobs[4];
 uint8_t prevKnobs[4];
 
+uint8_t knobs7bit[4];
+uint8_t prevKnobs7bit[4];
+
 volatile uint8_t SPI2started = 0;
 
 uint8_t whichMacro = 0;
@@ -346,7 +357,7 @@ volatile uint8_t send_it = 0;
 // the ethernet cable, and a second mux is in the foot pedal at the end of that cable. This channel is selected with the second element of the array
 //so the order of I2C communication is ( foot pedals 1-5, knee levers 1-5, volume pedal, OLED display )
 uint8_t mux_states[12][2] = {{5,0}, {5,1}, {5,2}, {5,3}, {5,4}, {0, 0}, {1, 0}, {3, 0}, {4, 0}, {2, 0}, {5, 5},{6,0}};
-uint8_t i2c_skipped[12] = {0,0,0,0,0,0,0,1,1,0,0,0}; //so that pedals and levers can be marked as skipped if communication fails because they are unconnected
+uint8_t i2c_skipped[12] = {0,0,0,0,0,0,0,0,0,0,0,0}; //so that pedals and levers can be marked as skipped if communication fails because they are unconnected
 uint16_t pedals_low[10] = {2691, 2305, 2457, 526, 3738, 2307, 3014, 2190, 2793, 1318};
 uint16_t pedals_high[10] = {2797, 2405, 2580, 647, 3854, 2461, 3141, 2353, 2934, 1504};
 uint16_t deadzone = 150;
@@ -354,6 +365,8 @@ uint16_t volumePedal = 4095;
 uint16_t processed_pedals[10];
 uint16_t prev_processed_pedals[10];
 uint8_t pedals8bit[10];
+uint8_t pedals7bit[10];
+uint8_t prevPedals7bit[10];
 int16_t prev_processed_volumePedal;
 int16_t processed_volumePedal;
 
@@ -416,7 +429,7 @@ float prevStringPitchBend[NUM_STRINGS];
 
 float pedals[NUM_PEDALS][NUM_STRINGS];
 
-
+uint8_t pedal_cc_assignments[NUM_PEDALS] = {0, 1, 2, 3, 4, 8, 9, 7, 6, 5};
 float openStringFrequencies[NUM_STRINGS];
 float stringMappedPositions[NUM_STRINGS];
 float invStringMappedPositions[NUM_STRINGS];
@@ -469,8 +482,20 @@ int main(void)
 {
     
 	CYGlobalIntEnable; 
-
     EEPROM_Start();
+    
+        eepromReturnValue = Em_EEPROM_Init((uint32_t)Em_EEPROM_em_EepromStorage);
+    if(eepromReturnValue != CY_EM_EEPROM_SUCCESS)
+    {
+       // HandleError();
+    }
+    uint8_t myArrayCounter = 0;
+  
+    I2C_1_Start();  
+    USB_SetPowerStatus(USB_DEVICE_STATUS_SELF_POWERED);
+    my_Vbus_ISR_StartEx(Vbus_function);
+    
+
 
     
     CyDelay(2000);
@@ -532,16 +557,8 @@ int main(void)
     LED_amber4_Write(0);
 
 
-    eepromReturnValue = Em_EEPROM_Init((uint32_t)Em_EEPROM_em_EepromStorage);
-    if(eepromReturnValue != CY_EM_EEPROM_SUCCESS)
-    {
-       // HandleError();
-    }
-    uint8_t myArrayCounter = 0;
-  
-    I2C_1_Start();  
-    USB_SetPowerStatus(USB_DEVICE_STATUS_SELF_POWERED);
-    my_Vbus_ISR_StartEx(Vbus_function);
+
+
 
     
     LED_red1_Write(0);
@@ -780,7 +797,7 @@ int main(void)
         //if it's a hall sensor
 
         //temporarily don't scan vertical knee lever, should be <10 normally
-        if (main_counter < 9)
+        if (main_counter < 10)
         {
             if (!i2c_skipped[main_counter])
             {
@@ -1031,7 +1048,13 @@ int main(void)
                 //sendMIDIControlChange(main_counter+36, (processed_pedals[main_counter] & 127), 1);
             }
             pedals_float[main_counter] = (float)processed_pedals[main_counter] * 2.442002442002442e-4f;
-            pedals8bit[main_counter] = (float)processed_pedals[main_counter] * 0.0625f;
+            pedals8bit[main_counter] = (float)processed_pedals[pedal_cc_assignments[main_counter]] * 0.0625f;
+            pedals7bit[main_counter] = pedals8bit[main_counter] >> 1;
+            if (pedals7bit[main_counter] != prevPedals7bit[main_counter])
+            {
+                sendMIDIControlChange(main_counter + 14, (pedals7bit[main_counter]), 1);
+            }
+            prevPedals7bit[main_counter] = pedals7bit[main_counter];
             prev_processed_pedals[main_counter] = processed_pedals[main_counter];
         }
         else
@@ -1051,8 +1074,8 @@ int main(void)
             {
                 uint16_t tempPedal = processed_volumePedal;
                 
-                sendMIDIControlChange(21, ( tempPedal >> 7), 0);
-                sendMIDIControlChange(22, ( tempPedal & 127), 0);
+                sendMIDIControlChange(13, ( tempPedal >> 5), 0);
+                //sendMIDIControlChange(22, ( tempPedal & 127), 0);
             }
              prev_processed_volumePedal = processed_volumePedal;
         }
@@ -1095,8 +1118,8 @@ int main(void)
             for (int i = 0; i < 2; i++)
             {
                 bar[i] = ((rxBufferBar[!currentBarBuffer][i*2] << 8) + rxBufferBar[!currentBarBuffer][(i*2)+1]);    
-                /*
-                if (bar[i] != prevBar[i])
+                //
+                if(bar[i] != prevBar[i])
                 {
     				if ((bar[i] == 65535) || (bar[i] > fretMeasurements[0][i]))
     				{
@@ -1120,7 +1143,7 @@ int main(void)
 
                     invStringMappedPositions[i] = 1.0f / stringMappedPositions[i];
                 }
-                */
+                //
                 prevBar[i] = bar[i];
             }
         }
@@ -1343,7 +1366,7 @@ int main(void)
                 button4Up = 1;
             }
         }
-        if ((!edit_button_Read()) && (editUp))
+        if (((!edit_button_Read() && !encoder_button_Read()) && (editUp)) || ((!edit_button_Read() && editMode) && (editUp)))
         {
             editMode = !editMode;
             //for now edit mode is calibration mode
@@ -1352,15 +1375,17 @@ int main(void)
             editUp = 0;
             if (editMode)
             {
-                #if 0
+                //#if 0
                 OLEDclear(128, 64);
+        
+                myGFX_setFont(0);
                 
-                OLEDwriteString("CALIBRATION", 11, 2, FirstLine);
-                OLEDwriteString("MOVE PEDALS", 11, 2, SecondLine);
-                OLEDwriteString("AND LEVERS", 11, 2, ThirdLine);
-                OLEDwriteString("THEN EXIT", 11, 2, FourthLine);
+                OLEDwriteString("CALIBRATION", 11, 1, FirstLine);
+                OLEDwriteString("MOVE PEDALS", 11, 1, SecondLine);
+                OLEDwriteString("AND LEVERS", 11, 1, ThirdLine);
+                OLEDwriteString("THEN EXIT", 11, 1, FourthLine);
                 mainOLEDWaitingToSend = 1;
-                                #endif
+                               // #endif
                 //entering calibration mode, clear the pedals low and high arrays
                 for (int i = 0; i < 10; i++)
                 {
@@ -1403,12 +1428,14 @@ int main(void)
             knobs[i] = (ADC_SAR_Seq_1_GetResult16(i)/16);
             
             knobs[i] = 255 - knobs[i];
+            knobs7bit[i] = knobs[i] >> 1;
             
-            if (knobs[i] != prevKnobs[i])
+            if (knobs7bit[i] != prevKnobs7bit[i])
             {
-                sendMIDIControlChange(i+17, knobs[i]/2, 0);
+                sendMIDIControlChange(i+9, knobs7bit[i], 0);
             }
-            prevKnobs[i] = knobs[i];
+            prevKnobs7bit[i] = knobs7bit[i];
+            
         }
         
         testpin4_Write(1);
@@ -1442,7 +1469,7 @@ int main(void)
                         (copedent[currentCopedent][1][i] * pedals_float[8]) +
                         (copedent[currentCopedent][2][i] * pedals_float[9]));
 
-            /*
+            
             float openStringMIDI  = copedent[currentCopedent][0][i];
             openStringMIDI_Int[i] = (int)openStringMIDI;
             
@@ -1456,7 +1483,7 @@ int main(void)
                 sendMIDIPitchBend((uint)pitchBendAmount, i+1);
             }
             prevStringPitchBend[i] = pitchBendAmount;
-            */
+            
             if (tempMIDI > 0.0f)
             {
                 stringMIDI[i] = tempMIDI;
@@ -1550,6 +1577,18 @@ int main(void)
                 myArray[31] = 253;
             }    
         }
+        
+        else if (sendSingleParamUpdate)
+        {
+            myArray[0] = 6;
+            myArray[1] = singleParamToUpdateHigh;
+            myArray[2] = singleParamToUpdateLow;
+            myArray[3] = singleParamValueHigh;
+            myArray[4] = singleParamValueLow;
+            myArray[30] = 254;
+            myArray[31] = 253;
+            sendSingleParamUpdate = 0;
+        }
         else if (sendKnobs)
         {
             myArray[0] = 3; //sending knob stuff, not a preset send
@@ -1569,8 +1608,8 @@ int main(void)
             myArray[25] = patchNum;
             myArray[26] = processed_volumePedal >> 8;
             myArray[27] = processed_volumePedal & 0xff;
-            myArray[28] = bar[0] >> 8;
-            myArray[29] = bar[0] & 0xff;
+            myArray[28] = bar[1] >> 8;
+            myArray[29] = bar[1] & 0xff;
             myArray[30] = 254;
             myArray[31] = 253;
             
@@ -2078,14 +2117,18 @@ void parseSysex(void)
         currentFloat = 0;
         presetArraySection = presetName;
         presetNumberToWrite = sysexBuffer[1];
+        presetArray[0] = sysexBuffer[2];
+        presetArray[1] = sysexBuffer[3];
+        presetArray[2] = sysexBuffer[4];
+        presetArray[3] = sysexBuffer[5];
         
         union breakFloat theVal;
-        uint32_t i = 2;
-        uint8_t stoppingPoint = NAME_LENGTH_IN_BYTES+2;
+        uint32_t i = 6;
+        uint8_t stoppingPoint = NAME_LENGTH_IN_BYTES+6;
         for (; i < stoppingPoint; i++)
         {
             presetArray[i-2] = sysexBuffer[i] & 127; // pass on the first 14 elements as 8-bit bytes (they are the chars for the name string)
-            presetNamesArray[presetNumberToWrite][i-2] = sysexBuffer[i] & 127;
+            presetNamesArray[presetNumberToWrite][i-6] = sysexBuffer[i] & 127;
         }
         
         presetArraySection = macroNames;
@@ -2101,7 +2144,7 @@ void parseSysex(void)
             }
         }
         
-        uint16_t valsStart = NAME_LENGTH_IN_BYTES + (NAME_LENGTH_IN_BYTES * NUM_MACROS);
+        uint16_t valsStart = 4 + NAME_LENGTH_IN_BYTES + (NAME_LENGTH_IN_BYTES * NUM_MACROS);
         
         presetArraySection = initialVals;
         
@@ -2264,6 +2307,9 @@ void parseSysex(void)
         }
     }
     #endif
+    
+
+    
     else if (sysexBuffer[0] == 2) //its a copedent
     {
         sysexMessageInProgress = 1; // set a flag that we've started a sysex preset transfer. May take multiple sysex parse calls on the chunks to complete
@@ -2341,6 +2387,41 @@ void parseSysex(void)
         }
     }
     
+    
+    else if (sysexBuffer[0] == 3) //it's a real-time parameter change
+    {
+        sysexMessageInProgress = 1; // set a flag that we've started a sysex preset transfer. May take multiple sysex parse calls on the chunks to complete
+        union breakFloat theVal;
+        uint32_t i = 2;
+        
+        //get the parameter ID
+        theVal.u32 = 0;
+        theVal.u32 |= ((sysexBuffer[i] &15) << 28);
+        theVal.u32 |= (sysexBuffer[i+1] << 21);
+        theVal.u32 |= (sysexBuffer[i+2] << 14);
+        theVal.u32 |= (sysexBuffer[i+3] << 7);
+        theVal.u32 |= (sysexBuffer[i+4] & 127);
+        uint16_t roundedIndex = (uint16_t)roundf(theVal.f);
+        singleParamToUpdateHigh = (roundedIndex << 8);
+        singleParamToUpdateLow = roundedIndex & 0xff;
+        
+        i = i+5;
+        
+        //get the parameter value
+        theVal.u32 = 0;
+        theVal.u32 |= ((sysexBuffer[i] &15) << 28);
+        theVal.u32 |= (sysexBuffer[i+1] << 21);
+        theVal.u32 |= (sysexBuffer[i+2] << 14);
+        theVal.u32 |= (sysexBuffer[i+3] << 7);
+        theVal.u32 |= (sysexBuffer[i+4] & 127);
+        
+        uint16_t intVal = (uint16_t)(theVal.f * 65535.0f);
+        singleParamValueHigh = intVal >> 8;
+        singleParamValueLow = intVal & 0xff;
+        
+        sysexMessageInProgress = 0;
+        sendSingleParamUpdate = 1;
+    }
 
     parsingSysex = 0;
     sysexPointer = 0;
@@ -2390,7 +2471,7 @@ void USB_callbackLocalMidiEvent(uint8 cable, uint8 *midiMsg) CYREENTRANT
 
                     //sysexPointer = 0;
                 }
-                else if (midiMsg[1] == 0 || midiMsg[1] == 1 || midiMsg[1] == 2)
+                else if (midiMsg[1] == 0 || midiMsg[1] == 1 || midiMsg[1] == 2 || midiMsg[1] == 3)
                 {
                     receivingSysex = 1;
                     
