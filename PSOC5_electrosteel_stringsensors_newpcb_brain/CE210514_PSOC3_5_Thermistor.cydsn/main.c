@@ -485,8 +485,10 @@ int main(void)
     
 	CYGlobalIntEnable; 
     EEPROM_Start();
+    Bootloadable_SET_RUN_TYPE(Bootloadable_SCHEDULE_BTLDB);
+    //since we sucessfully booted this firmware, set it to be the default until the brain chip gets a new firmware command from the synth chip
     
-        eepromReturnValue = Em_EEPROM_Init((uint32_t)Em_EEPROM_em_EepromStorage);
+    eepromReturnValue = Em_EEPROM_Init((uint32_t)Em_EEPROM_em_EepromStorage);
     if(eepromReturnValue != CY_EM_EEPROM_SUCCESS)
     {
        // HandleError();
@@ -1696,6 +1698,40 @@ int main(void)
             {
                 displayCurrentPresetNameAndCopedent();
             }
+        }
+        else if ((inBuffer[0] == 252) && (inBuffer[31] == 254))
+        {
+            //oop this means we're about to get new firmware. Reset to bootloader
+            SPIM_1_Stop();
+            myGFX_setFont(0);
+            OLEDwriteString("FIRMWARE   ", 11, 1, FirstLine);
+            OLEDwriteString("UPDATE     ", 11, 1, SecondLine);
+            OLEDwriteString("           ", 11, 1, ThirdLine);
+            OLEDwriteString("           ", 11, 1, FourthLine);
+            main_counter = 11;
+                   //set muxes to write to main OLED
+            if (mux_states[main_counter][0] != last_mux)
+            {
+                I2Cbuff1[0] = 1<<mux_states[main_counter][0];
+                uint8_t status = I2C_MasterWriteBlocking(0x70, 1, I2C_1_MODE_COMPLETE_XFER);
+            }
+            last_mux = mux_states[main_counter][0];
+            
+            
+            CyDelayUs(10);
+            if (mux_states[main_counter][0] == 5)
+            {
+                if (!i2c_skipped[main_counter])
+                {
+                    I2Cbuff1[0] = 1<<mux_states[main_counter][1];
+                    status = I2C_MasterWriteBlocking(0x71, 1, I2C_1_MODE_COMPLETE_XFER);
+                }
+            }
+
+            CyDelayUs(10);
+
+            OLED_draw(128, 64);
+            Bootloadable_Load();
         }
         
         SPIM_1_ClearRxBuffer();

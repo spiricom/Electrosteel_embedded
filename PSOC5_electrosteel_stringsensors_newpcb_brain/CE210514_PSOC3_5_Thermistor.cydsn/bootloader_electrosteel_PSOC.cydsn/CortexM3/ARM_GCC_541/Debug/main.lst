@@ -1,0 +1,2458 @@
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczJCWOe.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.main,"ax",%progbits
+  20              		.align	2
+  21              		.global	main
+  22              		.thumb
+  23              		.thumb_func
+  24              		.type	main, %function
+  25              	main:
+  26              	.LFB63:
+  27              		.file 1 "main.c"
+   1:main.c        **** /* ========================================
+   2:main.c        ****  *
+   3:main.c        ****  * Copyright YOUR COMPANY, THE YEAR
+   4:main.c        ****  * All Rights Reserved
+   5:main.c        ****  * UNPUBLISHED, LICENSED SOFTWARE.
+   6:main.c        ****  *
+   7:main.c        ****  * CONFIDENTIAL AND PROPRIETARY INFORMATION
+   8:main.c        ****  * WHICH IS THE PROPERTY OF your company.
+   9:main.c        ****  *
+  10:main.c        ****  * ========================================
+  11:main.c        **** */
+  12:main.c        **** #include "project.h"
+  13:main.c        **** #include "CyFlash.h"
+  14:main.c        **** #include "Bootloader.h"
+  15:main.c        **** uint8_t myData[300]; //flash row plus ecc row since ecc is disabled (can be used as normal flash)
+  16:main.c        **** uint8_t sendArray[32];
+  17:main.c        **** uint8_t receiveArray[32];
+  18:main.c        **** uint8_t receivePosition = 0;
+  19:main.c        **** uint8_t computedChecksumByte = 0;
+  20:main.c        **** uint8_t receivedChecksumByte = 0;
+  21:main.c        **** 
+  22:main.c        **** uint16_t dataPosition = 0;
+  23:main.c        **** uint16_t outputDataPosition = 0;
+  24:main.c        **** uint16_t rowNumber = 0;
+  25:main.c        **** uint8_t arrayNumber = 0;
+  26:main.c        **** uint16_t rowSize = 0;
+  27:main.c        **** uint8_t ackCode = 0;
+  28:main.c        **** uint8_t eccflash[ CYDEV_FLS_ROW_SIZE + CYDEV_ECC_ROW_SIZE];
+  29:main.c        **** uint8_t LEDstate = 0;
+  30:main.c        **** int main(void)
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczJCWOe.s 			page 2
+
+
+  31:main.c        **** {
+  28              		.loc 1 31 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32 0000 38B5     		push	{r3, r4, r5, lr}
+  33              		.cfi_def_cfa_offset 16
+  34              		.cfi_offset 3, -16
+  35              		.cfi_offset 4, -12
+  36              		.cfi_offset 5, -8
+  37              		.cfi_offset 14, -4
+  32:main.c        ****     CyGlobalIntEnable; /* Enable global interrupts. */
+  38              		.loc 1 32 0
+  39              		.syntax unified
+  40              	@ 32 "main.c" 1
+  41 0002 62B6     		CPSIE   i
+  42              	@ 0 "" 2
+  33:main.c        ****     //CyDelay(15000);
+  34:main.c        ****     //if we are here from a hard power reset, jump to bootloadable firmware
+  35:main.c        ****     uint8_t runType = Bootloader_GET_RUN_TYPE;
+  43              		.loc 1 35 0
+  44              		.thumb
+  45              		.syntax unified
+  46 0004 AF4B     		ldr	r3, .L35
+  47 0006 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  48 0008 03F0C003 		and	r3, r3, #192
+  49              	.LVL0:
+  36:main.c        ****     if (runType != Bootloader_SCHEDULE_BTLDR)
+  50              		.loc 1 36 0
+  51 000c 402B     		cmp	r3, #64
+  52 000e 40F05181 		bne	.L33
+  37:main.c        ****     {
+  38:main.c        ****         /* Schedule Bootloadable to start after a reset */
+  39:main.c        ****         Bootloader_SET_RUN_TYPE(Bootloader_SCHEDULE_BTLDB);
+  40:main.c        ****         CySoftwareReset();
+  41:main.c        ****     }
+  42:main.c        ****     else
+  43:main.c        ****     {
+  44:main.c        ****         //needs user-supplied memory allocation to handle flash writes
+  45:main.c        ****         CySetFlashEEBuffer(eccflash); 
+  53              		.loc 1 45 0
+  54 0012 AD48     		ldr	r0, .L35+4
+  55 0014 FFF7FEFF 		bl	CySetFlashEEBuffer
+  56              	.LVL1:
+  46:main.c        ****         SPIM_1_Start();
+  57              		.loc 1 46 0
+  58 0018 FFF7FEFF 		bl	SPIM_1_Start
+  59              	.LVL2:
+  60              	.LBB2:
+  47:main.c        ****        // Bootloader_InitCallback(User_Callback_Function);
+  48:main.c        ****         /* Place your initialization/startup code here (e.g. MyInst_Start()) */
+  49:main.c        ****         for (int i = 0; i < 30; i++)
+  61              		.loc 1 49 0
+  62 001c 0023     		movs	r3, #0
+  63 001e 03E0     		b	.L3
+  64              	.LVL3:
+  65              	.L4:
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczJCWOe.s 			page 3
+
+
+  50:main.c        ****         {
+  51:main.c        ****             sendArray[i] = 55;
+  66              		.loc 1 51 0 discriminator 3
+  67 0020 3721     		movs	r1, #55
+  68 0022 AA4A     		ldr	r2, .L35+8
+  69 0024 D154     		strb	r1, [r2, r3]
+  49:main.c        ****         {
+  70              		.loc 1 49 0 discriminator 3
+  71 0026 0133     		adds	r3, r3, #1
+  72              	.LVL4:
+  73              	.L3:
+  49:main.c        ****         {
+  74              		.loc 1 49 0 is_stmt 0 discriminator 1
+  75 0028 1D2B     		cmp	r3, #29
+  76 002a F9DD     		ble	.L4
+  77              	.LBE2:
+  52:main.c        ****         }
+  53:main.c        ****         sendArray[30] = 254;
+  78              		.loc 1 53 0 is_stmt 1
+  79 002c A74B     		ldr	r3, .L35+8
+  80              	.LVL5:
+  81 002e FE22     		movs	r2, #254
+  82 0030 9A77     		strb	r2, [r3, #30]
+  54:main.c        ****         sendArray[31] = 253;
+  83              		.loc 1 54 0
+  84 0032 FD22     		movs	r2, #253
+  85 0034 DA77     		strb	r2, [r3, #31]
+  55:main.c        ****         LED2_Write(0);
+  86              		.loc 1 55 0
+  87 0036 0020     		movs	r0, #0
+  88 0038 FFF7FEFF 		bl	LED2_Write
+  89              	.LVL6:
+  56:main.c        ****         LED3_Write(0);
+  90              		.loc 1 56 0
+  91 003c 0020     		movs	r0, #0
+  92 003e FFF7FEFF 		bl	LED3_Write
+  93              	.LVL7:
+  57:main.c        ****         LED4_Write(0);
+  94              		.loc 1 57 0
+  95 0042 0020     		movs	r0, #0
+  96 0044 FFF7FEFF 		bl	LED4_Write
+  97              	.LVL8:
+  58:main.c        ****         LED1_Write(0);
+  98              		.loc 1 58 0
+  99 0048 0020     		movs	r0, #0
+ 100 004a FFF7FEFF 		bl	LED1_Write
+ 101              	.LVL9:
+  59:main.c        ****         RedLED_Write(0);
+ 102              		.loc 1 59 0
+ 103 004e 0020     		movs	r0, #0
+ 104 0050 FFF7FEFF 		bl	RedLED_Write
+ 105              	.LVL10:
+  60:main.c        ****         RedLED2_Write(0);
+ 106              		.loc 1 60 0
+ 107 0054 0020     		movs	r0, #0
+ 108 0056 FFF7FEFF 		bl	RedLED2_Write
+ 109              	.LVL11:
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczJCWOe.s 			page 4
+
+
+  61:main.c        ****         GreenLED_Write(0);
+ 110              		.loc 1 61 0
+ 111 005a 0020     		movs	r0, #0
+ 112 005c FFF7FEFF 		bl	GreenLED_Write
+ 113              	.LVL12:
+  62:main.c        ****         GreenLED2_Write(0);
+ 114              		.loc 1 62 0
+ 115 0060 0020     		movs	r0, #0
+ 116 0062 FFF7FEFF 		bl	GreenLED2_Write
+ 117              	.LVL13:
+ 118              	.L5:
+  63:main.c        ****         //CyFlash_Start(); 
+  64:main.c        ****         while(1)
+  65:main.c        ****         {
+  66:main.c        ****             //send out some nonsense with the magic bytes at the end
+  67:main.c        ****             SPIM_1_PutArray(sendArray, 32);
+ 119              		.loc 1 67 0
+ 120 0066 2021     		movs	r1, #32
+ 121 0068 9848     		ldr	r0, .L35+8
+ 122 006a FFF7FEFF 		bl	SPIM_1_PutArray
+ 123              	.LVL14:
+ 124              	.L6:
+  68:main.c        ****             while(!(SPIM_1_ReadTxStatus() & SPIM_1_STS_SPI_DONE));
+ 125              		.loc 1 68 0 discriminator 1
+ 126 006e FFF7FEFF 		bl	SPIM_1_ReadTxStatus
+ 127              	.LVL15:
+ 128 0072 10F0010F 		tst	r0, #1
+ 129 0076 FAD0     		beq	.L6
+ 130 0078 0AE0     		b	.L7
+ 131              	.L8:
+  69:main.c        ****             
+  70:main.c        ****             while(SPIM_1_GetRxBufferSize())
+  71:main.c        ****             {
+  72:main.c        ****                 receiveArray[receivePosition] = SPIM_1_ReadRxData();
+ 132              		.loc 1 72 0
+ 133 007a 954C     		ldr	r4, .L35+12
+ 134 007c 2578     		ldrb	r5, [r4]	@ zero_extendqisi2
+ 135 007e FFF7FEFF 		bl	SPIM_1_ReadRxData
+ 136              	.LVL16:
+ 137 0082 944B     		ldr	r3, .L35+16
+ 138 0084 5855     		strb	r0, [r3, r5]
+  73:main.c        ****                 receivePosition = (receivePosition + 1) & 31;
+ 139              		.loc 1 73 0
+ 140 0086 2378     		ldrb	r3, [r4]	@ zero_extendqisi2
+ 141 0088 0133     		adds	r3, r3, #1
+ 142 008a 03F01F03 		and	r3, r3, #31
+ 143 008e 2370     		strb	r3, [r4]
+ 144              	.L7:
+  70:main.c        ****             {
+ 145              		.loc 1 70 0
+ 146 0090 FFF7FEFF 		bl	SPIM_1_GetRxBufferSize
+ 147              	.LVL17:
+ 148 0094 0028     		cmp	r0, #0
+ 149 0096 F0D1     		bne	.L8
+  74:main.c        ****                 
+  75:main.c        ****             }
+  76:main.c        ****             SPIM_1_ClearRxBuffer();
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczJCWOe.s 			page 5
+
+
+ 150              		.loc 1 76 0
+ 151 0098 FFF7FEFF 		bl	SPIM_1_ClearRxBuffer
+ 152              	.LVL18:
+  77:main.c        ****             //collect 30-byte packets over SPI and shove them into myData
+  78:main.c        ****             if ((receiveArray[0] == 251) && (receiveArray[31] == 254))
+ 153              		.loc 1 78 0
+ 154 009c 8D4B     		ldr	r3, .L35+16
+ 155 009e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 156 00a0 FB2B     		cmp	r3, #251
+ 157 00a2 40F0A180 		bne	.L9
+ 158              		.loc 1 78 0 is_stmt 0 discriminator 1
+ 159 00a6 8B4A     		ldr	r2, .L35+16
+ 160 00a8 D27F     		ldrb	r2, [r2, #31]	@ zero_extendqisi2
+ 161 00aa FE2A     		cmp	r2, #254
+ 162 00ac 40F09C80 		bne	.L9
+ 163 00b0 95E0     		b	.L31
+ 164              	.LVL19:
+ 165              	.L21:
+ 166              	.LBB3:
+  79:main.c        ****             {
+  80:main.c        ****                 
+  81:main.c        ****                
+  82:main.c        ****                 for (int i = 0; i < 30; i++)
+  83:main.c        ****                 {
+  84:main.c        ****                     if (dataPosition == 0) 
+ 167              		.loc 1 84 0 is_stmt 1
+ 168 00b2 874B     		ldr	r3, .L35+12
+ 169 00b4 5B88     		ldrh	r3, [r3, #2]
+ 170 00b6 43B9     		cbnz	r3, .L11
+  85:main.c        ****                     {
+  86:main.c        ****                         arrayNumber = receiveArray[i+1];   
+ 171              		.loc 1 86 0
+ 172 00b8 631C     		adds	r3, r4, #1
+ 173 00ba 864A     		ldr	r2, .L35+16
+ 174 00bc D15C     		ldrb	r1, [r2, r3]	@ zero_extendqisi2
+ 175 00be 844B     		ldr	r3, .L35+12
+ 176 00c0 1971     		strb	r1, [r3, #4]
+  87:main.c        ****                         computedChecksumByte += receiveArray[i+1];
+ 177              		.loc 1 87 0
+ 178 00c2 5A79     		ldrb	r2, [r3, #5]	@ zero_extendqisi2
+ 179 00c4 0A44     		add	r2, r2, r1
+ 180 00c6 5A71     		strb	r2, [r3, #5]
+ 181 00c8 47E0     		b	.L12
+ 182              	.L11:
+  88:main.c        ****                     }
+  89:main.c        ****                     else if (dataPosition == 1)
+ 183              		.loc 1 89 0
+ 184 00ca 012B     		cmp	r3, #1
+ 185 00cc 09D1     		bne	.L13
+  90:main.c        ****                     {   
+  91:main.c        ****                         rowNumber = receiveArray[i+1]<<8;
+ 186              		.loc 1 91 0
+ 187 00ce 631C     		adds	r3, r4, #1
+ 188 00d0 804A     		ldr	r2, .L35+16
+ 189 00d2 D15C     		ldrb	r1, [r2, r3]	@ zero_extendqisi2
+ 190 00d4 7E4B     		ldr	r3, .L35+12
+ 191 00d6 0A02     		lsls	r2, r1, #8
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczJCWOe.s 			page 6
+
+
+ 192 00d8 DA80     		strh	r2, [r3, #6]	@ movhi
+  92:main.c        ****                         computedChecksumByte += receiveArray[i+1];
+ 193              		.loc 1 92 0
+ 194 00da 5A79     		ldrb	r2, [r3, #5]	@ zero_extendqisi2
+ 195 00dc 0A44     		add	r2, r2, r1
+ 196 00de 5A71     		strb	r2, [r3, #5]
+ 197 00e0 3BE0     		b	.L12
+ 198              	.L13:
+  93:main.c        ****                     }
+  94:main.c        ****                     else if (dataPosition == 2)
+ 199              		.loc 1 94 0
+ 200 00e2 022B     		cmp	r3, #2
+ 201 00e4 0AD1     		bne	.L14
+  95:main.c        ****                     {   
+  96:main.c        ****                         rowNumber += receiveArray[i+1];
+ 202              		.loc 1 96 0
+ 203 00e6 631C     		adds	r3, r4, #1
+ 204 00e8 7A4A     		ldr	r2, .L35+16
+ 205 00ea D05C     		ldrb	r0, [r2, r3]	@ zero_extendqisi2
+ 206 00ec 784B     		ldr	r3, .L35+12
+ 207 00ee D988     		ldrh	r1, [r3, #6]
+ 208 00f0 0144     		add	r1, r1, r0
+ 209 00f2 D980     		strh	r1, [r3, #6]	@ movhi
+  97:main.c        ****                         computedChecksumByte += receiveArray[i+1];
+ 210              		.loc 1 97 0
+ 211 00f4 5A79     		ldrb	r2, [r3, #5]	@ zero_extendqisi2
+ 212 00f6 0244     		add	r2, r2, r0
+ 213 00f8 5A71     		strb	r2, [r3, #5]
+ 214 00fa 2EE0     		b	.L12
+ 215              	.L14:
+  98:main.c        ****                     }
+  99:main.c        ****                     else if (dataPosition == 3)
+ 216              		.loc 1 99 0
+ 217 00fc 032B     		cmp	r3, #3
+ 218 00fe 09D1     		bne	.L15
+ 100:main.c        ****                     {   
+ 101:main.c        ****                         rowSize = receiveArray[i+1]<<8;
+ 219              		.loc 1 101 0
+ 220 0100 631C     		adds	r3, r4, #1
+ 221 0102 744A     		ldr	r2, .L35+16
+ 222 0104 D15C     		ldrb	r1, [r2, r3]	@ zero_extendqisi2
+ 223 0106 724B     		ldr	r3, .L35+12
+ 224 0108 0A02     		lsls	r2, r1, #8
+ 225 010a 1A81     		strh	r2, [r3, #8]	@ movhi
+ 102:main.c        ****                         computedChecksumByte += receiveArray[i+1];
+ 226              		.loc 1 102 0
+ 227 010c 5A79     		ldrb	r2, [r3, #5]	@ zero_extendqisi2
+ 228 010e 0A44     		add	r2, r2, r1
+ 229 0110 5A71     		strb	r2, [r3, #5]
+ 230 0112 22E0     		b	.L12
+ 231              	.L15:
+ 103:main.c        ****                     }
+ 104:main.c        ****                     else if (dataPosition == 4)
+ 232              		.loc 1 104 0
+ 233 0114 042B     		cmp	r3, #4
+ 234 0116 0AD1     		bne	.L16
+ 105:main.c        ****                     {   
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczJCWOe.s 			page 7
+
+
+ 106:main.c        ****                         rowSize += receiveArray[i+1];
+ 235              		.loc 1 106 0
+ 236 0118 631C     		adds	r3, r4, #1
+ 237 011a 6E4A     		ldr	r2, .L35+16
+ 238 011c D05C     		ldrb	r0, [r2, r3]	@ zero_extendqisi2
+ 239 011e 6C4B     		ldr	r3, .L35+12
+ 240 0120 1989     		ldrh	r1, [r3, #8]
+ 241 0122 0144     		add	r1, r1, r0
+ 242 0124 1981     		strh	r1, [r3, #8]	@ movhi
+ 107:main.c        ****                         computedChecksumByte += receiveArray[i+1];
+ 243              		.loc 1 107 0
+ 244 0126 5A79     		ldrb	r2, [r3, #5]	@ zero_extendqisi2
+ 245 0128 0244     		add	r2, r2, r0
+ 246 012a 5A71     		strb	r2, [r3, #5]
+ 247 012c 15E0     		b	.L12
+ 248              	.L16:
+ 108:main.c        ****                     }
+ 109:main.c        ****                     else if (dataPosition == 293)
+ 249              		.loc 1 109 0
+ 250 012e 40F22512 		movw	r2, #293
+ 251 0132 9342     		cmp	r3, r2
+ 252 0134 05D1     		bne	.L17
+ 110:main.c        ****                     {
+ 111:main.c        ****                         receivedChecksumByte = receiveArray[i+1];
+ 253              		.loc 1 111 0
+ 254 0136 631C     		adds	r3, r4, #1
+ 255 0138 664A     		ldr	r2, .L35+16
+ 256 013a D25C     		ldrb	r2, [r2, r3]	@ zero_extendqisi2
+ 257 013c 644B     		ldr	r3, .L35+12
+ 258 013e 9A72     		strb	r2, [r3, #10]
+ 259 0140 0BE0     		b	.L12
+ 260              	.L17:
+ 112:main.c        ****                     }
+ 113:main.c        ****                     else
+ 114:main.c        ****                     {
+ 115:main.c        ****                         myData[outputDataPosition] = receiveArray[i+1];
+ 261              		.loc 1 115 0
+ 262 0142 634B     		ldr	r3, .L35+12
+ 263 0144 9A89     		ldrh	r2, [r3, #12]
+ 264 0146 611C     		adds	r1, r4, #1
+ 265 0148 6248     		ldr	r0, .L35+16
+ 266 014a 405C     		ldrb	r0, [r0, r1]	@ zero_extendqisi2
+ 267 014c 6249     		ldr	r1, .L35+20
+ 268 014e 8854     		strb	r0, [r1, r2]
+ 116:main.c        ****                         computedChecksumByte += receiveArray[i+1];
+ 269              		.loc 1 116 0
+ 270 0150 5979     		ldrb	r1, [r3, #5]	@ zero_extendqisi2
+ 271 0152 0144     		add	r1, r1, r0
+ 272 0154 5971     		strb	r1, [r3, #5]
+ 117:main.c        ****                         outputDataPosition++;
+ 273              		.loc 1 117 0
+ 274 0156 0132     		adds	r2, r2, #1
+ 275 0158 9A81     		strh	r2, [r3, #12]	@ movhi
+ 276              	.L12:
+ 118:main.c        ****                     }
+ 119:main.c        ****                     dataPosition++;
+ 277              		.loc 1 119 0
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczJCWOe.s 			page 8
+
+
+ 278 015a 5D4A     		ldr	r2, .L35+12
+ 279 015c 5388     		ldrh	r3, [r2, #2]
+ 280 015e 0133     		adds	r3, r3, #1
+ 281 0160 9BB2     		uxth	r3, r3
+ 282 0162 5380     		strh	r3, [r2, #2]	@ movhi
+ 120:main.c        ****                     //when packet length reaches 288 (or dataposition reaches 295 since it includes
+ 121:main.c        ****                     //and row number, size, and checksum too), write the next row if the checksum c
+ 122:main.c        ****                     if (dataPosition > 293)
+ 283              		.loc 1 122 0
+ 284 0164 B3F5937F 		cmp	r3, #294
+ 285 0168 37D3     		bcc	.L18
+ 123:main.c        ****                     {
+ 124:main.c        ****                         outputDataPosition = 0;
+ 286              		.loc 1 124 0
+ 287 016a 0023     		movs	r3, #0
+ 288 016c 9381     		strh	r3, [r2, #12]	@ movhi
+ 125:main.c        ****                         dataPosition = 0;
+ 289              		.loc 1 125 0
+ 290 016e 5380     		strh	r3, [r2, #2]	@ movhi
+ 126:main.c        ****                         
+ 127:main.c        ****                         //2s-complement of checksum
+ 128:main.c        ****                         computedChecksumByte = ( uint8 )1u + ( uint8 )(~computedChecksumByte);
+ 291              		.loc 1 128 0
+ 292 0170 5379     		ldrb	r3, [r2, #5]	@ zero_extendqisi2
+ 293 0172 5B42     		negs	r3, r3
+ 294 0174 DBB2     		uxtb	r3, r3
+ 295 0176 5371     		strb	r3, [r2, #5]
+ 129:main.c        ****                         
+ 130:main.c        ****                         if (computedChecksumByte == receivedChecksumByte)
+ 296              		.loc 1 130 0
+ 297 0178 927A     		ldrb	r2, [r2, #10]	@ zero_extendqisi2
+ 298 017a 9342     		cmp	r3, r2
+ 299 017c 11D1     		bne	.L19
+ 131:main.c        ****                         {
+ 132:main.c        ****                             ackCode = CyWriteRowFull(arrayNumber, rowNumber, myData, 288);
+ 300              		.loc 1 132 0
+ 301 017e 544D     		ldr	r5, .L35+12
+ 302 0180 4FF49073 		mov	r3, #288
+ 303 0184 544A     		ldr	r2, .L35+20
+ 304 0186 E988     		ldrh	r1, [r5, #6]
+ 305 0188 2879     		ldrb	r0, [r5, #4]	@ zero_extendqisi2
+ 306 018a FFF7FEFF 		bl	CyWriteRowFull
+ 307              	.LVL20:
+ 308 018e A873     		strb	r0, [r5, #14]
+ 133:main.c        ****                         }
+ 134:main.c        ****                         else
+ 135:main.c        ****                         {
+ 136:main.c        ****                             //checksum failed - quit bootloader, requires power cycling to reset
+ 137:main.c        ****                             LED2_Write(0);
+ 138:main.c        ****                             LED3_Write(0);
+ 139:main.c        ****                             LED4_Write(0);
+ 140:main.c        ****                             LED1_Write(0);
+ 141:main.c        ****                             RedLED_Write(1);
+ 142:main.c        ****                             RedLED2_Write(1);
+ 143:main.c        ****                             GreenLED_Write(0);
+ 144:main.c        ****                             GreenLED2_Write(0);
+ 145:main.c        ****                             Bootloader_SET_RUN_TYPE(Bootloader_SCHEDULE_BTLDB);
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczJCWOe.s 			page 9
+
+
+ 146:main.c        ****                             while(1)
+ 147:main.c        ****                             {
+ 148:main.c        ****                                 ;
+ 149:main.c        ****                             }
+ 150:main.c        ****                         }
+ 151:main.c        ****                             
+ 152:main.c        ****                         CyFlushCache();
+ 309              		.loc 1 152 0
+ 310 0190 FFF7FEFF 		bl	CyFlushCache
+ 311              	.LVL21:
+ 153:main.c        ****                         computedChecksumByte = 0;
+ 312              		.loc 1 153 0
+ 313 0194 0023     		movs	r3, #0
+ 314 0196 6B71     		strb	r3, [r5, #5]
+ 154:main.c        ****                         LEDstate = (rowNumber >> 3) & 1;
+ 315              		.loc 1 154 0
+ 316 0198 EB88     		ldrh	r3, [r5, #6]
+ 317 019a C3F3C003 		ubfx	r3, r3, #3, #1
+ 318 019e EB73     		strb	r3, [r5, #15]
+ 319 01a0 1BE0     		b	.L18
+ 320              	.L19:
+ 137:main.c        ****                             LED3_Write(0);
+ 321              		.loc 1 137 0
+ 322 01a2 0020     		movs	r0, #0
+ 323 01a4 FFF7FEFF 		bl	LED2_Write
+ 324              	.LVL22:
+ 138:main.c        ****                             LED4_Write(0);
+ 325              		.loc 1 138 0
+ 326 01a8 0020     		movs	r0, #0
+ 327 01aa FFF7FEFF 		bl	LED3_Write
+ 328              	.LVL23:
+ 139:main.c        ****                             LED1_Write(0);
+ 329              		.loc 1 139 0
+ 330 01ae 0020     		movs	r0, #0
+ 331 01b0 FFF7FEFF 		bl	LED4_Write
+ 332              	.LVL24:
+ 140:main.c        ****                             RedLED_Write(1);
+ 333              		.loc 1 140 0
+ 334 01b4 0020     		movs	r0, #0
+ 335 01b6 FFF7FEFF 		bl	LED1_Write
+ 336              	.LVL25:
+ 141:main.c        ****                             RedLED2_Write(1);
+ 337              		.loc 1 141 0
+ 338 01ba 0120     		movs	r0, #1
+ 339 01bc FFF7FEFF 		bl	RedLED_Write
+ 340              	.LVL26:
+ 142:main.c        ****                             GreenLED_Write(0);
+ 341              		.loc 1 142 0
+ 342 01c0 0120     		movs	r0, #1
+ 343 01c2 FFF7FEFF 		bl	RedLED2_Write
+ 344              	.LVL27:
+ 143:main.c        ****                             GreenLED2_Write(0);
+ 345              		.loc 1 143 0
+ 346 01c6 0020     		movs	r0, #0
+ 347 01c8 FFF7FEFF 		bl	GreenLED_Write
+ 348              	.LVL28:
+ 144:main.c        ****                             Bootloader_SET_RUN_TYPE(Bootloader_SCHEDULE_BTLDB);
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczJCWOe.s 			page 10
+
+
+ 349              		.loc 1 144 0
+ 350 01cc 0020     		movs	r0, #0
+ 351 01ce FFF7FEFF 		bl	GreenLED2_Write
+ 352              	.LVL29:
+ 145:main.c        ****                             while(1)
+ 353              		.loc 1 145 0
+ 354 01d2 8022     		movs	r2, #128
+ 355 01d4 3B4B     		ldr	r3, .L35
+ 356 01d6 1A70     		strb	r2, [r3]
+ 357              	.L20:
+ 358 01d8 FEE7     		b	.L20
+ 359              	.L18:
+  82:main.c        ****                 {
+ 360              		.loc 1 82 0 discriminator 2
+ 361 01da 0134     		adds	r4, r4, #1
+ 362              	.LVL30:
+ 363 01dc 00E0     		b	.L10
+ 364              	.LVL31:
+ 365              	.L31:
+ 366              	.LBE3:
+ 367 01de 0024     		movs	r4, #0
+ 368              	.L10:
+ 369              	.LVL32:
+ 370              	.LBB4:
+  82:main.c        ****                 {
+ 371              		.loc 1 82 0 is_stmt 0 discriminator 1
+ 372 01e0 1D2C     		cmp	r4, #29
+ 373 01e2 7FF766AF 		ble	.L21
+ 374 01e6 0CE0     		b	.L22
+ 375              	.LVL33:
+ 376              	.L9:
+ 377              	.LBE4:
+ 155:main.c        ****                     }
+ 156:main.c        ****                 }
+ 157:main.c        ****             }
+ 158:main.c        ****             
+ 159:main.c        ****             else if ((receiveArray[0] == 249)&& (receiveArray[31] == 254))
+ 378              		.loc 1 159 0 is_stmt 1
+ 379 01e8 F92B     		cmp	r3, #249
+ 380 01ea 0AD1     		bne	.L22
+ 381              		.loc 1 159 0 is_stmt 0 discriminator 1
+ 382 01ec 394B     		ldr	r3, .L35+16
+ 383 01ee DB7F     		ldrb	r3, [r3, #31]	@ zero_extendqisi2
+ 384 01f0 FE2B     		cmp	r3, #254
+ 385 01f2 06D1     		bne	.L22
+ 160:main.c        ****             {
+ 161:main.c        ****                 //this is the signal that the sending is done. Let's restart the brain!
+ 162:main.c        ****                 Bootloader_SET_RUN_TYPE(Bootloader_SCHEDULE_BTLDB);
+ 386              		.loc 1 162 0 is_stmt 1
+ 387 01f4 8022     		movs	r2, #128
+ 388 01f6 334B     		ldr	r3, .L35
+ 389 01f8 1A70     		strb	r2, [r3]
+ 163:main.c        ****                 SPIM_1_Stop();
+ 390              		.loc 1 163 0
+ 391 01fa FFF7FEFF 		bl	SPIM_1_Stop
+ 392              	.LVL34:
+ 164:main.c        ****                 CySoftwareReset();
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczJCWOe.s 			page 11
+
+
+ 393              		.loc 1 164 0
+ 394 01fe FFF7FEFF 		bl	CySoftwareReset
+ 395              	.LVL35:
+ 396              	.L22:
+ 397 0202 0123     		movs	r3, #1
+ 398 0204 04E0     		b	.L23
+ 399              	.LVL36:
+ 400              	.L24:
+ 401              	.LBB5:
+ 165:main.c        ****             }
+ 166:main.c        ****             
+ 167:main.c        ****             //just for checking things, write the data we received back to the host. Makes it easie
+ 168:main.c        ****             for (int i = 1; i < 30; i++)
+ 169:main.c        ****             {
+ 170:main.c        ****                 sendArray[i] = receiveArray[i];
+ 402              		.loc 1 170 0 discriminator 3
+ 403 0206 334A     		ldr	r2, .L35+16
+ 404 0208 D15C     		ldrb	r1, [r2, r3]	@ zero_extendqisi2
+ 405 020a 304A     		ldr	r2, .L35+8
+ 406 020c D154     		strb	r1, [r2, r3]
+ 168:main.c        ****             {
+ 407              		.loc 1 168 0 discriminator 3
+ 408 020e 0133     		adds	r3, r3, #1
+ 409              	.LVL37:
+ 410              	.L23:
+ 168:main.c        ****             {
+ 411              		.loc 1 168 0 is_stmt 0 discriminator 1
+ 412 0210 1D2B     		cmp	r3, #29
+ 413 0212 F8DD     		ble	.L24
+ 414              	.LBE5:
+ 171:main.c        ****             }
+ 172:main.c        **** 
+ 173:main.c        ****             if (arrayNumber == 0)
+ 415              		.loc 1 173 0 is_stmt 1
+ 416 0214 2E4B     		ldr	r3, .L35+12
+ 417              	.LVL38:
+ 418 0216 1B79     		ldrb	r3, [r3, #4]	@ zero_extendqisi2
+ 419 0218 63B9     		cbnz	r3, .L25
+ 174:main.c        ****             {
+ 175:main.c        ****                 LED1_Write(1);
+ 420              		.loc 1 175 0
+ 421 021a 0120     		movs	r0, #1
+ 422 021c FFF7FEFF 		bl	LED1_Write
+ 423              	.LVL39:
+ 176:main.c        ****                 LED2_Write(0);
+ 424              		.loc 1 176 0
+ 425 0220 0020     		movs	r0, #0
+ 426 0222 FFF7FEFF 		bl	LED2_Write
+ 427              	.LVL40:
+ 177:main.c        ****                 LED3_Write(0);
+ 428              		.loc 1 177 0
+ 429 0226 0020     		movs	r0, #0
+ 430 0228 FFF7FEFF 		bl	LED3_Write
+ 431              	.LVL41:
+ 178:main.c        ****                 LED4_Write(0);
+ 432              		.loc 1 178 0
+ 433 022c 0020     		movs	r0, #0
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczJCWOe.s 			page 12
+
+
+ 434 022e FFF7FEFF 		bl	LED4_Write
+ 435              	.LVL42:
+ 436 0232 2BE0     		b	.L26
+ 437              	.L25:
+ 179:main.c        ****             }
+ 180:main.c        ****             else if (arrayNumber == 1)
+ 438              		.loc 1 180 0
+ 439 0234 012B     		cmp	r3, #1
+ 440 0236 0CD1     		bne	.L27
+ 181:main.c        ****             {
+ 182:main.c        ****                 LED1_Write(0);
+ 441              		.loc 1 182 0
+ 442 0238 0020     		movs	r0, #0
+ 443 023a FFF7FEFF 		bl	LED1_Write
+ 444              	.LVL43:
+ 183:main.c        ****                  LED2_Write(1);
+ 445              		.loc 1 183 0
+ 446 023e 0120     		movs	r0, #1
+ 447 0240 FFF7FEFF 		bl	LED2_Write
+ 448              	.LVL44:
+ 184:main.c        ****                 LED3_Write(0);
+ 449              		.loc 1 184 0
+ 450 0244 0020     		movs	r0, #0
+ 451 0246 FFF7FEFF 		bl	LED3_Write
+ 452              	.LVL45:
+ 185:main.c        ****                 LED4_Write(0);
+ 453              		.loc 1 185 0
+ 454 024a 0020     		movs	r0, #0
+ 455 024c FFF7FEFF 		bl	LED4_Write
+ 456              	.LVL46:
+ 457 0250 1CE0     		b	.L26
+ 458              	.L27:
+ 186:main.c        ****             }
+ 187:main.c        ****             else if (arrayNumber == 2)
+ 459              		.loc 1 187 0
+ 460 0252 022B     		cmp	r3, #2
+ 461 0254 0CD1     		bne	.L28
+ 188:main.c        ****             {
+ 189:main.c        ****                 LED1_Write(0);
+ 462              		.loc 1 189 0
+ 463 0256 0020     		movs	r0, #0
+ 464 0258 FFF7FEFF 		bl	LED1_Write
+ 465              	.LVL47:
+ 190:main.c        ****                  LED2_Write(0);
+ 466              		.loc 1 190 0
+ 467 025c 0020     		movs	r0, #0
+ 468 025e FFF7FEFF 		bl	LED2_Write
+ 469              	.LVL48:
+ 191:main.c        ****                 LED3_Write(1);
+ 470              		.loc 1 191 0
+ 471 0262 0120     		movs	r0, #1
+ 472 0264 FFF7FEFF 		bl	LED3_Write
+ 473              	.LVL49:
+ 192:main.c        ****                 LED4_Write(0);
+ 474              		.loc 1 192 0
+ 475 0268 0020     		movs	r0, #0
+ 476 026a FFF7FEFF 		bl	LED4_Write
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczJCWOe.s 			page 13
+
+
+ 477              	.LVL50:
+ 478 026e 0DE0     		b	.L26
+ 479              	.L28:
+ 193:main.c        ****             }
+ 194:main.c        ****             else if (arrayNumber == 3)
+ 480              		.loc 1 194 0
+ 481 0270 032B     		cmp	r3, #3
+ 482 0272 0BD1     		bne	.L26
+ 195:main.c        ****             {
+ 196:main.c        ****                 LED1_Write(0);
+ 483              		.loc 1 196 0
+ 484 0274 0020     		movs	r0, #0
+ 485 0276 FFF7FEFF 		bl	LED1_Write
+ 486              	.LVL51:
+ 197:main.c        ****                  LED2_Write(0);
+ 487              		.loc 1 197 0
+ 488 027a 0020     		movs	r0, #0
+ 489 027c FFF7FEFF 		bl	LED2_Write
+ 490              	.LVL52:
+ 198:main.c        ****                 LED3_Write(0);
+ 491              		.loc 1 198 0
+ 492 0280 0020     		movs	r0, #0
+ 493 0282 FFF7FEFF 		bl	LED3_Write
+ 494              	.LVL53:
+ 199:main.c        ****                 LED4_Write(1);
+ 495              		.loc 1 199 0
+ 496 0286 0120     		movs	r0, #1
+ 497 0288 FFF7FEFF 		bl	LED4_Write
+ 498              	.LVL54:
+ 499              	.L26:
+ 200:main.c        ****             }
+ 201:main.c        ****             
+ 202:main.c        ****             
+ 203:main.c        ****             if (LEDstate == 0)
+ 500              		.loc 1 203 0
+ 501 028c 104B     		ldr	r3, .L35+12
+ 502 028e DB7B     		ldrb	r3, [r3, #15]	@ zero_extendqisi2
+ 503 0290 33B9     		cbnz	r3, .L29
+ 204:main.c        ****             {
+ 205:main.c        ****                 GreenLED_Write(1);
+ 504              		.loc 1 205 0
+ 505 0292 0120     		movs	r0, #1
+ 506 0294 FFF7FEFF 		bl	GreenLED_Write
+ 507              	.LVL55:
+ 206:main.c        ****                 GreenLED2_Write(0);
+ 508              		.loc 1 206 0
+ 509 0298 0020     		movs	r0, #0
+ 510 029a FFF7FEFF 		bl	GreenLED2_Write
+ 511              	.LVL56:
+ 512 029e E2E6     		b	.L5
+ 513              	.L29:
+ 207:main.c        ****                 
+ 208:main.c        ****             }
+ 209:main.c        ****             else if (LEDstate == 1)
+ 514              		.loc 1 209 0
+ 515 02a0 012B     		cmp	r3, #1
+ 516 02a2 7FF4E0AE 		bne	.L5
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczJCWOe.s 			page 14
+
+
+ 210:main.c        ****             {
+ 211:main.c        ****                GreenLED_Write(0);
+ 517              		.loc 1 211 0
+ 518 02a6 0020     		movs	r0, #0
+ 519 02a8 FFF7FEFF 		bl	GreenLED_Write
+ 520              	.LVL57:
+ 212:main.c        ****                 GreenLED2_Write(1);
+ 521              		.loc 1 212 0
+ 522 02ac 0120     		movs	r0, #1
+ 523 02ae FFF7FEFF 		bl	GreenLED2_Write
+ 524              	.LVL58:
+ 525 02b2 D8E6     		b	.L5
+ 526              	.LVL59:
+ 527              	.L33:
+  39:main.c        ****         CySoftwareReset();
+ 528              		.loc 1 39 0
+ 529 02b4 8022     		movs	r2, #128
+ 530 02b6 034B     		ldr	r3, .L35
+ 531              	.LVL60:
+ 532 02b8 1A70     		strb	r2, [r3]
+  40:main.c        ****     }
+ 533              		.loc 1 40 0
+ 534 02ba FFF7FEFF 		bl	CySoftwareReset
+ 535              	.LVL61:
+ 213:main.c        ****                 
+ 214:main.c        ****             }
+ 215:main.c        ****         }
+ 216:main.c        ****     }
+ 217:main.c        **** }
+ 536              		.loc 1 217 0
+ 537 02be 0020     		movs	r0, #0
+ 538 02c0 38BD     		pop	{r3, r4, r5, pc}
+ 539              	.L36:
+ 540 02c2 00BF     		.align	2
+ 541              	.L35:
+ 542 02c4 FA460040 		.word	1073759994
+ 543 02c8 00000000 		.word	eccflash
+ 544 02cc 00000000 		.word	sendArray
+ 545 02d0 00000000 		.word	.LANCHOR0
+ 546 02d4 00000000 		.word	receiveArray
+ 547 02d8 00000000 		.word	myData
+ 548              		.cfi_endproc
+ 549              	.LFE63:
+ 550              		.size	main, .-main
+ 551              		.global	LEDstate
+ 552              		.comm	eccflash,288,4
+ 553              		.global	ackCode
+ 554              		.global	rowSize
+ 555              		.global	arrayNumber
+ 556              		.global	rowNumber
+ 557              		.global	outputDataPosition
+ 558              		.global	dataPosition
+ 559              		.global	receivedChecksumByte
+ 560              		.global	computedChecksumByte
+ 561              		.global	receivePosition
+ 562              		.comm	receiveArray,32,4
+ 563              		.comm	sendArray,32,4
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczJCWOe.s 			page 15
+
+
+ 564              		.comm	myData,300,4
+ 565              		.bss
+ 566              		.align	1
+ 567              		.set	.LANCHOR0,. + 0
+ 568              		.type	receivePosition, %object
+ 569              		.size	receivePosition, 1
+ 570              	receivePosition:
+ 571 0000 00       		.space	1
+ 572 0001 00       		.space	1
+ 573              		.type	dataPosition, %object
+ 574              		.size	dataPosition, 2
+ 575              	dataPosition:
+ 576 0002 0000     		.space	2
+ 577              		.type	arrayNumber, %object
+ 578              		.size	arrayNumber, 1
+ 579              	arrayNumber:
+ 580 0004 00       		.space	1
+ 581              		.type	computedChecksumByte, %object
+ 582              		.size	computedChecksumByte, 1
+ 583              	computedChecksumByte:
+ 584 0005 00       		.space	1
+ 585              		.type	rowNumber, %object
+ 586              		.size	rowNumber, 2
+ 587              	rowNumber:
+ 588 0006 0000     		.space	2
+ 589              		.type	rowSize, %object
+ 590              		.size	rowSize, 2
+ 591              	rowSize:
+ 592 0008 0000     		.space	2
+ 593              		.type	receivedChecksumByte, %object
+ 594              		.size	receivedChecksumByte, 1
+ 595              	receivedChecksumByte:
+ 596 000a 00       		.space	1
+ 597 000b 00       		.space	1
+ 598              		.type	outputDataPosition, %object
+ 599              		.size	outputDataPosition, 2
+ 600              	outputDataPosition:
+ 601 000c 0000     		.space	2
+ 602              		.type	ackCode, %object
+ 603              		.size	ackCode, 1
+ 604              	ackCode:
+ 605 000e 00       		.space	1
+ 606              		.type	LEDstate, %object
+ 607              		.size	LEDstate, 1
+ 608              	LEDstate:
+ 609 000f 00       		.space	1
+ 610              		.text
+ 611              	.Letext0:
+ 612              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
+ 613              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
+ 614              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 615              		.file 5 "Generated_Source\\PSoC5/core_cm3.h"
+ 616              		.file 6 "Generated_Source\\PSoC5/CyFlash.h"
+ 617              		.file 7 "Generated_Source\\PSoC5/CyLib.h"
+ 618              		.file 8 "Generated_Source\\PSoC5/LED2.h"
+ 619              		.file 9 "Generated_Source\\PSoC5/LED3.h"
+ 620              		.file 10 "Generated_Source\\PSoC5/LED4.h"
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczJCWOe.s 			page 16
+
+
+ 621              		.file 11 "Generated_Source\\PSoC5/LED1.h"
+ 622              		.file 12 "Generated_Source\\PSoC5/RedLED.h"
+ 623              		.file 13 "Generated_Source\\PSoC5/RedLED2.h"
+ 624              		.file 14 "Generated_Source\\PSoC5/GreenLED.h"
+ 625              		.file 15 "Generated_Source\\PSoC5/GreenLED2.h"
+ 626              		.file 16 "Generated_Source\\PSoC5/SPIM_1.h"
+ 627              		.section	.debug_info,"",%progbits
+ 628              	.Ldebug_info0:
+ 629 0000 AD060000 		.4byte	0x6ad
+ 630 0004 0400     		.2byte	0x4
+ 631 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 632 000a 04       		.byte	0x4
+ 633 000b 01       		.uleb128 0x1
+ 634 000c 64020000 		.4byte	.LASF57
+ 635 0010 0C       		.byte	0xc
+ 636 0011 24030000 		.4byte	.LASF58
+ 637 0015 26010000 		.4byte	.LASF59
+ 638 0019 18000000 		.4byte	.Ldebug_ranges0+0x18
+ 639 001d 00000000 		.4byte	0
+ 640 0021 00000000 		.4byte	.Ldebug_line0
+ 641 0025 02       		.uleb128 0x2
+ 642 0026 01       		.byte	0x1
+ 643 0027 06       		.byte	0x6
+ 644 0028 D0030000 		.4byte	.LASF0
+ 645 002c 03       		.uleb128 0x3
+ 646 002d 0B000000 		.4byte	.LASF3
+ 647 0031 02       		.byte	0x2
+ 648 0032 1D       		.byte	0x1d
+ 649 0033 37000000 		.4byte	0x37
+ 650 0037 02       		.uleb128 0x2
+ 651 0038 01       		.byte	0x1
+ 652 0039 08       		.byte	0x8
+ 653 003a C7010000 		.4byte	.LASF1
+ 654 003e 02       		.uleb128 0x2
+ 655 003f 02       		.byte	0x2
+ 656 0040 05       		.byte	0x5
+ 657 0041 6C030000 		.4byte	.LASF2
+ 658 0045 03       		.uleb128 0x3
+ 659 0046 D5010000 		.4byte	.LASF4
+ 660 004a 02       		.byte	0x2
+ 661 004b 2B       		.byte	0x2b
+ 662 004c 50000000 		.4byte	0x50
+ 663 0050 02       		.uleb128 0x2
+ 664 0051 02       		.byte	0x2
+ 665 0052 07       		.byte	0x7
+ 666 0053 DC030000 		.4byte	.LASF5
+ 667 0057 03       		.uleb128 0x3
+ 668 0058 22000000 		.4byte	.LASF6
+ 669 005c 02       		.byte	0x2
+ 670 005d 3F       		.byte	0x3f
+ 671 005e 62000000 		.4byte	0x62
+ 672 0062 02       		.uleb128 0x2
+ 673 0063 04       		.byte	0x4
+ 674 0064 05       		.byte	0x5
+ 675 0065 A4030000 		.4byte	.LASF7
+ 676 0069 02       		.uleb128 0x2
+ 677 006a 04       		.byte	0x4
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczJCWOe.s 			page 17
+
+
+ 678 006b 07       		.byte	0x7
+ 679 006c EE000000 		.4byte	.LASF8
+ 680 0070 02       		.uleb128 0x2
+ 681 0071 08       		.byte	0x8
+ 682 0072 05       		.byte	0x5
+ 683 0073 03030000 		.4byte	.LASF9
+ 684 0077 02       		.uleb128 0x2
+ 685 0078 08       		.byte	0x8
+ 686 0079 07       		.byte	0x7
+ 687 007a 37020000 		.4byte	.LASF10
+ 688 007e 04       		.uleb128 0x4
+ 689 007f 04       		.byte	0x4
+ 690 0080 05       		.byte	0x5
+ 691 0081 696E7400 		.ascii	"int\000"
+ 692 0085 02       		.uleb128 0x2
+ 693 0086 04       		.byte	0x4
+ 694 0087 07       		.byte	0x7
+ 695 0088 2A020000 		.4byte	.LASF11
+ 696 008c 03       		.uleb128 0x3
+ 697 008d 4E020000 		.4byte	.LASF12
+ 698 0091 03       		.byte	0x3
+ 699 0092 18       		.byte	0x18
+ 700 0093 2C000000 		.4byte	0x2c
+ 701 0097 03       		.uleb128 0x3
+ 702 0098 8B030000 		.4byte	.LASF13
+ 703 009c 03       		.byte	0x3
+ 704 009d 24       		.byte	0x24
+ 705 009e 45000000 		.4byte	0x45
+ 706 00a2 03       		.uleb128 0x3
+ 707 00a3 F2020000 		.4byte	.LASF14
+ 708 00a7 03       		.byte	0x3
+ 709 00a8 2C       		.byte	0x2c
+ 710 00a9 57000000 		.4byte	0x57
+ 711 00ad 05       		.uleb128 0x5
+ 712 00ae 5E020000 		.4byte	.LASF15
+ 713 00b2 04       		.byte	0x4
+ 714 00b3 E901     		.2byte	0x1e9
+ 715 00b5 37000000 		.4byte	0x37
+ 716 00b9 02       		.uleb128 0x2
+ 717 00ba 04       		.byte	0x4
+ 718 00bb 04       		.byte	0x4
+ 719 00bc B0000000 		.4byte	.LASF16
+ 720 00c0 02       		.uleb128 0x2
+ 721 00c1 08       		.byte	0x8
+ 722 00c2 04       		.byte	0x4
+ 723 00c3 E0010000 		.4byte	.LASF17
+ 724 00c7 02       		.uleb128 0x2
+ 725 00c8 01       		.byte	0x1
+ 726 00c9 08       		.byte	0x8
+ 727 00ca 2B030000 		.4byte	.LASF18
+ 728 00ce 05       		.uleb128 0x5
+ 729 00cf E9000000 		.4byte	.LASF19
+ 730 00d3 04       		.byte	0x4
+ 731 00d4 9302     		.2byte	0x293
+ 732 00d6 DA000000 		.4byte	0xda
+ 733 00da 06       		.uleb128 0x6
+ 734 00db AD000000 		.4byte	0xad
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczJCWOe.s 			page 18
+
+
+ 735 00df 02       		.uleb128 0x2
+ 736 00e0 08       		.byte	0x8
+ 737 00e1 04       		.byte	0x4
+ 738 00e2 B7030000 		.4byte	.LASF20
+ 739 00e6 02       		.uleb128 0x2
+ 740 00e7 04       		.byte	0x4
+ 741 00e8 07       		.byte	0x7
+ 742 00e9 FA020000 		.4byte	.LASF21
+ 743 00ed 07       		.uleb128 0x7
+ 744 00ee EF010000 		.4byte	.LASF60
+ 745 00f2 01       		.byte	0x1
+ 746 00f3 1E       		.byte	0x1e
+ 747 00f4 7E000000 		.4byte	0x7e
+ 748 00f8 00000000 		.4byte	.LFB63
+ 749 00fc DC020000 		.4byte	.LFE63-.LFB63
+ 750 0100 01       		.uleb128 0x1
+ 751 0101 9C       		.byte	0x9c
+ 752 0102 AE040000 		.4byte	0x4ae
+ 753 0106 08       		.uleb128 0x8
+ 754 0107 56020000 		.4byte	.LASF22
+ 755 010b 01       		.byte	0x1
+ 756 010c 23       		.byte	0x23
+ 757 010d 8C000000 		.4byte	0x8c
+ 758 0111 00000000 		.4byte	.LLST0
+ 759 0115 09       		.uleb128 0x9
+ 760 0116 1C000000 		.4byte	.LBB2
+ 761 011a 10000000 		.4byte	.LBE2-.LBB2
+ 762 011e 30010000 		.4byte	0x130
+ 763 0122 0A       		.uleb128 0xa
+ 764 0123 6900     		.ascii	"i\000"
+ 765 0125 01       		.byte	0x1
+ 766 0126 31       		.byte	0x31
+ 767 0127 7E000000 		.4byte	0x7e
+ 768 012b 1E000000 		.4byte	.LLST1
+ 769 012f 00       		.byte	0
+ 770 0130 0B       		.uleb128 0xb
+ 771 0131 00000000 		.4byte	.Ldebug_ranges0+0
+ 772 0135 02020000 		.4byte	0x202
+ 773 0139 0A       		.uleb128 0xa
+ 774 013a 6900     		.ascii	"i\000"
+ 775 013c 01       		.byte	0x1
+ 776 013d 52       		.byte	0x52
+ 777 013e 7E000000 		.4byte	0x7e
+ 778 0142 3D000000 		.4byte	.LLST2
+ 779 0146 0C       		.uleb128 0xc
+ 780 0147 8E010000 		.4byte	.LVL20
+ 781 014b DF050000 		.4byte	0x5df
+ 782 014f 64010000 		.4byte	0x164
+ 783 0153 0D       		.uleb128 0xd
+ 784 0154 01       		.uleb128 0x1
+ 785 0155 52       		.byte	0x52
+ 786 0156 05       		.uleb128 0x5
+ 787 0157 03       		.byte	0x3
+ 788 0158 00000000 		.4byte	myData
+ 789 015c 0D       		.uleb128 0xd
+ 790 015d 01       		.uleb128 0x1
+ 791 015e 53       		.byte	0x53
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczJCWOe.s 			page 19
+
+
+ 792 015f 03       		.uleb128 0x3
+ 793 0160 0A       		.byte	0xa
+ 794 0161 2001     		.2byte	0x120
+ 795 0163 00       		.byte	0
+ 796 0164 0E       		.uleb128 0xe
+ 797 0165 94010000 		.4byte	.LVL21
+ 798 0169 EA050000 		.4byte	0x5ea
+ 799 016d 0C       		.uleb128 0xc
+ 800 016e A8010000 		.4byte	.LVL22
+ 801 0172 F5050000 		.4byte	0x5f5
+ 802 0176 80010000 		.4byte	0x180
+ 803 017a 0D       		.uleb128 0xd
+ 804 017b 01       		.uleb128 0x1
+ 805 017c 50       		.byte	0x50
+ 806 017d 01       		.uleb128 0x1
+ 807 017e 30       		.byte	0x30
+ 808 017f 00       		.byte	0
+ 809 0180 0C       		.uleb128 0xc
+ 810 0181 AE010000 		.4byte	.LVL23
+ 811 0185 00060000 		.4byte	0x600
+ 812 0189 93010000 		.4byte	0x193
+ 813 018d 0D       		.uleb128 0xd
+ 814 018e 01       		.uleb128 0x1
+ 815 018f 50       		.byte	0x50
+ 816 0190 01       		.uleb128 0x1
+ 817 0191 30       		.byte	0x30
+ 818 0192 00       		.byte	0
+ 819 0193 0C       		.uleb128 0xc
+ 820 0194 B4010000 		.4byte	.LVL24
+ 821 0198 0B060000 		.4byte	0x60b
+ 822 019c A6010000 		.4byte	0x1a6
+ 823 01a0 0D       		.uleb128 0xd
+ 824 01a1 01       		.uleb128 0x1
+ 825 01a2 50       		.byte	0x50
+ 826 01a3 01       		.uleb128 0x1
+ 827 01a4 30       		.byte	0x30
+ 828 01a5 00       		.byte	0
+ 829 01a6 0C       		.uleb128 0xc
+ 830 01a7 BA010000 		.4byte	.LVL25
+ 831 01ab 16060000 		.4byte	0x616
+ 832 01af B9010000 		.4byte	0x1b9
+ 833 01b3 0D       		.uleb128 0xd
+ 834 01b4 01       		.uleb128 0x1
+ 835 01b5 50       		.byte	0x50
+ 836 01b6 01       		.uleb128 0x1
+ 837 01b7 30       		.byte	0x30
+ 838 01b8 00       		.byte	0
+ 839 01b9 0C       		.uleb128 0xc
+ 840 01ba C0010000 		.4byte	.LVL26
+ 841 01be 21060000 		.4byte	0x621
+ 842 01c2 CC010000 		.4byte	0x1cc
+ 843 01c6 0D       		.uleb128 0xd
+ 844 01c7 01       		.uleb128 0x1
+ 845 01c8 50       		.byte	0x50
+ 846 01c9 01       		.uleb128 0x1
+ 847 01ca 31       		.byte	0x31
+ 848 01cb 00       		.byte	0
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczJCWOe.s 			page 20
+
+
+ 849 01cc 0C       		.uleb128 0xc
+ 850 01cd C6010000 		.4byte	.LVL27
+ 851 01d1 2C060000 		.4byte	0x62c
+ 852 01d5 DF010000 		.4byte	0x1df
+ 853 01d9 0D       		.uleb128 0xd
+ 854 01da 01       		.uleb128 0x1
+ 855 01db 50       		.byte	0x50
+ 856 01dc 01       		.uleb128 0x1
+ 857 01dd 31       		.byte	0x31
+ 858 01de 00       		.byte	0
+ 859 01df 0C       		.uleb128 0xc
+ 860 01e0 CC010000 		.4byte	.LVL28
+ 861 01e4 37060000 		.4byte	0x637
+ 862 01e8 F2010000 		.4byte	0x1f2
+ 863 01ec 0D       		.uleb128 0xd
+ 864 01ed 01       		.uleb128 0x1
+ 865 01ee 50       		.byte	0x50
+ 866 01ef 01       		.uleb128 0x1
+ 867 01f0 30       		.byte	0x30
+ 868 01f1 00       		.byte	0
+ 869 01f2 0F       		.uleb128 0xf
+ 870 01f3 D2010000 		.4byte	.LVL29
+ 871 01f7 42060000 		.4byte	0x642
+ 872 01fb 0D       		.uleb128 0xd
+ 873 01fc 01       		.uleb128 0x1
+ 874 01fd 50       		.byte	0x50
+ 875 01fe 01       		.uleb128 0x1
+ 876 01ff 30       		.byte	0x30
+ 877 0200 00       		.byte	0
+ 878 0201 00       		.byte	0
+ 879 0202 09       		.uleb128 0x9
+ 880 0203 06020000 		.4byte	.LBB5
+ 881 0207 0E000000 		.4byte	.LBE5-.LBB5
+ 882 020b 1D020000 		.4byte	0x21d
+ 883 020f 0A       		.uleb128 0xa
+ 884 0210 6900     		.ascii	"i\000"
+ 885 0212 01       		.byte	0x1
+ 886 0213 A8       		.byte	0xa8
+ 887 0214 7E000000 		.4byte	0x7e
+ 888 0218 5B000000 		.4byte	.LLST3
+ 889 021c 00       		.byte	0
+ 890 021d 0C       		.uleb128 0xc
+ 891 021e 18000000 		.4byte	.LVL1
+ 892 0222 4D060000 		.4byte	0x64d
+ 893 0226 34020000 		.4byte	0x234
+ 894 022a 0D       		.uleb128 0xd
+ 895 022b 01       		.uleb128 0x1
+ 896 022c 50       		.byte	0x50
+ 897 022d 05       		.uleb128 0x5
+ 898 022e 03       		.byte	0x3
+ 899 022f 00000000 		.4byte	eccflash
+ 900 0233 00       		.byte	0
+ 901 0234 0E       		.uleb128 0xe
+ 902 0235 1C000000 		.4byte	.LVL2
+ 903 0239 58060000 		.4byte	0x658
+ 904 023d 0C       		.uleb128 0xc
+ 905 023e 3C000000 		.4byte	.LVL6
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczJCWOe.s 			page 21
+
+
+ 906 0242 F5050000 		.4byte	0x5f5
+ 907 0246 50020000 		.4byte	0x250
+ 908 024a 0D       		.uleb128 0xd
+ 909 024b 01       		.uleb128 0x1
+ 910 024c 50       		.byte	0x50
+ 911 024d 01       		.uleb128 0x1
+ 912 024e 30       		.byte	0x30
+ 913 024f 00       		.byte	0
+ 914 0250 0C       		.uleb128 0xc
+ 915 0251 42000000 		.4byte	.LVL7
+ 916 0255 00060000 		.4byte	0x600
+ 917 0259 63020000 		.4byte	0x263
+ 918 025d 0D       		.uleb128 0xd
+ 919 025e 01       		.uleb128 0x1
+ 920 025f 50       		.byte	0x50
+ 921 0260 01       		.uleb128 0x1
+ 922 0261 30       		.byte	0x30
+ 923 0262 00       		.byte	0
+ 924 0263 0C       		.uleb128 0xc
+ 925 0264 48000000 		.4byte	.LVL8
+ 926 0268 0B060000 		.4byte	0x60b
+ 927 026c 76020000 		.4byte	0x276
+ 928 0270 0D       		.uleb128 0xd
+ 929 0271 01       		.uleb128 0x1
+ 930 0272 50       		.byte	0x50
+ 931 0273 01       		.uleb128 0x1
+ 932 0274 30       		.byte	0x30
+ 933 0275 00       		.byte	0
+ 934 0276 0C       		.uleb128 0xc
+ 935 0277 4E000000 		.4byte	.LVL9
+ 936 027b 16060000 		.4byte	0x616
+ 937 027f 89020000 		.4byte	0x289
+ 938 0283 0D       		.uleb128 0xd
+ 939 0284 01       		.uleb128 0x1
+ 940 0285 50       		.byte	0x50
+ 941 0286 01       		.uleb128 0x1
+ 942 0287 30       		.byte	0x30
+ 943 0288 00       		.byte	0
+ 944 0289 0C       		.uleb128 0xc
+ 945 028a 54000000 		.4byte	.LVL10
+ 946 028e 21060000 		.4byte	0x621
+ 947 0292 9C020000 		.4byte	0x29c
+ 948 0296 0D       		.uleb128 0xd
+ 949 0297 01       		.uleb128 0x1
+ 950 0298 50       		.byte	0x50
+ 951 0299 01       		.uleb128 0x1
+ 952 029a 30       		.byte	0x30
+ 953 029b 00       		.byte	0
+ 954 029c 0C       		.uleb128 0xc
+ 955 029d 5A000000 		.4byte	.LVL11
+ 956 02a1 2C060000 		.4byte	0x62c
+ 957 02a5 AF020000 		.4byte	0x2af
+ 958 02a9 0D       		.uleb128 0xd
+ 959 02aa 01       		.uleb128 0x1
+ 960 02ab 50       		.byte	0x50
+ 961 02ac 01       		.uleb128 0x1
+ 962 02ad 30       		.byte	0x30
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczJCWOe.s 			page 22
+
+
+ 963 02ae 00       		.byte	0
+ 964 02af 0C       		.uleb128 0xc
+ 965 02b0 60000000 		.4byte	.LVL12
+ 966 02b4 37060000 		.4byte	0x637
+ 967 02b8 C2020000 		.4byte	0x2c2
+ 968 02bc 0D       		.uleb128 0xd
+ 969 02bd 01       		.uleb128 0x1
+ 970 02be 50       		.byte	0x50
+ 971 02bf 01       		.uleb128 0x1
+ 972 02c0 30       		.byte	0x30
+ 973 02c1 00       		.byte	0
+ 974 02c2 0C       		.uleb128 0xc
+ 975 02c3 66000000 		.4byte	.LVL13
+ 976 02c7 42060000 		.4byte	0x642
+ 977 02cb D5020000 		.4byte	0x2d5
+ 978 02cf 0D       		.uleb128 0xd
+ 979 02d0 01       		.uleb128 0x1
+ 980 02d1 50       		.byte	0x50
+ 981 02d2 01       		.uleb128 0x1
+ 982 02d3 30       		.byte	0x30
+ 983 02d4 00       		.byte	0
+ 984 02d5 0C       		.uleb128 0xc
+ 985 02d6 6E000000 		.4byte	.LVL14
+ 986 02da 63060000 		.4byte	0x663
+ 987 02de F2020000 		.4byte	0x2f2
+ 988 02e2 0D       		.uleb128 0xd
+ 989 02e3 01       		.uleb128 0x1
+ 990 02e4 50       		.byte	0x50
+ 991 02e5 05       		.uleb128 0x5
+ 992 02e6 03       		.byte	0x3
+ 993 02e7 00000000 		.4byte	sendArray
+ 994 02eb 0D       		.uleb128 0xd
+ 995 02ec 01       		.uleb128 0x1
+ 996 02ed 51       		.byte	0x51
+ 997 02ee 02       		.uleb128 0x2
+ 998 02ef 08       		.byte	0x8
+ 999 02f0 20       		.byte	0x20
+ 1000 02f1 00       		.byte	0
+ 1001 02f2 0E       		.uleb128 0xe
+ 1002 02f3 72000000 		.4byte	.LVL15
+ 1003 02f7 6E060000 		.4byte	0x66e
+ 1004 02fb 0E       		.uleb128 0xe
+ 1005 02fc 82000000 		.4byte	.LVL16
+ 1006 0300 79060000 		.4byte	0x679
+ 1007 0304 0E       		.uleb128 0xe
+ 1008 0305 94000000 		.4byte	.LVL17
+ 1009 0309 84060000 		.4byte	0x684
+ 1010 030d 0E       		.uleb128 0xe
+ 1011 030e 9C000000 		.4byte	.LVL18
+ 1012 0312 8F060000 		.4byte	0x68f
+ 1013 0316 0E       		.uleb128 0xe
+ 1014 0317 FE010000 		.4byte	.LVL34
+ 1015 031b 9A060000 		.4byte	0x69a
+ 1016 031f 0E       		.uleb128 0xe
+ 1017 0320 02020000 		.4byte	.LVL35
+ 1018 0324 A5060000 		.4byte	0x6a5
+ 1019 0328 0C       		.uleb128 0xc
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczJCWOe.s 			page 23
+
+
+ 1020 0329 20020000 		.4byte	.LVL39
+ 1021 032d 16060000 		.4byte	0x616
+ 1022 0331 3B030000 		.4byte	0x33b
+ 1023 0335 0D       		.uleb128 0xd
+ 1024 0336 01       		.uleb128 0x1
+ 1025 0337 50       		.byte	0x50
+ 1026 0338 01       		.uleb128 0x1
+ 1027 0339 31       		.byte	0x31
+ 1028 033a 00       		.byte	0
+ 1029 033b 0C       		.uleb128 0xc
+ 1030 033c 26020000 		.4byte	.LVL40
+ 1031 0340 F5050000 		.4byte	0x5f5
+ 1032 0344 4E030000 		.4byte	0x34e
+ 1033 0348 0D       		.uleb128 0xd
+ 1034 0349 01       		.uleb128 0x1
+ 1035 034a 50       		.byte	0x50
+ 1036 034b 01       		.uleb128 0x1
+ 1037 034c 30       		.byte	0x30
+ 1038 034d 00       		.byte	0
+ 1039 034e 0C       		.uleb128 0xc
+ 1040 034f 2C020000 		.4byte	.LVL41
+ 1041 0353 00060000 		.4byte	0x600
+ 1042 0357 61030000 		.4byte	0x361
+ 1043 035b 0D       		.uleb128 0xd
+ 1044 035c 01       		.uleb128 0x1
+ 1045 035d 50       		.byte	0x50
+ 1046 035e 01       		.uleb128 0x1
+ 1047 035f 30       		.byte	0x30
+ 1048 0360 00       		.byte	0
+ 1049 0361 0C       		.uleb128 0xc
+ 1050 0362 32020000 		.4byte	.LVL42
+ 1051 0366 0B060000 		.4byte	0x60b
+ 1052 036a 74030000 		.4byte	0x374
+ 1053 036e 0D       		.uleb128 0xd
+ 1054 036f 01       		.uleb128 0x1
+ 1055 0370 50       		.byte	0x50
+ 1056 0371 01       		.uleb128 0x1
+ 1057 0372 30       		.byte	0x30
+ 1058 0373 00       		.byte	0
+ 1059 0374 0C       		.uleb128 0xc
+ 1060 0375 3E020000 		.4byte	.LVL43
+ 1061 0379 16060000 		.4byte	0x616
+ 1062 037d 87030000 		.4byte	0x387
+ 1063 0381 0D       		.uleb128 0xd
+ 1064 0382 01       		.uleb128 0x1
+ 1065 0383 50       		.byte	0x50
+ 1066 0384 01       		.uleb128 0x1
+ 1067 0385 30       		.byte	0x30
+ 1068 0386 00       		.byte	0
+ 1069 0387 0C       		.uleb128 0xc
+ 1070 0388 44020000 		.4byte	.LVL44
+ 1071 038c F5050000 		.4byte	0x5f5
+ 1072 0390 9A030000 		.4byte	0x39a
+ 1073 0394 0D       		.uleb128 0xd
+ 1074 0395 01       		.uleb128 0x1
+ 1075 0396 50       		.byte	0x50
+ 1076 0397 01       		.uleb128 0x1
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczJCWOe.s 			page 24
+
+
+ 1077 0398 31       		.byte	0x31
+ 1078 0399 00       		.byte	0
+ 1079 039a 0C       		.uleb128 0xc
+ 1080 039b 4A020000 		.4byte	.LVL45
+ 1081 039f 00060000 		.4byte	0x600
+ 1082 03a3 AD030000 		.4byte	0x3ad
+ 1083 03a7 0D       		.uleb128 0xd
+ 1084 03a8 01       		.uleb128 0x1
+ 1085 03a9 50       		.byte	0x50
+ 1086 03aa 01       		.uleb128 0x1
+ 1087 03ab 30       		.byte	0x30
+ 1088 03ac 00       		.byte	0
+ 1089 03ad 0C       		.uleb128 0xc
+ 1090 03ae 50020000 		.4byte	.LVL46
+ 1091 03b2 0B060000 		.4byte	0x60b
+ 1092 03b6 C0030000 		.4byte	0x3c0
+ 1093 03ba 0D       		.uleb128 0xd
+ 1094 03bb 01       		.uleb128 0x1
+ 1095 03bc 50       		.byte	0x50
+ 1096 03bd 01       		.uleb128 0x1
+ 1097 03be 30       		.byte	0x30
+ 1098 03bf 00       		.byte	0
+ 1099 03c0 0C       		.uleb128 0xc
+ 1100 03c1 5C020000 		.4byte	.LVL47
+ 1101 03c5 16060000 		.4byte	0x616
+ 1102 03c9 D3030000 		.4byte	0x3d3
+ 1103 03cd 0D       		.uleb128 0xd
+ 1104 03ce 01       		.uleb128 0x1
+ 1105 03cf 50       		.byte	0x50
+ 1106 03d0 01       		.uleb128 0x1
+ 1107 03d1 30       		.byte	0x30
+ 1108 03d2 00       		.byte	0
+ 1109 03d3 0C       		.uleb128 0xc
+ 1110 03d4 62020000 		.4byte	.LVL48
+ 1111 03d8 F5050000 		.4byte	0x5f5
+ 1112 03dc E6030000 		.4byte	0x3e6
+ 1113 03e0 0D       		.uleb128 0xd
+ 1114 03e1 01       		.uleb128 0x1
+ 1115 03e2 50       		.byte	0x50
+ 1116 03e3 01       		.uleb128 0x1
+ 1117 03e4 30       		.byte	0x30
+ 1118 03e5 00       		.byte	0
+ 1119 03e6 0C       		.uleb128 0xc
+ 1120 03e7 68020000 		.4byte	.LVL49
+ 1121 03eb 00060000 		.4byte	0x600
+ 1122 03ef F9030000 		.4byte	0x3f9
+ 1123 03f3 0D       		.uleb128 0xd
+ 1124 03f4 01       		.uleb128 0x1
+ 1125 03f5 50       		.byte	0x50
+ 1126 03f6 01       		.uleb128 0x1
+ 1127 03f7 31       		.byte	0x31
+ 1128 03f8 00       		.byte	0
+ 1129 03f9 0C       		.uleb128 0xc
+ 1130 03fa 6E020000 		.4byte	.LVL50
+ 1131 03fe 0B060000 		.4byte	0x60b
+ 1132 0402 0C040000 		.4byte	0x40c
+ 1133 0406 0D       		.uleb128 0xd
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczJCWOe.s 			page 25
+
+
+ 1134 0407 01       		.uleb128 0x1
+ 1135 0408 50       		.byte	0x50
+ 1136 0409 01       		.uleb128 0x1
+ 1137 040a 30       		.byte	0x30
+ 1138 040b 00       		.byte	0
+ 1139 040c 0C       		.uleb128 0xc
+ 1140 040d 7A020000 		.4byte	.LVL51
+ 1141 0411 16060000 		.4byte	0x616
+ 1142 0415 1F040000 		.4byte	0x41f
+ 1143 0419 0D       		.uleb128 0xd
+ 1144 041a 01       		.uleb128 0x1
+ 1145 041b 50       		.byte	0x50
+ 1146 041c 01       		.uleb128 0x1
+ 1147 041d 30       		.byte	0x30
+ 1148 041e 00       		.byte	0
+ 1149 041f 0C       		.uleb128 0xc
+ 1150 0420 80020000 		.4byte	.LVL52
+ 1151 0424 F5050000 		.4byte	0x5f5
+ 1152 0428 32040000 		.4byte	0x432
+ 1153 042c 0D       		.uleb128 0xd
+ 1154 042d 01       		.uleb128 0x1
+ 1155 042e 50       		.byte	0x50
+ 1156 042f 01       		.uleb128 0x1
+ 1157 0430 30       		.byte	0x30
+ 1158 0431 00       		.byte	0
+ 1159 0432 0C       		.uleb128 0xc
+ 1160 0433 86020000 		.4byte	.LVL53
+ 1161 0437 00060000 		.4byte	0x600
+ 1162 043b 45040000 		.4byte	0x445
+ 1163 043f 0D       		.uleb128 0xd
+ 1164 0440 01       		.uleb128 0x1
+ 1165 0441 50       		.byte	0x50
+ 1166 0442 01       		.uleb128 0x1
+ 1167 0443 30       		.byte	0x30
+ 1168 0444 00       		.byte	0
+ 1169 0445 0C       		.uleb128 0xc
+ 1170 0446 8C020000 		.4byte	.LVL54
+ 1171 044a 0B060000 		.4byte	0x60b
+ 1172 044e 58040000 		.4byte	0x458
+ 1173 0452 0D       		.uleb128 0xd
+ 1174 0453 01       		.uleb128 0x1
+ 1175 0454 50       		.byte	0x50
+ 1176 0455 01       		.uleb128 0x1
+ 1177 0456 31       		.byte	0x31
+ 1178 0457 00       		.byte	0
+ 1179 0458 0C       		.uleb128 0xc
+ 1180 0459 98020000 		.4byte	.LVL55
+ 1181 045d 37060000 		.4byte	0x637
+ 1182 0461 6B040000 		.4byte	0x46b
+ 1183 0465 0D       		.uleb128 0xd
+ 1184 0466 01       		.uleb128 0x1
+ 1185 0467 50       		.byte	0x50
+ 1186 0468 01       		.uleb128 0x1
+ 1187 0469 31       		.byte	0x31
+ 1188 046a 00       		.byte	0
+ 1189 046b 0C       		.uleb128 0xc
+ 1190 046c 9E020000 		.4byte	.LVL56
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczJCWOe.s 			page 26
+
+
+ 1191 0470 42060000 		.4byte	0x642
+ 1192 0474 7E040000 		.4byte	0x47e
+ 1193 0478 0D       		.uleb128 0xd
+ 1194 0479 01       		.uleb128 0x1
+ 1195 047a 50       		.byte	0x50
+ 1196 047b 01       		.uleb128 0x1
+ 1197 047c 30       		.byte	0x30
+ 1198 047d 00       		.byte	0
+ 1199 047e 0C       		.uleb128 0xc
+ 1200 047f AC020000 		.4byte	.LVL57
+ 1201 0483 37060000 		.4byte	0x637
+ 1202 0487 91040000 		.4byte	0x491
+ 1203 048b 0D       		.uleb128 0xd
+ 1204 048c 01       		.uleb128 0x1
+ 1205 048d 50       		.byte	0x50
+ 1206 048e 01       		.uleb128 0x1
+ 1207 048f 30       		.byte	0x30
+ 1208 0490 00       		.byte	0
+ 1209 0491 0C       		.uleb128 0xc
+ 1210 0492 B2020000 		.4byte	.LVL58
+ 1211 0496 42060000 		.4byte	0x642
+ 1212 049a A4040000 		.4byte	0x4a4
+ 1213 049e 0D       		.uleb128 0xd
+ 1214 049f 01       		.uleb128 0x1
+ 1215 04a0 50       		.byte	0x50
+ 1216 04a1 01       		.uleb128 0x1
+ 1217 04a2 31       		.byte	0x31
+ 1218 04a3 00       		.byte	0
+ 1219 04a4 0E       		.uleb128 0xe
+ 1220 04a5 BE020000 		.4byte	.LVL61
+ 1221 04a9 A5060000 		.4byte	0x6a5
+ 1222 04ad 00       		.byte	0
+ 1223 04ae 10       		.uleb128 0x10
+ 1224 04af 0D020000 		.4byte	.LASF23
+ 1225 04b3 05       		.byte	0x5
+ 1226 04b4 1207     		.2byte	0x712
+ 1227 04b6 BA040000 		.4byte	0x4ba
+ 1228 04ba 06       		.uleb128 0x6
+ 1229 04bb A2000000 		.4byte	0xa2
+ 1230 04bf 11       		.uleb128 0x11
+ 1231 04c0 8C000000 		.4byte	0x8c
+ 1232 04c4 D0040000 		.4byte	0x4d0
+ 1233 04c8 12       		.uleb128 0x12
+ 1234 04c9 E6000000 		.4byte	0xe6
+ 1235 04cd 2B01     		.2byte	0x12b
+ 1236 04cf 00       		.byte	0
+ 1237 04d0 13       		.uleb128 0x13
+ 1238 04d1 37000000 		.4byte	.LASF24
+ 1239 04d5 01       		.byte	0x1
+ 1240 04d6 0F       		.byte	0xf
+ 1241 04d7 BF040000 		.4byte	0x4bf
+ 1242 04db 05       		.uleb128 0x5
+ 1243 04dc 03       		.byte	0x3
+ 1244 04dd 00000000 		.4byte	myData
+ 1245 04e1 11       		.uleb128 0x11
+ 1246 04e2 8C000000 		.4byte	0x8c
+ 1247 04e6 F1040000 		.4byte	0x4f1
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczJCWOe.s 			page 27
+
+
+ 1248 04ea 14       		.uleb128 0x14
+ 1249 04eb E6000000 		.4byte	0xe6
+ 1250 04ef 1F       		.byte	0x1f
+ 1251 04f0 00       		.byte	0
+ 1252 04f1 13       		.uleb128 0x13
+ 1253 04f2 54000000 		.4byte	.LASF25
+ 1254 04f6 01       		.byte	0x1
+ 1255 04f7 10       		.byte	0x10
+ 1256 04f8 E1040000 		.4byte	0x4e1
+ 1257 04fc 05       		.uleb128 0x5
+ 1258 04fd 03       		.byte	0x3
+ 1259 04fe 00000000 		.4byte	sendArray
+ 1260 0502 13       		.uleb128 0x13
+ 1261 0503 47000000 		.4byte	.LASF26
+ 1262 0507 01       		.byte	0x1
+ 1263 0508 11       		.byte	0x11
+ 1264 0509 E1040000 		.4byte	0x4e1
+ 1265 050d 05       		.uleb128 0x5
+ 1266 050e 03       		.byte	0x3
+ 1267 050f 00000000 		.4byte	receiveArray
+ 1268 0513 13       		.uleb128 0x13
+ 1269 0514 FE030000 		.4byte	.LASF27
+ 1270 0518 01       		.byte	0x1
+ 1271 0519 12       		.byte	0x12
+ 1272 051a 8C000000 		.4byte	0x8c
+ 1273 051e 05       		.uleb128 0x5
+ 1274 051f 03       		.byte	0x3
+ 1275 0520 00000000 		.4byte	receivePosition
+ 1276 0524 13       		.uleb128 0x13
+ 1277 0525 11010000 		.4byte	.LASF28
+ 1278 0529 01       		.byte	0x1
+ 1279 052a 13       		.byte	0x13
+ 1280 052b 8C000000 		.4byte	0x8c
+ 1281 052f 05       		.uleb128 0x5
+ 1282 0530 03       		.byte	0x3
+ 1283 0531 00000000 		.4byte	computedChecksumByte
+ 1284 0535 13       		.uleb128 0x13
+ 1285 0536 D4000000 		.4byte	.LASF29
+ 1286 053a 01       		.byte	0x1
+ 1287 053b 14       		.byte	0x14
+ 1288 053c 8C000000 		.4byte	0x8c
+ 1289 0540 05       		.uleb128 0x5
+ 1290 0541 03       		.byte	0x3
+ 1291 0542 00000000 		.4byte	receivedChecksumByte
+ 1292 0546 13       		.uleb128 0x13
+ 1293 0547 5E000000 		.4byte	.LASF30
+ 1294 054b 01       		.byte	0x1
+ 1295 054c 16       		.byte	0x16
+ 1296 054d 97000000 		.4byte	0x97
+ 1297 0551 05       		.uleb128 0x5
+ 1298 0552 03       		.byte	0x3
+ 1299 0553 00000000 		.4byte	dataPosition
+ 1300 0557 13       		.uleb128 0x13
+ 1301 0558 11030000 		.4byte	.LASF31
+ 1302 055c 01       		.byte	0x1
+ 1303 055d 17       		.byte	0x17
+ 1304 055e 97000000 		.4byte	0x97
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczJCWOe.s 			page 28
+
+
+ 1305 0562 05       		.uleb128 0x5
+ 1306 0563 03       		.byte	0x3
+ 1307 0564 00000000 		.4byte	outputDataPosition
+ 1308 0568 13       		.uleb128 0x13
+ 1309 0569 AD030000 		.4byte	.LASF32
+ 1310 056d 01       		.byte	0x1
+ 1311 056e 18       		.byte	0x18
+ 1312 056f 97000000 		.4byte	0x97
+ 1313 0573 05       		.uleb128 0x5
+ 1314 0574 03       		.byte	0x3
+ 1315 0575 00000000 		.4byte	rowNumber
+ 1316 0579 13       		.uleb128 0x13
+ 1317 057a 01020000 		.4byte	.LASF33
+ 1318 057e 01       		.byte	0x1
+ 1319 057f 19       		.byte	0x19
+ 1320 0580 8C000000 		.4byte	0x8c
+ 1321 0584 05       		.uleb128 0x5
+ 1322 0585 03       		.byte	0x3
+ 1323 0586 00000000 		.4byte	arrayNumber
+ 1324 058a 13       		.uleb128 0x13
+ 1325 058b E7010000 		.4byte	.LASF34
+ 1326 058f 01       		.byte	0x1
+ 1327 0590 1A       		.byte	0x1a
+ 1328 0591 97000000 		.4byte	0x97
+ 1329 0595 05       		.uleb128 0x5
+ 1330 0596 03       		.byte	0x3
+ 1331 0597 00000000 		.4byte	rowSize
+ 1332 059b 13       		.uleb128 0x13
+ 1333 059c 09010000 		.4byte	.LASF35
+ 1334 05a0 01       		.byte	0x1
+ 1335 05a1 1B       		.byte	0x1b
+ 1336 05a2 8C000000 		.4byte	0x8c
+ 1337 05a6 05       		.uleb128 0x5
+ 1338 05a7 03       		.byte	0x3
+ 1339 05a8 00000000 		.4byte	ackCode
+ 1340 05ac 11       		.uleb128 0x11
+ 1341 05ad 8C000000 		.4byte	0x8c
+ 1342 05b1 BD050000 		.4byte	0x5bd
+ 1343 05b5 12       		.uleb128 0x12
+ 1344 05b6 E6000000 		.4byte	0xe6
+ 1345 05ba 1F01     		.2byte	0x11f
+ 1346 05bc 00       		.byte	0
+ 1347 05bd 13       		.uleb128 0x13
+ 1348 05be 00010000 		.4byte	.LASF36
+ 1349 05c2 01       		.byte	0x1
+ 1350 05c3 1C       		.byte	0x1c
+ 1351 05c4 AC050000 		.4byte	0x5ac
+ 1352 05c8 05       		.uleb128 0x5
+ 1353 05c9 03       		.byte	0x3
+ 1354 05ca 00000000 		.4byte	eccflash
+ 1355 05ce 13       		.uleb128 0x13
+ 1356 05cf 3E000000 		.4byte	.LASF37
+ 1357 05d3 01       		.byte	0x1
+ 1358 05d4 1D       		.byte	0x1d
+ 1359 05d5 8C000000 		.4byte	0x8c
+ 1360 05d9 05       		.uleb128 0x5
+ 1361 05da 03       		.byte	0x3
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczJCWOe.s 			page 29
+
+
+ 1362 05db 00000000 		.4byte	LEDstate
+ 1363 05df 15       		.uleb128 0x15
+ 1364 05e0 6B000000 		.4byte	.LASF38
+ 1365 05e4 6B000000 		.4byte	.LASF38
+ 1366 05e8 06       		.byte	0x6
+ 1367 05e9 49       		.byte	0x49
+ 1368 05ea 15       		.uleb128 0x15
+ 1369 05eb F4010000 		.4byte	.LASF39
+ 1370 05ef F4010000 		.4byte	.LASF39
+ 1371 05f3 07       		.byte	0x7
+ 1372 05f4 95       		.byte	0x95
+ 1373 05f5 15       		.uleb128 0x15
+ 1374 05f6 2C000000 		.4byte	.LASF40
+ 1375 05fa 2C000000 		.4byte	.LASF40
+ 1376 05fe 08       		.byte	0x8
+ 1377 05ff 26       		.byte	0x26
+ 1378 0600 15       		.uleb128 0x15
+ 1379 0601 7A000000 		.4byte	.LASF41
+ 1380 0605 7A000000 		.4byte	.LASF41
+ 1381 0609 09       		.byte	0x9
+ 1382 060a 26       		.byte	0x26
+ 1383 060b 15       		.uleb128 0x15
+ 1384 060c C9000000 		.4byte	.LASF42
+ 1385 0610 C9000000 		.4byte	.LASF42
+ 1386 0614 0A       		.byte	0xa
+ 1387 0615 26       		.byte	0x26
+ 1388 0616 15       		.uleb128 0x15
+ 1389 0617 00000000 		.4byte	.LASF43
+ 1390 061b 00000000 		.4byte	.LASF43
+ 1391 061f 0B       		.byte	0xb
+ 1392 0620 26       		.byte	0x26
+ 1393 0621 15       		.uleb128 0x15
+ 1394 0622 C3030000 		.4byte	.LASF44
+ 1395 0626 C3030000 		.4byte	.LASF44
+ 1396 062a 0C       		.byte	0xc
+ 1397 062b 26       		.byte	0x26
+ 1398 062c 15       		.uleb128 0x15
+ 1399 062d 4C030000 		.4byte	.LASF45
+ 1400 0631 4C030000 		.4byte	.LASF45
+ 1401 0635 0D       		.byte	0xd
+ 1402 0636 26       		.byte	0x26
+ 1403 0637 15       		.uleb128 0x15
+ 1404 0638 EF030000 		.4byte	.LASF46
+ 1405 063c EF030000 		.4byte	.LASF46
+ 1406 0640 0E       		.byte	0xe
+ 1407 0641 26       		.byte	0x26
+ 1408 0642 15       		.uleb128 0x15
+ 1409 0643 30030000 		.4byte	.LASF47
+ 1410 0647 30030000 		.4byte	.LASF47
+ 1411 064b 0F       		.byte	0xf
+ 1412 064c 26       		.byte	0x26
+ 1413 064d 15       		.uleb128 0x15
+ 1414 064e B6000000 		.4byte	.LASF48
+ 1415 0652 B6000000 		.4byte	.LASF48
+ 1416 0656 06       		.byte	0x6
+ 1417 0657 47       		.byte	0x47
+ 1418 0658 15       		.uleb128 0x15
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczJCWOe.s 			page 30
+
+
+ 1419 0659 15000000 		.4byte	.LASF49
+ 1420 065d 15000000 		.4byte	.LASF49
+ 1421 0661 10       		.byte	0x10
+ 1422 0662 4D       		.byte	0x4d
+ 1423 0663 15       		.uleb128 0x15
+ 1424 0664 1A020000 		.4byte	.LASF50
+ 1425 0668 1A020000 		.4byte	.LASF50
+ 1426 066c 10       		.byte	0x10
+ 1427 066d 67       		.byte	0x67
+ 1428 066e 15       		.uleb128 0x15
+ 1429 066f 9C000000 		.4byte	.LASF51
+ 1430 0673 9C000000 		.4byte	.LASF51
+ 1431 0677 10       		.byte	0x10
+ 1432 0678 5C       		.byte	0x5c
+ 1433 0679 15       		.uleb128 0x15
+ 1434 067a 5A030000 		.4byte	.LASF52
+ 1435 067e 5A030000 		.4byte	.LASF52
+ 1436 0682 10       		.byte	0x10
+ 1437 0683 60       		.byte	0x60
+ 1438 0684 15       		.uleb128 0x15
+ 1439 0685 85000000 		.4byte	.LASF53
+ 1440 0689 85000000 		.4byte	.LASF53
+ 1441 068d 10       		.byte	0x10
+ 1442 068e 62       		.byte	0x62
+ 1443 068f 15       		.uleb128 0x15
+ 1444 0690 76030000 		.4byte	.LASF54
+ 1445 0694 76030000 		.4byte	.LASF54
+ 1446 0698 10       		.byte	0x10
+ 1447 0699 64       		.byte	0x64
+ 1448 069a 15       		.uleb128 0x15
+ 1449 069b 40030000 		.4byte	.LASF55
+ 1450 069f 40030000 		.4byte	.LASF55
+ 1451 06a3 10       		.byte	0x10
+ 1452 06a4 4E       		.byte	0x4e
+ 1453 06a5 15       		.uleb128 0x15
+ 1454 06a6 94030000 		.4byte	.LASF56
+ 1455 06aa 94030000 		.4byte	.LASF56
+ 1456 06ae 07       		.byte	0x7
+ 1457 06af 7B       		.byte	0x7b
+ 1458 06b0 00       		.byte	0
+ 1459              		.section	.debug_abbrev,"",%progbits
+ 1460              	.Ldebug_abbrev0:
+ 1461 0000 01       		.uleb128 0x1
+ 1462 0001 11       		.uleb128 0x11
+ 1463 0002 01       		.byte	0x1
+ 1464 0003 25       		.uleb128 0x25
+ 1465 0004 0E       		.uleb128 0xe
+ 1466 0005 13       		.uleb128 0x13
+ 1467 0006 0B       		.uleb128 0xb
+ 1468 0007 03       		.uleb128 0x3
+ 1469 0008 0E       		.uleb128 0xe
+ 1470 0009 1B       		.uleb128 0x1b
+ 1471 000a 0E       		.uleb128 0xe
+ 1472 000b 55       		.uleb128 0x55
+ 1473 000c 17       		.uleb128 0x17
+ 1474 000d 11       		.uleb128 0x11
+ 1475 000e 01       		.uleb128 0x1
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczJCWOe.s 			page 31
+
+
+ 1476 000f 10       		.uleb128 0x10
+ 1477 0010 17       		.uleb128 0x17
+ 1478 0011 00       		.byte	0
+ 1479 0012 00       		.byte	0
+ 1480 0013 02       		.uleb128 0x2
+ 1481 0014 24       		.uleb128 0x24
+ 1482 0015 00       		.byte	0
+ 1483 0016 0B       		.uleb128 0xb
+ 1484 0017 0B       		.uleb128 0xb
+ 1485 0018 3E       		.uleb128 0x3e
+ 1486 0019 0B       		.uleb128 0xb
+ 1487 001a 03       		.uleb128 0x3
+ 1488 001b 0E       		.uleb128 0xe
+ 1489 001c 00       		.byte	0
+ 1490 001d 00       		.byte	0
+ 1491 001e 03       		.uleb128 0x3
+ 1492 001f 16       		.uleb128 0x16
+ 1493 0020 00       		.byte	0
+ 1494 0021 03       		.uleb128 0x3
+ 1495 0022 0E       		.uleb128 0xe
+ 1496 0023 3A       		.uleb128 0x3a
+ 1497 0024 0B       		.uleb128 0xb
+ 1498 0025 3B       		.uleb128 0x3b
+ 1499 0026 0B       		.uleb128 0xb
+ 1500 0027 49       		.uleb128 0x49
+ 1501 0028 13       		.uleb128 0x13
+ 1502 0029 00       		.byte	0
+ 1503 002a 00       		.byte	0
+ 1504 002b 04       		.uleb128 0x4
+ 1505 002c 24       		.uleb128 0x24
+ 1506 002d 00       		.byte	0
+ 1507 002e 0B       		.uleb128 0xb
+ 1508 002f 0B       		.uleb128 0xb
+ 1509 0030 3E       		.uleb128 0x3e
+ 1510 0031 0B       		.uleb128 0xb
+ 1511 0032 03       		.uleb128 0x3
+ 1512 0033 08       		.uleb128 0x8
+ 1513 0034 00       		.byte	0
+ 1514 0035 00       		.byte	0
+ 1515 0036 05       		.uleb128 0x5
+ 1516 0037 16       		.uleb128 0x16
+ 1517 0038 00       		.byte	0
+ 1518 0039 03       		.uleb128 0x3
+ 1519 003a 0E       		.uleb128 0xe
+ 1520 003b 3A       		.uleb128 0x3a
+ 1521 003c 0B       		.uleb128 0xb
+ 1522 003d 3B       		.uleb128 0x3b
+ 1523 003e 05       		.uleb128 0x5
+ 1524 003f 49       		.uleb128 0x49
+ 1525 0040 13       		.uleb128 0x13
+ 1526 0041 00       		.byte	0
+ 1527 0042 00       		.byte	0
+ 1528 0043 06       		.uleb128 0x6
+ 1529 0044 35       		.uleb128 0x35
+ 1530 0045 00       		.byte	0
+ 1531 0046 49       		.uleb128 0x49
+ 1532 0047 13       		.uleb128 0x13
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczJCWOe.s 			page 32
+
+
+ 1533 0048 00       		.byte	0
+ 1534 0049 00       		.byte	0
+ 1535 004a 07       		.uleb128 0x7
+ 1536 004b 2E       		.uleb128 0x2e
+ 1537 004c 01       		.byte	0x1
+ 1538 004d 3F       		.uleb128 0x3f
+ 1539 004e 19       		.uleb128 0x19
+ 1540 004f 03       		.uleb128 0x3
+ 1541 0050 0E       		.uleb128 0xe
+ 1542 0051 3A       		.uleb128 0x3a
+ 1543 0052 0B       		.uleb128 0xb
+ 1544 0053 3B       		.uleb128 0x3b
+ 1545 0054 0B       		.uleb128 0xb
+ 1546 0055 27       		.uleb128 0x27
+ 1547 0056 19       		.uleb128 0x19
+ 1548 0057 49       		.uleb128 0x49
+ 1549 0058 13       		.uleb128 0x13
+ 1550 0059 11       		.uleb128 0x11
+ 1551 005a 01       		.uleb128 0x1
+ 1552 005b 12       		.uleb128 0x12
+ 1553 005c 06       		.uleb128 0x6
+ 1554 005d 40       		.uleb128 0x40
+ 1555 005e 18       		.uleb128 0x18
+ 1556 005f 9742     		.uleb128 0x2117
+ 1557 0061 19       		.uleb128 0x19
+ 1558 0062 01       		.uleb128 0x1
+ 1559 0063 13       		.uleb128 0x13
+ 1560 0064 00       		.byte	0
+ 1561 0065 00       		.byte	0
+ 1562 0066 08       		.uleb128 0x8
+ 1563 0067 34       		.uleb128 0x34
+ 1564 0068 00       		.byte	0
+ 1565 0069 03       		.uleb128 0x3
+ 1566 006a 0E       		.uleb128 0xe
+ 1567 006b 3A       		.uleb128 0x3a
+ 1568 006c 0B       		.uleb128 0xb
+ 1569 006d 3B       		.uleb128 0x3b
+ 1570 006e 0B       		.uleb128 0xb
+ 1571 006f 49       		.uleb128 0x49
+ 1572 0070 13       		.uleb128 0x13
+ 1573 0071 02       		.uleb128 0x2
+ 1574 0072 17       		.uleb128 0x17
+ 1575 0073 00       		.byte	0
+ 1576 0074 00       		.byte	0
+ 1577 0075 09       		.uleb128 0x9
+ 1578 0076 0B       		.uleb128 0xb
+ 1579 0077 01       		.byte	0x1
+ 1580 0078 11       		.uleb128 0x11
+ 1581 0079 01       		.uleb128 0x1
+ 1582 007a 12       		.uleb128 0x12
+ 1583 007b 06       		.uleb128 0x6
+ 1584 007c 01       		.uleb128 0x1
+ 1585 007d 13       		.uleb128 0x13
+ 1586 007e 00       		.byte	0
+ 1587 007f 00       		.byte	0
+ 1588 0080 0A       		.uleb128 0xa
+ 1589 0081 34       		.uleb128 0x34
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczJCWOe.s 			page 33
+
+
+ 1590 0082 00       		.byte	0
+ 1591 0083 03       		.uleb128 0x3
+ 1592 0084 08       		.uleb128 0x8
+ 1593 0085 3A       		.uleb128 0x3a
+ 1594 0086 0B       		.uleb128 0xb
+ 1595 0087 3B       		.uleb128 0x3b
+ 1596 0088 0B       		.uleb128 0xb
+ 1597 0089 49       		.uleb128 0x49
+ 1598 008a 13       		.uleb128 0x13
+ 1599 008b 02       		.uleb128 0x2
+ 1600 008c 17       		.uleb128 0x17
+ 1601 008d 00       		.byte	0
+ 1602 008e 00       		.byte	0
+ 1603 008f 0B       		.uleb128 0xb
+ 1604 0090 0B       		.uleb128 0xb
+ 1605 0091 01       		.byte	0x1
+ 1606 0092 55       		.uleb128 0x55
+ 1607 0093 17       		.uleb128 0x17
+ 1608 0094 01       		.uleb128 0x1
+ 1609 0095 13       		.uleb128 0x13
+ 1610 0096 00       		.byte	0
+ 1611 0097 00       		.byte	0
+ 1612 0098 0C       		.uleb128 0xc
+ 1613 0099 898201   		.uleb128 0x4109
+ 1614 009c 01       		.byte	0x1
+ 1615 009d 11       		.uleb128 0x11
+ 1616 009e 01       		.uleb128 0x1
+ 1617 009f 31       		.uleb128 0x31
+ 1618 00a0 13       		.uleb128 0x13
+ 1619 00a1 01       		.uleb128 0x1
+ 1620 00a2 13       		.uleb128 0x13
+ 1621 00a3 00       		.byte	0
+ 1622 00a4 00       		.byte	0
+ 1623 00a5 0D       		.uleb128 0xd
+ 1624 00a6 8A8201   		.uleb128 0x410a
+ 1625 00a9 00       		.byte	0
+ 1626 00aa 02       		.uleb128 0x2
+ 1627 00ab 18       		.uleb128 0x18
+ 1628 00ac 9142     		.uleb128 0x2111
+ 1629 00ae 18       		.uleb128 0x18
+ 1630 00af 00       		.byte	0
+ 1631 00b0 00       		.byte	0
+ 1632 00b1 0E       		.uleb128 0xe
+ 1633 00b2 898201   		.uleb128 0x4109
+ 1634 00b5 00       		.byte	0
+ 1635 00b6 11       		.uleb128 0x11
+ 1636 00b7 01       		.uleb128 0x1
+ 1637 00b8 31       		.uleb128 0x31
+ 1638 00b9 13       		.uleb128 0x13
+ 1639 00ba 00       		.byte	0
+ 1640 00bb 00       		.byte	0
+ 1641 00bc 0F       		.uleb128 0xf
+ 1642 00bd 898201   		.uleb128 0x4109
+ 1643 00c0 01       		.byte	0x1
+ 1644 00c1 11       		.uleb128 0x11
+ 1645 00c2 01       		.uleb128 0x1
+ 1646 00c3 31       		.uleb128 0x31
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczJCWOe.s 			page 34
+
+
+ 1647 00c4 13       		.uleb128 0x13
+ 1648 00c5 00       		.byte	0
+ 1649 00c6 00       		.byte	0
+ 1650 00c7 10       		.uleb128 0x10
+ 1651 00c8 34       		.uleb128 0x34
+ 1652 00c9 00       		.byte	0
+ 1653 00ca 03       		.uleb128 0x3
+ 1654 00cb 0E       		.uleb128 0xe
+ 1655 00cc 3A       		.uleb128 0x3a
+ 1656 00cd 0B       		.uleb128 0xb
+ 1657 00ce 3B       		.uleb128 0x3b
+ 1658 00cf 05       		.uleb128 0x5
+ 1659 00d0 49       		.uleb128 0x49
+ 1660 00d1 13       		.uleb128 0x13
+ 1661 00d2 3F       		.uleb128 0x3f
+ 1662 00d3 19       		.uleb128 0x19
+ 1663 00d4 3C       		.uleb128 0x3c
+ 1664 00d5 19       		.uleb128 0x19
+ 1665 00d6 00       		.byte	0
+ 1666 00d7 00       		.byte	0
+ 1667 00d8 11       		.uleb128 0x11
+ 1668 00d9 01       		.uleb128 0x1
+ 1669 00da 01       		.byte	0x1
+ 1670 00db 49       		.uleb128 0x49
+ 1671 00dc 13       		.uleb128 0x13
+ 1672 00dd 01       		.uleb128 0x1
+ 1673 00de 13       		.uleb128 0x13
+ 1674 00df 00       		.byte	0
+ 1675 00e0 00       		.byte	0
+ 1676 00e1 12       		.uleb128 0x12
+ 1677 00e2 21       		.uleb128 0x21
+ 1678 00e3 00       		.byte	0
+ 1679 00e4 49       		.uleb128 0x49
+ 1680 00e5 13       		.uleb128 0x13
+ 1681 00e6 2F       		.uleb128 0x2f
+ 1682 00e7 05       		.uleb128 0x5
+ 1683 00e8 00       		.byte	0
+ 1684 00e9 00       		.byte	0
+ 1685 00ea 13       		.uleb128 0x13
+ 1686 00eb 34       		.uleb128 0x34
+ 1687 00ec 00       		.byte	0
+ 1688 00ed 03       		.uleb128 0x3
+ 1689 00ee 0E       		.uleb128 0xe
+ 1690 00ef 3A       		.uleb128 0x3a
+ 1691 00f0 0B       		.uleb128 0xb
+ 1692 00f1 3B       		.uleb128 0x3b
+ 1693 00f2 0B       		.uleb128 0xb
+ 1694 00f3 49       		.uleb128 0x49
+ 1695 00f4 13       		.uleb128 0x13
+ 1696 00f5 3F       		.uleb128 0x3f
+ 1697 00f6 19       		.uleb128 0x19
+ 1698 00f7 02       		.uleb128 0x2
+ 1699 00f8 18       		.uleb128 0x18
+ 1700 00f9 00       		.byte	0
+ 1701 00fa 00       		.byte	0
+ 1702 00fb 14       		.uleb128 0x14
+ 1703 00fc 21       		.uleb128 0x21
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczJCWOe.s 			page 35
+
+
+ 1704 00fd 00       		.byte	0
+ 1705 00fe 49       		.uleb128 0x49
+ 1706 00ff 13       		.uleb128 0x13
+ 1707 0100 2F       		.uleb128 0x2f
+ 1708 0101 0B       		.uleb128 0xb
+ 1709 0102 00       		.byte	0
+ 1710 0103 00       		.byte	0
+ 1711 0104 15       		.uleb128 0x15
+ 1712 0105 2E       		.uleb128 0x2e
+ 1713 0106 00       		.byte	0
+ 1714 0107 3F       		.uleb128 0x3f
+ 1715 0108 19       		.uleb128 0x19
+ 1716 0109 3C       		.uleb128 0x3c
+ 1717 010a 19       		.uleb128 0x19
+ 1718 010b 6E       		.uleb128 0x6e
+ 1719 010c 0E       		.uleb128 0xe
+ 1720 010d 03       		.uleb128 0x3
+ 1721 010e 0E       		.uleb128 0xe
+ 1722 010f 3A       		.uleb128 0x3a
+ 1723 0110 0B       		.uleb128 0xb
+ 1724 0111 3B       		.uleb128 0x3b
+ 1725 0112 0B       		.uleb128 0xb
+ 1726 0113 00       		.byte	0
+ 1727 0114 00       		.byte	0
+ 1728 0115 00       		.byte	0
+ 1729              		.section	.debug_loc,"",%progbits
+ 1730              	.Ldebug_loc0:
+ 1731              	.LLST0:
+ 1732 0000 0C000000 		.4byte	.LVL0
+ 1733 0004 17000000 		.4byte	.LVL1-1
+ 1734 0008 0100     		.2byte	0x1
+ 1735 000a 53       		.byte	0x53
+ 1736 000b B4020000 		.4byte	.LVL59
+ 1737 000f B8020000 		.4byte	.LVL60
+ 1738 0013 0100     		.2byte	0x1
+ 1739 0015 53       		.byte	0x53
+ 1740 0016 00000000 		.4byte	0
+ 1741 001a 00000000 		.4byte	0
+ 1742              	.LLST1:
+ 1743 001e 1C000000 		.4byte	.LVL2
+ 1744 0022 20000000 		.4byte	.LVL3
+ 1745 0026 0200     		.2byte	0x2
+ 1746 0028 30       		.byte	0x30
+ 1747 0029 9F       		.byte	0x9f
+ 1748 002a 20000000 		.4byte	.LVL3
+ 1749 002e 2E000000 		.4byte	.LVL5
+ 1750 0032 0100     		.2byte	0x1
+ 1751 0034 53       		.byte	0x53
+ 1752 0035 00000000 		.4byte	0
+ 1753 0039 00000000 		.4byte	0
+ 1754              	.LLST2:
+ 1755 003d B2000000 		.4byte	.LVL19
+ 1756 0041 DE010000 		.4byte	.LVL31
+ 1757 0045 0100     		.2byte	0x1
+ 1758 0047 54       		.byte	0x54
+ 1759 0048 E0010000 		.4byte	.LVL32
+ 1760 004c E8010000 		.4byte	.LVL33
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczJCWOe.s 			page 36
+
+
+ 1761 0050 0100     		.2byte	0x1
+ 1762 0052 54       		.byte	0x54
+ 1763 0053 00000000 		.4byte	0
+ 1764 0057 00000000 		.4byte	0
+ 1765              	.LLST3:
+ 1766 005b 06020000 		.4byte	.LVL36
+ 1767 005f 16020000 		.4byte	.LVL38
+ 1768 0063 0100     		.2byte	0x1
+ 1769 0065 53       		.byte	0x53
+ 1770 0066 00000000 		.4byte	0
+ 1771 006a 00000000 		.4byte	0
+ 1772              		.section	.debug_aranges,"",%progbits
+ 1773 0000 1C000000 		.4byte	0x1c
+ 1774 0004 0200     		.2byte	0x2
+ 1775 0006 00000000 		.4byte	.Ldebug_info0
+ 1776 000a 04       		.byte	0x4
+ 1777 000b 00       		.byte	0
+ 1778 000c 0000     		.2byte	0
+ 1779 000e 0000     		.2byte	0
+ 1780 0010 00000000 		.4byte	.LFB63
+ 1781 0014 DC020000 		.4byte	.LFE63-.LFB63
+ 1782 0018 00000000 		.4byte	0
+ 1783 001c 00000000 		.4byte	0
+ 1784              		.section	.debug_ranges,"",%progbits
+ 1785              	.Ldebug_ranges0:
+ 1786 0000 B2000000 		.4byte	.LBB3
+ 1787 0004 DE010000 		.4byte	.LBE3
+ 1788 0008 E0010000 		.4byte	.LBB4
+ 1789 000c E8010000 		.4byte	.LBE4
+ 1790 0010 00000000 		.4byte	0
+ 1791 0014 00000000 		.4byte	0
+ 1792 0018 00000000 		.4byte	.LFB63
+ 1793 001c DC020000 		.4byte	.LFE63
+ 1794 0020 00000000 		.4byte	0
+ 1795 0024 00000000 		.4byte	0
+ 1796              		.section	.debug_line,"",%progbits
+ 1797              	.Ldebug_line0:
+ 1798 0000 93020000 		.section	.debug_str,"MS",%progbits,1
+ 1798      0200CE01 
+ 1798      00000201 
+ 1798      FB0E0D00 
+ 1798      01010101 
+ 1799              	.LASF43:
+ 1800 0000 4C454431 		.ascii	"LED1_Write\000"
+ 1800      5F577269 
+ 1800      746500
+ 1801              	.LASF3:
+ 1802 000b 5F5F7569 		.ascii	"__uint8_t\000"
+ 1802      6E74385F 
+ 1802      7400
+ 1803              	.LASF49:
+ 1804 0015 5350494D 		.ascii	"SPIM_1_Start\000"
+ 1804      5F315F53 
+ 1804      74617274 
+ 1804      00
+ 1805              	.LASF6:
+ 1806 0022 5F5F696E 		.ascii	"__int32_t\000"
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczJCWOe.s 			page 37
+
+
+ 1806      7433325F 
+ 1806      7400
+ 1807              	.LASF40:
+ 1808 002c 4C454432 		.ascii	"LED2_Write\000"
+ 1808      5F577269 
+ 1808      746500
+ 1809              	.LASF24:
+ 1810 0037 6D794461 		.ascii	"myData\000"
+ 1810      746100
+ 1811              	.LASF37:
+ 1812 003e 4C454473 		.ascii	"LEDstate\000"
+ 1812      74617465 
+ 1812      00
+ 1813              	.LASF26:
+ 1814 0047 72656365 		.ascii	"receiveArray\000"
+ 1814      69766541 
+ 1814      72726179 
+ 1814      00
+ 1815              	.LASF25:
+ 1816 0054 73656E64 		.ascii	"sendArray\000"
+ 1816      41727261 
+ 1816      7900
+ 1817              	.LASF30:
+ 1818 005e 64617461 		.ascii	"dataPosition\000"
+ 1818      506F7369 
+ 1818      74696F6E 
+ 1818      00
+ 1819              	.LASF38:
+ 1820 006b 43795772 		.ascii	"CyWriteRowFull\000"
+ 1820      69746552 
+ 1820      6F774675 
+ 1820      6C6C00
+ 1821              	.LASF41:
+ 1822 007a 4C454433 		.ascii	"LED3_Write\000"
+ 1822      5F577269 
+ 1822      746500
+ 1823              	.LASF53:
+ 1824 0085 5350494D 		.ascii	"SPIM_1_GetRxBufferSize\000"
+ 1824      5F315F47 
+ 1824      65745278 
+ 1824      42756666 
+ 1824      65725369 
+ 1825              	.LASF51:
+ 1826 009c 5350494D 		.ascii	"SPIM_1_ReadTxStatus\000"
+ 1826      5F315F52 
+ 1826      65616454 
+ 1826      78537461 
+ 1826      74757300 
+ 1827              	.LASF16:
+ 1828 00b0 666C6F61 		.ascii	"float\000"
+ 1828      7400
+ 1829              	.LASF48:
+ 1830 00b6 43795365 		.ascii	"CySetFlashEEBuffer\000"
+ 1830      74466C61 
+ 1830      73684545 
+ 1830      42756666 
+ 1830      657200
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczJCWOe.s 			page 38
+
+
+ 1831              	.LASF42:
+ 1832 00c9 4C454434 		.ascii	"LED4_Write\000"
+ 1832      5F577269 
+ 1832      746500
+ 1833              	.LASF29:
+ 1834 00d4 72656365 		.ascii	"receivedChecksumByte\000"
+ 1834      69766564 
+ 1834      43686563 
+ 1834      6B73756D 
+ 1834      42797465 
+ 1835              	.LASF19:
+ 1836 00e9 72656738 		.ascii	"reg8\000"
+ 1836      00
+ 1837              	.LASF8:
+ 1838 00ee 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1838      20756E73 
+ 1838      69676E65 
+ 1838      6420696E 
+ 1838      7400
+ 1839              	.LASF36:
+ 1840 0100 65636366 		.ascii	"eccflash\000"
+ 1840      6C617368 
+ 1840      00
+ 1841              	.LASF35:
+ 1842 0109 61636B43 		.ascii	"ackCode\000"
+ 1842      6F646500 
+ 1843              	.LASF28:
+ 1844 0111 636F6D70 		.ascii	"computedChecksumByte\000"
+ 1844      75746564 
+ 1844      43686563 
+ 1844      6B73756D 
+ 1844      42797465 
+ 1845              	.LASF59:
+ 1846 0126 433A5C55 		.ascii	"C:\\Users\\JeffSnyder\\dev\\Electrosteel_embedded\\"
+ 1846      73657273 
+ 1846      5C4A6566 
+ 1846      66536E79 
+ 1846      6465725C 
+ 1847 0154 50534F43 		.ascii	"PSOC5_electrosteel_stringsensors_newpcb_brain\\CE21"
+ 1847      355F656C 
+ 1847      65637472 
+ 1847      6F737465 
+ 1847      656C5F73 
+ 1848 0186 30353134 		.ascii	"0514_PSOC3_5_Thermistor.cydsn\\bootloader_electrost"
+ 1848      5F50534F 
+ 1848      43335F35 
+ 1848      5F546865 
+ 1848      726D6973 
+ 1849 01b8 65656C5F 		.ascii	"eel_PSOC.cydsn\000"
+ 1849      50534F43 
+ 1849      2E637964 
+ 1849      736E00
+ 1850              	.LASF1:
+ 1851 01c7 756E7369 		.ascii	"unsigned char\000"
+ 1851      676E6564 
+ 1851      20636861 
+ 1851      7200
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczJCWOe.s 			page 39
+
+
+ 1852              	.LASF4:
+ 1853 01d5 5F5F7569 		.ascii	"__uint16_t\000"
+ 1853      6E743136 
+ 1853      5F7400
+ 1854              	.LASF17:
+ 1855 01e0 646F7562 		.ascii	"double\000"
+ 1855      6C6500
+ 1856              	.LASF34:
+ 1857 01e7 726F7753 		.ascii	"rowSize\000"
+ 1857      697A6500 
+ 1858              	.LASF60:
+ 1859 01ef 6D61696E 		.ascii	"main\000"
+ 1859      00
+ 1860              	.LASF39:
+ 1861 01f4 4379466C 		.ascii	"CyFlushCache\000"
+ 1861      75736843 
+ 1861      61636865 
+ 1861      00
+ 1862              	.LASF33:
+ 1863 0201 61727261 		.ascii	"arrayNumber\000"
+ 1863      794E756D 
+ 1863      62657200 
+ 1864              	.LASF23:
+ 1865 020d 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 1865      52784275 
+ 1865      66666572 
+ 1865      00
+ 1866              	.LASF50:
+ 1867 021a 5350494D 		.ascii	"SPIM_1_PutArray\000"
+ 1867      5F315F50 
+ 1867      75744172 
+ 1867      72617900 
+ 1868              	.LASF11:
+ 1869 022a 756E7369 		.ascii	"unsigned int\000"
+ 1869      676E6564 
+ 1869      20696E74 
+ 1869      00
+ 1870              	.LASF10:
+ 1871 0237 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1871      206C6F6E 
+ 1871      6720756E 
+ 1871      7369676E 
+ 1871      65642069 
+ 1872              	.LASF12:
+ 1873 024e 75696E74 		.ascii	"uint8_t\000"
+ 1873      385F7400 
+ 1874              	.LASF22:
+ 1875 0256 72756E54 		.ascii	"runType\000"
+ 1875      79706500 
+ 1876              	.LASF15:
+ 1877 025e 75696E74 		.ascii	"uint8\000"
+ 1877      3800
+ 1878              	.LASF57:
+ 1879 0264 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 1879      43313120 
+ 1879      352E342E 
+ 1879      31203230 
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczJCWOe.s 			page 40
+
+
+ 1879      31363036 
+ 1880 0297 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 1880      20726576 
+ 1880      6973696F 
+ 1880      6E203233 
+ 1880      37373135 
+ 1881 02ca 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 1881      66756E63 
+ 1881      74696F6E 
+ 1881      2D736563 
+ 1881      74696F6E 
+ 1882              	.LASF14:
+ 1883 02f2 696E7433 		.ascii	"int32_t\000"
+ 1883      325F7400 
+ 1884              	.LASF21:
+ 1885 02fa 73697A65 		.ascii	"sizetype\000"
+ 1885      74797065 
+ 1885      00
+ 1886              	.LASF9:
+ 1887 0303 6C6F6E67 		.ascii	"long long int\000"
+ 1887      206C6F6E 
+ 1887      6720696E 
+ 1887      7400
+ 1888              	.LASF31:
+ 1889 0311 6F757470 		.ascii	"outputDataPosition\000"
+ 1889      75744461 
+ 1889      7461506F 
+ 1889      73697469 
+ 1889      6F6E00
+ 1890              	.LASF58:
+ 1891 0324 6D61696E 		.ascii	"main.c\000"
+ 1891      2E6300
+ 1892              	.LASF18:
+ 1893 032b 63686172 		.ascii	"char\000"
+ 1893      00
+ 1894              	.LASF47:
+ 1895 0330 47726565 		.ascii	"GreenLED2_Write\000"
+ 1895      6E4C4544 
+ 1895      325F5772 
+ 1895      69746500 
+ 1896              	.LASF55:
+ 1897 0340 5350494D 		.ascii	"SPIM_1_Stop\000"
+ 1897      5F315F53 
+ 1897      746F7000 
+ 1898              	.LASF45:
+ 1899 034c 5265644C 		.ascii	"RedLED2_Write\000"
+ 1899      4544325F 
+ 1899      57726974 
+ 1899      6500
+ 1900              	.LASF52:
+ 1901 035a 5350494D 		.ascii	"SPIM_1_ReadRxData\000"
+ 1901      5F315F52 
+ 1901      65616452 
+ 1901      78446174 
+ 1901      6100
+ 1902              	.LASF2:
+ 1903 036c 73686F72 		.ascii	"short int\000"
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cczJCWOe.s 			page 41
+
+
+ 1903      7420696E 
+ 1903      7400
+ 1904              	.LASF54:
+ 1905 0376 5350494D 		.ascii	"SPIM_1_ClearRxBuffer\000"
+ 1905      5F315F43 
+ 1905      6C656172 
+ 1905      52784275 
+ 1905      66666572 
+ 1906              	.LASF13:
+ 1907 038b 75696E74 		.ascii	"uint16_t\000"
+ 1907      31365F74 
+ 1907      00
+ 1908              	.LASF56:
+ 1909 0394 4379536F 		.ascii	"CySoftwareReset\000"
+ 1909      66747761 
+ 1909      72655265 
+ 1909      73657400 
+ 1910              	.LASF7:
+ 1911 03a4 6C6F6E67 		.ascii	"long int\000"
+ 1911      20696E74 
+ 1911      00
+ 1912              	.LASF32:
+ 1913 03ad 726F774E 		.ascii	"rowNumber\000"
+ 1913      756D6265 
+ 1913      7200
+ 1914              	.LASF20:
+ 1915 03b7 6C6F6E67 		.ascii	"long double\000"
+ 1915      20646F75 
+ 1915      626C6500 
+ 1916              	.LASF44:
+ 1917 03c3 5265644C 		.ascii	"RedLED_Write\000"
+ 1917      45445F57 
+ 1917      72697465 
+ 1917      00
+ 1918              	.LASF0:
+ 1919 03d0 7369676E 		.ascii	"signed char\000"
+ 1919      65642063 
+ 1919      68617200 
+ 1920              	.LASF5:
+ 1921 03dc 73686F72 		.ascii	"short unsigned int\000"
+ 1921      7420756E 
+ 1921      7369676E 
+ 1921      65642069 
+ 1921      6E7400
+ 1922              	.LASF46:
+ 1923 03ef 47726565 		.ascii	"GreenLED_Write\000"
+ 1923      6E4C4544 
+ 1923      5F577269 
+ 1923      746500
+ 1924              	.LASF27:
+ 1925 03fe 72656365 		.ascii	"receivePosition\000"
+ 1925      69766550 
+ 1925      6F736974 
+ 1925      696F6E00 
+ 1926              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran
