@@ -45,8 +45,6 @@ void CapSense_SetAllSensorsDriveMode(uint8 mode)
     CyPins_SetPinDriveMode(CapSense_PortCH0__Button7__BTN, mode);
     CyPins_SetPinDriveMode(CapSense_PortCH0__Button8__BTN, mode);
     CyPins_SetPinDriveMode(CapSense_PortCH0__Button9__BTN, mode);
-    CyPins_SetPinDriveMode(CapSense_PortCH0__Button10__BTN, mode);
-    CyPins_SetPinDriveMode(CapSense_PortCH0__Button11__BTN, mode);
 
 }
 

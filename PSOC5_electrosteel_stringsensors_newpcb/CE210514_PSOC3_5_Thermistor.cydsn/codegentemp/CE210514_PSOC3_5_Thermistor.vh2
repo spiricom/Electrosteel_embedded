@@ -2,7 +2,7 @@
 --	Conversion of CE210514_PSOC3_5_Thermistor.v to vh2:
 --
 --	Cypress Semiconductor - WARP Version 6.3 IR 41
---	Mon Jan 09 17:46:13 2023
+--	Thu Aug 03 20:16:10 2023
 --
 
 USE cypress.cypress.all;
@@ -107,8 +107,6 @@ SIGNAL \CapSense:tmpIO_0__CmodCH0_net_0\ : bit;
 TERMINAL \CapSense:tmpSIOVREF__CmodCH0_net_0\ : bit;
 SIGNAL \CapSense:tmpINTERRUPT_0__CmodCH0_net_0\ : bit;
 SIGNAL \CapSense:tmpOE__PortCH0_net_0\ : bit;
-TERMINAL \CapSense:Net_1410_11\ : bit;
-TERMINAL \CapSense:Net_1410_10\ : bit;
 TERMINAL \CapSense:Net_1410_9\ : bit;
 TERMINAL \CapSense:Net_1410_8\ : bit;
 TERMINAL \CapSense:Net_1410_7\ : bit;
@@ -1296,7 +1294,7 @@ SCLK_1:cy_psoc3_pins_v1_10
 		signal2=>\ADC_1:Net_34\);
 \ADC_1:DSM\:cy_psoc3_ds_mod_v4_0
 	GENERIC MAP(cy_registers=>"",
-		resolution=>12)
+		resolution=>14)
 	PORT MAP(aclock=>\ADC_1:Net_488\,
 		vplus=>Net_1361,
 		vminus=>\ADC_1:Net_520\,
@@ -1428,7 +1426,7 @@ SCLK_1:cy_psoc3_pins_v1_10
 		id=>"fbda9b79-9f46-4360-b7f1-e0d7a25d459b/edd15f43-b66b-457b-be3a-5342345270c8",
 		source_clock_id=>"61737EF6-3B74-48f9-8B91-F7473A442AE7",
 		divisor=>0,
-		period=>"162760416.666667",
+		period=>"162786911.932281",
 		is_direct=>'0',
 		is_digital=>'0')
 	PORT MAP(clock_out=>\ADC_1:Net_488\,
@@ -1554,22 +1552,22 @@ SCLK_1:cy_psoc3_pins_v1_10
 		out_reset=>zero,
 		interrupt=>\CapSense:tmpINTERRUPT_0__CmodCH0_net_0\);
 \CapSense:PortCH0\:cy_psoc3_port_v1_0
-	GENERIC MAP(width=>12,
-		siorefwidth=>6,
-		pin_aliases=>"Button0__BTN,Button1__BTN,Button2__BTN,Button3__BTN,Button4__BTN,Button5__BTN,Button6__BTN,Button7__BTN,Button8__BTN,Button9__BTN,Button10__BTN,Button11__BTN",
+	GENERIC MAP(width=>10,
+		siorefwidth=>5,
+		pin_aliases=>"Button0__BTN,Button1__BTN,Button2__BTN,Button3__BTN,Button4__BTN,Button5__BTN,Button6__BTN,Button7__BTN,Button8__BTN,Button9__BTN",
 		id=>"02c2334d-9363-4f4e-adbb-de319d798079/dd9c1af8-be5a-4b9e-b10c-b2d9f11dc9fc",
 		access_mode=>"HW_ONLY",
 		layout_mode=>"NONCONTIGUOUS",
 		port_mode=>"ANALOG",
 		vtrip=>'0',
 		slew_rate=>"",
-		intr_mode=>"000000000000000000000000",
-		drive_mode=>"100100100100100100100100100100100100",
+		intr_mode=>"00000000000000000000",
+		drive_mode=>"100100100100100100100100100100",
 		lcd_sw_drive=>'0',
 		lcd_com_seg=>"",
 		por_state=>0,
 		emif_mode=>"",
-		enable_shielding=>"000000000000",
+		enable_shielding=>"0000000000",
 		cs_mode=>"11",
 		sio_obuf=>"",
 		sio_ibuf=>"",
@@ -1582,16 +1580,16 @@ SCLK_1:cy_psoc3_pins_v1_10
 	PORT MAP(oe=>zero,
 		y=>(zero, zero, zero, zero,
 			zero, zero, zero, zero,
-			zero, zero, zero, zero),
+			zero, zero),
 		fb=>open,
-		analog=>(\CapSense:Net_1410_11\, \CapSense:Net_1410_10\, \CapSense:Net_1410_9\, \CapSense:Net_1410_8\,
-			\CapSense:Net_1410_7\, \CapSense:Net_1410_6\, \CapSense:Net_1410_5\, \CapSense:Net_1410_4\,
-			\CapSense:Net_1410_3\, \CapSense:Net_1410_2\, \CapSense:Net_1410_1\, \CapSense:Net_1410_0\),
+		analog=>(\CapSense:Net_1410_9\, \CapSense:Net_1410_8\, \CapSense:Net_1410_7\, \CapSense:Net_1410_6\,
+			\CapSense:Net_1410_5\, \CapSense:Net_1410_4\, \CapSense:Net_1410_3\, \CapSense:Net_1410_2\,
+			\CapSense:Net_1410_1\, \CapSense:Net_1410_0\),
 		io=>(open, open, open, open,
 			open, open, open, open,
-			open, open, open, open),
-		siovref=>(open, open, open, open,
 			open, open),
+		siovref=>(open, open, open, open,
+			open),
 		interrupt=>open,
 		precharge=>\CapSense:PreChargeClk\);
 \CapSense:VrefRefCH0\:cy_vref_v1_0
@@ -1602,16 +1600,16 @@ SCLK_1:cy_psoc3_pins_v1_10
 	PORT MAP(vout=>\CapSense:Net_2038\);
 \CapSense:AMuxCH0\:cy_psoc3_amux_v1_0
 	GENERIC MAP(cy_registers=>"",
-		muxin_width=>15,
+		muxin_width=>13,
 		hw_control=>'0',
 		one_active=>'0',
-		init_mux_sel=>"000000000000000",
+		init_mux_sel=>"0000000000000",
 		api_type=>0,
 		connect_mode=>1)
-	PORT MAP(muxin=>(\CapSense:Net_1425\, \CapSense:Net_282\, \CapSense:Net_1917\, \CapSense:Net_1410_11\,
-			\CapSense:Net_1410_10\, \CapSense:Net_1410_9\, \CapSense:Net_1410_8\, \CapSense:Net_1410_7\,
-			\CapSense:Net_1410_6\, \CapSense:Net_1410_5\, \CapSense:Net_1410_4\, \CapSense:Net_1410_3\,
-			\CapSense:Net_1410_2\, \CapSense:Net_1410_1\, \CapSense:Net_1410_0\),
+	PORT MAP(muxin=>(\CapSense:Net_1425\, \CapSense:Net_282\, \CapSense:Net_1917\, \CapSense:Net_1410_9\,
+			\CapSense:Net_1410_8\, \CapSense:Net_1410_7\, \CapSense:Net_1410_6\, \CapSense:Net_1410_5\,
+			\CapSense:Net_1410_4\, \CapSense:Net_1410_3\, \CapSense:Net_1410_2\, \CapSense:Net_1410_1\,
+			\CapSense:Net_1410_0\),
 		hw_ctrl_en=>(others => zero),
 		vout=>\CapSense:Net_2072\);
 \CapSense:Select_VrefCH0_connect\:cy_connect_v1_0

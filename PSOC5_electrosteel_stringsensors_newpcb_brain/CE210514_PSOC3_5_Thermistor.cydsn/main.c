@@ -7,6 +7,7 @@
 #include "main.h"
 
 
+//#define BOOTLOAD_STYLE
 #define EEPROM_NECKS_OFFSET 0
 #define EEPROM_COPEDENT_OFFSET 2
 #define COPEDENT_SIZE_IN_BYTES 278 //including name bytes
@@ -14,9 +15,9 @@
 #define NAME_LENGTH_IN_BYTES 14
 #define EEPROM_CALIBRATION_OFFSET (EEPROM_NECKS_OFFSET + EEPROM_COPEDENT_OFFSET + (MAX_NUM_COPEDENTS * COPEDENT_SIZE_IN_BYTES))
 #define CALIBRATION_SIZE_IN_BYTES NUM_PEDALS * 4 //for each pedal, store 2 bytes for high and 2 bytes for low
-#define MACRO_CLIPPED_LENGTH 8
-#define NAME_CLIPPED_LENGTH 11
-#define COPEDENT_NAME_CLIPPED_LENGTH 8
+#define MACRO_CLIPPED_LENGTH 9
+#define NAME_CLIPPED_LENGTH 12
+#define COPEDENT_NAME_CLIPPED_LENGTH 9
 #define myBufferSize 32
 void parseSysex(void);
 
@@ -213,9 +214,14 @@ uint8_t prevKnobs[4];
 uint8_t knobs7bit[4];
 uint8_t prevKnobs7bit[4];
 
+uint8_t u7bit_volumePedal = 0;
+uint8_t prev_7bit_volumePedal = 0;
 volatile uint8_t SPI2started = 0;
 
 uint8_t whichMacro = 0;
+
+uint8_t macroKnobValues7bit[8];
+uint8_t prevMacroKnobValues7bit[8];
 
 CY_ISR(spis_2_ss)
 {
@@ -485,7 +491,9 @@ int main(void)
     
 	CYGlobalIntEnable; 
     EEPROM_Start();
+     #ifdef BOOTLOAD_STYLE
     Bootloadable_SET_RUN_TYPE(Bootloadable_SCHEDULE_BTLDB);
+    #endif
     //since we sucessfully booted this firmware, set it to be the default until the brain chip gets a new firmware command from the synth chip
     
     eepromReturnValue = Em_EEPROM_Init((uint32_t)Em_EEPROM_em_EepromStorage);
@@ -856,8 +864,14 @@ int main(void)
                 {
                     for (int i = 0; i < NUM_MACROS; i++)
                     {
-                       uint16_t tempInt =((I2Cbuff2[i*2] << 8) + (I2Cbuff2[i*2] & 255)) & 4095; // necessary to AND with 4095 to eliminate the 4 preceding bits set high by default
+                       uint16_t tempInt =((I2Cbuff2[i*2] << 8) + (I2Cbuff2[(i*2) + 1] & 255)) & 4095; // necessary to AND with 4095 to eliminate the 4 preceding bits set high by default
                         macroKnobValues[i] = 255 - (tempInt >> 4); //now squish it down to 8 bit for sending (also subtract from 255 because the pot is backwards for some reason
+                        macroKnobValues7bit[i] = macroKnobValues[i] >> 1;
+                        if (macroKnobValues7bit[i] != prevMacroKnobValues7bit[i])
+                        {
+                            sendMIDIControlChange(i+1, macroKnobValues7bit[i], 0);
+                        }
+                        prevMacroKnobValues7bit[i] = macroKnobValues7bit[i];
                     }
                     //
                     if (macroOLEDWaitingToSend == 2)
@@ -1073,15 +1087,16 @@ int main(void)
             {
                  processed_volumePedal = 4095;
             }
-            
-            if ( processed_volumePedal != prev_processed_volumePedal)
+            u7bit_volumePedal = processed_volumePedal >> 5;
+            if ( u7bit_volumePedal != prev_7bit_volumePedal)
             {
-                uint16_t tempPedal = processed_volumePedal;
+                //uint16_t tempPedal = processed_volumePedal;
                 
-                sendMIDIControlChange(13, ( tempPedal >> 5), 0);
+                sendMIDIControlChange(13, u7bit_volumePedal, 0);
                 //sendMIDIControlChange(22, ( tempPedal & 127), 0);
             }
-             prev_processed_volumePedal = processed_volumePedal;
+             //prev_processed_volumePedal = processed_volumePedal;
+            prev_7bit_volumePedal = u7bit_volumePedal;
         }
         
         main_counter++;
@@ -1731,7 +1746,9 @@ int main(void)
             CyDelayUs(10);
 
             OLED_draw(128, 64);
+            #ifdef BOOTLOAD_STYLE
             Bootloadable_Load();
+                #endif
         }
         
         SPIM_1_ClearRxBuffer();
@@ -1809,7 +1826,7 @@ uint8 I2C_MasterWriteBlocking(uint8 i2CAddr, uint16 nbytes, uint8_t mode)
 {
     uint8 volatile status;
     uint8_t error = 0;
-    uint32_t timeout = 50000;
+    uint32_t timeout = 1000;
     status = I2C_1_MasterClearStatus();
     if(!(status & I2C_1_MSTAT_ERR_XFER))
     {

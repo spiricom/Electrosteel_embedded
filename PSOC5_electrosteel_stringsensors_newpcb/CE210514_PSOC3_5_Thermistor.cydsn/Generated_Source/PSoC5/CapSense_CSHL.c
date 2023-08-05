@@ -46,23 +46,23 @@ uint8 CapSense_sensorOnMask[(((CapSense_TOTAL_SENSOR_COUNT - 1u) / 8u) + 1u)];
 uint8 CapSense_lowBaselineResetCnt[CapSense_TOTAL_SENSOR_COUNT];
 
 uint16 CapSense_fingerThreshold[] = {
-    20u, 20u, 20u, 20u, 20u, 20u, 20u, 20u, 20u, 20u, 20u, 20u, 
+    20u, 20u, 20u, 20u, 20u, 20u, 20u, 20u, 20u, 20u, 
 };
 
 uint16 CapSense_noiseThreshold[] = {
-    10u, 10u, 10u, 10u, 10u, 10u, 10u, 10u, 10u, 10u, 10u, 10u, 
+    10u, 10u, 10u, 10u, 10u, 10u, 10u, 10u, 10u, 10u, 
 };
 
 uint16 CapSense_hysteresis[] = {
-    12u, 12u, 12u, 12u, 12u, 12u, 12u, 12u, 12u, 12u, 12u, 12u, 
+    12u, 12u, 12u, 12u, 12u, 12u, 12u, 12u, 12u, 12u, 
 };
 
 uint8 CapSense_debounce[] = {
-    1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 
+    1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 
 };
 
 uint8 CapSense_debounceCounter[] = {
-    0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 
+    0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 
 };
 
 const uint8 CYCODE CapSense_rawDataIndex[] = {
@@ -76,8 +76,6 @@ const uint8 CYCODE CapSense_rawDataIndex[] = {
     7u, /* Button7__BTN */
     8u, /* Button8__BTN */
     9u, /* Button9__BTN */
-    10u, /* Button10__BTN */
-    11u, /* Button11__BTN */
 
 };
 
@@ -92,8 +90,6 @@ const uint8 CYCODE CapSense_numberOfSensors[] = {
     1u, /* Button7__BTN */
     1u, /* Button8__BTN */
     1u, /* Button9__BTN */
-    1u, /* Button10__BTN */
-    1u, /* Button11__BTN */
 
 };
 

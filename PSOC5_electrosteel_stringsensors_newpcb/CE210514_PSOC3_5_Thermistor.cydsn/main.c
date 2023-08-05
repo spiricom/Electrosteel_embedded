@@ -110,7 +110,7 @@ int main(void)
         CapSense_UpdateEnabledBaselines();
         CapSense_ScanEnabledWidgets();  
         
-        int isSensorOn1 = (CapSense_sensorRaw[11] - CapSense_sensorBaseline[11]) > thresholdArray[11];
+        int isSensorOn1 = (CapSense_sensorRaw[9] - CapSense_sensorBaseline[9]) > thresholdArray[9];
         if (isSensorOn1)
         {
             LED_Write(1);
@@ -152,7 +152,7 @@ int main(void)
             barArray[4] |= (isSensorOn << i);
 
         }
-        for (i = 8; i < 12; i++)
+        for (i = 8; i < 10; i++)
         {
            int isSensorOn = (CapSense_sensorRaw[i] - CapSense_sensorBaseline[i]) > thresholdArray[i];
             touchArray[1] |= (isSensorOn << (i - 8));

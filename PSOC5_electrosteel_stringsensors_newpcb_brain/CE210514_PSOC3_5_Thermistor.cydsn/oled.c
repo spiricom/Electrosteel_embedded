@@ -39,7 +39,7 @@ void myGFX_init(int width, int height)
 	  //GFXsetFont(&theGFX, &nk57_monospace_no_rg7pt7b); // fits 12 characters
 	  //GFXsetFont(&theGFX, &nk57_monospace_no_bd7pt7b); //fits 12 characters
 	  //GFXsetFont(&theGFX, &nk57_monospace_cd_rg7pt7b); //fits 18 characters
-      GFXsetFont(&theGFX,&SourceCodePro_Regular9pt7b);
+      GFXsetFont(&theGFX,&Inconsolata10pt7b);
 	  GFXsetTextColor(&theGFX, 1, 0);
 	  GFXsetTextSize(&theGFX, 1);
 }
@@ -48,11 +48,11 @@ void myGFX_setFont(int font)
 {
     if (font == 0)
     {
-        GFXsetFont(&theGFX,&SourceCodePro_Regular9pt7b);
+        GFXsetFont(&theGFX,&Inconsolata10pt7b);
     }
     else if (font == 1)
     {
-         GFXsetFont(&theGFX,&SourceCodePro_Regular14pt7b);
+         GFXsetFont(&theGFX,&Inconsolata13pt7b);
     }
 }
         

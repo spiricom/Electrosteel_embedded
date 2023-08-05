@@ -1,6 +1,6 @@
 -- ======================================================================
 -- CE210514_PSOC3_5_Thermistor.ctl generated from CE210514_PSOC3_5_Thermistor
--- 07/27/2023 at 16:01
+-- 08/04/2023 at 20:04
 -- This file is auto generated. ANY EDITS YOU MAKE MAY BE LOST WHEN THIS FILE IS REGENERATED!!!
 -- ======================================================================
 

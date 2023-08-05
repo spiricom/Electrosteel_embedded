@@ -60,8 +60,6 @@ void CapSense_SetAllCmodsDriveMode(uint8 mode) ;
 #define CapSense_PortCH0__Button7__BTN  CapSense_PortCH0__Button7__BTN__PC
 #define CapSense_PortCH0__Button8__BTN  CapSense_PortCH0__Button8__BTN__PC
 #define CapSense_PortCH0__Button9__BTN  CapSense_PortCH0__Button9__BTN__PC
-#define CapSense_PortCH0__Button10__BTN  CapSense_PortCH0__Button10__BTN__PC
-#define CapSense_PortCH0__Button11__BTN  CapSense_PortCH0__Button11__BTN__PC
 /* For Cmods*/
 #define CapSense_CmodCH0_Cmod_CH0       CapSense_CmodCH0__Cmod_CH0__PC
 
