@@ -54,6 +54,10 @@ void myGFX_setFont(int font)
     {
          GFXsetFont(&theGFX,&Inconsolata13pt7b);
     }
+    else if (font == 2)
+    {
+         GFXsetFont(&theGFX,&Inconsolata8pt7b);
+    }
 }
         
 void OLED_init(uint16_t width, uint16_t height)
@@ -195,14 +199,19 @@ void OLEDdrawCircle(int16_t x0, int16_t y0, int16_t r, uint16_t color)
 
 void OLEDclear(int width, int height)
 {
-	GFXfillRect(&theGFX, 0, 0, width, height, 0);
+	GFXfillRect(&theGFX, 0, 0, width, height, theGFX.textbgcolor);
 	//ssd1306_display_full_buffer();
 }
 
 void OLEDclearLine(OLEDLine line)
 {
-	GFXfillRect(&theGFX, 0, (line%2)*16, 128, 16*((line/2)+1), 0);
+	GFXfillRect(&theGFX, 0, (line%2)*16, 128, 16, theGFX.textbgcolor);
 	//ssd1306_display_full_buffer();
+}
+
+void OLEDtextColor(uint16_t c, uint16_t bg)
+{
+    GFXsetTextColor(&theGFX, c, bg);
 }
 
 void OLEDwriteString(const char* myCharArray, int arrayLength, int startCursor, OLEDLine line)
@@ -211,7 +220,7 @@ void OLEDwriteString(const char* myCharArray, int arrayLength, int startCursor, 
 	int cursorY = 12 + (16 * (line%4));
 	GFXsetCursor(&theGFX, cursorX, cursorY);
 
-	GFXfillRect(&theGFX, startCursor, line*16, arrayLength*12, (line*16)+16, 0);
+	GFXfillRect(&theGFX, startCursor, line*16, 128-startCursor, 16, theGFX.textbgcolor);
 	for (int i = 0; i < arrayLength; ++i)
 	{
 		GFXwrite(&theGFX, myCharArray[i]);
@@ -219,11 +228,33 @@ void OLEDwriteString(const char* myCharArray, int arrayLength, int startCursor, 
 	//ssd1306_display_full_buffer();
 }
 
+void OLEDwriteArrow(int startCursor, OLEDLine line)
+{
+    int cursorX = startCursor;
+	int cursorY = 12 + (16 * (line%4));
+	GFXsetCursor(&theGFX, cursorX, cursorY);
+    GFXwrite(&theGFX, 62);
+}
+
+
 void OLEDwriteLine(const char* myCharArray, int arrayLength, OLEDLine line)
 {
 
-    GFXfillRect(&theGFX, 0, line*16, 128, 16, 0);
+    GFXfillRect(&theGFX, 0, line*16, 128, 16, theGFX.textbgcolor);
 	GFXsetCursor(&theGFX, 4, line*16-1);
+
+
+	for (int i = 0; i < arrayLength; ++i)
+	{
+		GFXwrite(&theGFX, myCharArray[i]);
+	}
+}
+
+void OLEDwriteLineMiddle(const char* myCharArray, int arrayLength)
+{
+
+    GFXfillRect(&theGFX, 0, 0, 128, 32, theGFX.textbgcolor);
+	GFXsetCursor(&theGFX, 4, 20);
 
 
 	for (int i = 0; i < arrayLength; ++i)
@@ -344,7 +375,7 @@ void OLEDdrawFloatArray(float* input, float min, float max, int size, int offset
 	int height = 16;
 
 
-	GFXfillRect(&theGFX, startCursor, (line%2)*16, size, 16*((line/2)+1), 0);
+	GFXfillRect(&theGFX, startCursor, (line%2)*16, size, 16*((line/2)+1), theGFX.textbgcolor);
 
 	for (int i = 0; i < size; i++)
 	{

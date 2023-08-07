@@ -86,9 +86,15 @@ void OLEDclear(int width, int height);
 
 void OLEDclearLine(OLEDLine line);
 
+void OLEDtextColor(uint16_t c, uint16_t bg);
+
 void OLEDwriteString(const char* myCharArray, int arrayLength, int startCursor, OLEDLine line);
 
+void OLEDwriteArrow(int startCursor, OLEDLine line);
+
 void OLEDwriteLine(const char* myCharArray, int arrayLength, OLEDLine line);
+
+void OLEDwriteLineMiddle(const char* myCharArray, int arrayLength);
 
 void OLEDwriteInt(uint32_t myNumber, int numDigits, int startCursor, OLEDLine line);
 

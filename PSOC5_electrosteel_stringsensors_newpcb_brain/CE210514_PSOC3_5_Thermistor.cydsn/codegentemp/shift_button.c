@@ -1,5 +1,5 @@
 /*******************************************************************************
-* File Name: enter_button.c  
+* File Name: shift_button.c  
 * Version 2.20
 *
 * Description:
@@ -15,15 +15,15 @@
 *******************************************************************************/
 
 #include "cytypes.h"
-#include "enter_button.h"
+#include "shift_button.h"
 
 /* APIs are not generated for P15[7:6] on PSoC 5 */
 #if !(CY_PSOC5A &&\
-	 enter_button__PORT == 15 && ((enter_button__MASK & 0xC0) != 0))
+	 shift_button__PORT == 15 && ((shift_button__MASK & 0xC0) != 0))
 
 
 /*******************************************************************************
-* Function Name: enter_button_Write
+* Function Name: shift_button_Write
 ****************************************************************************//**
 *
 * \brief Writes the value to the physical port (data output register), masking
@@ -52,17 +52,17 @@
 *  this function.
 *
 * \funcusage
-*  \snippet enter_button_SUT.c usage_enter_button_Write
+*  \snippet shift_button_SUT.c usage_shift_button_Write
 *******************************************************************************/
-void enter_button_Write(uint8 value)
+void shift_button_Write(uint8 value)
 {
-    uint8 staticBits = (enter_button_DR & (uint8)(~enter_button_MASK));
-    enter_button_DR = staticBits | ((uint8)(value << enter_button_SHIFT) & enter_button_MASK);
+    uint8 staticBits = (shift_button_DR & (uint8)(~shift_button_MASK));
+    shift_button_DR = staticBits | ((uint8)(value << shift_button_SHIFT) & shift_button_MASK);
 }
 
 
 /*******************************************************************************
-* Function Name: enter_button_SetDriveMode
+* Function Name: shift_button_SetDriveMode
 ****************************************************************************//**
 *
 * \brief Sets the drive mode for each of the Pins component's pins.
@@ -85,16 +85,16 @@ void enter_button_Write(uint8 value)
 *  APIs (primary method) or disable interrupts around this function.
 *
 * \funcusage
-*  \snippet enter_button_SUT.c usage_enter_button_SetDriveMode
+*  \snippet shift_button_SUT.c usage_shift_button_SetDriveMode
 *******************************************************************************/
-void enter_button_SetDriveMode(uint8 mode)
+void shift_button_SetDriveMode(uint8 mode)
 {
-	CyPins_SetPinDriveMode(enter_button_0, mode);
+	CyPins_SetPinDriveMode(shift_button_0, mode);
 }
 
 
 /*******************************************************************************
-* Function Name: enter_button_Read
+* Function Name: shift_button_Read
 ****************************************************************************//**
 *
 * \brief Reads the associated physical port (pin status register) and masks 
@@ -108,16 +108,16 @@ void enter_button_SetDriveMode(uint8 mode)
 *  The current value for the pins in the component as a right justified number.
 *
 * \funcusage
-*  \snippet enter_button_SUT.c usage_enter_button_Read  
+*  \snippet shift_button_SUT.c usage_shift_button_Read  
 *******************************************************************************/
-uint8 enter_button_Read(void)
+uint8 shift_button_Read(void)
 {
-    return (enter_button_PS & enter_button_MASK) >> enter_button_SHIFT;
+    return (shift_button_PS & shift_button_MASK) >> shift_button_SHIFT;
 }
 
 
 /*******************************************************************************
-* Function Name: enter_button_ReadDataReg
+* Function Name: shift_button_ReadDataReg
 ****************************************************************************//**
 *
 * \brief Reads the associated physical port's data output register and masks 
@@ -126,8 +126,8 @@ uint8 enter_button_Read(void)
 *
 * The data output register controls the signal applied to the physical pin in 
 * conjunction with the drive mode parameter. This is not the same as the 
-* preferred enter_button_Read() API because the 
-* enter_button_ReadDataReg() reads the data register instead of the status 
+* preferred shift_button_Read() API because the 
+* shift_button_ReadDataReg() reads the data register instead of the status 
 * register. For output pins this is a useful function to determine the value 
 * just written to the pin.
 *
@@ -136,19 +136,19 @@ uint8 enter_button_Read(void)
 *  justified number for the component instance.
 *
 * \funcusage
-*  \snippet enter_button_SUT.c usage_enter_button_ReadDataReg 
+*  \snippet shift_button_SUT.c usage_shift_button_ReadDataReg 
 *******************************************************************************/
-uint8 enter_button_ReadDataReg(void)
+uint8 shift_button_ReadDataReg(void)
 {
-    return (enter_button_DR & enter_button_MASK) >> enter_button_SHIFT;
+    return (shift_button_DR & shift_button_MASK) >> shift_button_SHIFT;
 }
 
 
 /* If interrupt is connected for this Pins component */ 
-#if defined(enter_button_INTSTAT) 
+#if defined(shift_button_INTSTAT) 
 
     /*******************************************************************************
-    * Function Name: enter_button_SetInterruptMode
+    * Function Name: shift_button_SetInterruptMode
     ****************************************************************************//**
     *
     * \brief Configures the interrupt mode for each of the Pins component's
@@ -161,12 +161,12 @@ uint8 enter_button_ReadDataReg(void)
     * \param position
     *  The pin position as listed in the Pins component. You may OR these to be 
     *  able to configure the interrupt mode of multiple pins within a Pins 
-    *  component. Or you may use enter_button_INTR_ALL to configure the
+    *  component. Or you may use shift_button_INTR_ALL to configure the
     *  interrupt mode of all the pins in the Pins component.       
-    *  - enter_button_0_INTR       (First pin in the list)
-    *  - enter_button_1_INTR       (Second pin in the list)
+    *  - shift_button_0_INTR       (First pin in the list)
+    *  - shift_button_1_INTR       (Second pin in the list)
     *  - ...
-    *  - enter_button_INTR_ALL     (All pins in Pins component)
+    *  - shift_button_INTR_ALL     (All pins in Pins component)
     *
     * \param mode
     *  Interrupt mode for the selected pins. Valid options are documented in
@@ -182,19 +182,19 @@ uint8 enter_button_ReadDataReg(void)
     *  port.
     *
     * \funcusage
-    *  \snippet enter_button_SUT.c usage_enter_button_SetInterruptMode
+    *  \snippet shift_button_SUT.c usage_shift_button_SetInterruptMode
     *******************************************************************************/
-    void enter_button_SetInterruptMode(uint16 position, uint16 mode)
+    void shift_button_SetInterruptMode(uint16 position, uint16 mode)
     {
-		if((position & enter_button_0_INTR) != 0u) 
+		if((position & shift_button_0_INTR) != 0u) 
 		{ 
-			 enter_button_0_INTTYPE_REG = (uint8)mode; 
+			 shift_button_0_INTTYPE_REG = (uint8)mode; 
 		}
     }
     
     
     /*******************************************************************************
-    * Function Name: enter_button_ClearInterrupt
+    * Function Name: shift_button_ClearInterrupt
     ****************************************************************************//**
     *
     * \brief Clears any active interrupts attached with the component and returns 
@@ -211,11 +211,11 @@ uint8 enter_button_ReadDataReg(void)
     *  those associated with the Pins component.
     *
     * \funcusage
-    *  \snippet enter_button_SUT.c usage_enter_button_ClearInterrupt
+    *  \snippet shift_button_SUT.c usage_shift_button_ClearInterrupt
     *******************************************************************************/
-    uint8 enter_button_ClearInterrupt(void)
+    uint8 shift_button_ClearInterrupt(void)
     {
-        return (enter_button_INTSTAT & enter_button_MASK) >> enter_button_SHIFT;
+        return (shift_button_INTSTAT & shift_button_MASK) >> shift_button_SHIFT;
     }
 
 #endif /* If Interrupts Are Enabled for this Pins component */ 

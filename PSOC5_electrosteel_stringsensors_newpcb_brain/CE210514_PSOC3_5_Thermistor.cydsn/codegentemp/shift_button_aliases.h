@@ -1,5 +1,5 @@
 /*******************************************************************************
-* File Name: enter_button.h  
+* File Name: shift_button.h  
 * Version 2.20
 *
 * Description:
@@ -15,8 +15,8 @@
 * the software package with which this file was provided.
 *******************************************************************************/
 
-#if !defined(CY_PINS_enter_button_ALIASES_H) /* Pins enter_button_ALIASES_H */
-#define CY_PINS_enter_button_ALIASES_H
+#if !defined(CY_PINS_shift_button_ALIASES_H) /* Pins shift_button_ALIASES_H */
+#define CY_PINS_shift_button_ALIASES_H
 
 #include "cytypes.h"
 #include "cyfitter.h"
@@ -25,12 +25,12 @@
 /***************************************
 *              Constants        
 ***************************************/
-#define enter_button_0			(enter_button__0__PC)
-#define enter_button_0_INTR	((uint16)((uint16)0x0001u << enter_button__0__SHIFT))
+#define shift_button_0			(shift_button__0__PC)
+#define shift_button_0_INTR	((uint16)((uint16)0x0001u << shift_button__0__SHIFT))
 
-#define enter_button_INTR_ALL	 ((uint16)(enter_button_0_INTR))
+#define shift_button_INTR_ALL	 ((uint16)(shift_button_0_INTR))
 
-#endif /* End Pins enter_button_ALIASES_H */
+#endif /* End Pins shift_button_ALIASES_H */
 
 
 /* [] END OF FILE */

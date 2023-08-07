@@ -29,7 +29,7 @@
     #error Component QuadDec_v3_0 requires cy_boot v3.0 or later
 #endif /* (CY_PSOC5LP) */
 
-#define QuadDec_1_COUNTER_SIZE               (16u)
+#define QuadDec_1_COUNTER_SIZE               (8u)
 #define QuadDec_1_COUNTER_SIZE_8_BIT         (8u)
 #define QuadDec_1_COUNTER_SIZE_16_BIT        (16u)
 #define QuadDec_1_COUNTER_SIZE_32_BIT        (32u)
@@ -75,8 +75,8 @@ void  QuadDec_1_Enable(void) ;
 uint8 QuadDec_1_GetEvents(void) ;
 void  QuadDec_1_SetInterruptMask(uint8 mask) ;
 uint8 QuadDec_1_GetInterruptMask(void) ;
-int16 QuadDec_1_GetCounter(void) ;
-void  QuadDec_1_SetCounter(int16 value)
+int8 QuadDec_1_GetCounter(void) ;
+void  QuadDec_1_SetCounter(int8 value)
 ;
 void  QuadDec_1_Sleep(void) ;
 void  QuadDec_1_Wakeup(void) ;
@@ -102,7 +102,7 @@ void  QuadDec_1_RestoreConfig(void) ;
 *    Enumerated Types and Parameters
 ***************************************/
 
-#define QuadDec_1_GLITCH_FILTERING           (1u)
+#define QuadDec_1_GLITCH_FILTERING           (0u)
 #define QuadDec_1_INDEX_INPUT                (0u)
 
 
