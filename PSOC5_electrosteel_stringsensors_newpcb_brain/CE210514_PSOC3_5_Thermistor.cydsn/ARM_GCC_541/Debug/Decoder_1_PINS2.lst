@@ -1,0 +1,1145 @@
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccU3uCcv.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"Decoder_1_PINS2.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.Decoder_1_PINS2_Write,"ax",%progbits
+  20              		.align	2
+  21              		.global	Decoder_1_PINS2_Write
+  22              		.thumb
+  23              		.thumb_func
+  24              		.type	Decoder_1_PINS2_Write, %function
+  25              	Decoder_1_PINS2_Write:
+  26              	.LFB0:
+  27              		.file 1 "Generated_Source\\PSoC5\\Decoder_1_PINS2.c"
+   1:Generated_Source\PSoC5/Decoder_1_PINS2.c **** /*******************************************************************************
+   2:Generated_Source\PSoC5/Decoder_1_PINS2.c **** * File Name: Decoder_1_PINS2.c  
+   3:Generated_Source\PSoC5/Decoder_1_PINS2.c **** * Version 2.20
+   4:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *
+   5:Generated_Source\PSoC5/Decoder_1_PINS2.c **** * Description:
+   6:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *  This file contains API to enable firmware control of a Pins component.
+   7:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *
+   8:Generated_Source\PSoC5/Decoder_1_PINS2.c **** * Note:
+   9:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *
+  10:Generated_Source\PSoC5/Decoder_1_PINS2.c **** ********************************************************************************
+  11:Generated_Source\PSoC5/Decoder_1_PINS2.c **** * Copyright 2008-2015, Cypress Semiconductor Corporation.  All rights reserved.
+  12:Generated_Source\PSoC5/Decoder_1_PINS2.c **** * You may use this file only in accordance with the license, terms, conditions, 
+  13:Generated_Source\PSoC5/Decoder_1_PINS2.c **** * disclaimers, and limitations in the end user license agreement accompanying 
+  14:Generated_Source\PSoC5/Decoder_1_PINS2.c **** * the software package with which this file was provided.
+  15:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *******************************************************************************/
+  16:Generated_Source\PSoC5/Decoder_1_PINS2.c **** 
+  17:Generated_Source\PSoC5/Decoder_1_PINS2.c **** #include "cytypes.h"
+  18:Generated_Source\PSoC5/Decoder_1_PINS2.c **** #include "Decoder_1_PINS2.h"
+  19:Generated_Source\PSoC5/Decoder_1_PINS2.c **** 
+  20:Generated_Source\PSoC5/Decoder_1_PINS2.c **** /* APIs are not generated for P15[7:6] on PSoC 5 */
+  21:Generated_Source\PSoC5/Decoder_1_PINS2.c **** #if !(CY_PSOC5A &&\
+  22:Generated_Source\PSoC5/Decoder_1_PINS2.c **** 	 Decoder_1_PINS2__PORT == 15 && ((Decoder_1_PINS2__MASK & 0xC0) != 0))
+  23:Generated_Source\PSoC5/Decoder_1_PINS2.c **** 
+  24:Generated_Source\PSoC5/Decoder_1_PINS2.c **** 
+  25:Generated_Source\PSoC5/Decoder_1_PINS2.c **** /*******************************************************************************
+  26:Generated_Source\PSoC5/Decoder_1_PINS2.c **** * Function Name: Decoder_1_PINS2_Write
+  27:Generated_Source\PSoC5/Decoder_1_PINS2.c **** ****************************************************************************//**
+  28:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *
+  29:Generated_Source\PSoC5/Decoder_1_PINS2.c **** * \brief Writes the value to the physical port (data output register), masking
+  30:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *  and shifting the bits appropriately. 
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccU3uCcv.s 			page 2
+
+
+  31:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *
+  32:Generated_Source\PSoC5/Decoder_1_PINS2.c **** * The data output register controls the signal applied to the physical pin in 
+  33:Generated_Source\PSoC5/Decoder_1_PINS2.c **** * conjunction with the drive mode parameter. This function avoids changing 
+  34:Generated_Source\PSoC5/Decoder_1_PINS2.c **** * other bits in the port by using the appropriate method (read-modify-write or
+  35:Generated_Source\PSoC5/Decoder_1_PINS2.c **** * bit banding).
+  36:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *
+  37:Generated_Source\PSoC5/Decoder_1_PINS2.c **** * <b>Note</b> This function should not be used on a hardware digital output pin 
+  38:Generated_Source\PSoC5/Decoder_1_PINS2.c **** * as it is driven by the hardware signal attached to it.
+  39:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *
+  40:Generated_Source\PSoC5/Decoder_1_PINS2.c **** * \param value
+  41:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *  Value to write to the component instance.
+  42:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *
+  43:Generated_Source\PSoC5/Decoder_1_PINS2.c **** * \return 
+  44:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *  None 
+  45:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *
+  46:Generated_Source\PSoC5/Decoder_1_PINS2.c **** * \sideeffect
+  47:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *  If you use read-modify-write operations that are not atomic; the Interrupt 
+  48:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *  Service Routines (ISR) can cause corruption of this function. An ISR that 
+  49:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *  interrupts this function and performs writes to the Pins component data 
+  50:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *  register can cause corrupted port data. To avoid this issue, you should 
+  51:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *  either use the Per-Pin APIs (primary method) or disable interrupts around 
+  52:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *  this function.
+  53:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *
+  54:Generated_Source\PSoC5/Decoder_1_PINS2.c **** * \funcusage
+  55:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *  \snippet Decoder_1_PINS2_SUT.c usage_Decoder_1_PINS2_Write
+  56:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *******************************************************************************/
+  57:Generated_Source\PSoC5/Decoder_1_PINS2.c **** void Decoder_1_PINS2_Write(uint8 value)
+  58:Generated_Source\PSoC5/Decoder_1_PINS2.c **** {
+  28              		.loc 1 58 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 16
+  31              		@ frame_needed = 1, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+  33 0000 80B4     		push	{r7}
+  34              		.cfi_def_cfa_offset 4
+  35              		.cfi_offset 7, -4
+  36 0002 85B0     		sub	sp, sp, #20
+  37              		.cfi_def_cfa_offset 24
+  38 0004 00AF     		add	r7, sp, #0
+  39              		.cfi_def_cfa_register 7
+  40 0006 0346     		mov	r3, r0
+  41 0008 FB71     		strb	r3, [r7, #7]
+  59:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     uint8 staticBits = (Decoder_1_PINS2_DR & (uint8)(~Decoder_1_PINS2_MASK));
+  42              		.loc 1 59 0
+  43 000a 0B4B     		ldr	r3, .L2
+  44 000c 1B78     		ldrb	r3, [r3]
+  45 000e DBB2     		uxtb	r3, r3
+  46 0010 23F00C03 		bic	r3, r3, #12
+  47 0014 FB73     		strb	r3, [r7, #15]
+  60:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     Decoder_1_PINS2_DR = staticBits | ((uint8)(value << Decoder_1_PINS2_SHIFT) & Decoder_1_PINS2_MA
+  48              		.loc 1 60 0
+  49 0016 0849     		ldr	r1, .L2
+  50 0018 FB79     		ldrb	r3, [r7, #7]
+  51 001a 9B00     		lsls	r3, r3, #2
+  52 001c DBB2     		uxtb	r3, r3
+  53 001e 03F00C03 		and	r3, r3, #12
+  54 0022 DAB2     		uxtb	r2, r3
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccU3uCcv.s 			page 3
+
+
+  55 0024 FB7B     		ldrb	r3, [r7, #15]
+  56 0026 1343     		orrs	r3, r3, r2
+  57 0028 DBB2     		uxtb	r3, r3
+  58 002a 0B70     		strb	r3, [r1]
+  61:Generated_Source\PSoC5/Decoder_1_PINS2.c **** }
+  59              		.loc 1 61 0
+  60 002c 00BF     		nop
+  61 002e 1437     		adds	r7, r7, #20
+  62              		.cfi_def_cfa_offset 4
+  63 0030 BD46     		mov	sp, r7
+  64              		.cfi_def_cfa_register 13
+  65              		@ sp needed
+  66 0032 80BC     		pop	{r7}
+  67              		.cfi_restore 7
+  68              		.cfi_def_cfa_offset 0
+  69 0034 7047     		bx	lr
+  70              	.L3:
+  71 0036 00BF     		.align	2
+  72              	.L2:
+  73 0038 40510040 		.word	1073762624
+  74              		.cfi_endproc
+  75              	.LFE0:
+  76              		.size	Decoder_1_PINS2_Write, .-Decoder_1_PINS2_Write
+  77              		.section	.text.Decoder_1_PINS2_SetDriveMode,"ax",%progbits
+  78              		.align	2
+  79              		.global	Decoder_1_PINS2_SetDriveMode
+  80              		.thumb
+  81              		.thumb_func
+  82              		.type	Decoder_1_PINS2_SetDriveMode, %function
+  83              	Decoder_1_PINS2_SetDriveMode:
+  84              	.LFB1:
+  62:Generated_Source\PSoC5/Decoder_1_PINS2.c **** 
+  63:Generated_Source\PSoC5/Decoder_1_PINS2.c **** 
+  64:Generated_Source\PSoC5/Decoder_1_PINS2.c **** /*******************************************************************************
+  65:Generated_Source\PSoC5/Decoder_1_PINS2.c **** * Function Name: Decoder_1_PINS2_SetDriveMode
+  66:Generated_Source\PSoC5/Decoder_1_PINS2.c **** ****************************************************************************//**
+  67:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *
+  68:Generated_Source\PSoC5/Decoder_1_PINS2.c **** * \brief Sets the drive mode for each of the Pins component's pins.
+  69:Generated_Source\PSoC5/Decoder_1_PINS2.c **** * 
+  70:Generated_Source\PSoC5/Decoder_1_PINS2.c **** * <b>Note</b> This affects all pins in the Pins component instance. Use the
+  71:Generated_Source\PSoC5/Decoder_1_PINS2.c **** * Per-Pin APIs if you wish to control individual pin's drive modes.
+  72:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *
+  73:Generated_Source\PSoC5/Decoder_1_PINS2.c **** * \param mode
+  74:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *  Mode for the selected signals. Valid options are documented in 
+  75:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *  \ref driveMode.
+  76:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *
+  77:Generated_Source\PSoC5/Decoder_1_PINS2.c **** * \return
+  78:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *  None
+  79:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *
+  80:Generated_Source\PSoC5/Decoder_1_PINS2.c **** * \sideeffect
+  81:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *  If you use read-modify-write operations that are not atomic, the ISR can
+  82:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *  cause corruption of this function. An ISR that interrupts this function 
+  83:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *  and performs writes to the Pins component Drive Mode registers can cause 
+  84:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *  corrupted port data. To avoid this issue, you should either use the Per-Pin
+  85:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *  APIs (primary method) or disable interrupts around this function.
+  86:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *
+  87:Generated_Source\PSoC5/Decoder_1_PINS2.c **** * \funcusage
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccU3uCcv.s 			page 4
+
+
+  88:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *  \snippet Decoder_1_PINS2_SUT.c usage_Decoder_1_PINS2_SetDriveMode
+  89:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *******************************************************************************/
+  90:Generated_Source\PSoC5/Decoder_1_PINS2.c **** void Decoder_1_PINS2_SetDriveMode(uint8 mode)
+  91:Generated_Source\PSoC5/Decoder_1_PINS2.c **** {
+  85              		.loc 1 91 0
+  86              		.cfi_startproc
+  87              		@ args = 0, pretend = 0, frame = 8
+  88              		@ frame_needed = 1, uses_anonymous_args = 0
+  89              		@ link register save eliminated.
+  90 0000 80B4     		push	{r7}
+  91              		.cfi_def_cfa_offset 4
+  92              		.cfi_offset 7, -4
+  93 0002 83B0     		sub	sp, sp, #12
+  94              		.cfi_def_cfa_offset 16
+  95 0004 00AF     		add	r7, sp, #0
+  96              		.cfi_def_cfa_register 7
+  97 0006 0346     		mov	r3, r0
+  98 0008 FB71     		strb	r3, [r7, #7]
+  92:Generated_Source\PSoC5/Decoder_1_PINS2.c **** 	CyPins_SetPinDriveMode(Decoder_1_PINS2_0, mode);
+  99              		.loc 1 92 0
+ 100 000a 1349     		ldr	r1, .L5
+ 101 000c 124B     		ldr	r3, .L5
+ 102 000e 1B78     		ldrb	r3, [r3]
+ 103 0010 DBB2     		uxtb	r3, r3
+ 104 0012 5BB2     		sxtb	r3, r3
+ 105 0014 23F00E03 		bic	r3, r3, #14
+ 106 0018 5AB2     		sxtb	r2, r3
+ 107 001a 97F90730 		ldrsb	r3, [r7, #7]
+ 108 001e 03F00E03 		and	r3, r3, #14
+ 109 0022 5BB2     		sxtb	r3, r3
+ 110 0024 1343     		orrs	r3, r3, r2
+ 111 0026 5BB2     		sxtb	r3, r3
+ 112 0028 DBB2     		uxtb	r3, r3
+ 113 002a 0B70     		strb	r3, [r1]
+  93:Generated_Source\PSoC5/Decoder_1_PINS2.c **** 	CyPins_SetPinDriveMode(Decoder_1_PINS2_1, mode);
+ 114              		.loc 1 93 0
+ 115 002c 0B49     		ldr	r1, .L5+4
+ 116 002e 0B4B     		ldr	r3, .L5+4
+ 117 0030 1B78     		ldrb	r3, [r3]
+ 118 0032 DBB2     		uxtb	r3, r3
+ 119 0034 5BB2     		sxtb	r3, r3
+ 120 0036 23F00E03 		bic	r3, r3, #14
+ 121 003a 5AB2     		sxtb	r2, r3
+ 122 003c 97F90730 		ldrsb	r3, [r7, #7]
+ 123 0040 03F00E03 		and	r3, r3, #14
+ 124 0044 5BB2     		sxtb	r3, r3
+ 125 0046 1343     		orrs	r3, r3, r2
+ 126 0048 5BB2     		sxtb	r3, r3
+ 127 004a DBB2     		uxtb	r3, r3
+ 128 004c 0B70     		strb	r3, [r1]
+  94:Generated_Source\PSoC5/Decoder_1_PINS2.c **** }
+ 129              		.loc 1 94 0
+ 130 004e 00BF     		nop
+ 131 0050 0C37     		adds	r7, r7, #12
+ 132              		.cfi_def_cfa_offset 4
+ 133 0052 BD46     		mov	sp, r7
+ 134              		.cfi_def_cfa_register 13
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccU3uCcv.s 			page 5
+
+
+ 135              		@ sp needed
+ 136 0054 80BC     		pop	{r7}
+ 137              		.cfi_restore 7
+ 138              		.cfi_def_cfa_offset 0
+ 139 0056 7047     		bx	lr
+ 140              	.L6:
+ 141              		.align	2
+ 142              	.L5:
+ 143 0058 22500040 		.word	1073762338
+ 144 005c 23500040 		.word	1073762339
+ 145              		.cfi_endproc
+ 146              	.LFE1:
+ 147              		.size	Decoder_1_PINS2_SetDriveMode, .-Decoder_1_PINS2_SetDriveMode
+ 148              		.section	.text.Decoder_1_PINS2_Read,"ax",%progbits
+ 149              		.align	2
+ 150              		.global	Decoder_1_PINS2_Read
+ 151              		.thumb
+ 152              		.thumb_func
+ 153              		.type	Decoder_1_PINS2_Read, %function
+ 154              	Decoder_1_PINS2_Read:
+ 155              	.LFB2:
+  95:Generated_Source\PSoC5/Decoder_1_PINS2.c **** 
+  96:Generated_Source\PSoC5/Decoder_1_PINS2.c **** 
+  97:Generated_Source\PSoC5/Decoder_1_PINS2.c **** /*******************************************************************************
+  98:Generated_Source\PSoC5/Decoder_1_PINS2.c **** * Function Name: Decoder_1_PINS2_Read
+  99:Generated_Source\PSoC5/Decoder_1_PINS2.c **** ****************************************************************************//**
+ 100:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *
+ 101:Generated_Source\PSoC5/Decoder_1_PINS2.c **** * \brief Reads the associated physical port (pin status register) and masks 
+ 102:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *  the required bits according to the width and bit position of the component
+ 103:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *  instance. 
+ 104:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *
+ 105:Generated_Source\PSoC5/Decoder_1_PINS2.c **** * The pin's status register returns the current logic level present on the 
+ 106:Generated_Source\PSoC5/Decoder_1_PINS2.c **** * physical pin.
+ 107:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *
+ 108:Generated_Source\PSoC5/Decoder_1_PINS2.c **** * \return 
+ 109:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *  The current value for the pins in the component as a right justified number.
+ 110:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *
+ 111:Generated_Source\PSoC5/Decoder_1_PINS2.c **** * \funcusage
+ 112:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *  \snippet Decoder_1_PINS2_SUT.c usage_Decoder_1_PINS2_Read  
+ 113:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *******************************************************************************/
+ 114:Generated_Source\PSoC5/Decoder_1_PINS2.c **** uint8 Decoder_1_PINS2_Read(void)
+ 115:Generated_Source\PSoC5/Decoder_1_PINS2.c **** {
+ 156              		.loc 1 115 0
+ 157              		.cfi_startproc
+ 158              		@ args = 0, pretend = 0, frame = 0
+ 159              		@ frame_needed = 1, uses_anonymous_args = 0
+ 160              		@ link register save eliminated.
+ 161 0000 80B4     		push	{r7}
+ 162              		.cfi_def_cfa_offset 4
+ 163              		.cfi_offset 7, -4
+ 164 0002 00AF     		add	r7, sp, #0
+ 165              		.cfi_def_cfa_register 7
+ 116:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     return (Decoder_1_PINS2_PS & Decoder_1_PINS2_MASK) >> Decoder_1_PINS2_SHIFT;
+ 166              		.loc 1 116 0
+ 167 0004 054B     		ldr	r3, .L9
+ 168 0006 1B78     		ldrb	r3, [r3]
+ 169 0008 DBB2     		uxtb	r3, r3
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccU3uCcv.s 			page 6
+
+
+ 170 000a 03F00C03 		and	r3, r3, #12
+ 171 000e 9B08     		lsrs	r3, r3, #2
+ 172 0010 DBB2     		uxtb	r3, r3
+ 117:Generated_Source\PSoC5/Decoder_1_PINS2.c **** }
+ 173              		.loc 1 117 0
+ 174 0012 1846     		mov	r0, r3
+ 175 0014 BD46     		mov	sp, r7
+ 176              		.cfi_def_cfa_register 13
+ 177              		@ sp needed
+ 178 0016 80BC     		pop	{r7}
+ 179              		.cfi_restore 7
+ 180              		.cfi_def_cfa_offset 0
+ 181 0018 7047     		bx	lr
+ 182              	.L10:
+ 183 001a 00BF     		.align	2
+ 184              	.L9:
+ 185 001c 41510040 		.word	1073762625
+ 186              		.cfi_endproc
+ 187              	.LFE2:
+ 188              		.size	Decoder_1_PINS2_Read, .-Decoder_1_PINS2_Read
+ 189              		.section	.text.Decoder_1_PINS2_ReadDataReg,"ax",%progbits
+ 190              		.align	2
+ 191              		.global	Decoder_1_PINS2_ReadDataReg
+ 192              		.thumb
+ 193              		.thumb_func
+ 194              		.type	Decoder_1_PINS2_ReadDataReg, %function
+ 195              	Decoder_1_PINS2_ReadDataReg:
+ 196              	.LFB3:
+ 118:Generated_Source\PSoC5/Decoder_1_PINS2.c **** 
+ 119:Generated_Source\PSoC5/Decoder_1_PINS2.c **** 
+ 120:Generated_Source\PSoC5/Decoder_1_PINS2.c **** /*******************************************************************************
+ 121:Generated_Source\PSoC5/Decoder_1_PINS2.c **** * Function Name: Decoder_1_PINS2_ReadDataReg
+ 122:Generated_Source\PSoC5/Decoder_1_PINS2.c **** ****************************************************************************//**
+ 123:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *
+ 124:Generated_Source\PSoC5/Decoder_1_PINS2.c **** * \brief Reads the associated physical port's data output register and masks 
+ 125:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *  the correct bits according to the width and bit position of the component 
+ 126:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *  instance. 
+ 127:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *
+ 128:Generated_Source\PSoC5/Decoder_1_PINS2.c **** * The data output register controls the signal applied to the physical pin in 
+ 129:Generated_Source\PSoC5/Decoder_1_PINS2.c **** * conjunction with the drive mode parameter. This is not the same as the 
+ 130:Generated_Source\PSoC5/Decoder_1_PINS2.c **** * preferred Decoder_1_PINS2_Read() API because the 
+ 131:Generated_Source\PSoC5/Decoder_1_PINS2.c **** * Decoder_1_PINS2_ReadDataReg() reads the data register instead of the status 
+ 132:Generated_Source\PSoC5/Decoder_1_PINS2.c **** * register. For output pins this is a useful function to determine the value 
+ 133:Generated_Source\PSoC5/Decoder_1_PINS2.c **** * just written to the pin.
+ 134:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *
+ 135:Generated_Source\PSoC5/Decoder_1_PINS2.c **** * \return 
+ 136:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *  The current value of the data register masked and shifted into a right 
+ 137:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *  justified number for the component instance.
+ 138:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *
+ 139:Generated_Source\PSoC5/Decoder_1_PINS2.c **** * \funcusage
+ 140:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *  \snippet Decoder_1_PINS2_SUT.c usage_Decoder_1_PINS2_ReadDataReg 
+ 141:Generated_Source\PSoC5/Decoder_1_PINS2.c **** *******************************************************************************/
+ 142:Generated_Source\PSoC5/Decoder_1_PINS2.c **** uint8 Decoder_1_PINS2_ReadDataReg(void)
+ 143:Generated_Source\PSoC5/Decoder_1_PINS2.c **** {
+ 197              		.loc 1 143 0
+ 198              		.cfi_startproc
+ 199              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccU3uCcv.s 			page 7
+
+
+ 200              		@ frame_needed = 1, uses_anonymous_args = 0
+ 201              		@ link register save eliminated.
+ 202 0000 80B4     		push	{r7}
+ 203              		.cfi_def_cfa_offset 4
+ 204              		.cfi_offset 7, -4
+ 205 0002 00AF     		add	r7, sp, #0
+ 206              		.cfi_def_cfa_register 7
+ 144:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     return (Decoder_1_PINS2_DR & Decoder_1_PINS2_MASK) >> Decoder_1_PINS2_SHIFT;
+ 207              		.loc 1 144 0
+ 208 0004 054B     		ldr	r3, .L13
+ 209 0006 1B78     		ldrb	r3, [r3]
+ 210 0008 DBB2     		uxtb	r3, r3
+ 211 000a 03F00C03 		and	r3, r3, #12
+ 212 000e 9B08     		lsrs	r3, r3, #2
+ 213 0010 DBB2     		uxtb	r3, r3
+ 145:Generated_Source\PSoC5/Decoder_1_PINS2.c **** }
+ 214              		.loc 1 145 0
+ 215 0012 1846     		mov	r0, r3
+ 216 0014 BD46     		mov	sp, r7
+ 217              		.cfi_def_cfa_register 13
+ 218              		@ sp needed
+ 219 0016 80BC     		pop	{r7}
+ 220              		.cfi_restore 7
+ 221              		.cfi_def_cfa_offset 0
+ 222 0018 7047     		bx	lr
+ 223              	.L14:
+ 224 001a 00BF     		.align	2
+ 225              	.L13:
+ 226 001c 40510040 		.word	1073762624
+ 227              		.cfi_endproc
+ 228              	.LFE3:
+ 229              		.size	Decoder_1_PINS2_ReadDataReg, .-Decoder_1_PINS2_ReadDataReg
+ 230              		.section	.text.Decoder_1_PINS2_SetInterruptMode,"ax",%progbits
+ 231              		.align	2
+ 232              		.global	Decoder_1_PINS2_SetInterruptMode
+ 233              		.thumb
+ 234              		.thumb_func
+ 235              		.type	Decoder_1_PINS2_SetInterruptMode, %function
+ 236              	Decoder_1_PINS2_SetInterruptMode:
+ 237              	.LFB4:
+ 146:Generated_Source\PSoC5/Decoder_1_PINS2.c **** 
+ 147:Generated_Source\PSoC5/Decoder_1_PINS2.c **** 
+ 148:Generated_Source\PSoC5/Decoder_1_PINS2.c **** /* If interrupt is connected for this Pins component */ 
+ 149:Generated_Source\PSoC5/Decoder_1_PINS2.c **** #if defined(Decoder_1_PINS2_INTSTAT) 
+ 150:Generated_Source\PSoC5/Decoder_1_PINS2.c **** 
+ 151:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     /*******************************************************************************
+ 152:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     * Function Name: Decoder_1_PINS2_SetInterruptMode
+ 153:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     ****************************************************************************//**
+ 154:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     *
+ 155:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     * \brief Configures the interrupt mode for each of the Pins component's
+ 156:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     *  pins. Alternatively you may set the interrupt mode for all the pins
+ 157:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     *  specified in the Pins component.
+ 158:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     *
+ 159:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     *  <b>Note</b> The interrupt is port-wide and therefore any enabled pin
+ 160:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     *  interrupt may trigger it.
+ 161:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     *
+ 162:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     * \param position
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccU3uCcv.s 			page 8
+
+
+ 163:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     *  The pin position as listed in the Pins component. You may OR these to be 
+ 164:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     *  able to configure the interrupt mode of multiple pins within a Pins 
+ 165:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     *  component. Or you may use Decoder_1_PINS2_INTR_ALL to configure the
+ 166:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     *  interrupt mode of all the pins in the Pins component.       
+ 167:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     *  - Decoder_1_PINS2_0_INTR       (First pin in the list)
+ 168:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     *  - Decoder_1_PINS2_1_INTR       (Second pin in the list)
+ 169:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     *  - ...
+ 170:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     *  - Decoder_1_PINS2_INTR_ALL     (All pins in Pins component)
+ 171:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     *
+ 172:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     * \param mode
+ 173:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     *  Interrupt mode for the selected pins. Valid options are documented in
+ 174:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     *  \ref intrMode.
+ 175:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     *
+ 176:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     * \return 
+ 177:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     *  None
+ 178:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     *  
+ 179:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     * \sideeffect
+ 180:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     *  It is recommended that the interrupt be disabled before calling this 
+ 181:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     *  function to avoid unintended interrupt requests. Note that the interrupt
+ 182:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     *  type is port wide, and therefore will trigger for any enabled pin on the 
+ 183:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     *  port.
+ 184:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     *
+ 185:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     * \funcusage
+ 186:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     *  \snippet Decoder_1_PINS2_SUT.c usage_Decoder_1_PINS2_SetInterruptMode
+ 187:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     *******************************************************************************/
+ 188:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     void Decoder_1_PINS2_SetInterruptMode(uint16 position, uint16 mode)
+ 189:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     {
+ 238              		.loc 1 189 0
+ 239              		.cfi_startproc
+ 240              		@ args = 0, pretend = 0, frame = 8
+ 241              		@ frame_needed = 1, uses_anonymous_args = 0
+ 242              		@ link register save eliminated.
+ 243 0000 80B4     		push	{r7}
+ 244              		.cfi_def_cfa_offset 4
+ 245              		.cfi_offset 7, -4
+ 246 0002 83B0     		sub	sp, sp, #12
+ 247              		.cfi_def_cfa_offset 16
+ 248 0004 00AF     		add	r7, sp, #0
+ 249              		.cfi_def_cfa_register 7
+ 250 0006 0346     		mov	r3, r0
+ 251 0008 0A46     		mov	r2, r1
+ 252 000a FB80     		strh	r3, [r7, #6]	@ movhi
+ 253 000c 1346     		mov	r3, r2	@ movhi
+ 254 000e BB80     		strh	r3, [r7, #4]	@ movhi
+ 190:Generated_Source\PSoC5/Decoder_1_PINS2.c **** 		if((position & Decoder_1_PINS2_0_INTR) != 0u) 
+ 255              		.loc 1 190 0
+ 256 0010 FB88     		ldrh	r3, [r7, #6]
+ 257 0012 03F00403 		and	r3, r3, #4
+ 258 0016 002B     		cmp	r3, #0
+ 259 0018 03D0     		beq	.L16
+ 191:Generated_Source\PSoC5/Decoder_1_PINS2.c **** 		{ 
+ 192:Generated_Source\PSoC5/Decoder_1_PINS2.c **** 			 Decoder_1_PINS2_0_INTTYPE_REG = (uint8)mode; 
+ 260              		.loc 1 192 0
+ 261 001a 094B     		ldr	r3, .L19
+ 262 001c BA88     		ldrh	r2, [r7, #4]	@ movhi
+ 263 001e D2B2     		uxtb	r2, r2
+ 264 0020 1A70     		strb	r2, [r3]
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccU3uCcv.s 			page 9
+
+
+ 265              	.L16:
+ 193:Generated_Source\PSoC5/Decoder_1_PINS2.c **** 		} 
+ 194:Generated_Source\PSoC5/Decoder_1_PINS2.c **** 		if((position & Decoder_1_PINS2_1_INTR) != 0u) 
+ 266              		.loc 1 194 0
+ 267 0022 FB88     		ldrh	r3, [r7, #6]
+ 268 0024 03F00803 		and	r3, r3, #8
+ 269 0028 002B     		cmp	r3, #0
+ 270 002a 03D0     		beq	.L18
+ 195:Generated_Source\PSoC5/Decoder_1_PINS2.c **** 		{ 
+ 196:Generated_Source\PSoC5/Decoder_1_PINS2.c **** 			 Decoder_1_PINS2_1_INTTYPE_REG = (uint8)mode; 
+ 271              		.loc 1 196 0
+ 272 002c 054B     		ldr	r3, .L19+4
+ 273 002e BA88     		ldrh	r2, [r7, #4]	@ movhi
+ 274 0030 D2B2     		uxtb	r2, r2
+ 275 0032 1A70     		strb	r2, [r3]
+ 276              	.L18:
+ 197:Generated_Source\PSoC5/Decoder_1_PINS2.c **** 		}
+ 198:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     }
+ 277              		.loc 1 198 0
+ 278 0034 00BF     		nop
+ 279 0036 0C37     		adds	r7, r7, #12
+ 280              		.cfi_def_cfa_offset 4
+ 281 0038 BD46     		mov	sp, r7
+ 282              		.cfi_def_cfa_register 13
+ 283              		@ sp needed
+ 284 003a 80BC     		pop	{r7}
+ 285              		.cfi_restore 7
+ 286              		.cfi_def_cfa_offset 0
+ 287 003c 7047     		bx	lr
+ 288              	.L20:
+ 289 003e 00BF     		.align	2
+ 290              	.L19:
+ 291 0040 22450040 		.word	1073759522
+ 292 0044 23450040 		.word	1073759523
+ 293              		.cfi_endproc
+ 294              	.LFE4:
+ 295              		.size	Decoder_1_PINS2_SetInterruptMode, .-Decoder_1_PINS2_SetInterruptMode
+ 296              		.section	.text.Decoder_1_PINS2_ClearInterrupt,"ax",%progbits
+ 297              		.align	2
+ 298              		.global	Decoder_1_PINS2_ClearInterrupt
+ 299              		.thumb
+ 300              		.thumb_func
+ 301              		.type	Decoder_1_PINS2_ClearInterrupt, %function
+ 302              	Decoder_1_PINS2_ClearInterrupt:
+ 303              	.LFB5:
+ 199:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     
+ 200:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     
+ 201:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     /*******************************************************************************
+ 202:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     * Function Name: Decoder_1_PINS2_ClearInterrupt
+ 203:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     ****************************************************************************//**
+ 204:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     *
+ 205:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     * \brief Clears any active interrupts attached with the component and returns 
+ 206:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     *  the value of the interrupt status register allowing determination of which
+ 207:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     *  pins generated an interrupt event.
+ 208:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     *
+ 209:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     * \return 
+ 210:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     *  The right-shifted current value of the interrupt status register. Each pin 
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccU3uCcv.s 			page 10
+
+
+ 211:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     *  has one bit set if it generated an interrupt event. For example, bit 0 is 
+ 212:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     *  for pin 0 and bit 1 is for pin 1 of the Pins component.
+ 213:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     *  
+ 214:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     * \sideeffect
+ 215:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     *  Clears all bits of the physical port's interrupt status register, not just
+ 216:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     *  those associated with the Pins component.
+ 217:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     *
+ 218:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     * \funcusage
+ 219:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     *  \snippet Decoder_1_PINS2_SUT.c usage_Decoder_1_PINS2_ClearInterrupt
+ 220:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     *******************************************************************************/
+ 221:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     uint8 Decoder_1_PINS2_ClearInterrupt(void)
+ 222:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     {
+ 304              		.loc 1 222 0
+ 305              		.cfi_startproc
+ 306              		@ args = 0, pretend = 0, frame = 0
+ 307              		@ frame_needed = 1, uses_anonymous_args = 0
+ 308              		@ link register save eliminated.
+ 309 0000 80B4     		push	{r7}
+ 310              		.cfi_def_cfa_offset 4
+ 311              		.cfi_offset 7, -4
+ 312 0002 00AF     		add	r7, sp, #0
+ 313              		.cfi_def_cfa_register 7
+ 223:Generated_Source\PSoC5/Decoder_1_PINS2.c ****         return (Decoder_1_PINS2_INTSTAT & Decoder_1_PINS2_MASK) >> Decoder_1_PINS2_SHIFT;
+ 314              		.loc 1 223 0
+ 315 0004 054B     		ldr	r3, .L23
+ 316 0006 1B78     		ldrb	r3, [r3]
+ 317 0008 DBB2     		uxtb	r3, r3
+ 318 000a 03F00C03 		and	r3, r3, #12
+ 319 000e 9B08     		lsrs	r3, r3, #2
+ 320 0010 DBB2     		uxtb	r3, r3
+ 224:Generated_Source\PSoC5/Decoder_1_PINS2.c ****     }
+ 321              		.loc 1 224 0
+ 322 0012 1846     		mov	r0, r3
+ 323 0014 BD46     		mov	sp, r7
+ 324              		.cfi_def_cfa_register 13
+ 325              		@ sp needed
+ 326 0016 80BC     		pop	{r7}
+ 327              		.cfi_restore 7
+ 328              		.cfi_def_cfa_offset 0
+ 329 0018 7047     		bx	lr
+ 330              	.L24:
+ 331 001a 00BF     		.align	2
+ 332              	.L23:
+ 333 001c 84450040 		.word	1073759620
+ 334              		.cfi_endproc
+ 335              	.LFE5:
+ 336              		.size	Decoder_1_PINS2_ClearInterrupt, .-Decoder_1_PINS2_ClearInterrupt
+ 337              		.text
+ 338              	.Letext0:
+ 339              		.file 2 "Generated_Source\\PSoC5\\cytypes.h"
+ 340              		.section	.debug_info,"",%progbits
+ 341              	.Ldebug_info0:
+ 342 0000 6D010000 		.4byte	0x16d
+ 343 0004 0400     		.2byte	0x4
+ 344 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 345 000a 04       		.byte	0x4
+ 346 000b 01       		.uleb128 0x1
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccU3uCcv.s 			page 11
+
+
+ 347 000c 21000000 		.4byte	.LASF24
+ 348 0010 0C       		.byte	0xc
+ 349 0011 77020000 		.4byte	.LASF25
+ 350 0015 63010000 		.4byte	.LASF26
+ 351 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 352 001d 00000000 		.4byte	0
+ 353 0021 00000000 		.4byte	.Ldebug_line0
+ 354 0025 02       		.uleb128 0x2
+ 355 0026 01       		.byte	0x1
+ 356 0027 06       		.byte	0x6
+ 357 0028 4C020000 		.4byte	.LASF0
+ 358 002c 02       		.uleb128 0x2
+ 359 002d 01       		.byte	0x1
+ 360 002e 08       		.byte	0x8
+ 361 002f 07010000 		.4byte	.LASF1
+ 362 0033 02       		.uleb128 0x2
+ 363 0034 02       		.byte	0x2
+ 364 0035 05       		.byte	0x5
+ 365 0036 33020000 		.4byte	.LASF2
+ 366 003a 02       		.uleb128 0x2
+ 367 003b 02       		.byte	0x2
+ 368 003c 07       		.byte	0x7
+ 369 003d 2C010000 		.4byte	.LASF3
+ 370 0041 02       		.uleb128 0x2
+ 371 0042 04       		.byte	0x4
+ 372 0043 05       		.byte	0x5
+ 373 0044 43020000 		.4byte	.LASF4
+ 374 0048 02       		.uleb128 0x2
+ 375 0049 04       		.byte	0x4
+ 376 004a 07       		.byte	0x7
+ 377 004b 1A010000 		.4byte	.LASF5
+ 378 004f 02       		.uleb128 0x2
+ 379 0050 08       		.byte	0x8
+ 380 0051 05       		.byte	0x5
+ 381 0052 1A020000 		.4byte	.LASF6
+ 382 0056 02       		.uleb128 0x2
+ 383 0057 08       		.byte	0x8
+ 384 0058 07       		.byte	0x7
+ 385 0059 FE010000 		.4byte	.LASF7
+ 386 005d 03       		.uleb128 0x3
+ 387 005e 04       		.byte	0x4
+ 388 005f 05       		.byte	0x5
+ 389 0060 696E7400 		.ascii	"int\000"
+ 390 0064 02       		.uleb128 0x2
+ 391 0065 04       		.byte	0x4
+ 392 0066 07       		.byte	0x7
+ 393 0067 F1010000 		.4byte	.LASF8
+ 394 006b 04       		.uleb128 0x4
+ 395 006c 3D020000 		.4byte	.LASF9
+ 396 0070 02       		.byte	0x2
+ 397 0071 E901     		.2byte	0x1e9
+ 398 0073 2C000000 		.4byte	0x2c
+ 399 0077 04       		.uleb128 0x4
+ 400 0078 E1010000 		.4byte	.LASF10
+ 401 007c 02       		.byte	0x2
+ 402 007d EA01     		.2byte	0x1ea
+ 403 007f 3A000000 		.4byte	0x3a
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccU3uCcv.s 			page 12
+
+
+ 404 0083 02       		.uleb128 0x2
+ 405 0084 04       		.byte	0x4
+ 406 0085 04       		.byte	0x4
+ 407 0086 01010000 		.4byte	.LASF11
+ 408 008a 02       		.uleb128 0x2
+ 409 008b 08       		.byte	0x8
+ 410 008c 04       		.byte	0x4
+ 411 008d 5C010000 		.4byte	.LASF12
+ 412 0091 02       		.uleb128 0x2
+ 413 0092 01       		.byte	0x1
+ 414 0093 08       		.byte	0x8
+ 415 0094 28020000 		.4byte	.LASF13
+ 416 0098 04       		.uleb128 0x4
+ 417 0099 15010000 		.4byte	.LASF14
+ 418 009d 02       		.byte	0x2
+ 419 009e 9302     		.2byte	0x293
+ 420 00a0 A4000000 		.4byte	0xa4
+ 421 00a4 05       		.uleb128 0x5
+ 422 00a5 6B000000 		.4byte	0x6b
+ 423 00a9 06       		.uleb128 0x6
+ 424 00aa AF000000 		.4byte	.LASF15
+ 425 00ae 01       		.byte	0x1
+ 426 00af 39       		.byte	0x39
+ 427 00b0 00000000 		.4byte	.LFB0
+ 428 00b4 3C000000 		.4byte	.LFE0-.LFB0
+ 429 00b8 01       		.uleb128 0x1
+ 430 00b9 9C       		.byte	0x9c
+ 431 00ba DB000000 		.4byte	0xdb
+ 432 00be 07       		.uleb128 0x7
+ 433 00bf 2D020000 		.4byte	.LASF17
+ 434 00c3 01       		.byte	0x1
+ 435 00c4 39       		.byte	0x39
+ 436 00c5 6B000000 		.4byte	0x6b
+ 437 00c9 02       		.uleb128 0x2
+ 438 00ca 91       		.byte	0x91
+ 439 00cb 6F       		.sleb128 -17
+ 440 00cc 08       		.uleb128 0x8
+ 441 00cd C5000000 		.4byte	.LASF27
+ 442 00d1 01       		.byte	0x1
+ 443 00d2 3B       		.byte	0x3b
+ 444 00d3 6B000000 		.4byte	0x6b
+ 445 00d7 02       		.uleb128 0x2
+ 446 00d8 91       		.byte	0x91
+ 447 00d9 77       		.sleb128 -9
+ 448 00da 00       		.byte	0
+ 449 00db 06       		.uleb128 0x6
+ 450 00dc 3F010000 		.4byte	.LASF16
+ 451 00e0 01       		.byte	0x1
+ 452 00e1 5A       		.byte	0x5a
+ 453 00e2 00000000 		.4byte	.LFB1
+ 454 00e6 60000000 		.4byte	.LFE1-.LFB1
+ 455 00ea 01       		.uleb128 0x1
+ 456 00eb 9C       		.byte	0x9c
+ 457 00ec FF000000 		.4byte	0xff
+ 458 00f0 07       		.uleb128 0x7
+ 459 00f1 15020000 		.4byte	.LASF18
+ 460 00f5 01       		.byte	0x1
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccU3uCcv.s 			page 13
+
+
+ 461 00f6 5A       		.byte	0x5a
+ 462 00f7 6B000000 		.4byte	0x6b
+ 463 00fb 02       		.uleb128 0x2
+ 464 00fc 91       		.byte	0x91
+ 465 00fd 77       		.sleb128 -9
+ 466 00fe 00       		.byte	0
+ 467 00ff 09       		.uleb128 0x9
+ 468 0100 D0000000 		.4byte	.LASF19
+ 469 0104 01       		.byte	0x1
+ 470 0105 72       		.byte	0x72
+ 471 0106 6B000000 		.4byte	0x6b
+ 472 010a 00000000 		.4byte	.LFB2
+ 473 010e 20000000 		.4byte	.LFE2-.LFB2
+ 474 0112 01       		.uleb128 0x1
+ 475 0113 9C       		.byte	0x9c
+ 476 0114 09       		.uleb128 0x9
+ 477 0115 E5000000 		.4byte	.LASF20
+ 478 0119 01       		.byte	0x1
+ 479 011a 8E       		.byte	0x8e
+ 480 011b 6B000000 		.4byte	0x6b
+ 481 011f 00000000 		.4byte	.LFB3
+ 482 0123 20000000 		.4byte	.LFE3-.LFB3
+ 483 0127 01       		.uleb128 0x1
+ 484 0128 9C       		.byte	0x9c
+ 485 0129 06       		.uleb128 0x6
+ 486 012a 00000000 		.4byte	.LASF21
+ 487 012e 01       		.byte	0x1
+ 488 012f BC       		.byte	0xbc
+ 489 0130 00000000 		.4byte	.LFB4
+ 490 0134 48000000 		.4byte	.LFE4-.LFB4
+ 491 0138 01       		.uleb128 0x1
+ 492 0139 9C       		.byte	0x9c
+ 493 013a 5B010000 		.4byte	0x15b
+ 494 013e 07       		.uleb128 0x7
+ 495 013f E8010000 		.4byte	.LASF22
+ 496 0143 01       		.byte	0x1
+ 497 0144 BC       		.byte	0xbc
+ 498 0145 77000000 		.4byte	0x77
+ 499 0149 02       		.uleb128 0x2
+ 500 014a 91       		.byte	0x91
+ 501 014b 76       		.sleb128 -10
+ 502 014c 07       		.uleb128 0x7
+ 503 014d 15020000 		.4byte	.LASF18
+ 504 0151 01       		.byte	0x1
+ 505 0152 BC       		.byte	0xbc
+ 506 0153 77000000 		.4byte	0x77
+ 507 0157 02       		.uleb128 0x2
+ 508 0158 91       		.byte	0x91
+ 509 0159 74       		.sleb128 -12
+ 510 015a 00       		.byte	0
+ 511 015b 09       		.uleb128 0x9
+ 512 015c 58020000 		.4byte	.LASF23
+ 513 0160 01       		.byte	0x1
+ 514 0161 DD       		.byte	0xdd
+ 515 0162 6B000000 		.4byte	0x6b
+ 516 0166 00000000 		.4byte	.LFB5
+ 517 016a 20000000 		.4byte	.LFE5-.LFB5
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccU3uCcv.s 			page 14
+
+
+ 518 016e 01       		.uleb128 0x1
+ 519 016f 9C       		.byte	0x9c
+ 520 0170 00       		.byte	0
+ 521              		.section	.debug_abbrev,"",%progbits
+ 522              	.Ldebug_abbrev0:
+ 523 0000 01       		.uleb128 0x1
+ 524 0001 11       		.uleb128 0x11
+ 525 0002 01       		.byte	0x1
+ 526 0003 25       		.uleb128 0x25
+ 527 0004 0E       		.uleb128 0xe
+ 528 0005 13       		.uleb128 0x13
+ 529 0006 0B       		.uleb128 0xb
+ 530 0007 03       		.uleb128 0x3
+ 531 0008 0E       		.uleb128 0xe
+ 532 0009 1B       		.uleb128 0x1b
+ 533 000a 0E       		.uleb128 0xe
+ 534 000b 55       		.uleb128 0x55
+ 535 000c 17       		.uleb128 0x17
+ 536 000d 11       		.uleb128 0x11
+ 537 000e 01       		.uleb128 0x1
+ 538 000f 10       		.uleb128 0x10
+ 539 0010 17       		.uleb128 0x17
+ 540 0011 00       		.byte	0
+ 541 0012 00       		.byte	0
+ 542 0013 02       		.uleb128 0x2
+ 543 0014 24       		.uleb128 0x24
+ 544 0015 00       		.byte	0
+ 545 0016 0B       		.uleb128 0xb
+ 546 0017 0B       		.uleb128 0xb
+ 547 0018 3E       		.uleb128 0x3e
+ 548 0019 0B       		.uleb128 0xb
+ 549 001a 03       		.uleb128 0x3
+ 550 001b 0E       		.uleb128 0xe
+ 551 001c 00       		.byte	0
+ 552 001d 00       		.byte	0
+ 553 001e 03       		.uleb128 0x3
+ 554 001f 24       		.uleb128 0x24
+ 555 0020 00       		.byte	0
+ 556 0021 0B       		.uleb128 0xb
+ 557 0022 0B       		.uleb128 0xb
+ 558 0023 3E       		.uleb128 0x3e
+ 559 0024 0B       		.uleb128 0xb
+ 560 0025 03       		.uleb128 0x3
+ 561 0026 08       		.uleb128 0x8
+ 562 0027 00       		.byte	0
+ 563 0028 00       		.byte	0
+ 564 0029 04       		.uleb128 0x4
+ 565 002a 16       		.uleb128 0x16
+ 566 002b 00       		.byte	0
+ 567 002c 03       		.uleb128 0x3
+ 568 002d 0E       		.uleb128 0xe
+ 569 002e 3A       		.uleb128 0x3a
+ 570 002f 0B       		.uleb128 0xb
+ 571 0030 3B       		.uleb128 0x3b
+ 572 0031 05       		.uleb128 0x5
+ 573 0032 49       		.uleb128 0x49
+ 574 0033 13       		.uleb128 0x13
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccU3uCcv.s 			page 15
+
+
+ 575 0034 00       		.byte	0
+ 576 0035 00       		.byte	0
+ 577 0036 05       		.uleb128 0x5
+ 578 0037 35       		.uleb128 0x35
+ 579 0038 00       		.byte	0
+ 580 0039 49       		.uleb128 0x49
+ 581 003a 13       		.uleb128 0x13
+ 582 003b 00       		.byte	0
+ 583 003c 00       		.byte	0
+ 584 003d 06       		.uleb128 0x6
+ 585 003e 2E       		.uleb128 0x2e
+ 586 003f 01       		.byte	0x1
+ 587 0040 3F       		.uleb128 0x3f
+ 588 0041 19       		.uleb128 0x19
+ 589 0042 03       		.uleb128 0x3
+ 590 0043 0E       		.uleb128 0xe
+ 591 0044 3A       		.uleb128 0x3a
+ 592 0045 0B       		.uleb128 0xb
+ 593 0046 3B       		.uleb128 0x3b
+ 594 0047 0B       		.uleb128 0xb
+ 595 0048 27       		.uleb128 0x27
+ 596 0049 19       		.uleb128 0x19
+ 597 004a 11       		.uleb128 0x11
+ 598 004b 01       		.uleb128 0x1
+ 599 004c 12       		.uleb128 0x12
+ 600 004d 06       		.uleb128 0x6
+ 601 004e 40       		.uleb128 0x40
+ 602 004f 18       		.uleb128 0x18
+ 603 0050 9742     		.uleb128 0x2117
+ 604 0052 19       		.uleb128 0x19
+ 605 0053 01       		.uleb128 0x1
+ 606 0054 13       		.uleb128 0x13
+ 607 0055 00       		.byte	0
+ 608 0056 00       		.byte	0
+ 609 0057 07       		.uleb128 0x7
+ 610 0058 05       		.uleb128 0x5
+ 611 0059 00       		.byte	0
+ 612 005a 03       		.uleb128 0x3
+ 613 005b 0E       		.uleb128 0xe
+ 614 005c 3A       		.uleb128 0x3a
+ 615 005d 0B       		.uleb128 0xb
+ 616 005e 3B       		.uleb128 0x3b
+ 617 005f 0B       		.uleb128 0xb
+ 618 0060 49       		.uleb128 0x49
+ 619 0061 13       		.uleb128 0x13
+ 620 0062 02       		.uleb128 0x2
+ 621 0063 18       		.uleb128 0x18
+ 622 0064 00       		.byte	0
+ 623 0065 00       		.byte	0
+ 624 0066 08       		.uleb128 0x8
+ 625 0067 34       		.uleb128 0x34
+ 626 0068 00       		.byte	0
+ 627 0069 03       		.uleb128 0x3
+ 628 006a 0E       		.uleb128 0xe
+ 629 006b 3A       		.uleb128 0x3a
+ 630 006c 0B       		.uleb128 0xb
+ 631 006d 3B       		.uleb128 0x3b
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccU3uCcv.s 			page 16
+
+
+ 632 006e 0B       		.uleb128 0xb
+ 633 006f 49       		.uleb128 0x49
+ 634 0070 13       		.uleb128 0x13
+ 635 0071 02       		.uleb128 0x2
+ 636 0072 18       		.uleb128 0x18
+ 637 0073 00       		.byte	0
+ 638 0074 00       		.byte	0
+ 639 0075 09       		.uleb128 0x9
+ 640 0076 2E       		.uleb128 0x2e
+ 641 0077 00       		.byte	0
+ 642 0078 3F       		.uleb128 0x3f
+ 643 0079 19       		.uleb128 0x19
+ 644 007a 03       		.uleb128 0x3
+ 645 007b 0E       		.uleb128 0xe
+ 646 007c 3A       		.uleb128 0x3a
+ 647 007d 0B       		.uleb128 0xb
+ 648 007e 3B       		.uleb128 0x3b
+ 649 007f 0B       		.uleb128 0xb
+ 650 0080 27       		.uleb128 0x27
+ 651 0081 19       		.uleb128 0x19
+ 652 0082 49       		.uleb128 0x49
+ 653 0083 13       		.uleb128 0x13
+ 654 0084 11       		.uleb128 0x11
+ 655 0085 01       		.uleb128 0x1
+ 656 0086 12       		.uleb128 0x12
+ 657 0087 06       		.uleb128 0x6
+ 658 0088 40       		.uleb128 0x40
+ 659 0089 18       		.uleb128 0x18
+ 660 008a 9742     		.uleb128 0x2117
+ 661 008c 19       		.uleb128 0x19
+ 662 008d 00       		.byte	0
+ 663 008e 00       		.byte	0
+ 664 008f 00       		.byte	0
+ 665              		.section	.debug_aranges,"",%progbits
+ 666 0000 44000000 		.4byte	0x44
+ 667 0004 0200     		.2byte	0x2
+ 668 0006 00000000 		.4byte	.Ldebug_info0
+ 669 000a 04       		.byte	0x4
+ 670 000b 00       		.byte	0
+ 671 000c 0000     		.2byte	0
+ 672 000e 0000     		.2byte	0
+ 673 0010 00000000 		.4byte	.LFB0
+ 674 0014 3C000000 		.4byte	.LFE0-.LFB0
+ 675 0018 00000000 		.4byte	.LFB1
+ 676 001c 60000000 		.4byte	.LFE1-.LFB1
+ 677 0020 00000000 		.4byte	.LFB2
+ 678 0024 20000000 		.4byte	.LFE2-.LFB2
+ 679 0028 00000000 		.4byte	.LFB3
+ 680 002c 20000000 		.4byte	.LFE3-.LFB3
+ 681 0030 00000000 		.4byte	.LFB4
+ 682 0034 48000000 		.4byte	.LFE4-.LFB4
+ 683 0038 00000000 		.4byte	.LFB5
+ 684 003c 20000000 		.4byte	.LFE5-.LFB5
+ 685 0040 00000000 		.4byte	0
+ 686 0044 00000000 		.4byte	0
+ 687              		.section	.debug_ranges,"",%progbits
+ 688              	.Ldebug_ranges0:
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccU3uCcv.s 			page 17
+
+
+ 689 0000 00000000 		.4byte	.LFB0
+ 690 0004 3C000000 		.4byte	.LFE0
+ 691 0008 00000000 		.4byte	.LFB1
+ 692 000c 60000000 		.4byte	.LFE1
+ 693 0010 00000000 		.4byte	.LFB2
+ 694 0014 20000000 		.4byte	.LFE2
+ 695 0018 00000000 		.4byte	.LFB3
+ 696 001c 20000000 		.4byte	.LFE3
+ 697 0020 00000000 		.4byte	.LFB4
+ 698 0024 48000000 		.4byte	.LFE4
+ 699 0028 00000000 		.4byte	.LFB5
+ 700 002c 20000000 		.4byte	.LFE5
+ 701 0030 00000000 		.4byte	0
+ 702 0034 00000000 		.4byte	0
+ 703              		.section	.debug_line,"",%progbits
+ 704              	.Ldebug_line0:
+ 705 0000 C4000000 		.section	.debug_str,"MS",%progbits,1
+ 705      02004C00 
+ 705      00000201 
+ 705      FB0E0D00 
+ 705      01010101 
+ 706              	.LASF21:
+ 707 0000 4465636F 		.ascii	"Decoder_1_PINS2_SetInterruptMode\000"
+ 707      6465725F 
+ 707      315F5049 
+ 707      4E53325F 
+ 707      53657449 
+ 708              	.LASF24:
+ 709 0021 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 709      43313120 
+ 709      352E342E 
+ 709      31203230 
+ 709      31363036 
+ 710 0054 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 710      20726576 
+ 710      6973696F 
+ 710      6E203233 
+ 710      37373135 
+ 711 0087 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 711      66756E63 
+ 711      74696F6E 
+ 711      2D736563 
+ 711      74696F6E 
+ 712              	.LASF15:
+ 713 00af 4465636F 		.ascii	"Decoder_1_PINS2_Write\000"
+ 713      6465725F 
+ 713      315F5049 
+ 713      4E53325F 
+ 713      57726974 
+ 714              	.LASF27:
+ 715 00c5 73746174 		.ascii	"staticBits\000"
+ 715      69634269 
+ 715      747300
+ 716              	.LASF19:
+ 717 00d0 4465636F 		.ascii	"Decoder_1_PINS2_Read\000"
+ 717      6465725F 
+ 717      315F5049 
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccU3uCcv.s 			page 18
+
+
+ 717      4E53325F 
+ 717      52656164 
+ 718              	.LASF20:
+ 719 00e5 4465636F 		.ascii	"Decoder_1_PINS2_ReadDataReg\000"
+ 719      6465725F 
+ 719      315F5049 
+ 719      4E53325F 
+ 719      52656164 
+ 720              	.LASF11:
+ 721 0101 666C6F61 		.ascii	"float\000"
+ 721      7400
+ 722              	.LASF1:
+ 723 0107 756E7369 		.ascii	"unsigned char\000"
+ 723      676E6564 
+ 723      20636861 
+ 723      7200
+ 724              	.LASF14:
+ 725 0115 72656738 		.ascii	"reg8\000"
+ 725      00
+ 726              	.LASF5:
+ 727 011a 6C6F6E67 		.ascii	"long unsigned int\000"
+ 727      20756E73 
+ 727      69676E65 
+ 727      6420696E 
+ 727      7400
+ 728              	.LASF3:
+ 729 012c 73686F72 		.ascii	"short unsigned int\000"
+ 729      7420756E 
+ 729      7369676E 
+ 729      65642069 
+ 729      6E7400
+ 730              	.LASF16:
+ 731 013f 4465636F 		.ascii	"Decoder_1_PINS2_SetDriveMode\000"
+ 731      6465725F 
+ 731      315F5049 
+ 731      4E53325F 
+ 731      53657444 
+ 732              	.LASF12:
+ 733 015c 646F7562 		.ascii	"double\000"
+ 733      6C6500
+ 734              	.LASF26:
+ 735 0163 433A5C55 		.ascii	"C:\\Users\\JeffSnyder\\dev\\Electrosteel_embedded\\"
+ 735      73657273 
+ 735      5C4A6566 
+ 735      66536E79 
+ 735      6465725C 
+ 736 0191 50534F43 		.ascii	"PSOC5_electrosteel_stringsensors_newpcb_brain\\CE21"
+ 736      355F656C 
+ 736      65637472 
+ 736      6F737465 
+ 736      656C5F73 
+ 737 01c3 30353134 		.ascii	"0514_PSOC3_5_Thermistor.cydsn\000"
+ 737      5F50534F 
+ 737      43335F35 
+ 737      5F546865 
+ 737      726D6973 
+ 738              	.LASF10:
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccU3uCcv.s 			page 19
+
+
+ 739 01e1 75696E74 		.ascii	"uint16\000"
+ 739      313600
+ 740              	.LASF22:
+ 741 01e8 706F7369 		.ascii	"position\000"
+ 741      74696F6E 
+ 741      00
+ 742              	.LASF8:
+ 743 01f1 756E7369 		.ascii	"unsigned int\000"
+ 743      676E6564 
+ 743      20696E74 
+ 743      00
+ 744              	.LASF7:
+ 745 01fe 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 745      206C6F6E 
+ 745      6720756E 
+ 745      7369676E 
+ 745      65642069 
+ 746              	.LASF18:
+ 747 0215 6D6F6465 		.ascii	"mode\000"
+ 747      00
+ 748              	.LASF6:
+ 749 021a 6C6F6E67 		.ascii	"long long int\000"
+ 749      206C6F6E 
+ 749      6720696E 
+ 749      7400
+ 750              	.LASF13:
+ 751 0228 63686172 		.ascii	"char\000"
+ 751      00
+ 752              	.LASF17:
+ 753 022d 76616C75 		.ascii	"value\000"
+ 753      6500
+ 754              	.LASF2:
+ 755 0233 73686F72 		.ascii	"short int\000"
+ 755      7420696E 
+ 755      7400
+ 756              	.LASF9:
+ 757 023d 75696E74 		.ascii	"uint8\000"
+ 757      3800
+ 758              	.LASF4:
+ 759 0243 6C6F6E67 		.ascii	"long int\000"
+ 759      20696E74 
+ 759      00
+ 760              	.LASF0:
+ 761 024c 7369676E 		.ascii	"signed char\000"
+ 761      65642063 
+ 761      68617200 
+ 762              	.LASF23:
+ 763 0258 4465636F 		.ascii	"Decoder_1_PINS2_ClearInterrupt\000"
+ 763      6465725F 
+ 763      315F5049 
+ 763      4E53325F 
+ 763      436C6561 
+ 764              	.LASF25:
+ 765 0277 47656E65 		.ascii	"Generated_Source\\PSoC5\\Decoder_1_PINS2.c\000"
+ 765      72617465 
+ 765      645F536F 
+ 765      75726365 
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccU3uCcv.s 			page 20
+
+
+ 765      5C50536F 
+ 766              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

@@ -1,0 +1,3453 @@
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"Decoder_1.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.global	Decoder_1_Enabled
+  20              		.data
+  21              		.type	Decoder_1_Enabled, %object
+  22              		.size	Decoder_1_Enabled, 1
+  23              	Decoder_1_Enabled:
+  24 0000 01       		.byte	1
+  25              		.section	.rodata
+  26              		.align	2
+  27              		.type	enc_states, %object
+  28              		.size	enc_states, 16
+  29              	enc_states:
+  30 0000 00       		.byte	0
+  31 0001 FF       		.byte	-1
+  32 0002 01       		.byte	1
+  33 0003 00       		.byte	0
+  34 0004 01       		.byte	1
+  35 0005 00       		.byte	0
+  36 0006 00       		.byte	0
+  37 0007 FF       		.byte	-1
+  38 0008 FF       		.byte	-1
+  39 0009 00       		.byte	0
+  40 000a 00       		.byte	0
+  41 000b 01       		.byte	1
+  42 000c 00       		.byte	0
+  43 000d 01       		.byte	1
+  44 000e FF       		.byte	-1
+  45 000f 00       		.byte	0
+  46              		.bss
+  47              	SW_timeout:
+  48 0000 00       		.space	1
+  49              	aPosition:
+  50 0001 00       		.space	1
+  51              	aDirection:
+  52 0002 00       		.space	1
+  53              	fPositionChanged:
+  54 0003 00       		.space	1
+  55              	aInitialized:
+  56 0004 00       		.space	1
+  57              		.data
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 2
+
+
+  58              		.type	aIncrement, %object
+  59              		.size	aIncrement, 1
+  60              	aIncrement:
+  61 0001 01       		.byte	1
+  62              		.type	aLowerBound, %object
+  63              		.size	aLowerBound, 1
+  64              	aLowerBound:
+  65 0002 80       		.byte	-128
+  66              		.type	aUpperBound, %object
+  67              		.size	aUpperBound, 1
+  68              	aUpperBound:
+  69 0003 7F       		.byte	127
+  70              		.bss
+  71              	aCheckBounds:
+  72 0005 00       		.space	1
+  73              		.section	.text.Decoder_1_CheckStatus,"ax",%progbits
+  74              		.align	2
+  75              		.global	Decoder_1_CheckStatus
+  76              		.thumb
+  77              		.thumb_func
+  78              		.type	Decoder_1_CheckStatus, %function
+  79              	Decoder_1_CheckStatus:
+  80              	.LFB63:
+  81              		.file 1 "Generated_Source\\PSoC5\\Decoder_1.c"
+   1:Generated_Source\PSoC5/Decoder_1.c **** /* ============================================================================
+   2:Generated_Source\PSoC5/Decoder_1.c ****  * File Name: QuadDecoder_SW
+   3:Generated_Source\PSoC5/Decoder_1.c ****  *   Version 0.2  (build 20_8)
+   4:Generated_Source\PSoC5/Decoder_1.c ****  *
+   5:Generated_Source\PSoC5/Decoder_1.c ****  * Description:
+   6:Generated_Source\PSoC5/Decoder_1.c ****  *   Software implementation of quadrature decoder for rotary shaft encoders
+   7:Generated_Source\PSoC5/Decoder_1.c ****  *   Implements quadrature decoder for rotary shaft encoders.
+   8:Generated_Source\PSoC5/Decoder_1.c ****  *   Returns position and direction of rotation.
+   9:Generated_Source\PSoC5/Decoder_1.c ****  *   8-bit, 16-bit, 32-bit, single or double position range.
+  10:Generated_Source\PSoC5/Decoder_1.c ****  *   Optional button switch with debouncing.
+  11:Generated_Source\PSoC5/Decoder_1.c ****  *   Optional increment step size.
+  12:Generated_Source\PSoC5/Decoder_1.c ****  *   Optional range limits.
+  13:Generated_Source\PSoC5/Decoder_1.c ****  *   Uses interrupt or polling technique.
+  14:Generated_Source\PSoC5/Decoder_1.c ****  *
+  15:Generated_Source\PSoC5/Decoder_1.c ****  * Credits:
+  16:Generated_Source\PSoC5/Decoder_1.c ****  *   based on original algorithm by M. Kellett, Interfacing Micro-controllers with Incremental Shaf
+  17:Generated_Source\PSoC5/Decoder_1.c ****  *   http://www.mkesc.co.uk/ise.pdf
+  18:Generated_Source\PSoC5/Decoder_1.c ****  *
+  19:Generated_Source\PSoC5/Decoder_1.c ****  * Note:
+  20:Generated_Source\PSoC5/Decoder_1.c ****  *
+  21:Generated_Source\PSoC5/Decoder_1.c ****  * ============================================================================
+  22:Generated_Source\PSoC5/Decoder_1.c ****  * PROVIDED AS-IS, NO WARRANTY OF ANY KIND, INCLUDING, BUT NOT LIMITED TO, THE
+  23:Generated_Source\PSoC5/Decoder_1.c ****  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+  24:Generated_Source\PSoC5/Decoder_1.c ****  * FREE TO SHARE, USE AND MODIFY UNDER TERMS: CREATIVE COMMONS - SHARE ALIKE
+  25:Generated_Source\PSoC5/Decoder_1.c ****  * ============================================================================
+  26:Generated_Source\PSoC5/Decoder_1.c **** */
+  27:Generated_Source\PSoC5/Decoder_1.c ****    
+  28:Generated_Source\PSoC5/Decoder_1.c **** #include <Decoder_1.h> // must specify API prefix in Symbol->Properties->Doc.APIPrefix
+  29:Generated_Source\PSoC5/Decoder_1.c **** 
+  30:Generated_Source\PSoC5/Decoder_1.c **** 
+  31:Generated_Source\PSoC5/Decoder_1.c **** // local type declaration does not need Decoder_1_ prefix
+  32:Generated_Source\PSoC5/Decoder_1.c **** #define er_t int8_t // int8_t, uint8_t, ..., uint32_t, float32(single), float64(double)
+  33:Generated_Source\PSoC5/Decoder_1.c **** 
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 3
+
+
+  34:Generated_Source\PSoC5/Decoder_1.c **** static const signed char enc_states[] = {0,-1,1,0,1,0,0,-1,-1,0,0,1,0,1,-1,0}; // 
+  35:Generated_Source\PSoC5/Decoder_1.c **** 
+  36:Generated_Source\PSoC5/Decoder_1.c **** #define TIMED_OUT  0
+  37:Generated_Source\PSoC5/Decoder_1.c **** #define SW_MASK  0x4                        // button  pin: 2
+  38:Generated_Source\PSoC5/Decoder_1.c **** #define EN_MASK  0x3                        // encoder pins: 0,1
+  39:Generated_Source\PSoC5/Decoder_1.c **** static volatile uint8 CYDATA SW_timeout;
+  40:Generated_Source\PSoC5/Decoder_1.c **** 
+  41:Generated_Source\PSoC5/Decoder_1.c **** CY_ISR_PROTO(Decoder_1_Tick_ISR);    // ISR for button switch timeout
+  42:Generated_Source\PSoC5/Decoder_1.c **** CY_ISR_PROTO(Decoder_1_myDtrInt);    // interrupt on encoder pin states change
+  43:Generated_Source\PSoC5/Decoder_1.c **** CY_ISR_PROTO(Decoder_1_myPollInt);   // interrupt on external polling clock
+  44:Generated_Source\PSoC5/Decoder_1.c **** 
+  45:Generated_Source\PSoC5/Decoder_1.c **** //====================================
+  46:Generated_Source\PSoC5/Decoder_1.c **** //        private variables
+  47:Generated_Source\PSoC5/Decoder_1.c **** //====================================
+  48:Generated_Source\PSoC5/Decoder_1.c **** 
+  49:Generated_Source\PSoC5/Decoder_1.c **** // ('static' is required for multiple instances)
+  50:Generated_Source\PSoC5/Decoder_1.c **** // todo: move to Start()?
+  51:Generated_Source\PSoC5/Decoder_1.c **** static er_t aPosition = Decoder_1_StartPosition; // encoder position (auto initialize to StartPosit
+  52:Generated_Source\PSoC5/Decoder_1.c **** static int8 aDirection;                                 // save last valid rotation direction:  +1 
+  53:Generated_Source\PSoC5/Decoder_1.c **** static volatile uint8 fPositionChanged;                 // flag indicating position change
+  54:Generated_Source\PSoC5/Decoder_1.c **** #if (Decoder_1_BtnEnable)                      
+  55:Generated_Source\PSoC5/Decoder_1.c ****     static uint8 fBtnPressed;                           // flag indicating button pressed
+  56:Generated_Source\PSoC5/Decoder_1.c **** #endif    
+  57:Generated_Source\PSoC5/Decoder_1.c **** 
+  58:Generated_Source\PSoC5/Decoder_1.c **** static uint8 aInitialized = false;                      // started(1)/stopped(0)
+  59:Generated_Source\PSoC5/Decoder_1.c **** uint8 Decoder_1_Enabled = true;                  // enabled(1)/disabled(0) (btn excluded)
+  60:Generated_Source\PSoC5/Decoder_1.c **** 
+  61:Generated_Source\PSoC5/Decoder_1.c **** 
+  62:Generated_Source\PSoC5/Decoder_1.c **** // initialize values
+  63:Generated_Source\PSoC5/Decoder_1.c **** static  er_t aIncrement   = 1;      // position increment
+  64:Generated_Source\PSoC5/Decoder_1.c **** static  er_t aLowerBound  = -128;    // position lower bound
+  65:Generated_Source\PSoC5/Decoder_1.c **** static  er_t aUpperBound  = 127;    // position upper bound
+  66:Generated_Source\PSoC5/Decoder_1.c **** static uint8 aCheckBounds = false;   // check bounds flag
+  67:Generated_Source\PSoC5/Decoder_1.c **** 
+  68:Generated_Source\PSoC5/Decoder_1.c **** //====================================
+  69:Generated_Source\PSoC5/Decoder_1.c **** //        private functions
+  70:Generated_Source\PSoC5/Decoder_1.c **** //====================================
+  71:Generated_Source\PSoC5/Decoder_1.c **** void  Decoder_1_SetInputsPullUp();       // set input pins state to Resistive Pull Up
+  72:Generated_Source\PSoC5/Decoder_1.c **** void  Decoder_1_SetInputsHiZ();          // set input pins state to High Impedance Digital
+  73:Generated_Source\PSoC5/Decoder_1.c **** //CY_INLINE
+  74:Generated_Source\PSoC5/Decoder_1.c **** int8  Decoder_1_CheckRotation();         // rotation:  -1=CCW, 0=NAN, 1=CW (pol: 69->55 tic)
+  75:Generated_Source\PSoC5/Decoder_1.c **** 
+  76:Generated_Source\PSoC5/Decoder_1.c **** 
+  77:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+  78:Generated_Source\PSoC5/Decoder_1.c **** // Checks all asigned pins events and signals that encoder position changed
+  79:Generated_Source\PSoC5/Decoder_1.c **** // return: 0-no change, -1-rotated CCW, +1-rotated CW
+  80:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+  81:Generated_Source\PSoC5/Decoder_1.c **** 
+  82:Generated_Source\PSoC5/Decoder_1.c **** CY_INLINE int8 Decoder_1_CheckStatus() // todo: need return value?
+  83:Generated_Source\PSoC5/Decoder_1.c **** { 
+  82              		.loc 1 83 0
+  83              		.cfi_startproc
+  84              		@ args = 0, pretend = 0, frame = 8
+  85              		@ frame_needed = 1, uses_anonymous_args = 0
+  86 0000 80B5     		push	{r7, lr}
+  87              		.cfi_def_cfa_offset 8
+  88              		.cfi_offset 7, -8
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 4
+
+
+  89              		.cfi_offset 14, -4
+  90 0002 82B0     		sub	sp, sp, #8
+  91              		.cfi_def_cfa_offset 16
+  92 0004 00AF     		add	r7, sp, #0
+  93              		.cfi_def_cfa_register 7
+  84:Generated_Source\PSoC5/Decoder_1.c ****     // 1. clear pins isr
+  85:Generated_Source\PSoC5/Decoder_1.c ****     // 2. check button if enabled
+  86:Generated_Source\PSoC5/Decoder_1.c ****     // 3. check rotation
+  87:Generated_Source\PSoC5/Decoder_1.c ****       
+  88:Generated_Source\PSoC5/Decoder_1.c ****     
+  89:Generated_Source\PSoC5/Decoder_1.c ****     int8 en_dir = Decoder_1_CheckRotation(); // +11 ticks 
+  94              		.loc 1 89 0
+  95 0006 FFF7FEFF 		bl	Decoder_1_CheckRotation
+  96 000a 0346     		mov	r3, r0
+  97 000c FB71     		strb	r3, [r7, #7]
+  90:Generated_Source\PSoC5/Decoder_1.c ****     
+  91:Generated_Source\PSoC5/Decoder_1.c ****     if (en_dir==0) return 0;                        // no changes
+  98              		.loc 1 91 0
+  99 000e 97F90730 		ldrsb	r3, [r7, #7]
+ 100 0012 002B     		cmp	r3, #0
+ 101 0014 01D1     		bne	.L2
+ 102              		.loc 1 91 0 is_stmt 0 discriminator 1
+ 103 0016 0023     		movs	r3, #0
+ 104 0018 07E0     		b	.L3
+ 105              	.L2:
+  92:Generated_Source\PSoC5/Decoder_1.c ****     
+  93:Generated_Source\PSoC5/Decoder_1.c ****     aDirection = en_dir;                            // store last (non-zero) direction of rotation
+ 106              		.loc 1 93 0 is_stmt 1
+ 107 001a 064A     		ldr	r2, .L4
+ 108 001c FB79     		ldrb	r3, [r7, #7]
+ 109 001e 1370     		strb	r3, [r2]
+  94:Generated_Source\PSoC5/Decoder_1.c ****    
+  95:Generated_Source\PSoC5/Decoder_1.c ****     fPositionChanged = 1;                           // update flag 
+ 110              		.loc 1 95 0
+ 111 0020 054B     		ldr	r3, .L4+4
+ 112 0022 0122     		movs	r2, #1
+ 113 0024 1A70     		strb	r2, [r3]
+  96:Generated_Source\PSoC5/Decoder_1.c ****     
+  97:Generated_Source\PSoC5/Decoder_1.c ****     return en_dir;                                  // value changed: -1=CCW, 1=CW 
+ 114              		.loc 1 97 0
+ 115 0026 97F90730 		ldrsb	r3, [r7, #7]
+ 116              	.L3:
+  98:Generated_Source\PSoC5/Decoder_1.c **** } 
+ 117              		.loc 1 98 0
+ 118 002a 1846     		mov	r0, r3
+ 119 002c 0837     		adds	r7, r7, #8
+ 120              		.cfi_def_cfa_offset 8
+ 121 002e BD46     		mov	sp, r7
+ 122              		.cfi_def_cfa_register 13
+ 123              		@ sp needed
+ 124 0030 80BD     		pop	{r7, pc}
+ 125              	.L5:
+ 126 0032 00BF     		.align	2
+ 127              	.L4:
+ 128 0034 02000000 		.word	aDirection
+ 129 0038 03000000 		.word	fPositionChanged
+ 130              		.cfi_endproc
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 5
+
+
+ 131              	.LFE63:
+ 132              		.size	Decoder_1_CheckStatus, .-Decoder_1_CheckStatus
+ 133              		.section	.text.Decoder_1_CheckRotation,"ax",%progbits
+ 134              		.align	2
+ 135              		.global	Decoder_1_CheckRotation
+ 136              		.thumb
+ 137              		.thumb_func
+ 138              		.type	Decoder_1_CheckRotation, %function
+ 139              	Decoder_1_CheckRotation:
+ 140              	.LFB64:
+  99:Generated_Source\PSoC5/Decoder_1.c **** 
+ 100:Generated_Source\PSoC5/Decoder_1.c **** 
+ 101:Generated_Source\PSoC5/Decoder_1.c **** #if Decoder_1_IsrMode
+ 102:Generated_Source\PSoC5/Decoder_1.c ****     
+ 103:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ 104:Generated_Source\PSoC5/Decoder_1.c **** // 
+ 105:Generated_Source\PSoC5/Decoder_1.c **** //  
+ 106:Generated_Source\PSoC5/Decoder_1.c **** // 
+ 107:Generated_Source\PSoC5/Decoder_1.c **** //                    STATE CHECK USING INTERRUPT METHOD->
+ 108:Generated_Source\PSoC5/Decoder_1.c **** // 
+ 109:Generated_Source\PSoC5/Decoder_1.c **** //  
+ 110:Generated_Source\PSoC5/Decoder_1.c **** // 
+ 111:Generated_Source\PSoC5/Decoder_1.c **** //  
+ 112:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================    
+ 113:Generated_Source\PSoC5/Decoder_1.c ****     
+ 114:Generated_Source\PSoC5/Decoder_1.c ****     
+ 115:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ 116:Generated_Source\PSoC5/Decoder_1.c **** // Circuits@Home algorithm with pin interrupts
+ 117:Generated_Source\PSoC5/Decoder_1.c **** // returns direction of rotation:  -1=CCW, 0=NAN, 1=CW 
+ 118:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ 119:Generated_Source\PSoC5/Decoder_1.c **** 
+ 120:Generated_Source\PSoC5/Decoder_1.c **** CY_INLINE int8 Decoder_1_CheckRotation() // checks pin status
+ 121:Generated_Source\PSoC5/Decoder_1.c **** {
+ 141              		.loc 1 121 0
+ 142              		.cfi_startproc
+ 143              		@ args = 0, pretend = 0, frame = 8
+ 144              		@ frame_needed = 1, uses_anonymous_args = 0
+ 145              		@ link register save eliminated.
+ 146 0000 80B4     		push	{r7}
+ 147              		.cfi_def_cfa_offset 4
+ 148              		.cfi_offset 7, -4
+ 149 0002 83B0     		sub	sp, sp, #12
+ 150              		.cfi_def_cfa_offset 16
+ 151 0004 00AF     		add	r7, sp, #0
+ 152              		.cfi_def_cfa_register 7
+ 122:Generated_Source\PSoC5/Decoder_1.c ****     static uint8 index = 0;
+ 123:Generated_Source\PSoC5/Decoder_1.c ****     static  int8 Acc   = 0;                     //internal accumulator to accumulate 1/4 microsteps
+ 124:Generated_Source\PSoC5/Decoder_1.c ****     
+ 125:Generated_Source\PSoC5/Decoder_1.c ****     
+ 126:Generated_Source\PSoC5/Decoder_1.c ****     #if (Decoder_1_BtnEnable) 
+ 127:Generated_Source\PSoC5/Decoder_1.c ****         uint8 bits  = (Decoder_1_PINS3_PS & Decoder_1_PINS3_MASK) >> Decoder_1_PINS3_SHIFT;//+7tic 
+ 128:Generated_Source\PSoC5/Decoder_1.c ****         
+ 129:Generated_Source\PSoC5/Decoder_1.c ****         if(((bits & SW_MASK) == 0) && (SW_timeout == TIMED_OUT))            // Btn pressed 
+ 130:Generated_Source\PSoC5/Decoder_1.c **** 	    {
+ 131:Generated_Source\PSoC5/Decoder_1.c ****             SW_timeout = SW_DEBOUNCE_TIME;      // reset the debounce timer for this button
+ 132:Generated_Source\PSoC5/Decoder_1.c ****             Decoder_1_isrBtnSW_StartEx(Decoder_1_Tick_ISR);   // start debouncing timer isr
+ 133:Generated_Source\PSoC5/Decoder_1.c ****             return 0; // ignore encoder if button pressed
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 6
+
+
+ 134:Generated_Source\PSoC5/Decoder_1.c **** 	    }             
+ 135:Generated_Source\PSoC5/Decoder_1.c ****         
+ 136:Generated_Source\PSoC5/Decoder_1.c ****         bits &= EN_MASK;  // pins state
+ 137:Generated_Source\PSoC5/Decoder_1.c ****     #else
+ 138:Generated_Source\PSoC5/Decoder_1.c ****         uint8 bits  = (Decoder_1_PINS2_PS & Decoder_1_PINS2_MASK) >> Decoder_1_PINS2_SHIFT;//+7tic 
+ 153              		.loc 1 138 0
+ 154 0006 1E4B     		ldr	r3, .L9
+ 155 0008 1B78     		ldrb	r3, [r3]
+ 156 000a DBB2     		uxtb	r3, r3
+ 157 000c 03F00C03 		and	r3, r3, #12
+ 158 0010 9B08     		lsrs	r3, r3, #2
+ 159 0012 FB71     		strb	r3, [r7, #7]
+ 139:Generated_Source\PSoC5/Decoder_1.c ****     #endif   
+ 140:Generated_Source\PSoC5/Decoder_1.c ****     
+ 141:Generated_Source\PSoC5/Decoder_1.c **** 
+ 142:Generated_Source\PSoC5/Decoder_1.c ****     if (Decoder_1_Enabled==0) return 0;  // decoder disabled
+ 160              		.loc 1 142 0
+ 161 0014 1B4B     		ldr	r3, .L9+4
+ 162 0016 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 163 0018 002B     		cmp	r3, #0
+ 164 001a 01D1     		bne	.L7
+ 165              		.loc 1 142 0 is_stmt 0 discriminator 1
+ 166 001c 0023     		movs	r3, #0
+ 167 001e 29E0     		b	.L8
+ 168              	.L7:
+ 143:Generated_Source\PSoC5/Decoder_1.c ****     
+ 144:Generated_Source\PSoC5/Decoder_1.c **** 
+ 145:Generated_Source\PSoC5/Decoder_1.c ****     #if (Decoder_1_InvertDir)
+ 146:Generated_Source\PSoC5/Decoder_1.c ****         bits  = ((bits&1)<<1) | ((bits&2)>>1);  // swap bits 1&2
+ 147:Generated_Source\PSoC5/Decoder_1.c ****     #endif
+ 148:Generated_Source\PSoC5/Decoder_1.c ****     
+ 149:Generated_Source\PSoC5/Decoder_1.c ****     
+ 150:Generated_Source\PSoC5/Decoder_1.c ****     index <<= 2;                                // remember previous state by shifting the lower bi
+ 169              		.loc 1 150 0 is_stmt 1
+ 170 0020 194B     		ldr	r3, .L9+8
+ 171 0022 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 172 0024 9B00     		lsls	r3, r3, #2
+ 173 0026 DAB2     		uxtb	r2, r3
+ 174 0028 174B     		ldr	r3, .L9+8
+ 175 002a 1A70     		strb	r2, [r3]
+ 151:Generated_Source\PSoC5/Decoder_1.c ****     index |= bits;                              // OR bits with var old_AB to set new value     
+ 176              		.loc 1 151 0
+ 177 002c 164B     		ldr	r3, .L9+8
+ 178 002e 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 179 0030 FB79     		ldrb	r3, [r7, #7]
+ 180 0032 1343     		orrs	r3, r3, r2
+ 181 0034 DAB2     		uxtb	r2, r3
+ 182 0036 144B     		ldr	r3, .L9+8
+ 183 0038 1A70     		strb	r2, [r3]
+ 152:Generated_Source\PSoC5/Decoder_1.c ****     Acc &= 0x03;                                // dont let it grow >3 or <-3
+ 184              		.loc 1 152 0
+ 185 003a 144B     		ldr	r3, .L9+12
+ 186 003c 93F90030 		ldrsb	r3, [r3]
+ 187 0040 03F00303 		and	r3, r3, #3
+ 188 0044 5AB2     		sxtb	r2, r3
+ 189 0046 114B     		ldr	r3, .L9+12
+ 190 0048 1A70     		strb	r2, [r3]
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 7
+
+
+ 153:Generated_Source\PSoC5/Decoder_1.c ****     Acc += enc_states[ index & 0x0f ];          // accumulate 1/4 steps   
+ 191              		.loc 1 153 0
+ 192 004a 0F4B     		ldr	r3, .L9+8
+ 193 004c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 194 004e 03F00F03 		and	r3, r3, #15
+ 195 0052 0F4A     		ldr	r2, .L9+16
+ 196 0054 D356     		ldrsb	r3, [r2, r3]
+ 197 0056 DAB2     		uxtb	r2, r3
+ 198 0058 0C4B     		ldr	r3, .L9+12
+ 199 005a 93F90030 		ldrsb	r3, [r3]
+ 200 005e DBB2     		uxtb	r3, r3
+ 201 0060 1344     		add	r3, r3, r2
+ 202 0062 DBB2     		uxtb	r3, r3
+ 203 0064 5AB2     		sxtb	r2, r3
+ 204 0066 094B     		ldr	r3, .L9+12
+ 205 0068 1A70     		strb	r2, [r3]
+ 154:Generated_Source\PSoC5/Decoder_1.c ****   
+ 155:Generated_Source\PSoC5/Decoder_1.c ****     return Acc>>2;                              // -1=CCW, 0=NAN, 1=CW 
+ 206              		.loc 1 155 0
+ 207 006a 084B     		ldr	r3, .L9+12
+ 208 006c 93F90030 		ldrsb	r3, [r3]
+ 209 0070 9B10     		asrs	r3, r3, #2
+ 210 0072 5BB2     		sxtb	r3, r3
+ 211              	.L8:
+ 156:Generated_Source\PSoC5/Decoder_1.c **** }
+ 212              		.loc 1 156 0
+ 213 0074 1846     		mov	r0, r3
+ 214 0076 0C37     		adds	r7, r7, #12
+ 215              		.cfi_def_cfa_offset 4
+ 216 0078 BD46     		mov	sp, r7
+ 217              		.cfi_def_cfa_register 13
+ 218              		@ sp needed
+ 219 007a 80BC     		pop	{r7}
+ 220              		.cfi_restore 7
+ 221              		.cfi_def_cfa_offset 0
+ 222 007c 7047     		bx	lr
+ 223              	.L10:
+ 224 007e 00BF     		.align	2
+ 225              	.L9:
+ 226 0080 41510040 		.word	1073762625
+ 227 0084 00000000 		.word	Decoder_1_Enabled
+ 228 0088 06000000 		.word	index.7306
+ 229 008c 07000000 		.word	Acc.7307
+ 230 0090 00000000 		.word	enc_states
+ 231              		.cfi_endproc
+ 232              	.LFE64:
+ 233              		.size	Decoder_1_CheckRotation, .-Decoder_1_CheckRotation
+ 234              		.section	.text.Decoder_1_ClearInterrupt,"ax",%progbits
+ 235              		.align	2
+ 236              		.global	Decoder_1_ClearInterrupt
+ 237              		.thumb
+ 238              		.thumb_func
+ 239              		.type	Decoder_1_ClearInterrupt, %function
+ 240              	Decoder_1_ClearInterrupt:
+ 241              	.LFB65:
+ 157:Generated_Source\PSoC5/Decoder_1.c **** 
+ 158:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 8
+
+
+ 159:Generated_Source\PSoC5/Decoder_1.c **** // Debouncing ISR - counts milliseconds elapsed after button press
+ 160:Generated_Source\PSoC5/Decoder_1.c **** // Rises semaphore flag when timeout
+ 161:Generated_Source\PSoC5/Decoder_1.c **** // Works on Button Pressed event
+ 162:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ 163:Generated_Source\PSoC5/Decoder_1.c ****     
+ 164:Generated_Source\PSoC5/Decoder_1.c **** #if (Decoder_1_BtnEnable)
+ 165:Generated_Source\PSoC5/Decoder_1.c **** CY_ISR(Decoder_1_Tick_ISR)
+ 166:Generated_Source\PSoC5/Decoder_1.c **** {
+ 167:Generated_Source\PSoC5/Decoder_1.c **** 	if(SW_timeout != 0) 
+ 168:Generated_Source\PSoC5/Decoder_1.c **** 	{
+ 169:Generated_Source\PSoC5/Decoder_1.c **** 		if(--SW_timeout == TIMED_OUT)   // edge was detected by the PICU. Decrement and check timeout.
+ 170:Generated_Source\PSoC5/Decoder_1.c **** 		{
+ 171:Generated_Source\PSoC5/Decoder_1.c ****             // Timed out -> check if SW still pressed
+ 172:Generated_Source\PSoC5/Decoder_1.c **** 			if((Decoder_1_PINS3_Read() & SW_MASK) == 0)  
+ 173:Generated_Source\PSoC5/Decoder_1.c **** 			{
+ 174:Generated_Source\PSoC5/Decoder_1.c ****                 Decoder_1_isrBtnSW_Stop();
+ 175:Generated_Source\PSoC5/Decoder_1.c ****                 fBtnPressed = 1;        // set flag
+ 176:Generated_Source\PSoC5/Decoder_1.c **** 			}
+ 177:Generated_Source\PSoC5/Decoder_1.c **** 		}
+ 178:Generated_Source\PSoC5/Decoder_1.c **** 	}
+ 179:Generated_Source\PSoC5/Decoder_1.c **** }
+ 180:Generated_Source\PSoC5/Decoder_1.c **** 
+ 181:Generated_Source\PSoC5/Decoder_1.c **** #endif //(_BtnEnable)
+ 182:Generated_Source\PSoC5/Decoder_1.c **** 
+ 183:Generated_Source\PSoC5/Decoder_1.c **** 
+ 184:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ 185:Generated_Source\PSoC5/Decoder_1.c **** // Clears pins interrupt
+ 186:Generated_Source\PSoC5/Decoder_1.c **** // If pins isr is enabled, then must clear inside ISR to allow further isr events
+ 187:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ 188:Generated_Source\PSoC5/Decoder_1.c **** 
+ 189:Generated_Source\PSoC5/Decoder_1.c **** CY_INLINE void Decoder_1_ClearInterrupt() // 
+ 190:Generated_Source\PSoC5/Decoder_1.c **** {
+ 242              		.loc 1 190 0
+ 243              		.cfi_startproc
+ 244              		@ args = 0, pretend = 0, frame = 0
+ 245              		@ frame_needed = 1, uses_anonymous_args = 0
+ 246              		@ link register save eliminated.
+ 247 0000 80B4     		push	{r7}
+ 248              		.cfi_def_cfa_offset 4
+ 249              		.cfi_offset 7, -4
+ 250 0002 00AF     		add	r7, sp, #0
+ 251              		.cfi_def_cfa_register 7
+ 191:Generated_Source\PSoC5/Decoder_1.c ****     
+ 192:Generated_Source\PSoC5/Decoder_1.c ****         #if (Decoder_1_BtnEnable)
+ 193:Generated_Source\PSoC5/Decoder_1.c ****             
+ 194:Generated_Source\PSoC5/Decoder_1.c ****             #if (CY_PSOC5)
+ 195:Generated_Source\PSoC5/Decoder_1.c ****                 Decoder_1_PINS3_INTSTAT; 
+ 196:Generated_Source\PSoC5/Decoder_1.c ****             #else
+ 197:Generated_Source\PSoC5/Decoder_1.c ****                 Decoder_1_PINS3_ClearInterrupt(); 
+ 198:Generated_Source\PSoC5/Decoder_1.c ****             #endif
+ 199:Generated_Source\PSoC5/Decoder_1.c ****             
+ 200:Generated_Source\PSoC5/Decoder_1.c ****         #else
+ 201:Generated_Source\PSoC5/Decoder_1.c ****             
+ 202:Generated_Source\PSoC5/Decoder_1.c ****             #if (CY_PSOC5)
+ 203:Generated_Source\PSoC5/Decoder_1.c ****                 Decoder_1_PINS2_INTSTAT;     
+ 252              		.loc 1 203 0
+ 253 0004 024B     		ldr	r3, .L12
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 9
+
+
+ 254 0006 1B78     		ldrb	r3, [r3]
+ 204:Generated_Source\PSoC5/Decoder_1.c ****             #else
+ 205:Generated_Source\PSoC5/Decoder_1.c ****                 Decoder_1_PINS2_ClearInterrupt(); 
+ 206:Generated_Source\PSoC5/Decoder_1.c ****             #endif    
+ 207:Generated_Source\PSoC5/Decoder_1.c ****             
+ 208:Generated_Source\PSoC5/Decoder_1.c ****         #endif    
+ 209:Generated_Source\PSoC5/Decoder_1.c **** }
+ 255              		.loc 1 209 0
+ 256 0008 00BF     		nop
+ 257 000a BD46     		mov	sp, r7
+ 258              		.cfi_def_cfa_register 13
+ 259              		@ sp needed
+ 260 000c 80BC     		pop	{r7}
+ 261              		.cfi_restore 7
+ 262              		.cfi_def_cfa_offset 0
+ 263 000e 7047     		bx	lr
+ 264              	.L13:
+ 265              		.align	2
+ 266              	.L12:
+ 267 0010 84450040 		.word	1073759620
+ 268              		.cfi_endproc
+ 269              	.LFE65:
+ 270              		.size	Decoder_1_ClearInterrupt, .-Decoder_1_ClearInterrupt
+ 271              		.section	.text.Decoder_1_myDtrInt,"ax",%progbits
+ 272              		.align	2
+ 273              		.global	Decoder_1_myDtrInt
+ 274              		.thumb
+ 275              		.thumb_func
+ 276              		.type	Decoder_1_myDtrInt, %function
+ 277              	Decoder_1_myDtrInt:
+ 278              	.LFB66:
+ 210:Generated_Source\PSoC5/Decoder_1.c **** 
+ 211:Generated_Source\PSoC5/Decoder_1.c **** 
+ 212:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ 213:Generated_Source\PSoC5/Decoder_1.c **** // interrupt on encoder pin states change
+ 214:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ 215:Generated_Source\PSoC5/Decoder_1.c **** 
+ 216:Generated_Source\PSoC5/Decoder_1.c **** CY_ISR(Decoder_1_myDtrInt) 
+ 217:Generated_Source\PSoC5/Decoder_1.c **** {   
+ 279              		.loc 1 217 0
+ 280              		.cfi_startproc
+ 281              		@ args = 0, pretend = 0, frame = 0
+ 282              		@ frame_needed = 1, uses_anonymous_args = 0
+ 283 0000 80B5     		push	{r7, lr}
+ 284              		.cfi_def_cfa_offset 8
+ 285              		.cfi_offset 7, -8
+ 286              		.cfi_offset 14, -4
+ 287 0002 00AF     		add	r7, sp, #0
+ 288              		.cfi_def_cfa_register 7
+ 218:Generated_Source\PSoC5/Decoder_1.c ****     Decoder_1_ClearInterrupt(); // must clear
+ 289              		.loc 1 218 0
+ 290 0004 FFF7FEFF 		bl	Decoder_1_ClearInterrupt
+ 219:Generated_Source\PSoC5/Decoder_1.c ****     Decoder_1_CheckStatus();  
+ 291              		.loc 1 219 0
+ 292 0008 FFF7FEFF 		bl	Decoder_1_CheckStatus
+ 220:Generated_Source\PSoC5/Decoder_1.c ****     Decoder_1_GetPositionChanged();
+ 293              		.loc 1 220 0
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 10
+
+
+ 294 000c FFF7FEFF 		bl	Decoder_1_GetPositionChanged
+ 221:Generated_Source\PSoC5/Decoder_1.c **** }    
+ 295              		.loc 1 221 0
+ 296 0010 00BF     		nop
+ 297 0012 80BD     		pop	{r7, pc}
+ 298              		.cfi_endproc
+ 299              	.LFE66:
+ 300              		.size	Decoder_1_myDtrInt, .-Decoder_1_myDtrInt
+ 301              		.section	.text.Decoder_1_Start,"ax",%progbits
+ 302              		.align	2
+ 303              		.global	Decoder_1_Start
+ 304              		.thumb
+ 305              		.thumb_func
+ 306              		.type	Decoder_1_Start, %function
+ 307              	Decoder_1_Start:
+ 308              	.LFB67:
+ 222:Generated_Source\PSoC5/Decoder_1.c **** 
+ 223:Generated_Source\PSoC5/Decoder_1.c **** 
+ 224:Generated_Source\PSoC5/Decoder_1.c **** 
+ 225:Generated_Source\PSoC5/Decoder_1.c **** 
+ 226:Generated_Source\PSoC5/Decoder_1.c **** 
+ 227:Generated_Source\PSoC5/Decoder_1.c **** #else // (!IsrMode)
+ 228:Generated_Source\PSoC5/Decoder_1.c ****  
+ 229:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ 230:Generated_Source\PSoC5/Decoder_1.c **** // 
+ 231:Generated_Source\PSoC5/Decoder_1.c **** //  
+ 232:Generated_Source\PSoC5/Decoder_1.c **** // 
+ 233:Generated_Source\PSoC5/Decoder_1.c **** //                     STATE CHECK USING POLLING METHOD->
+ 234:Generated_Source\PSoC5/Decoder_1.c **** // 
+ 235:Generated_Source\PSoC5/Decoder_1.c **** //  
+ 236:Generated_Source\PSoC5/Decoder_1.c **** // 
+ 237:Generated_Source\PSoC5/Decoder_1.c **** //  
+ 238:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================    
+ 239:Generated_Source\PSoC5/Decoder_1.c ****     
+ 240:Generated_Source\PSoC5/Decoder_1.c ****     
+ 241:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ 242:Generated_Source\PSoC5/Decoder_1.c **** // Circuits@Home algorithm w/o pins interrupt
+ 243:Generated_Source\PSoC5/Decoder_1.c **** // returns direction of rotation: -1=CCW, 0=NAN, 1=CW 
+ 244:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ 245:Generated_Source\PSoC5/Decoder_1.c **** 
+ 246:Generated_Source\PSoC5/Decoder_1.c **** CY_INLINE int8 Decoder_1_CheckRotation()
+ 247:Generated_Source\PSoC5/Decoder_1.c **** {
+ 248:Generated_Source\PSoC5/Decoder_1.c ****     static uint8 index = 0;
+ 249:Generated_Source\PSoC5/Decoder_1.c ****     static  int8 Acc = 0;                       // internal accumulator to accumulate 1/4 microstep
+ 250:Generated_Source\PSoC5/Decoder_1.c **** 
+ 251:Generated_Source\PSoC5/Decoder_1.c ****     #if (Decoder_1_BtnEnable)
+ 252:Generated_Source\PSoC5/Decoder_1.c ****         
+ 253:Generated_Source\PSoC5/Decoder_1.c **** 	    if(SW_timeout == TIMED_OUT) // in idle state
+ 254:Generated_Source\PSoC5/Decoder_1.c **** 	    {
+ 255:Generated_Source\PSoC5/Decoder_1.c ****             uint8 bit_SW = Decoder_1_pin_btn_Read(); // Btn pressed
+ 256:Generated_Source\PSoC5/Decoder_1.c ****             
+ 257:Generated_Source\PSoC5/Decoder_1.c ****             if(bit_SW != 0)                                 // Btn pressed while in idle state
+ 258:Generated_Source\PSoC5/Decoder_1.c ****             {
+ 259:Generated_Source\PSoC5/Decoder_1.c **** 	        	SW_timeout = SW_DEBOUNCE_TIME;              // reset the debounce timer for this button
+ 260:Generated_Source\PSoC5/Decoder_1.c ****                 return 0;                                   
+ 261:Generated_Source\PSoC5/Decoder_1.c ****             }    
+ 262:Generated_Source\PSoC5/Decoder_1.c **** 	    }
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 11
+
+
+ 263:Generated_Source\PSoC5/Decoder_1.c ****         else                                                // debouncing countdown after button pr
+ 264:Generated_Source\PSoC5/Decoder_1.c **** 	    {
+ 265:Generated_Source\PSoC5/Decoder_1.c **** 		    if(--SW_timeout == TIMED_OUT)                   // Decrement and check for timeout.
+ 266:Generated_Source\PSoC5/Decoder_1.c **** 		    { 
+ 267:Generated_Source\PSoC5/Decoder_1.c ****                 if (Decoder_1_pin_btn_Read() == 0)   // check if SW still pressed 
+ 268:Generated_Source\PSoC5/Decoder_1.c **** 			    {
+ 269:Generated_Source\PSoC5/Decoder_1.c ****                     fBtnPressed = 1;                        // Rises semaphore flag
+ 270:Generated_Source\PSoC5/Decoder_1.c **** 			    }
+ 271:Generated_Source\PSoC5/Decoder_1.c **** 		    }
+ 272:Generated_Source\PSoC5/Decoder_1.c **** 	    }
+ 273:Generated_Source\PSoC5/Decoder_1.c ****                 
+ 274:Generated_Source\PSoC5/Decoder_1.c ****         // read pins  
+ 275:Generated_Source\PSoC5/Decoder_1.c ****         uint8 bit_a = (Decoder_1_pin_A_PS & Decoder_1_pin_A_MASK) >> Decoder_1_pin_A_SHIFT; 
+ 276:Generated_Source\PSoC5/Decoder_1.c ****         uint8 bit_b = (Decoder_1_pin_B_PS & Decoder_1_pin_B_MASK) >> Decoder_1_pin_B_SHIFT;
+ 277:Generated_Source\PSoC5/Decoder_1.c ****         
+ 278:Generated_Source\PSoC5/Decoder_1.c ****     #else
+ 279:Generated_Source\PSoC5/Decoder_1.c ****         
+ 280:Generated_Source\PSoC5/Decoder_1.c ****         // read pins  
+ 281:Generated_Source\PSoC5/Decoder_1.c ****         uint8 bit_a = (Decoder_1_pin_A_PS & Decoder_1_pin_A_MASK) >> Decoder_1_pin_A_SHIFT; 
+ 282:Generated_Source\PSoC5/Decoder_1.c ****         uint8 bit_b = (Decoder_1_pin_B_PS & Decoder_1_pin_B_MASK) >> Decoder_1_pin_B_SHIFT;
+ 283:Generated_Source\PSoC5/Decoder_1.c **** 
+ 284:Generated_Source\PSoC5/Decoder_1.c ****     #endif    
+ 285:Generated_Source\PSoC5/Decoder_1.c ****     
+ 286:Generated_Source\PSoC5/Decoder_1.c ****     
+ 287:Generated_Source\PSoC5/Decoder_1.c ****     if (Decoder_1_Enabled==0) return 0;  // decoder disabled
+ 288:Generated_Source\PSoC5/Decoder_1.c ****     
+ 289:Generated_Source\PSoC5/Decoder_1.c ****     
+ 290:Generated_Source\PSoC5/Decoder_1.c ****     #if (Decoder_1_InvertDir)
+ 291:Generated_Source\PSoC5/Decoder_1.c ****         uint8 bits = ((bit_a << 1) | bit_b);
+ 292:Generated_Source\PSoC5/Decoder_1.c ****     #else
+ 293:Generated_Source\PSoC5/Decoder_1.c ****         uint8 bits = ((bit_b << 1) | bit_a);
+ 294:Generated_Source\PSoC5/Decoder_1.c ****     #endif
+ 295:Generated_Source\PSoC5/Decoder_1.c **** 
+ 296:Generated_Source\PSoC5/Decoder_1.c ****     
+ 297:Generated_Source\PSoC5/Decoder_1.c ****     index <<= 2;                                // remember previous state by shifting the lower bi
+ 298:Generated_Source\PSoC5/Decoder_1.c ****     index |= bits;                              // OR bits with var old_AB to set new value  
+ 299:Generated_Source\PSoC5/Decoder_1.c ****     Acc &= 0x03;                                // dont let it grow >3 or <-3
+ 300:Generated_Source\PSoC5/Decoder_1.c ****     Acc += enc_states[ index & 0x0f ];          // accumulate 1/4 steps                            
+ 301:Generated_Source\PSoC5/Decoder_1.c ****     
+ 302:Generated_Source\PSoC5/Decoder_1.c ****     return Acc>>2;                              // -1=CCW, 0=NAN, 1=CW  
+ 303:Generated_Source\PSoC5/Decoder_1.c **** }
+ 304:Generated_Source\PSoC5/Decoder_1.c **** 
+ 305:Generated_Source\PSoC5/Decoder_1.c **** 
+ 306:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ 307:Generated_Source\PSoC5/Decoder_1.c **** // interrupt on external clock for polling states
+ 308:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ 309:Generated_Source\PSoC5/Decoder_1.c **** 
+ 310:Generated_Source\PSoC5/Decoder_1.c **** CY_ISR(Decoder_1_myPollInt) 
+ 311:Generated_Source\PSoC5/Decoder_1.c **** {   
+ 312:Generated_Source\PSoC5/Decoder_1.c ****     Decoder_1_CheckStatus(); 
+ 313:Generated_Source\PSoC5/Decoder_1.c **** }    
+ 314:Generated_Source\PSoC5/Decoder_1.c **** 
+ 315:Generated_Source\PSoC5/Decoder_1.c **** 
+ 316:Generated_Source\PSoC5/Decoder_1.c **** #endif //!IsrMode   
+ 317:Generated_Source\PSoC5/Decoder_1.c **** 
+ 318:Generated_Source\PSoC5/Decoder_1.c **** 
+ 319:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 12
+
+
+ 320:Generated_Source\PSoC5/Decoder_1.c **** // 
+ 321:Generated_Source\PSoC5/Decoder_1.c **** //  
+ 322:Generated_Source\PSoC5/Decoder_1.c **** // 
+ 323:Generated_Source\PSoC5/Decoder_1.c **** //                   COMMON ROUTINES (ISR / POLL MODE)->
+ 324:Generated_Source\PSoC5/Decoder_1.c **** // 
+ 325:Generated_Source\PSoC5/Decoder_1.c **** //  
+ 326:Generated_Source\PSoC5/Decoder_1.c **** // 
+ 327:Generated_Source\PSoC5/Decoder_1.c **** //  
+ 328:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ 329:Generated_Source\PSoC5/Decoder_1.c **** 
+ 330:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ 331:Generated_Source\PSoC5/Decoder_1.c **** // Initialize encoder 
+ 332:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ 333:Generated_Source\PSoC5/Decoder_1.c **** 
+ 334:Generated_Source\PSoC5/Decoder_1.c **** void Decoder_1_Start()
+ 335:Generated_Source\PSoC5/Decoder_1.c **** { 
+ 309              		.loc 1 335 0
+ 310              		.cfi_startproc
+ 311              		@ args = 0, pretend = 0, frame = 0
+ 312              		@ frame_needed = 1, uses_anonymous_args = 0
+ 313 0000 80B5     		push	{r7, lr}
+ 314              		.cfi_def_cfa_offset 8
+ 315              		.cfi_offset 7, -8
+ 316              		.cfi_offset 14, -4
+ 317 0002 00AF     		add	r7, sp, #0
+ 318              		.cfi_def_cfa_register 7
+ 336:Generated_Source\PSoC5/Decoder_1.c ****     #if Decoder_1_IsrMode
+ 337:Generated_Source\PSoC5/Decoder_1.c ****         Decoder_1_isrDtr_StartEx(Decoder_1_myDtrInt);//start isrDtr interrupt
+ 319              		.loc 1 337 0
+ 320 0004 0448     		ldr	r0, .L16
+ 321 0006 FFF7FEFF 		bl	Decoder_1_isrDtr_StartEx
+ 338:Generated_Source\PSoC5/Decoder_1.c ****     #else    
+ 339:Generated_Source\PSoC5/Decoder_1.c ****     #if Decoder_1_IsrInternal
+ 340:Generated_Source\PSoC5/Decoder_1.c ****         Decoder_1_isrPoll_StartEx(Decoder_1_myPollInt);//start isrPoll interrupt
+ 341:Generated_Source\PSoC5/Decoder_1.c ****     #endif 
+ 342:Generated_Source\PSoC5/Decoder_1.c ****     #endif 
+ 343:Generated_Source\PSoC5/Decoder_1.c ****     
+ 344:Generated_Source\PSoC5/Decoder_1.c ****     
+ 345:Generated_Source\PSoC5/Decoder_1.c ****     if (Decoder_1_InputsPullUp)
+ 346:Generated_Source\PSoC5/Decoder_1.c ****         Decoder_1_SetInputsPullUp();
+ 322              		.loc 1 346 0
+ 323 000a FFF7FEFF 		bl	Decoder_1_SetInputsPullUp
+ 347:Generated_Source\PSoC5/Decoder_1.c ****     else    
+ 348:Generated_Source\PSoC5/Decoder_1.c ****         Decoder_1_SetInputsHiZ();
+ 349:Generated_Source\PSoC5/Decoder_1.c ****         
+ 350:Generated_Source\PSoC5/Decoder_1.c ****     aInitialized = true;                    // started
+ 324              		.loc 1 350 0
+ 325 000e 034B     		ldr	r3, .L16+4
+ 326 0010 0122     		movs	r2, #1
+ 327 0012 1A70     		strb	r2, [r3]
+ 351:Generated_Source\PSoC5/Decoder_1.c **** } 
+ 328              		.loc 1 351 0
+ 329 0014 00BF     		nop
+ 330 0016 80BD     		pop	{r7, pc}
+ 331              	.L17:
+ 332              		.align	2
+ 333              	.L16:
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 13
+
+
+ 334 0018 00000000 		.word	Decoder_1_myDtrInt
+ 335 001c 04000000 		.word	aInitialized
+ 336              		.cfi_endproc
+ 337              	.LFE67:
+ 338              		.size	Decoder_1_Start, .-Decoder_1_Start
+ 339              		.section	.text.Decoder_1_Stop,"ax",%progbits
+ 340              		.align	2
+ 341              		.global	Decoder_1_Stop
+ 342              		.thumb
+ 343              		.thumb_func
+ 344              		.type	Decoder_1_Stop, %function
+ 345              	Decoder_1_Stop:
+ 346              	.LFB68:
+ 352:Generated_Source\PSoC5/Decoder_1.c **** 
+ 353:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ 354:Generated_Source\PSoC5/Decoder_1.c **** // Stop encoder 
+ 355:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ 356:Generated_Source\PSoC5/Decoder_1.c **** 
+ 357:Generated_Source\PSoC5/Decoder_1.c **** void Decoder_1_Stop()
+ 358:Generated_Source\PSoC5/Decoder_1.c **** {
+ 347              		.loc 1 358 0
+ 348              		.cfi_startproc
+ 349              		@ args = 0, pretend = 0, frame = 0
+ 350              		@ frame_needed = 1, uses_anonymous_args = 0
+ 351 0000 80B5     		push	{r7, lr}
+ 352              		.cfi_def_cfa_offset 8
+ 353              		.cfi_offset 7, -8
+ 354              		.cfi_offset 14, -4
+ 355 0002 00AF     		add	r7, sp, #0
+ 356              		.cfi_def_cfa_register 7
+ 359:Generated_Source\PSoC5/Decoder_1.c ****     #if Decoder_1_IsrMode
+ 360:Generated_Source\PSoC5/Decoder_1.c ****         Decoder_1_isrDtr_Stop();     //stop isrDtr interrupt
+ 357              		.loc 1 360 0
+ 358 0004 FFF7FEFF 		bl	Decoder_1_isrDtr_Stop
+ 361:Generated_Source\PSoC5/Decoder_1.c ****     #else    
+ 362:Generated_Source\PSoC5/Decoder_1.c ****     #if Decoder_1_IsrInternal
+ 363:Generated_Source\PSoC5/Decoder_1.c ****         Decoder_1_isrPoll_Stop();    //staop isrPoll interrupt
+ 364:Generated_Source\PSoC5/Decoder_1.c ****     #endif
+ 365:Generated_Source\PSoC5/Decoder_1.c ****     #endif
+ 366:Generated_Source\PSoC5/Decoder_1.c ****     
+ 367:Generated_Source\PSoC5/Decoder_1.c ****     Decoder_1_SetInputsHiZ();
+ 359              		.loc 1 367 0
+ 360 0008 FFF7FEFF 		bl	Decoder_1_SetInputsHiZ
+ 368:Generated_Source\PSoC5/Decoder_1.c ****     
+ 369:Generated_Source\PSoC5/Decoder_1.c ****     aInitialized = false;                   // stopped
+ 361              		.loc 1 369 0
+ 362 000c 024B     		ldr	r3, .L19
+ 363 000e 0022     		movs	r2, #0
+ 364 0010 1A70     		strb	r2, [r3]
+ 370:Generated_Source\PSoC5/Decoder_1.c **** } 
+ 365              		.loc 1 370 0
+ 366 0012 00BF     		nop
+ 367 0014 80BD     		pop	{r7, pc}
+ 368              	.L20:
+ 369 0016 00BF     		.align	2
+ 370              	.L19:
+ 371 0018 04000000 		.word	aInitialized
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 14
+
+
+ 372              		.cfi_endproc
+ 373              	.LFE68:
+ 374              		.size	Decoder_1_Stop, .-Decoder_1_Stop
+ 375              		.section	.text.Decoder_1_SetInputsPullUp,"ax",%progbits
+ 376              		.align	2
+ 377              		.global	Decoder_1_SetInputsPullUp
+ 378              		.thumb
+ 379              		.thumb_func
+ 380              		.type	Decoder_1_SetInputsPullUp, %function
+ 381              	Decoder_1_SetInputsPullUp:
+ 382              	.LFB69:
+ 371:Generated_Source\PSoC5/Decoder_1.c **** 
+ 372:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ 373:Generated_Source\PSoC5/Decoder_1.c **** // Set input pins state to Resistive Pull Up 
+ 374:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ 375:Generated_Source\PSoC5/Decoder_1.c **** 
+ 376:Generated_Source\PSoC5/Decoder_1.c **** void Decoder_1_SetInputsPullUp()
+ 377:Generated_Source\PSoC5/Decoder_1.c **** {
+ 383              		.loc 1 377 0
+ 384              		.cfi_startproc
+ 385              		@ args = 0, pretend = 0, frame = 0
+ 386              		@ frame_needed = 1, uses_anonymous_args = 0
+ 387 0000 80B5     		push	{r7, lr}
+ 388              		.cfi_def_cfa_offset 8
+ 389              		.cfi_offset 7, -8
+ 390              		.cfi_offset 14, -4
+ 391 0002 00AF     		add	r7, sp, #0
+ 392              		.cfi_def_cfa_register 7
+ 378:Generated_Source\PSoC5/Decoder_1.c ****     // important! Though initial drive mode is HiZ, the Initial Drive State must be set to High (1)
+ 379:Generated_Source\PSoC5/Decoder_1.c ****     // else button behavior is erratical
+ 380:Generated_Source\PSoC5/Decoder_1.c ****     
+ 381:Generated_Source\PSoC5/Decoder_1.c ****     #if Decoder_1_IsrMode
+ 382:Generated_Source\PSoC5/Decoder_1.c ****         
+ 383:Generated_Source\PSoC5/Decoder_1.c ****          #if (Decoder_1_BtnEnable)
+ 384:Generated_Source\PSoC5/Decoder_1.c ****             Decoder_1_PINS3_SetDriveMode (Decoder_1_PINS3_DM_RES_UP); // Resistive Pull Up
+ 385:Generated_Source\PSoC5/Decoder_1.c ****         #else
+ 386:Generated_Source\PSoC5/Decoder_1.c ****             Decoder_1_PINS2_SetDriveMode (Decoder_1_PINS2_DM_RES_UP); // Resistive Pull Up
+ 393              		.loc 1 386 0
+ 394 0004 0420     		movs	r0, #4
+ 395 0006 FFF7FEFF 		bl	Decoder_1_PINS2_SetDriveMode
+ 387:Generated_Source\PSoC5/Decoder_1.c ****         #endif 
+ 388:Generated_Source\PSoC5/Decoder_1.c ****         
+ 389:Generated_Source\PSoC5/Decoder_1.c ****     #else
+ 390:Generated_Source\PSoC5/Decoder_1.c ****         Decoder_1_pin_A_SetDriveMode (Decoder_1_pin_A_DM_RES_UP);     // Resistive Pull Up
+ 391:Generated_Source\PSoC5/Decoder_1.c ****         Decoder_1_pin_B_SetDriveMode (Decoder_1_pin_B_DM_RES_UP);     // Resistive Pull Up
+ 392:Generated_Source\PSoC5/Decoder_1.c ****         
+ 393:Generated_Source\PSoC5/Decoder_1.c ****         #if (Decoder_1_BtnEnable)
+ 394:Generated_Source\PSoC5/Decoder_1.c ****             Decoder_1_pin_btn_SetDriveMode (Decoder_1_pin_btn_DM_RES_UP); // Resistive Pull Up
+ 395:Generated_Source\PSoC5/Decoder_1.c ****         #endif
+ 396:Generated_Source\PSoC5/Decoder_1.c ****         
+ 397:Generated_Source\PSoC5/Decoder_1.c ****     #endif
+ 398:Generated_Source\PSoC5/Decoder_1.c ****     
+ 399:Generated_Source\PSoC5/Decoder_1.c **** }
+ 396              		.loc 1 399 0
+ 397 000a 00BF     		nop
+ 398 000c 80BD     		pop	{r7, pc}
+ 399              		.cfi_endproc
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 15
+
+
+ 400              	.LFE69:
+ 401              		.size	Decoder_1_SetInputsPullUp, .-Decoder_1_SetInputsPullUp
+ 402 000e 00BF     		.section	.text.Decoder_1_SetInputsHiZ,"ax",%progbits
+ 403              		.align	2
+ 404              		.global	Decoder_1_SetInputsHiZ
+ 405              		.thumb
+ 406              		.thumb_func
+ 407              		.type	Decoder_1_SetInputsHiZ, %function
+ 408              	Decoder_1_SetInputsHiZ:
+ 409              	.LFB70:
+ 400:Generated_Source\PSoC5/Decoder_1.c **** 
+ 401:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ 402:Generated_Source\PSoC5/Decoder_1.c **** // Set input pins state to High Impedance Digital 
+ 403:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ 404:Generated_Source\PSoC5/Decoder_1.c **** 
+ 405:Generated_Source\PSoC5/Decoder_1.c **** void Decoder_1_SetInputsHiZ()
+ 406:Generated_Source\PSoC5/Decoder_1.c **** {
+ 410              		.loc 1 406 0
+ 411              		.cfi_startproc
+ 412              		@ args = 0, pretend = 0, frame = 0
+ 413              		@ frame_needed = 1, uses_anonymous_args = 0
+ 414 0000 80B5     		push	{r7, lr}
+ 415              		.cfi_def_cfa_offset 8
+ 416              		.cfi_offset 7, -8
+ 417              		.cfi_offset 14, -4
+ 418 0002 00AF     		add	r7, sp, #0
+ 419              		.cfi_def_cfa_register 7
+ 407:Generated_Source\PSoC5/Decoder_1.c ****     #if Decoder_1_IsrMode
+ 408:Generated_Source\PSoC5/Decoder_1.c ****         
+ 409:Generated_Source\PSoC5/Decoder_1.c ****          #if (Decoder_1_BtnEnable)
+ 410:Generated_Source\PSoC5/Decoder_1.c ****             Decoder_1_PINS3_SetDriveMode (Decoder_1_PINS3_DM_DIG_HIZ); // High Impedance Digital
+ 411:Generated_Source\PSoC5/Decoder_1.c ****         #else
+ 412:Generated_Source\PSoC5/Decoder_1.c ****             Decoder_1_PINS2_SetDriveMode (Decoder_1_PINS2_DM_DIG_HIZ); // High Impedance Digital
+ 420              		.loc 1 412 0
+ 421 0004 0220     		movs	r0, #2
+ 422 0006 FFF7FEFF 		bl	Decoder_1_PINS2_SetDriveMode
+ 413:Generated_Source\PSoC5/Decoder_1.c ****         #endif 
+ 414:Generated_Source\PSoC5/Decoder_1.c ****         
+ 415:Generated_Source\PSoC5/Decoder_1.c ****     #else
+ 416:Generated_Source\PSoC5/Decoder_1.c ****         Decoder_1_pin_A_SetDriveMode (Decoder_1_pin_A_DM_DIG_HIZ);     // High Impedance Digital
+ 417:Generated_Source\PSoC5/Decoder_1.c ****         Decoder_1_pin_B_SetDriveMode (Decoder_1_pin_B_DM_DIG_HIZ);     // High Impedance Digital
+ 418:Generated_Source\PSoC5/Decoder_1.c ****         
+ 419:Generated_Source\PSoC5/Decoder_1.c ****         #if (Decoder_1_BtnEnable)
+ 420:Generated_Source\PSoC5/Decoder_1.c ****             Decoder_1_pin_btn_SetDriveMode (Decoder_1_pin_btn_DM_DIG_HIZ); //High Impedance Digital
+ 421:Generated_Source\PSoC5/Decoder_1.c ****         #endif
+ 422:Generated_Source\PSoC5/Decoder_1.c ****         
+ 423:Generated_Source\PSoC5/Decoder_1.c ****     #endif    
+ 424:Generated_Source\PSoC5/Decoder_1.c **** }
+ 423              		.loc 1 424 0
+ 424 000a 00BF     		nop
+ 425 000c 80BD     		pop	{r7, pc}
+ 426              		.cfi_endproc
+ 427              	.LFE70:
+ 428              		.size	Decoder_1_SetInputsHiZ, .-Decoder_1_SetInputsHiZ
+ 429 000e 00BF     		.section	.text.Decoder_1_GetPosition,"ax",%progbits
+ 430              		.align	2
+ 431              		.global	Decoder_1_GetPosition
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 16
+
+
+ 432              		.thumb
+ 433              		.thumb_func
+ 434              		.type	Decoder_1_GetPosition, %function
+ 435              	Decoder_1_GetPosition:
+ 436              	.LFB71:
+ 425:Generated_Source\PSoC5/Decoder_1.c **** 
+ 426:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ 427:Generated_Source\PSoC5/Decoder_1.c **** // Get encoder current position 
+ 428:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ 429:Generated_Source\PSoC5/Decoder_1.c **** 
+ 430:Generated_Source\PSoC5/Decoder_1.c **** er_t  Decoder_1_GetPosition() { return aPosition; }
+ 437              		.loc 1 430 0
+ 438              		.cfi_startproc
+ 439              		@ args = 0, pretend = 0, frame = 0
+ 440              		@ frame_needed = 1, uses_anonymous_args = 0
+ 441              		@ link register save eliminated.
+ 442 0000 80B4     		push	{r7}
+ 443              		.cfi_def_cfa_offset 4
+ 444              		.cfi_offset 7, -4
+ 445 0002 00AF     		add	r7, sp, #0
+ 446              		.cfi_def_cfa_register 7
+ 447              		.loc 1 430 0
+ 448 0004 034B     		ldr	r3, .L25
+ 449 0006 93F90030 		ldrsb	r3, [r3]
+ 450 000a 1846     		mov	r0, r3
+ 451 000c BD46     		mov	sp, r7
+ 452              		.cfi_def_cfa_register 13
+ 453              		@ sp needed
+ 454 000e 80BC     		pop	{r7}
+ 455              		.cfi_restore 7
+ 456              		.cfi_def_cfa_offset 0
+ 457 0010 7047     		bx	lr
+ 458              	.L26:
+ 459 0012 00BF     		.align	2
+ 460              	.L25:
+ 461 0014 01000000 		.word	aPosition
+ 462              		.cfi_endproc
+ 463              	.LFE71:
+ 464              		.size	Decoder_1_GetPosition, .-Decoder_1_GetPosition
+ 465              		.section	.text.Decoder_1_SetPosition,"ax",%progbits
+ 466              		.align	2
+ 467              		.global	Decoder_1_SetPosition
+ 468              		.thumb
+ 469              		.thumb_func
+ 470              		.type	Decoder_1_SetPosition, %function
+ 471              	Decoder_1_SetPosition:
+ 472              	.LFB72:
+ 431:Generated_Source\PSoC5/Decoder_1.c **** 
+ 432:Generated_Source\PSoC5/Decoder_1.c **** 
+ 433:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ 434:Generated_Source\PSoC5/Decoder_1.c **** // Set encoder position
+ 435:Generated_Source\PSoC5/Decoder_1.c **** // value must be in range [lower_bound, upper_bound]
+ 436:Generated_Source\PSoC5/Decoder_1.c **** // return: 0-failed, 1-success
+ 437:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ 438:Generated_Source\PSoC5/Decoder_1.c **** 
+ 439:Generated_Source\PSoC5/Decoder_1.c **** uint8 Decoder_1_SetPosition(er_t value)
+ 440:Generated_Source\PSoC5/Decoder_1.c **** {
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 17
+
+
+ 473              		.loc 1 440 0
+ 474              		.cfi_startproc
+ 475              		@ args = 0, pretend = 0, frame = 16
+ 476              		@ frame_needed = 1, uses_anonymous_args = 0
+ 477              		@ link register save eliminated.
+ 478 0000 80B4     		push	{r7}
+ 479              		.cfi_def_cfa_offset 4
+ 480              		.cfi_offset 7, -4
+ 481 0002 85B0     		sub	sp, sp, #20
+ 482              		.cfi_def_cfa_offset 24
+ 483 0004 00AF     		add	r7, sp, #0
+ 484              		.cfi_def_cfa_register 7
+ 485 0006 0346     		mov	r3, r0
+ 486 0008 FB71     		strb	r3, [r7, #7]
+ 441:Generated_Source\PSoC5/Decoder_1.c ****     uint8 result = 0;
+ 487              		.loc 1 441 0
+ 488 000a 0023     		movs	r3, #0
+ 489 000c FB73     		strb	r3, [r7, #15]
+ 442:Generated_Source\PSoC5/Decoder_1.c ****     
+ 443:Generated_Source\PSoC5/Decoder_1.c ****     if (aCheckBounds)
+ 490              		.loc 1 443 0
+ 491 000e 174B     		ldr	r3, .L32
+ 492 0010 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 493 0012 002B     		cmp	r3, #0
+ 494 0014 19D0     		beq	.L28
+ 444:Generated_Source\PSoC5/Decoder_1.c ****     {  
+ 445:Generated_Source\PSoC5/Decoder_1.c ****         if ((value >= aLowerBound) && (value <= aUpperBound))
+ 495              		.loc 1 445 0
+ 496 0016 164B     		ldr	r3, .L32+4
+ 497 0018 93F90030 		ldrsb	r3, [r3]
+ 498 001c 97F90720 		ldrsb	r2, [r7, #7]
+ 499 0020 9A42     		cmp	r2, r3
+ 500 0022 1DDB     		blt	.L30
+ 501              		.loc 1 445 0 is_stmt 0 discriminator 1
+ 502 0024 134B     		ldr	r3, .L32+8
+ 503 0026 93F90030 		ldrsb	r3, [r3]
+ 504 002a 97F90720 		ldrsb	r2, [r7, #7]
+ 505 002e 9A42     		cmp	r2, r3
+ 506 0030 16DC     		bgt	.L30
+ 446:Generated_Source\PSoC5/Decoder_1.c ****         {
+ 447:Generated_Source\PSoC5/Decoder_1.c ****             {
+ 448:Generated_Source\PSoC5/Decoder_1.c ****                 aPosition = value;      // update position
+ 507              		.loc 1 448 0 is_stmt 1
+ 508 0032 114A     		ldr	r2, .L32+12
+ 509 0034 FB79     		ldrb	r3, [r7, #7]
+ 510 0036 1370     		strb	r3, [r2]
+ 449:Generated_Source\PSoC5/Decoder_1.c ****                 aDirection = 0;         // no rotation (required if position updated in the main lo
+ 511              		.loc 1 449 0
+ 512 0038 104B     		ldr	r3, .L32+16
+ 513 003a 0022     		movs	r2, #0
+ 514 003c 1A70     		strb	r2, [r3]
+ 450:Generated_Source\PSoC5/Decoder_1.c ****                 fPositionChanged = 1;   // fire position changed event
+ 515              		.loc 1 450 0
+ 516 003e 104B     		ldr	r3, .L32+20
+ 517 0040 0122     		movs	r2, #1
+ 518 0042 1A70     		strb	r2, [r3]
+ 451:Generated_Source\PSoC5/Decoder_1.c ****             }    
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 18
+
+
+ 452:Generated_Source\PSoC5/Decoder_1.c ****             result = 1;                 // success
+ 519              		.loc 1 452 0
+ 520 0044 0123     		movs	r3, #1
+ 521 0046 FB73     		strb	r3, [r7, #15]
+ 522 0048 0AE0     		b	.L30
+ 523              	.L28:
+ 453:Generated_Source\PSoC5/Decoder_1.c ****         }
+ 454:Generated_Source\PSoC5/Decoder_1.c ****     }
+ 455:Generated_Source\PSoC5/Decoder_1.c ****     else
+ 456:Generated_Source\PSoC5/Decoder_1.c ****     {
+ 457:Generated_Source\PSoC5/Decoder_1.c ****             {
+ 458:Generated_Source\PSoC5/Decoder_1.c ****                 aPosition = value;      // update position
+ 524              		.loc 1 458 0
+ 525 004a 0B4A     		ldr	r2, .L32+12
+ 526 004c FB79     		ldrb	r3, [r7, #7]
+ 527 004e 1370     		strb	r3, [r2]
+ 459:Generated_Source\PSoC5/Decoder_1.c ****                 aDirection = 0;         // no rotation (required if position updated in the main lo
+ 528              		.loc 1 459 0
+ 529 0050 0A4B     		ldr	r3, .L32+16
+ 530 0052 0022     		movs	r2, #0
+ 531 0054 1A70     		strb	r2, [r3]
+ 460:Generated_Source\PSoC5/Decoder_1.c ****                 fPositionChanged = 1;   // fire position changed event
+ 532              		.loc 1 460 0
+ 533 0056 0A4B     		ldr	r3, .L32+20
+ 534 0058 0122     		movs	r2, #1
+ 535 005a 1A70     		strb	r2, [r3]
+ 461:Generated_Source\PSoC5/Decoder_1.c ****             }    
+ 462:Generated_Source\PSoC5/Decoder_1.c ****             result = 1;                 // success
+ 536              		.loc 1 462 0
+ 537 005c 0123     		movs	r3, #1
+ 538 005e FB73     		strb	r3, [r7, #15]
+ 539              	.L30:
+ 463:Generated_Source\PSoC5/Decoder_1.c ****     }  
+ 464:Generated_Source\PSoC5/Decoder_1.c ****     
+ 465:Generated_Source\PSoC5/Decoder_1.c ****     return result;
+ 540              		.loc 1 465 0
+ 541 0060 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 466:Generated_Source\PSoC5/Decoder_1.c **** }
+ 542              		.loc 1 466 0
+ 543 0062 1846     		mov	r0, r3
+ 544 0064 1437     		adds	r7, r7, #20
+ 545              		.cfi_def_cfa_offset 4
+ 546 0066 BD46     		mov	sp, r7
+ 547              		.cfi_def_cfa_register 13
+ 548              		@ sp needed
+ 549 0068 80BC     		pop	{r7}
+ 550              		.cfi_restore 7
+ 551              		.cfi_def_cfa_offset 0
+ 552 006a 7047     		bx	lr
+ 553              	.L33:
+ 554              		.align	2
+ 555              	.L32:
+ 556 006c 05000000 		.word	aCheckBounds
+ 557 0070 02000000 		.word	aLowerBound
+ 558 0074 03000000 		.word	aUpperBound
+ 559 0078 01000000 		.word	aPosition
+ 560 007c 02000000 		.word	aDirection
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 19
+
+
+ 561 0080 03000000 		.word	fPositionChanged
+ 562              		.cfi_endproc
+ 563              	.LFE72:
+ 564              		.size	Decoder_1_SetPosition, .-Decoder_1_SetPosition
+ 565              		.section	.text.Decoder_1_GetDirection,"ax",%progbits
+ 566              		.align	2
+ 567              		.global	Decoder_1_GetDirection
+ 568              		.thumb
+ 569              		.thumb_func
+ 570              		.type	Decoder_1_GetDirection, %function
+ 571              	Decoder_1_GetDirection:
+ 572              	.LFB73:
+ 467:Generated_Source\PSoC5/Decoder_1.c **** 
+ 468:Generated_Source\PSoC5/Decoder_1.c **** 
+ 469:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ 470:Generated_Source\PSoC5/Decoder_1.c **** // Get last direction of encoder rotation:
+ 471:Generated_Source\PSoC5/Decoder_1.c **** // return: -1=CCW, 1=CW, 0-none
+ 472:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ 473:Generated_Source\PSoC5/Decoder_1.c **** 
+ 474:Generated_Source\PSoC5/Decoder_1.c **** int8  Decoder_1_GetDirection() { return aDirection; }
+ 573              		.loc 1 474 0
+ 574              		.cfi_startproc
+ 575              		@ args = 0, pretend = 0, frame = 0
+ 576              		@ frame_needed = 1, uses_anonymous_args = 0
+ 577              		@ link register save eliminated.
+ 578 0000 80B4     		push	{r7}
+ 579              		.cfi_def_cfa_offset 4
+ 580              		.cfi_offset 7, -4
+ 581 0002 00AF     		add	r7, sp, #0
+ 582              		.cfi_def_cfa_register 7
+ 583              		.loc 1 474 0
+ 584 0004 034B     		ldr	r3, .L36
+ 585 0006 93F90030 		ldrsb	r3, [r3]
+ 586 000a 1846     		mov	r0, r3
+ 587 000c BD46     		mov	sp, r7
+ 588              		.cfi_def_cfa_register 13
+ 589              		@ sp needed
+ 590 000e 80BC     		pop	{r7}
+ 591              		.cfi_restore 7
+ 592              		.cfi_def_cfa_offset 0
+ 593 0010 7047     		bx	lr
+ 594              	.L37:
+ 595 0012 00BF     		.align	2
+ 596              	.L36:
+ 597 0014 02000000 		.word	aDirection
+ 598              		.cfi_endproc
+ 599              	.LFE73:
+ 600              		.size	Decoder_1_GetDirection, .-Decoder_1_GetDirection
+ 601              		.section	.text.Decoder_1_GetPositionChanged,"ax",%progbits
+ 602              		.align	2
+ 603              		.global	Decoder_1_GetPositionChanged
+ 604              		.thumb
+ 605              		.thumb_func
+ 606              		.type	Decoder_1_GetPositionChanged, %function
+ 607              	Decoder_1_GetPositionChanged:
+ 608              	.LFB74:
+ 475:Generated_Source\PSoC5/Decoder_1.c **** 
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 20
+
+
+ 476:Generated_Source\PSoC5/Decoder_1.c **** 
+ 477:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ 478:Generated_Source\PSoC5/Decoder_1.c **** // Read button pressed flag, reset flag if non-zero
+ 479:Generated_Source\PSoC5/Decoder_1.c **** // return: 1- pressed, 0-not pressed
+ 480:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ 481:Generated_Source\PSoC5/Decoder_1.c **** #if (Decoder_1_BtnEnable)
+ 482:Generated_Source\PSoC5/Decoder_1.c **** uint8 Decoder_1_GetBtnPressed()  
+ 483:Generated_Source\PSoC5/Decoder_1.c **** {
+ 484:Generated_Source\PSoC5/Decoder_1.c ****     uint8 result = fBtnPressed;
+ 485:Generated_Source\PSoC5/Decoder_1.c ****     if (fBtnPressed) fBtnPressed = 0; // reset flag for one-time use only
+ 486:Generated_Source\PSoC5/Decoder_1.c ****     return result;
+ 487:Generated_Source\PSoC5/Decoder_1.c **** }
+ 488:Generated_Source\PSoC5/Decoder_1.c **** #endif
+ 489:Generated_Source\PSoC5/Decoder_1.c **** 
+ 490:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ 491:Generated_Source\PSoC5/Decoder_1.c **** // Return position changed flag, reset flag if non-zero
+ 492:Generated_Source\PSoC5/Decoder_1.c **** //
+ 493:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ 494:Generated_Source\PSoC5/Decoder_1.c **** 
+ 495:Generated_Source\PSoC5/Decoder_1.c **** uint8 Decoder_1_GetPositionChanged()  
+ 496:Generated_Source\PSoC5/Decoder_1.c **** {
+ 609              		.loc 1 496 0
+ 610              		.cfi_startproc
+ 611              		@ args = 0, pretend = 0, frame = 0
+ 612              		@ frame_needed = 1, uses_anonymous_args = 0
+ 613              		@ link register save eliminated.
+ 614 0000 80B4     		push	{r7}
+ 615              		.cfi_def_cfa_offset 4
+ 616              		.cfi_offset 7, -4
+ 617 0002 00AF     		add	r7, sp, #0
+ 618              		.cfi_def_cfa_register 7
+ 497:Generated_Source\PSoC5/Decoder_1.c ****         
+ 498:Generated_Source\PSoC5/Decoder_1.c ****     // 4. check position bounds
+ 499:Generated_Source\PSoC5/Decoder_1.c ****     // 5. update position
+ 500:Generated_Source\PSoC5/Decoder_1.c ****     
+ 501:Generated_Source\PSoC5/Decoder_1.c ****     // this occures in the main loop->
+ 502:Generated_Source\PSoC5/Decoder_1.c ****     
+ 503:Generated_Source\PSoC5/Decoder_1.c ****     if (fPositionChanged==0) return 0;  // position did not change
+ 619              		.loc 1 503 0
+ 620 0004 3C4B     		ldr	r3, .L50
+ 621 0006 1B78     		ldrb	r3, [r3]
+ 622 0008 DBB2     		uxtb	r3, r3
+ 623 000a 002B     		cmp	r3, #0
+ 624 000c 01D1     		bne	.L39
+ 625              		.loc 1 503 0 is_stmt 0 discriminator 1
+ 626 000e 0023     		movs	r3, #0
+ 627 0010 6DE0     		b	.L40
+ 628              	.L39:
+ 504:Generated_Source\PSoC5/Decoder_1.c ****        
+ 505:Generated_Source\PSoC5/Decoder_1.c ****     fPositionChanged=0;                 // reset flag 
+ 629              		.loc 1 505 0 is_stmt 1
+ 630 0012 394B     		ldr	r3, .L50
+ 631 0014 0022     		movs	r2, #0
+ 632 0016 1A70     		strb	r2, [r3]
+ 506:Generated_Source\PSoC5/Decoder_1.c ****     
+ 507:Generated_Source\PSoC5/Decoder_1.c ****     if (aDirection==0) return 1;        // typically when set position
+ 633              		.loc 1 507 0
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 21
+
+
+ 634 0018 384B     		ldr	r3, .L50+4
+ 635 001a 93F90030 		ldrsb	r3, [r3]
+ 636 001e 002B     		cmp	r3, #0
+ 637 0020 01D1     		bne	.L41
+ 638              		.loc 1 507 0 is_stmt 0 discriminator 1
+ 639 0022 0123     		movs	r3, #1
+ 640 0024 63E0     		b	.L40
+ 641              	.L41:
+ 508:Generated_Source\PSoC5/Decoder_1.c ****     
+ 509:Generated_Source\PSoC5/Decoder_1.c ****     
+ 510:Generated_Source\PSoC5/Decoder_1.c ****     if (aCheckBounds)                   // check bounds 
+ 642              		.loc 1 510 0 is_stmt 1
+ 643 0026 364B     		ldr	r3, .L50+8
+ 644 0028 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 645 002a 002B     		cmp	r3, #0
+ 646 002c 40D0     		beq	.L42
+ 511:Generated_Source\PSoC5/Decoder_1.c ****                               
+ 512:Generated_Source\PSoC5/Decoder_1.c ****         if (aDirection > 0) {
+ 647              		.loc 1 512 0
+ 648 002e 334B     		ldr	r3, .L50+4
+ 649 0030 93F90030 		ldrsb	r3, [r3]
+ 650 0034 002B     		cmp	r3, #0
+ 651 0036 1DDD     		ble	.L43
+ 513:Generated_Source\PSoC5/Decoder_1.c ****             if ( aPosition > aUpperBound - aIncrement) return 0; // over or repeated UB            
+ 652              		.loc 1 513 0
+ 653 0038 324B     		ldr	r3, .L50+12
+ 654 003a 93F90030 		ldrsb	r3, [r3]
+ 655 003e 1A46     		mov	r2, r3
+ 656 0040 314B     		ldr	r3, .L50+16
+ 657 0042 93F90030 		ldrsb	r3, [r3]
+ 658 0046 1946     		mov	r1, r3
+ 659 0048 304B     		ldr	r3, .L50+20
+ 660 004a 93F90030 		ldrsb	r3, [r3]
+ 661 004e CB1A     		subs	r3, r1, r3
+ 662 0050 9A42     		cmp	r2, r3
+ 663 0052 01DD     		ble	.L44
+ 664              		.loc 1 513 0 is_stmt 0 discriminator 1
+ 665 0054 0023     		movs	r3, #0
+ 666 0056 4AE0     		b	.L40
+ 667              	.L44:
+ 514:Generated_Source\PSoC5/Decoder_1.c ****             aPosition += aIncrement;
+ 668              		.loc 1 514 0 is_stmt 1
+ 669 0058 2A4B     		ldr	r3, .L50+12
+ 670 005a 93F90030 		ldrsb	r3, [r3]
+ 671 005e DAB2     		uxtb	r2, r3
+ 672 0060 2A4B     		ldr	r3, .L50+20
+ 673 0062 93F90030 		ldrsb	r3, [r3]
+ 674 0066 DBB2     		uxtb	r3, r3
+ 675 0068 1344     		add	r3, r3, r2
+ 676 006a DBB2     		uxtb	r3, r3
+ 677 006c 5AB2     		sxtb	r2, r3
+ 678 006e 254B     		ldr	r3, .L50+12
+ 679 0070 1A70     		strb	r2, [r3]
+ 680 0072 3BE0     		b	.L47
+ 681              	.L43:
+ 515:Generated_Source\PSoC5/Decoder_1.c ****         }
+ 516:Generated_Source\PSoC5/Decoder_1.c ****         else
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 22
+
+
+ 517:Generated_Source\PSoC5/Decoder_1.c ****         //if (aDirection < 0)
+ 518:Generated_Source\PSoC5/Decoder_1.c ****         {
+ 519:Generated_Source\PSoC5/Decoder_1.c ****             if ( aPosition < aLowerBound + aIncrement) return 0; // below or repeated LB 
+ 682              		.loc 1 519 0
+ 683 0074 234B     		ldr	r3, .L50+12
+ 684 0076 93F90030 		ldrsb	r3, [r3]
+ 685 007a 1A46     		mov	r2, r3
+ 686 007c 244B     		ldr	r3, .L50+24
+ 687 007e 93F90030 		ldrsb	r3, [r3]
+ 688 0082 1946     		mov	r1, r3
+ 689 0084 214B     		ldr	r3, .L50+20
+ 690 0086 93F90030 		ldrsb	r3, [r3]
+ 691 008a 0B44     		add	r3, r3, r1
+ 692 008c 9A42     		cmp	r2, r3
+ 693 008e 01DA     		bge	.L46
+ 694              		.loc 1 519 0 is_stmt 0 discriminator 1
+ 695 0090 0023     		movs	r3, #0
+ 696 0092 2CE0     		b	.L40
+ 697              	.L46:
+ 520:Generated_Source\PSoC5/Decoder_1.c ****             aPosition -= aIncrement;
+ 698              		.loc 1 520 0 is_stmt 1
+ 699 0094 1B4B     		ldr	r3, .L50+12
+ 700 0096 93F90030 		ldrsb	r3, [r3]
+ 701 009a DAB2     		uxtb	r2, r3
+ 702 009c 1B4B     		ldr	r3, .L50+20
+ 703 009e 93F90030 		ldrsb	r3, [r3]
+ 704 00a2 DBB2     		uxtb	r3, r3
+ 705 00a4 D31A     		subs	r3, r2, r3
+ 706 00a6 DBB2     		uxtb	r3, r3
+ 707 00a8 5AB2     		sxtb	r2, r3
+ 708 00aa 164B     		ldr	r3, .L50+12
+ 709 00ac 1A70     		strb	r2, [r3]
+ 710 00ae 1DE0     		b	.L47
+ 711              	.L42:
+ 521:Generated_Source\PSoC5/Decoder_1.c ****         }
+ 522:Generated_Source\PSoC5/Decoder_1.c **** 
+ 523:Generated_Source\PSoC5/Decoder_1.c ****     else
+ 524:Generated_Source\PSoC5/Decoder_1.c ****             
+ 525:Generated_Source\PSoC5/Decoder_1.c ****         aPosition = (aDirection==1)? aPosition + aIncrement : aPosition - aIncrement;  // update po
+ 712              		.loc 1 525 0
+ 713 00b0 124B     		ldr	r3, .L50+4
+ 714 00b2 93F90030 		ldrsb	r3, [r3]
+ 715 00b6 012B     		cmp	r3, #1
+ 716 00b8 0BD1     		bne	.L48
+ 717              		.loc 1 525 0 is_stmt 0 discriminator 1
+ 718 00ba 124B     		ldr	r3, .L50+12
+ 719 00bc 93F90030 		ldrsb	r3, [r3]
+ 720 00c0 DAB2     		uxtb	r2, r3
+ 721 00c2 124B     		ldr	r3, .L50+20
+ 722 00c4 93F90030 		ldrsb	r3, [r3]
+ 723 00c8 DBB2     		uxtb	r3, r3
+ 724 00ca 1344     		add	r3, r3, r2
+ 725 00cc DBB2     		uxtb	r3, r3
+ 726 00ce 5BB2     		sxtb	r3, r3
+ 727 00d0 0AE0     		b	.L49
+ 728              	.L48:
+ 729              		.loc 1 525 0 discriminator 2
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 23
+
+
+ 730 00d2 0C4B     		ldr	r3, .L50+12
+ 731 00d4 93F90030 		ldrsb	r3, [r3]
+ 732 00d8 DAB2     		uxtb	r2, r3
+ 733 00da 0C4B     		ldr	r3, .L50+20
+ 734 00dc 93F90030 		ldrsb	r3, [r3]
+ 735 00e0 DBB2     		uxtb	r3, r3
+ 736 00e2 D31A     		subs	r3, r2, r3
+ 737 00e4 DBB2     		uxtb	r3, r3
+ 738 00e6 5BB2     		sxtb	r3, r3
+ 739              	.L49:
+ 740              		.loc 1 525 0 discriminator 4
+ 741 00e8 064A     		ldr	r2, .L50+12
+ 742 00ea 1370     		strb	r3, [r2]
+ 743              	.L47:
+ 526:Generated_Source\PSoC5/Decoder_1.c **** 
+ 527:Generated_Source\PSoC5/Decoder_1.c ****     
+ 528:Generated_Source\PSoC5/Decoder_1.c ****     return 1;                           // position changed
+ 744              		.loc 1 528 0 is_stmt 1
+ 745 00ec 0123     		movs	r3, #1
+ 746              	.L40:
+ 529:Generated_Source\PSoC5/Decoder_1.c **** }
+ 747              		.loc 1 529 0
+ 748 00ee 1846     		mov	r0, r3
+ 749 00f0 BD46     		mov	sp, r7
+ 750              		.cfi_def_cfa_register 13
+ 751              		@ sp needed
+ 752 00f2 80BC     		pop	{r7}
+ 753              		.cfi_restore 7
+ 754              		.cfi_def_cfa_offset 0
+ 755 00f4 7047     		bx	lr
+ 756              	.L51:
+ 757 00f6 00BF     		.align	2
+ 758              	.L50:
+ 759 00f8 03000000 		.word	fPositionChanged
+ 760 00fc 02000000 		.word	aDirection
+ 761 0100 05000000 		.word	aCheckBounds
+ 762 0104 01000000 		.word	aPosition
+ 763 0108 03000000 		.word	aUpperBound
+ 764 010c 01000000 		.word	aIncrement
+ 765 0110 02000000 		.word	aLowerBound
+ 766              		.cfi_endproc
+ 767              	.LFE74:
+ 768              		.size	Decoder_1_GetPositionChanged, .-Decoder_1_GetPositionChanged
+ 769              		.section	.text.Decoder_1_GetInitStatus,"ax",%progbits
+ 770              		.align	2
+ 771              		.global	Decoder_1_GetInitStatus
+ 772              		.thumb
+ 773              		.thumb_func
+ 774              		.type	Decoder_1_GetInitStatus, %function
+ 775              	Decoder_1_GetInitStatus:
+ 776              	.LFB75:
+ 530:Generated_Source\PSoC5/Decoder_1.c **** 
+ 531:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ 532:Generated_Source\PSoC5/Decoder_1.c **** // Get Initialized status
+ 533:Generated_Source\PSoC5/Decoder_1.c **** // return: 1= started, 0= stopped
+ 534:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ 535:Generated_Source\PSoC5/Decoder_1.c **** 
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 24
+
+
+ 536:Generated_Source\PSoC5/Decoder_1.c **** uint8 Decoder_1_GetInitStatus() { return aInitialized; }
+ 777              		.loc 1 536 0
+ 778              		.cfi_startproc
+ 779              		@ args = 0, pretend = 0, frame = 0
+ 780              		@ frame_needed = 1, uses_anonymous_args = 0
+ 781              		@ link register save eliminated.
+ 782 0000 80B4     		push	{r7}
+ 783              		.cfi_def_cfa_offset 4
+ 784              		.cfi_offset 7, -4
+ 785 0002 00AF     		add	r7, sp, #0
+ 786              		.cfi_def_cfa_register 7
+ 787              		.loc 1 536 0
+ 788 0004 024B     		ldr	r3, .L54
+ 789 0006 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 790 0008 1846     		mov	r0, r3
+ 791 000a BD46     		mov	sp, r7
+ 792              		.cfi_def_cfa_register 13
+ 793              		@ sp needed
+ 794 000c 80BC     		pop	{r7}
+ 795              		.cfi_restore 7
+ 796              		.cfi_def_cfa_offset 0
+ 797 000e 7047     		bx	lr
+ 798              	.L55:
+ 799              		.align	2
+ 800              	.L54:
+ 801 0010 04000000 		.word	aInitialized
+ 802              		.cfi_endproc
+ 803              	.LFE75:
+ 804              		.size	Decoder_1_GetInitStatus, .-Decoder_1_GetInitStatus
+ 805              		.section	.text.Decoder_1_SetIncrement,"ax",%progbits
+ 806              		.align	2
+ 807              		.global	Decoder_1_SetIncrement
+ 808              		.thumb
+ 809              		.thumb_func
+ 810              		.type	Decoder_1_SetIncrement, %function
+ 811              	Decoder_1_SetIncrement:
+ 812              	.LFB76:
+ 537:Generated_Source\PSoC5/Decoder_1.c **** 
+ 538:Generated_Source\PSoC5/Decoder_1.c **** 
+ 539:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ 540:Generated_Source\PSoC5/Decoder_1.c **** // Set encoder increment
+ 541:Generated_Source\PSoC5/Decoder_1.c **** // value must be positive, non-zero value
+ 542:Generated_Source\PSoC5/Decoder_1.c **** // return: 0-fail, 1-success
+ 543:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ 544:Generated_Source\PSoC5/Decoder_1.c **** 
+ 545:Generated_Source\PSoC5/Decoder_1.c **** uint8 Decoder_1_SetIncrement(er_t value)
+ 546:Generated_Source\PSoC5/Decoder_1.c **** {
+ 813              		.loc 1 546 0
+ 814              		.cfi_startproc
+ 815              		@ args = 0, pretend = 0, frame = 16
+ 816              		@ frame_needed = 1, uses_anonymous_args = 0
+ 817              		@ link register save eliminated.
+ 818 0000 80B4     		push	{r7}
+ 819              		.cfi_def_cfa_offset 4
+ 820              		.cfi_offset 7, -4
+ 821 0002 85B0     		sub	sp, sp, #20
+ 822              		.cfi_def_cfa_offset 24
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 25
+
+
+ 823 0004 00AF     		add	r7, sp, #0
+ 824              		.cfi_def_cfa_register 7
+ 825 0006 0346     		mov	r3, r0
+ 826 0008 FB71     		strb	r3, [r7, #7]
+ 547:Generated_Source\PSoC5/Decoder_1.c ****     uint8 result = 0;
+ 827              		.loc 1 547 0
+ 828 000a 0023     		movs	r3, #0
+ 829 000c FB73     		strb	r3, [r7, #15]
+ 548:Generated_Source\PSoC5/Decoder_1.c **** 
+ 549:Generated_Source\PSoC5/Decoder_1.c ****     if ( value > 0 ) 
+ 830              		.loc 1 549 0
+ 831 000e 97F90730 		ldrsb	r3, [r7, #7]
+ 832 0012 002B     		cmp	r3, #0
+ 833 0014 04DD     		ble	.L57
+ 550:Generated_Source\PSoC5/Decoder_1.c ****     {
+ 551:Generated_Source\PSoC5/Decoder_1.c ****         aIncrement = value;
+ 834              		.loc 1 551 0
+ 835 0016 054A     		ldr	r2, .L59
+ 836 0018 FB79     		ldrb	r3, [r7, #7]
+ 837 001a 1370     		strb	r3, [r2]
+ 552:Generated_Source\PSoC5/Decoder_1.c ****         result = 1;
+ 838              		.loc 1 552 0
+ 839 001c 0123     		movs	r3, #1
+ 840 001e FB73     		strb	r3, [r7, #15]
+ 841              	.L57:
+ 553:Generated_Source\PSoC5/Decoder_1.c ****     }
+ 554:Generated_Source\PSoC5/Decoder_1.c ****     
+ 555:Generated_Source\PSoC5/Decoder_1.c ****     return result;
+ 842              		.loc 1 555 0
+ 843 0020 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 556:Generated_Source\PSoC5/Decoder_1.c **** }
+ 844              		.loc 1 556 0
+ 845 0022 1846     		mov	r0, r3
+ 846 0024 1437     		adds	r7, r7, #20
+ 847              		.cfi_def_cfa_offset 4
+ 848 0026 BD46     		mov	sp, r7
+ 849              		.cfi_def_cfa_register 13
+ 850              		@ sp needed
+ 851 0028 80BC     		pop	{r7}
+ 852              		.cfi_restore 7
+ 853              		.cfi_def_cfa_offset 0
+ 854 002a 7047     		bx	lr
+ 855              	.L60:
+ 856              		.align	2
+ 857              	.L59:
+ 858 002c 01000000 		.word	aIncrement
+ 859              		.cfi_endproc
+ 860              	.LFE76:
+ 861              		.size	Decoder_1_SetIncrement, .-Decoder_1_SetIncrement
+ 862              		.section	.text.Decoder_1_SetCheckBounds,"ax",%progbits
+ 863              		.align	2
+ 864              		.global	Decoder_1_SetCheckBounds
+ 865              		.thumb
+ 866              		.thumb_func
+ 867              		.type	Decoder_1_SetCheckBounds, %function
+ 868              	Decoder_1_SetCheckBounds:
+ 869              	.LFB77:
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 26
+
+
+ 557:Generated_Source\PSoC5/Decoder_1.c **** 
+ 558:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ 559:Generated_Source\PSoC5/Decoder_1.c **** // Set check bounds flag
+ 560:Generated_Source\PSoC5/Decoder_1.c **** // input: 1 - true, 0 - false 
+ 561:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ 562:Generated_Source\PSoC5/Decoder_1.c **** 
+ 563:Generated_Source\PSoC5/Decoder_1.c **** uint8  Decoder_1_SetCheckBounds (uint8 value)
+ 564:Generated_Source\PSoC5/Decoder_1.c **** {
+ 870              		.loc 1 564 0
+ 871              		.cfi_startproc
+ 872              		@ args = 0, pretend = 0, frame = 16
+ 873              		@ frame_needed = 1, uses_anonymous_args = 0
+ 874              		@ link register save eliminated.
+ 875 0000 80B4     		push	{r7}
+ 876              		.cfi_def_cfa_offset 4
+ 877              		.cfi_offset 7, -4
+ 878 0002 85B0     		sub	sp, sp, #20
+ 879              		.cfi_def_cfa_offset 24
+ 880 0004 00AF     		add	r7, sp, #0
+ 881              		.cfi_def_cfa_register 7
+ 882 0006 0346     		mov	r3, r0
+ 883 0008 FB71     		strb	r3, [r7, #7]
+ 565:Generated_Source\PSoC5/Decoder_1.c ****     uint8 result = 0;
+ 884              		.loc 1 565 0
+ 885 000a 0023     		movs	r3, #0
+ 886 000c FB73     		strb	r3, [r7, #15]
+ 566:Generated_Source\PSoC5/Decoder_1.c **** 
+ 567:Generated_Source\PSoC5/Decoder_1.c ****     aCheckBounds = value;
+ 887              		.loc 1 567 0
+ 888 000e 124A     		ldr	r2, .L67
+ 889 0010 FB79     		ldrb	r3, [r7, #7]
+ 890 0012 1370     		strb	r3, [r2]
+ 568:Generated_Source\PSoC5/Decoder_1.c **** 
+ 569:Generated_Source\PSoC5/Decoder_1.c ****     if (aCheckBounds)  
+ 891              		.loc 1 569 0
+ 892 0014 104B     		ldr	r3, .L67
+ 893 0016 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 894 0018 002B     		cmp	r3, #0
+ 895 001a 14D0     		beq	.L62
+ 570:Generated_Source\PSoC5/Decoder_1.c ****         result = (aLowerBound<=aPosition) && (aPosition<=aUpperBound);
+ 896              		.loc 1 570 0
+ 897 001c 0F4B     		ldr	r3, .L67+4
+ 898 001e 93F90020 		ldrsb	r2, [r3]
+ 899 0022 0F4B     		ldr	r3, .L67+8
+ 900 0024 93F90030 		ldrsb	r3, [r3]
+ 901 0028 9A42     		cmp	r2, r3
+ 902 002a 09DC     		bgt	.L63
+ 903              		.loc 1 570 0 is_stmt 0 discriminator 1
+ 904 002c 0C4B     		ldr	r3, .L67+8
+ 905 002e 93F90020 		ldrsb	r2, [r3]
+ 906 0032 0C4B     		ldr	r3, .L67+12
+ 907 0034 93F90030 		ldrsb	r3, [r3]
+ 908 0038 9A42     		cmp	r2, r3
+ 909 003a 01DC     		bgt	.L63
+ 910              		.loc 1 570 0 discriminator 3
+ 911 003c 0123     		movs	r3, #1
+ 912 003e 00E0     		b	.L64
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 27
+
+
+ 913              	.L63:
+ 914              		.loc 1 570 0 discriminator 4
+ 915 0040 0023     		movs	r3, #0
+ 916              	.L64:
+ 917              		.loc 1 570 0 discriminator 6
+ 918 0042 FB73     		strb	r3, [r7, #15]
+ 919 0044 01E0     		b	.L65
+ 920              	.L62:
+ 571:Generated_Source\PSoC5/Decoder_1.c ****     else
+ 572:Generated_Source\PSoC5/Decoder_1.c ****         result = 1;
+ 921              		.loc 1 572 0 is_stmt 1
+ 922 0046 0123     		movs	r3, #1
+ 923 0048 FB73     		strb	r3, [r7, #15]
+ 924              	.L65:
+ 573:Generated_Source\PSoC5/Decoder_1.c **** 
+ 574:Generated_Source\PSoC5/Decoder_1.c ****     return result;
+ 925              		.loc 1 574 0
+ 926 004a FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 575:Generated_Source\PSoC5/Decoder_1.c **** }
+ 927              		.loc 1 575 0
+ 928 004c 1846     		mov	r0, r3
+ 929 004e 1437     		adds	r7, r7, #20
+ 930              		.cfi_def_cfa_offset 4
+ 931 0050 BD46     		mov	sp, r7
+ 932              		.cfi_def_cfa_register 13
+ 933              		@ sp needed
+ 934 0052 80BC     		pop	{r7}
+ 935              		.cfi_restore 7
+ 936              		.cfi_def_cfa_offset 0
+ 937 0054 7047     		bx	lr
+ 938              	.L68:
+ 939 0056 00BF     		.align	2
+ 940              	.L67:
+ 941 0058 05000000 		.word	aCheckBounds
+ 942 005c 02000000 		.word	aLowerBound
+ 943 0060 01000000 		.word	aPosition
+ 944 0064 03000000 		.word	aUpperBound
+ 945              		.cfi_endproc
+ 946              	.LFE77:
+ 947              		.size	Decoder_1_SetCheckBounds, .-Decoder_1_SetCheckBounds
+ 948              		.section	.text.Decoder_1_SetBounds,"ax",%progbits
+ 949              		.align	2
+ 950              		.global	Decoder_1_SetBounds
+ 951              		.thumb
+ 952              		.thumb_func
+ 953              		.type	Decoder_1_SetBounds, %function
+ 954              	Decoder_1_SetBounds:
+ 955              	.LFB78:
+ 576:Generated_Source\PSoC5/Decoder_1.c **** 
+ 577:Generated_Source\PSoC5/Decoder_1.c **** 
+ 578:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ 579:Generated_Source\PSoC5/Decoder_1.c **** // Set encoder lower and upper bounds and resets position if out of range
+ 580:Generated_Source\PSoC5/Decoder_1.c **** // to avoid confusion, set new position prior to to updating bounds
+ 581:Generated_Source\PSoC5/Decoder_1.c **** // return: 0-failed, 1-success
+ 582:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ 583:Generated_Source\PSoC5/Decoder_1.c **** 
+ 584:Generated_Source\PSoC5/Decoder_1.c **** uint8 Decoder_1_SetBounds (er_t lBound, er_t uBound)
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 28
+
+
+ 585:Generated_Source\PSoC5/Decoder_1.c **** {
+ 956              		.loc 1 585 0
+ 957              		.cfi_startproc
+ 958              		@ args = 0, pretend = 0, frame = 16
+ 959              		@ frame_needed = 1, uses_anonymous_args = 0
+ 960              		@ link register save eliminated.
+ 961 0000 80B4     		push	{r7}
+ 962              		.cfi_def_cfa_offset 4
+ 963              		.cfi_offset 7, -4
+ 964 0002 85B0     		sub	sp, sp, #20
+ 965              		.cfi_def_cfa_offset 24
+ 966 0004 00AF     		add	r7, sp, #0
+ 967              		.cfi_def_cfa_register 7
+ 968 0006 0346     		mov	r3, r0
+ 969 0008 0A46     		mov	r2, r1
+ 970 000a FB71     		strb	r3, [r7, #7]
+ 971 000c 1346     		mov	r3, r2
+ 972 000e BB71     		strb	r3, [r7, #6]
+ 586:Generated_Source\PSoC5/Decoder_1.c ****     uint8 result = 0;
+ 973              		.loc 1 586 0
+ 974 0010 0023     		movs	r3, #0
+ 975 0012 FB73     		strb	r3, [r7, #15]
+ 587:Generated_Source\PSoC5/Decoder_1.c ****     
+ 588:Generated_Source\PSoC5/Decoder_1.c ****     if (lBound <= uBound) 
+ 976              		.loc 1 588 0
+ 977 0014 97F90720 		ldrsb	r2, [r7, #7]
+ 978 0018 97F90630 		ldrsb	r3, [r7, #6]
+ 979 001c 9A42     		cmp	r2, r3
+ 980 001e 07DC     		bgt	.L70
+ 589:Generated_Source\PSoC5/Decoder_1.c ****     {
+ 590:Generated_Source\PSoC5/Decoder_1.c ****         aLowerBound = lBound;
+ 981              		.loc 1 590 0
+ 982 0020 064A     		ldr	r2, .L72
+ 983 0022 FB79     		ldrb	r3, [r7, #7]
+ 984 0024 1370     		strb	r3, [r2]
+ 591:Generated_Source\PSoC5/Decoder_1.c ****         aUpperBound = uBound;
+ 985              		.loc 1 591 0
+ 986 0026 064A     		ldr	r2, .L72+4
+ 987 0028 BB79     		ldrb	r3, [r7, #6]
+ 988 002a 1370     		strb	r3, [r2]
+ 592:Generated_Source\PSoC5/Decoder_1.c ****         
+ 593:Generated_Source\PSoC5/Decoder_1.c ****         result = 1;
+ 989              		.loc 1 593 0
+ 990 002c 0123     		movs	r3, #1
+ 991 002e FB73     		strb	r3, [r7, #15]
+ 992              	.L70:
+ 594:Generated_Source\PSoC5/Decoder_1.c ****     }
+ 595:Generated_Source\PSoC5/Decoder_1.c ****     
+ 596:Generated_Source\PSoC5/Decoder_1.c ****     return result;
+ 993              		.loc 1 596 0
+ 994 0030 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 597:Generated_Source\PSoC5/Decoder_1.c **** }
+ 995              		.loc 1 597 0
+ 996 0032 1846     		mov	r0, r3
+ 997 0034 1437     		adds	r7, r7, #20
+ 998              		.cfi_def_cfa_offset 4
+ 999 0036 BD46     		mov	sp, r7
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 29
+
+
+ 1000              		.cfi_def_cfa_register 13
+ 1001              		@ sp needed
+ 1002 0038 80BC     		pop	{r7}
+ 1003              		.cfi_restore 7
+ 1004              		.cfi_def_cfa_offset 0
+ 1005 003a 7047     		bx	lr
+ 1006              	.L73:
+ 1007              		.align	2
+ 1008              	.L72:
+ 1009 003c 02000000 		.word	aLowerBound
+ 1010 0040 03000000 		.word	aUpperBound
+ 1011              		.cfi_endproc
+ 1012              	.LFE78:
+ 1013              		.size	Decoder_1_SetBounds, .-Decoder_1_SetBounds
+ 1014              		.section	.text.Decoder_1_Setup,"ax",%progbits
+ 1015              		.align	2
+ 1016              		.global	Decoder_1_Setup
+ 1017              		.thumb
+ 1018              		.thumb_func
+ 1019              		.type	Decoder_1_Setup, %function
+ 1020              	Decoder_1_Setup:
+ 1021              	.LFB79:
+ 598:Generated_Source\PSoC5/Decoder_1.c **** 
+ 599:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ 600:Generated_Source\PSoC5/Decoder_1.c **** // Assign multiple encoder parameters at once
+ 601:Generated_Source\PSoC5/Decoder_1.c **** // return: 1= success, 0= fail
+ 602:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ 603:Generated_Source\PSoC5/Decoder_1.c **** 
+ 604:Generated_Source\PSoC5/Decoder_1.c **** uint8 Decoder_1_Setup(er_t position, er_t increment, er_t lBound, er_t uBound, uint8 bounds)
+ 605:Generated_Source\PSoC5/Decoder_1.c **** {
+ 1022              		.loc 1 605 0
+ 1023              		.cfi_startproc
+ 1024              		@ args = 4, pretend = 0, frame = 16
+ 1025              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1026 0000 90B5     		push	{r4, r7, lr}
+ 1027              		.cfi_def_cfa_offset 12
+ 1028              		.cfi_offset 4, -12
+ 1029              		.cfi_offset 7, -8
+ 1030              		.cfi_offset 14, -4
+ 1031 0002 85B0     		sub	sp, sp, #20
+ 1032              		.cfi_def_cfa_offset 32
+ 1033 0004 00AF     		add	r7, sp, #0
+ 1034              		.cfi_def_cfa_register 7
+ 1035 0006 0446     		mov	r4, r0
+ 1036 0008 0846     		mov	r0, r1
+ 1037 000a 1146     		mov	r1, r2
+ 1038 000c 1A46     		mov	r2, r3
+ 1039 000e 2346     		mov	r3, r4
+ 1040 0010 FB71     		strb	r3, [r7, #7]
+ 1041 0012 0346     		mov	r3, r0
+ 1042 0014 BB71     		strb	r3, [r7, #6]
+ 1043 0016 0B46     		mov	r3, r1
+ 1044 0018 7B71     		strb	r3, [r7, #5]
+ 1045 001a 1346     		mov	r3, r2
+ 1046 001c 3B71     		strb	r3, [r7, #4]
+ 606:Generated_Source\PSoC5/Decoder_1.c ****     uint8  result = Decoder_1_SetBounds ( lBound, uBound ) &&
+ 1047              		.loc 1 606 0
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 30
+
+
+ 1048 001e 97F90420 		ldrsb	r2, [r7, #4]
+ 1049 0022 97F90530 		ldrsb	r3, [r7, #5]
+ 1050 0026 1146     		mov	r1, r2
+ 1051 0028 1846     		mov	r0, r3
+ 1052 002a FFF7FEFF 		bl	Decoder_1_SetBounds
+ 1053 002e 0346     		mov	r3, r0
+ 607:Generated_Source\PSoC5/Decoder_1.c ****                     Decoder_1_SetPosition ( position )     && 
+ 608:Generated_Source\PSoC5/Decoder_1.c ****                     Decoder_1_SetIncrement ( increment )   &&
+ 1054              		.loc 1 608 0
+ 1055 0030 002B     		cmp	r3, #0
+ 1056 0032 19D0     		beq	.L75
+ 607:Generated_Source\PSoC5/Decoder_1.c ****                     Decoder_1_SetPosition ( position )     && 
+ 1057              		.loc 1 607 0
+ 1058 0034 97F90730 		ldrsb	r3, [r7, #7]
+ 1059 0038 1846     		mov	r0, r3
+ 1060 003a FFF7FEFF 		bl	Decoder_1_SetPosition
+ 1061 003e 0346     		mov	r3, r0
+ 606:Generated_Source\PSoC5/Decoder_1.c ****     uint8  result = Decoder_1_SetBounds ( lBound, uBound ) &&
+ 1062              		.loc 1 606 0
+ 1063 0040 002B     		cmp	r3, #0
+ 1064 0042 11D0     		beq	.L75
+ 1065              		.loc 1 608 0
+ 1066 0044 97F90630 		ldrsb	r3, [r7, #6]
+ 1067 0048 1846     		mov	r0, r3
+ 1068 004a FFF7FEFF 		bl	Decoder_1_SetIncrement
+ 1069 004e 0346     		mov	r3, r0
+ 607:Generated_Source\PSoC5/Decoder_1.c ****                     Decoder_1_SetPosition ( position )     && 
+ 1070              		.loc 1 607 0
+ 1071 0050 002B     		cmp	r3, #0
+ 1072 0052 09D0     		beq	.L75
+ 609:Generated_Source\PSoC5/Decoder_1.c ****                     Decoder_1_SetCheckBounds( bounds );
+ 1073              		.loc 1 609 0 discriminator 3
+ 1074 0054 97F82030 		ldrb	r3, [r7, #32]	@ zero_extendqisi2
+ 1075 0058 1846     		mov	r0, r3
+ 1076 005a FFF7FEFF 		bl	Decoder_1_SetCheckBounds
+ 1077 005e 0346     		mov	r3, r0
+ 608:Generated_Source\PSoC5/Decoder_1.c ****                     Decoder_1_SetCheckBounds( bounds );
+ 1078              		.loc 1 608 0 discriminator 3
+ 1079 0060 002B     		cmp	r3, #0
+ 1080 0062 01D0     		beq	.L75
+ 608:Generated_Source\PSoC5/Decoder_1.c ****                     Decoder_1_SetCheckBounds( bounds );
+ 1081              		.loc 1 608 0 is_stmt 0 discriminator 2
+ 1082 0064 0123     		movs	r3, #1
+ 1083 0066 00E0     		b	.L76
+ 1084              	.L75:
+ 608:Generated_Source\PSoC5/Decoder_1.c ****                     Decoder_1_SetCheckBounds( bounds );
+ 1085              		.loc 1 608 0 discriminator 1
+ 1086 0068 0023     		movs	r3, #0
+ 1087              	.L76:
+ 606:Generated_Source\PSoC5/Decoder_1.c ****                     Decoder_1_SetPosition ( position )     && 
+ 1088              		.loc 1 606 0 is_stmt 1
+ 1089 006a FB73     		strb	r3, [r7, #15]
+ 610:Generated_Source\PSoC5/Decoder_1.c ****     
+ 611:Generated_Source\PSoC5/Decoder_1.c ****     return result;
+ 1090              		.loc 1 611 0
+ 1091 006c FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 612:Generated_Source\PSoC5/Decoder_1.c **** }
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 31
+
+
+ 1092              		.loc 1 612 0
+ 1093 006e 1846     		mov	r0, r3
+ 1094 0070 1437     		adds	r7, r7, #20
+ 1095              		.cfi_def_cfa_offset 12
+ 1096 0072 BD46     		mov	sp, r7
+ 1097              		.cfi_def_cfa_register 13
+ 1098              		@ sp needed
+ 1099 0074 90BD     		pop	{r4, r7, pc}
+ 1100              		.cfi_endproc
+ 1101              	.LFE79:
+ 1102              		.size	Decoder_1_Setup, .-Decoder_1_Setup
+ 1103 0076 00BF     		.section	.text.Decoder_1_GetIncrement,"ax",%progbits
+ 1104              		.align	2
+ 1105              		.global	Decoder_1_GetIncrement
+ 1106              		.thumb
+ 1107              		.thumb_func
+ 1108              		.type	Decoder_1_GetIncrement, %function
+ 1109              	Decoder_1_GetIncrement:
+ 1110              	.LFB80:
+ 613:Generated_Source\PSoC5/Decoder_1.c **** 
+ 614:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ 615:Generated_Source\PSoC5/Decoder_1.c **** // Getters for Increment, LowerBound, UpperBound and CheckBounds
+ 616:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
+ 617:Generated_Source\PSoC5/Decoder_1.c **** 
+ 618:Generated_Source\PSoC5/Decoder_1.c **** er_t  Decoder_1_GetIncrement()   { return aIncrement;   }
+ 1111              		.loc 1 618 0
+ 1112              		.cfi_startproc
+ 1113              		@ args = 0, pretend = 0, frame = 0
+ 1114              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1115              		@ link register save eliminated.
+ 1116 0000 80B4     		push	{r7}
+ 1117              		.cfi_def_cfa_offset 4
+ 1118              		.cfi_offset 7, -4
+ 1119 0002 00AF     		add	r7, sp, #0
+ 1120              		.cfi_def_cfa_register 7
+ 1121              		.loc 1 618 0
+ 1122 0004 034B     		ldr	r3, .L80
+ 1123 0006 93F90030 		ldrsb	r3, [r3]
+ 1124 000a 1846     		mov	r0, r3
+ 1125 000c BD46     		mov	sp, r7
+ 1126              		.cfi_def_cfa_register 13
+ 1127              		@ sp needed
+ 1128 000e 80BC     		pop	{r7}
+ 1129              		.cfi_restore 7
+ 1130              		.cfi_def_cfa_offset 0
+ 1131 0010 7047     		bx	lr
+ 1132              	.L81:
+ 1133 0012 00BF     		.align	2
+ 1134              	.L80:
+ 1135 0014 01000000 		.word	aIncrement
+ 1136              		.cfi_endproc
+ 1137              	.LFE80:
+ 1138              		.size	Decoder_1_GetIncrement, .-Decoder_1_GetIncrement
+ 1139              		.section	.text.Decoder_1_GetLowerBound,"ax",%progbits
+ 1140              		.align	2
+ 1141              		.global	Decoder_1_GetLowerBound
+ 1142              		.thumb
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 32
+
+
+ 1143              		.thumb_func
+ 1144              		.type	Decoder_1_GetLowerBound, %function
+ 1145              	Decoder_1_GetLowerBound:
+ 1146              	.LFB81:
+ 619:Generated_Source\PSoC5/Decoder_1.c **** er_t  Decoder_1_GetLowerBound()  { return aLowerBound;  }
+ 1147              		.loc 1 619 0
+ 1148              		.cfi_startproc
+ 1149              		@ args = 0, pretend = 0, frame = 0
+ 1150              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1151              		@ link register save eliminated.
+ 1152 0000 80B4     		push	{r7}
+ 1153              		.cfi_def_cfa_offset 4
+ 1154              		.cfi_offset 7, -4
+ 1155 0002 00AF     		add	r7, sp, #0
+ 1156              		.cfi_def_cfa_register 7
+ 1157              		.loc 1 619 0
+ 1158 0004 034B     		ldr	r3, .L84
+ 1159 0006 93F90030 		ldrsb	r3, [r3]
+ 1160 000a 1846     		mov	r0, r3
+ 1161 000c BD46     		mov	sp, r7
+ 1162              		.cfi_def_cfa_register 13
+ 1163              		@ sp needed
+ 1164 000e 80BC     		pop	{r7}
+ 1165              		.cfi_restore 7
+ 1166              		.cfi_def_cfa_offset 0
+ 1167 0010 7047     		bx	lr
+ 1168              	.L85:
+ 1169 0012 00BF     		.align	2
+ 1170              	.L84:
+ 1171 0014 02000000 		.word	aLowerBound
+ 1172              		.cfi_endproc
+ 1173              	.LFE81:
+ 1174              		.size	Decoder_1_GetLowerBound, .-Decoder_1_GetLowerBound
+ 1175              		.section	.text.Decoder_1_GetUpperBound,"ax",%progbits
+ 1176              		.align	2
+ 1177              		.global	Decoder_1_GetUpperBound
+ 1178              		.thumb
+ 1179              		.thumb_func
+ 1180              		.type	Decoder_1_GetUpperBound, %function
+ 1181              	Decoder_1_GetUpperBound:
+ 1182              	.LFB82:
+ 620:Generated_Source\PSoC5/Decoder_1.c **** er_t  Decoder_1_GetUpperBound()  { return aUpperBound;  }
+ 1183              		.loc 1 620 0
+ 1184              		.cfi_startproc
+ 1185              		@ args = 0, pretend = 0, frame = 0
+ 1186              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1187              		@ link register save eliminated.
+ 1188 0000 80B4     		push	{r7}
+ 1189              		.cfi_def_cfa_offset 4
+ 1190              		.cfi_offset 7, -4
+ 1191 0002 00AF     		add	r7, sp, #0
+ 1192              		.cfi_def_cfa_register 7
+ 1193              		.loc 1 620 0
+ 1194 0004 034B     		ldr	r3, .L88
+ 1195 0006 93F90030 		ldrsb	r3, [r3]
+ 1196 000a 1846     		mov	r0, r3
+ 1197 000c BD46     		mov	sp, r7
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 33
+
+
+ 1198              		.cfi_def_cfa_register 13
+ 1199              		@ sp needed
+ 1200 000e 80BC     		pop	{r7}
+ 1201              		.cfi_restore 7
+ 1202              		.cfi_def_cfa_offset 0
+ 1203 0010 7047     		bx	lr
+ 1204              	.L89:
+ 1205 0012 00BF     		.align	2
+ 1206              	.L88:
+ 1207 0014 03000000 		.word	aUpperBound
+ 1208              		.cfi_endproc
+ 1209              	.LFE82:
+ 1210              		.size	Decoder_1_GetUpperBound, .-Decoder_1_GetUpperBound
+ 1211              		.section	.text.Decoder_1_GetCheckBounds,"ax",%progbits
+ 1212              		.align	2
+ 1213              		.global	Decoder_1_GetCheckBounds
+ 1214              		.thumb
+ 1215              		.thumb_func
+ 1216              		.type	Decoder_1_GetCheckBounds, %function
+ 1217              	Decoder_1_GetCheckBounds:
+ 1218              	.LFB83:
+ 621:Generated_Source\PSoC5/Decoder_1.c **** uint8 Decoder_1_GetCheckBounds() { return aCheckBounds; }
+ 1219              		.loc 1 621 0
+ 1220              		.cfi_startproc
+ 1221              		@ args = 0, pretend = 0, frame = 0
+ 1222              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1223              		@ link register save eliminated.
+ 1224 0000 80B4     		push	{r7}
+ 1225              		.cfi_def_cfa_offset 4
+ 1226              		.cfi_offset 7, -4
+ 1227 0002 00AF     		add	r7, sp, #0
+ 1228              		.cfi_def_cfa_register 7
+ 1229              		.loc 1 621 0
+ 1230 0004 024B     		ldr	r3, .L92
+ 1231 0006 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1232 0008 1846     		mov	r0, r3
+ 1233 000a BD46     		mov	sp, r7
+ 1234              		.cfi_def_cfa_register 13
+ 1235              		@ sp needed
+ 1236 000c 80BC     		pop	{r7}
+ 1237              		.cfi_restore 7
+ 1238              		.cfi_def_cfa_offset 0
+ 1239 000e 7047     		bx	lr
+ 1240              	.L93:
+ 1241              		.align	2
+ 1242              	.L92:
+ 1243 0010 05000000 		.word	aCheckBounds
+ 1244              		.cfi_endproc
+ 1245              	.LFE83:
+ 1246              		.size	Decoder_1_GetCheckBounds, .-Decoder_1_GetCheckBounds
+ 1247              		.bss
+ 1248              	index.7306:
+ 1249 0006 00       		.space	1
+ 1250              	Acc.7307:
+ 1251 0007 00       		.space	1
+ 1252              		.text
+ 1253              	.Letext0:
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 34
+
+
+ 1254              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
+ 1255              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
+ 1256              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 1257              		.file 5 "Generated_Source\\PSoC5/core_cm3.h"
+ 1258              		.section	.debug_info,"",%progbits
+ 1259              	.Ldebug_info0:
+ 1260 0000 BA040000 		.4byte	0x4ba
+ 1261 0004 0400     		.2byte	0x4
+ 1262 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 1263 000a 04       		.byte	0x4
+ 1264 000b 01       		.uleb128 0x1
+ 1265 000c CD000000 		.4byte	.LASF64
+ 1266 0010 0C       		.byte	0xc
+ 1267 0011 5B010000 		.4byte	.LASF65
+ 1268 0015 0D000000 		.4byte	.LASF66
+ 1269 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 1270 001d 00000000 		.4byte	0
+ 1271 0021 00000000 		.4byte	.Ldebug_line0
+ 1272 0025 02       		.uleb128 0x2
+ 1273 0026 A3030000 		.4byte	.LASF4
+ 1274 002a 02       		.byte	0x2
+ 1275 002b 1B       		.byte	0x1b
+ 1276 002c 30000000 		.4byte	0x30
+ 1277 0030 03       		.uleb128 0x3
+ 1278 0031 01       		.byte	0x1
+ 1279 0032 06       		.byte	0x6
+ 1280 0033 97030000 		.4byte	.LASF0
+ 1281 0037 03       		.uleb128 0x3
+ 1282 0038 01       		.byte	0x1
+ 1283 0039 08       		.byte	0x8
+ 1284 003a C0020000 		.4byte	.LASF1
+ 1285 003e 03       		.uleb128 0x3
+ 1286 003f 02       		.byte	0x2
+ 1287 0040 05       		.byte	0x5
+ 1288 0041 A4000000 		.4byte	.LASF2
+ 1289 0045 03       		.uleb128 0x3
+ 1290 0046 02       		.byte	0x2
+ 1291 0047 07       		.byte	0x7
+ 1292 0048 84030000 		.4byte	.LASF3
+ 1293 004c 02       		.uleb128 0x2
+ 1294 004d 58040000 		.4byte	.LASF5
+ 1295 0051 02       		.byte	0x2
+ 1296 0052 3F       		.byte	0x3f
+ 1297 0053 57000000 		.4byte	0x57
+ 1298 0057 03       		.uleb128 0x3
+ 1299 0058 04       		.byte	0x4
+ 1300 0059 05       		.byte	0x5
+ 1301 005a 55020000 		.4byte	.LASF6
+ 1302 005e 03       		.uleb128 0x3
+ 1303 005f 04       		.byte	0x4
+ 1304 0060 07       		.byte	0x7
+ 1305 0061 18040000 		.4byte	.LASF7
+ 1306 0065 03       		.uleb128 0x3
+ 1307 0066 08       		.byte	0x8
+ 1308 0067 05       		.byte	0x5
+ 1309 0068 26020000 		.4byte	.LASF8
+ 1310 006c 03       		.uleb128 0x3
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 35
+
+
+ 1311 006d 08       		.byte	0x8
+ 1312 006e 07       		.byte	0x7
+ 1313 006f 15030000 		.4byte	.LASF9
+ 1314 0073 04       		.uleb128 0x4
+ 1315 0074 04       		.byte	0x4
+ 1316 0075 05       		.byte	0x5
+ 1317 0076 696E7400 		.ascii	"int\000"
+ 1318 007a 03       		.uleb128 0x3
+ 1319 007b 04       		.byte	0x4
+ 1320 007c 07       		.byte	0x7
+ 1321 007d 3C030000 		.4byte	.LASF10
+ 1322 0081 02       		.uleb128 0x2
+ 1323 0082 92000000 		.4byte	.LASF11
+ 1324 0086 03       		.byte	0x3
+ 1325 0087 14       		.byte	0x14
+ 1326 0088 25000000 		.4byte	0x25
+ 1327 008c 02       		.uleb128 0x2
+ 1328 008d D6030000 		.4byte	.LASF12
+ 1329 0091 03       		.byte	0x3
+ 1330 0092 2C       		.byte	0x2c
+ 1331 0093 4C000000 		.4byte	0x4c
+ 1332 0097 05       		.uleb128 0x5
+ 1333 0098 D7010000 		.4byte	.LASF13
+ 1334 009c 04       		.byte	0x4
+ 1335 009d E901     		.2byte	0x1e9
+ 1336 009f 37000000 		.4byte	0x37
+ 1337 00a3 05       		.uleb128 0x5
+ 1338 00a4 34020000 		.4byte	.LASF14
+ 1339 00a8 04       		.byte	0x4
+ 1340 00a9 EC01     		.2byte	0x1ec
+ 1341 00ab 30000000 		.4byte	0x30
+ 1342 00af 03       		.uleb128 0x3
+ 1343 00b0 04       		.byte	0x4
+ 1344 00b1 04       		.byte	0x4
+ 1345 00b2 F6010000 		.4byte	.LASF15
+ 1346 00b6 03       		.uleb128 0x3
+ 1347 00b7 08       		.byte	0x8
+ 1348 00b8 04       		.byte	0x4
+ 1349 00b9 2A040000 		.4byte	.LASF16
+ 1350 00bd 03       		.uleb128 0x3
+ 1351 00be 01       		.byte	0x1
+ 1352 00bf 08       		.byte	0x8
+ 1353 00c0 45020000 		.4byte	.LASF17
+ 1354 00c4 05       		.uleb128 0x5
+ 1355 00c5 13040000 		.4byte	.LASF18
+ 1356 00c9 04       		.byte	0x4
+ 1357 00ca 9302     		.2byte	0x293
+ 1358 00cc D0000000 		.4byte	0xd0
+ 1359 00d0 06       		.uleb128 0x6
+ 1360 00d1 97000000 		.4byte	0x97
+ 1361 00d5 03       		.uleb128 0x3
+ 1362 00d6 08       		.byte	0x8
+ 1363 00d7 04       		.byte	0x4
+ 1364 00d8 B4020000 		.4byte	.LASF19
+ 1365 00dc 03       		.uleb128 0x3
+ 1366 00dd 04       		.byte	0x4
+ 1367 00de 07       		.byte	0x7
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 36
+
+
+ 1368 00df AE000000 		.4byte	.LASF20
+ 1369 00e3 07       		.uleb128 0x7
+ 1370 00e4 B7000000 		.4byte	.LASF21
+ 1371 00e8 01       		.byte	0x1
+ 1372 00e9 52       		.byte	0x52
+ 1373 00ea A3000000 		.4byte	0xa3
+ 1374 00ee 00000000 		.4byte	.LFB63
+ 1375 00f2 3C000000 		.4byte	.LFE63-.LFB63
+ 1376 00f6 01       		.uleb128 0x1
+ 1377 00f7 9C       		.byte	0x9c
+ 1378 00f8 0B010000 		.4byte	0x10b
+ 1379 00fc 08       		.uleb128 0x8
+ 1380 00fd 0C040000 		.4byte	.LASF23
+ 1381 0101 01       		.byte	0x1
+ 1382 0102 59       		.byte	0x59
+ 1383 0103 A3000000 		.4byte	0xa3
+ 1384 0107 02       		.uleb128 0x2
+ 1385 0108 91       		.byte	0x91
+ 1386 0109 77       		.sleb128 -9
+ 1387 010a 00       		.byte	0
+ 1388 010b 09       		.uleb128 0x9
+ 1389 010c 49030000 		.4byte	.LASF22
+ 1390 0110 01       		.byte	0x1
+ 1391 0111 78       		.byte	0x78
+ 1392 0112 A3000000 		.4byte	0xa3
+ 1393 0116 00000000 		.4byte	.LFB64
+ 1394 011a 94000000 		.4byte	.LFE64-.LFB64
+ 1395 011e 01       		.uleb128 0x1
+ 1396 011f 9C       		.byte	0x9c
+ 1397 0120 55010000 		.4byte	0x155
+ 1398 0124 08       		.uleb128 0x8
+ 1399 0125 D1010000 		.4byte	.LASF24
+ 1400 0129 01       		.byte	0x1
+ 1401 012a 7A       		.byte	0x7a
+ 1402 012b 97000000 		.4byte	0x97
+ 1403 012f 05       		.uleb128 0x5
+ 1404 0130 03       		.byte	0x3
+ 1405 0131 06000000 		.4byte	index.7306
+ 1406 0135 0A       		.uleb128 0xa
+ 1407 0136 41636300 		.ascii	"Acc\000"
+ 1408 013a 01       		.byte	0x1
+ 1409 013b 7B       		.byte	0x7b
+ 1410 013c A3000000 		.4byte	0xa3
+ 1411 0140 05       		.uleb128 0x5
+ 1412 0141 03       		.byte	0x3
+ 1413 0142 07000000 		.4byte	Acc.7307
+ 1414 0146 08       		.uleb128 0x8
+ 1415 0147 FC010000 		.4byte	.LASF25
+ 1416 014b 01       		.byte	0x1
+ 1417 014c 8A       		.byte	0x8a
+ 1418 014d 97000000 		.4byte	0x97
+ 1419 0151 02       		.uleb128 0x2
+ 1420 0152 91       		.byte	0x91
+ 1421 0153 77       		.sleb128 -9
+ 1422 0154 00       		.byte	0
+ 1423 0155 0B       		.uleb128 0xb
+ 1424 0156 DD010000 		.4byte	.LASF26
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 37
+
+
+ 1425 015a 01       		.byte	0x1
+ 1426 015b BD       		.byte	0xbd
+ 1427 015c 00000000 		.4byte	.LFB65
+ 1428 0160 14000000 		.4byte	.LFE65-.LFB65
+ 1429 0164 01       		.uleb128 0x1
+ 1430 0165 9C       		.byte	0x9c
+ 1431 0166 0C       		.uleb128 0xc
+ 1432 0167 CE020000 		.4byte	.LASF31
+ 1433 016b 01       		.byte	0x1
+ 1434 016c D8       		.byte	0xd8
+ 1435 016d 00000000 		.4byte	.LFB66
+ 1436 0171 14000000 		.4byte	.LFE66-.LFB66
+ 1437 0175 01       		.uleb128 0x1
+ 1438 0176 9C       		.byte	0x9c
+ 1439 0177 0D       		.uleb128 0xd
+ 1440 0178 2C030000 		.4byte	.LASF27
+ 1441 017c 01       		.byte	0x1
+ 1442 017d 4E01     		.2byte	0x14e
+ 1443 017f 00000000 		.4byte	.LFB67
+ 1444 0183 20000000 		.4byte	.LFE67-.LFB67
+ 1445 0187 01       		.uleb128 0x1
+ 1446 0188 9C       		.byte	0x9c
+ 1447 0189 0D       		.uleb128 0xd
+ 1448 018a 9C040000 		.4byte	.LASF28
+ 1449 018e 01       		.byte	0x1
+ 1450 018f 6501     		.2byte	0x165
+ 1451 0191 00000000 		.4byte	.LFB68
+ 1452 0195 1C000000 		.4byte	.LFE68-.LFB68
+ 1453 0199 01       		.uleb128 0x1
+ 1454 019a 9C       		.byte	0x9c
+ 1455 019b 0D       		.uleb128 0xd
+ 1456 019c 31040000 		.4byte	.LASF29
+ 1457 01a0 01       		.byte	0x1
+ 1458 01a1 7801     		.2byte	0x178
+ 1459 01a3 00000000 		.4byte	.LFB69
+ 1460 01a7 0E000000 		.4byte	.LFE69-.LFB69
+ 1461 01ab 01       		.uleb128 0x1
+ 1462 01ac 9C       		.byte	0x9c
+ 1463 01ad 0D       		.uleb128 0xd
+ 1464 01ae 6D030000 		.4byte	.LASF30
+ 1465 01b2 01       		.byte	0x1
+ 1466 01b3 9501     		.2byte	0x195
+ 1467 01b5 00000000 		.4byte	.LFB70
+ 1468 01b9 0E000000 		.4byte	.LFE70-.LFB70
+ 1469 01bd 01       		.uleb128 0x1
+ 1470 01be 9C       		.byte	0x9c
+ 1471 01bf 0E       		.uleb128 0xe
+ 1472 01c0 F6030000 		.4byte	.LASF32
+ 1473 01c4 01       		.byte	0x1
+ 1474 01c5 AE01     		.2byte	0x1ae
+ 1475 01c7 81000000 		.4byte	0x81
+ 1476 01cb 00000000 		.4byte	.LFB71
+ 1477 01cf 18000000 		.4byte	.LFE71-.LFB71
+ 1478 01d3 01       		.uleb128 0x1
+ 1479 01d4 9C       		.byte	0x9c
+ 1480 01d5 0F       		.uleb128 0xf
+ 1481 01d6 AB040000 		.4byte	.LASF37
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 38
+
+
+ 1482 01da 01       		.byte	0x1
+ 1483 01db B701     		.2byte	0x1b7
+ 1484 01dd 97000000 		.4byte	0x97
+ 1485 01e1 00000000 		.4byte	.LFB72
+ 1486 01e5 84000000 		.4byte	.LFE72-.LFB72
+ 1487 01e9 01       		.uleb128 0x1
+ 1488 01ea 9C       		.byte	0x9c
+ 1489 01eb 0E020000 		.4byte	0x20e
+ 1490 01ef 10       		.uleb128 0x10
+ 1491 01f0 C4010000 		.4byte	.LASF39
+ 1492 01f4 01       		.byte	0x1
+ 1493 01f5 B701     		.2byte	0x1b7
+ 1494 01f7 81000000 		.4byte	0x81
+ 1495 01fb 02       		.uleb128 0x2
+ 1496 01fc 91       		.byte	0x91
+ 1497 01fd 6F       		.sleb128 -17
+ 1498 01fe 11       		.uleb128 0x11
+ 1499 01ff 8B000000 		.4byte	.LASF33
+ 1500 0203 01       		.byte	0x1
+ 1501 0204 B901     		.2byte	0x1b9
+ 1502 0206 97000000 		.4byte	0x97
+ 1503 020a 02       		.uleb128 0x2
+ 1504 020b 91       		.byte	0x91
+ 1505 020c 77       		.sleb128 -9
+ 1506 020d 00       		.byte	0
+ 1507 020e 0E       		.uleb128 0xe
+ 1508 020f 95010000 		.4byte	.LASF34
+ 1509 0213 01       		.byte	0x1
+ 1510 0214 DA01     		.2byte	0x1da
+ 1511 0216 A3000000 		.4byte	0xa3
+ 1512 021a 00000000 		.4byte	.LFB73
+ 1513 021e 18000000 		.4byte	.LFE73-.LFB73
+ 1514 0222 01       		.uleb128 0x1
+ 1515 0223 9C       		.byte	0x9c
+ 1516 0224 0E       		.uleb128 0xe
+ 1517 0225 F8020000 		.4byte	.LASF35
+ 1518 0229 01       		.byte	0x1
+ 1519 022a EF01     		.2byte	0x1ef
+ 1520 022c 97000000 		.4byte	0x97
+ 1521 0230 00000000 		.4byte	.LFB74
+ 1522 0234 14010000 		.4byte	.LFE74-.LFB74
+ 1523 0238 01       		.uleb128 0x1
+ 1524 0239 9C       		.byte	0x9c
+ 1525 023a 0E       		.uleb128 0xe
+ 1526 023b AC010000 		.4byte	.LASF36
+ 1527 023f 01       		.byte	0x1
+ 1528 0240 1802     		.2byte	0x218
+ 1529 0242 97000000 		.4byte	0x97
+ 1530 0246 00000000 		.4byte	.LFB75
+ 1531 024a 14000000 		.4byte	.LFE75-.LFB75
+ 1532 024e 01       		.uleb128 0x1
+ 1533 024f 9C       		.byte	0x9c
+ 1534 0250 0F       		.uleb128 0xf
+ 1535 0251 E1020000 		.4byte	.LASF38
+ 1536 0255 01       		.byte	0x1
+ 1537 0256 2102     		.2byte	0x221
+ 1538 0258 97000000 		.4byte	0x97
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 39
+
+
+ 1539 025c 00000000 		.4byte	.LFB76
+ 1540 0260 30000000 		.4byte	.LFE76-.LFB76
+ 1541 0264 01       		.uleb128 0x1
+ 1542 0265 9C       		.byte	0x9c
+ 1543 0266 89020000 		.4byte	0x289
+ 1544 026a 10       		.uleb128 0x10
+ 1545 026b C4010000 		.4byte	.LASF39
+ 1546 026f 01       		.byte	0x1
+ 1547 0270 2102     		.2byte	0x221
+ 1548 0272 81000000 		.4byte	0x81
+ 1549 0276 02       		.uleb128 0x2
+ 1550 0277 91       		.byte	0x91
+ 1551 0278 6F       		.sleb128 -17
+ 1552 0279 11       		.uleb128 0x11
+ 1553 027a 8B000000 		.4byte	.LASF33
+ 1554 027e 01       		.byte	0x1
+ 1555 027f 2302     		.2byte	0x223
+ 1556 0281 97000000 		.4byte	0x97
+ 1557 0285 02       		.uleb128 0x2
+ 1558 0286 91       		.byte	0x91
+ 1559 0287 77       		.sleb128 -9
+ 1560 0288 00       		.byte	0
+ 1561 0289 0F       		.uleb128 0xf
+ 1562 028a 6D040000 		.4byte	.LASF40
+ 1563 028e 01       		.byte	0x1
+ 1564 028f 3302     		.2byte	0x233
+ 1565 0291 97000000 		.4byte	0x97
+ 1566 0295 00000000 		.4byte	.LFB77
+ 1567 0299 68000000 		.4byte	.LFE77-.LFB77
+ 1568 029d 01       		.uleb128 0x1
+ 1569 029e 9C       		.byte	0x9c
+ 1570 029f C2020000 		.4byte	0x2c2
+ 1571 02a3 10       		.uleb128 0x10
+ 1572 02a4 C4010000 		.4byte	.LASF39
+ 1573 02a8 01       		.byte	0x1
+ 1574 02a9 3302     		.2byte	0x233
+ 1575 02ab 97000000 		.4byte	0x97
+ 1576 02af 02       		.uleb128 0x2
+ 1577 02b0 91       		.byte	0x91
+ 1578 02b1 6F       		.sleb128 -17
+ 1579 02b2 11       		.uleb128 0x11
+ 1580 02b3 8B000000 		.4byte	.LASF33
+ 1581 02b7 01       		.byte	0x1
+ 1582 02b8 3502     		.2byte	0x235
+ 1583 02ba 97000000 		.4byte	0x97
+ 1584 02be 02       		.uleb128 0x2
+ 1585 02bf 91       		.byte	0x91
+ 1586 02c0 77       		.sleb128 -9
+ 1587 02c1 00       		.byte	0
+ 1588 02c2 0F       		.uleb128 0xf
+ 1589 02c3 08020000 		.4byte	.LASF41
+ 1590 02c7 01       		.byte	0x1
+ 1591 02c8 4802     		.2byte	0x248
+ 1592 02ca 97000000 		.4byte	0x97
+ 1593 02ce 00000000 		.4byte	.LFB78
+ 1594 02d2 44000000 		.4byte	.LFE78-.LFB78
+ 1595 02d6 01       		.uleb128 0x1
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 40
+
+
+ 1596 02d7 9C       		.byte	0x9c
+ 1597 02d8 0A030000 		.4byte	0x30a
+ 1598 02dc 10       		.uleb128 0x10
+ 1599 02dd CA010000 		.4byte	.LASF42
+ 1600 02e1 01       		.byte	0x1
+ 1601 02e2 4802     		.2byte	0x248
+ 1602 02e4 81000000 		.4byte	0x81
+ 1603 02e8 02       		.uleb128 0x2
+ 1604 02e9 91       		.byte	0x91
+ 1605 02ea 6F       		.sleb128 -17
+ 1606 02eb 10       		.uleb128 0x10
+ 1607 02ec 8E010000 		.4byte	.LASF43
+ 1608 02f0 01       		.byte	0x1
+ 1609 02f1 4802     		.2byte	0x248
+ 1610 02f3 81000000 		.4byte	0x81
+ 1611 02f7 02       		.uleb128 0x2
+ 1612 02f8 91       		.byte	0x91
+ 1613 02f9 6E       		.sleb128 -18
+ 1614 02fa 11       		.uleb128 0x11
+ 1615 02fb 8B000000 		.4byte	.LASF33
+ 1616 02ff 01       		.byte	0x1
+ 1617 0300 4A02     		.2byte	0x24a
+ 1618 0302 97000000 		.4byte	0x97
+ 1619 0306 02       		.uleb128 0x2
+ 1620 0307 91       		.byte	0x91
+ 1621 0308 77       		.sleb128 -9
+ 1622 0309 00       		.byte	0
+ 1623 030a 12       		.uleb128 0x12
+ 1624 030b 7E010000 		.4byte	.LASF44
+ 1625 030f 01       		.byte	0x1
+ 1626 0310 5C02     		.2byte	0x25c
+ 1627 0312 97000000 		.4byte	0x97
+ 1628 0316 00000000 		.4byte	.LFB79
+ 1629 031a 76000000 		.4byte	.LFE79-.LFB79
+ 1630 031e 01       		.uleb128 0x1
+ 1631 031f 9C       		.byte	0x9c
+ 1632 0320 7F030000 		.4byte	0x37f
+ 1633 0324 10       		.uleb128 0x10
+ 1634 0325 86040000 		.4byte	.LASF45
+ 1635 0329 01       		.byte	0x1
+ 1636 032a 5C02     		.2byte	0x25c
+ 1637 032c 81000000 		.4byte	0x81
+ 1638 0330 02       		.uleb128 0x2
+ 1639 0331 91       		.byte	0x91
+ 1640 0332 67       		.sleb128 -25
+ 1641 0333 10       		.uleb128 0x10
+ 1642 0334 69020000 		.4byte	.LASF46
+ 1643 0338 01       		.byte	0x1
+ 1644 0339 5C02     		.2byte	0x25c
+ 1645 033b 81000000 		.4byte	0x81
+ 1646 033f 02       		.uleb128 0x2
+ 1647 0340 91       		.byte	0x91
+ 1648 0341 66       		.sleb128 -26
+ 1649 0342 10       		.uleb128 0x10
+ 1650 0343 CA010000 		.4byte	.LASF42
+ 1651 0347 01       		.byte	0x1
+ 1652 0348 5C02     		.2byte	0x25c
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 41
+
+
+ 1653 034a 81000000 		.4byte	0x81
+ 1654 034e 02       		.uleb128 0x2
+ 1655 034f 91       		.byte	0x91
+ 1656 0350 65       		.sleb128 -27
+ 1657 0351 10       		.uleb128 0x10
+ 1658 0352 8E010000 		.4byte	.LASF43
+ 1659 0356 01       		.byte	0x1
+ 1660 0357 5C02     		.2byte	0x25c
+ 1661 0359 81000000 		.4byte	0x81
+ 1662 035d 02       		.uleb128 0x2
+ 1663 035e 91       		.byte	0x91
+ 1664 035f 64       		.sleb128 -28
+ 1665 0360 10       		.uleb128 0x10
+ 1666 0361 01020000 		.4byte	.LASF47
+ 1667 0365 01       		.byte	0x1
+ 1668 0366 5C02     		.2byte	0x25c
+ 1669 0368 97000000 		.4byte	0x97
+ 1670 036c 02       		.uleb128 0x2
+ 1671 036d 91       		.byte	0x91
+ 1672 036e 00       		.sleb128 0
+ 1673 036f 11       		.uleb128 0x11
+ 1674 0370 8B000000 		.4byte	.LASF33
+ 1675 0374 01       		.byte	0x1
+ 1676 0375 5E02     		.2byte	0x25e
+ 1677 0377 97000000 		.4byte	0x97
+ 1678 037b 02       		.uleb128 0x2
+ 1679 037c 91       		.byte	0x91
+ 1680 037d 6F       		.sleb128 -17
+ 1681 037e 00       		.byte	0
+ 1682 037f 0E       		.uleb128 0xe
+ 1683 0380 73020000 		.4byte	.LASF48
+ 1684 0384 01       		.byte	0x1
+ 1685 0385 6A02     		.2byte	0x26a
+ 1686 0387 81000000 		.4byte	0x81
+ 1687 038b 00000000 		.4byte	.LFB80
+ 1688 038f 18000000 		.4byte	.LFE80-.LFB80
+ 1689 0393 01       		.uleb128 0x1
+ 1690 0394 9C       		.byte	0x9c
+ 1691 0395 0E       		.uleb128 0xe
+ 1692 0396 8A020000 		.4byte	.LASF49
+ 1693 039a 01       		.byte	0x1
+ 1694 039b 6B02     		.2byte	0x26b
+ 1695 039d 81000000 		.4byte	0x81
+ 1696 03a1 00000000 		.4byte	.LFB81
+ 1697 03a5 18000000 		.4byte	.LFE81-.LFB81
+ 1698 03a9 01       		.uleb128 0x1
+ 1699 03aa 9C       		.byte	0x9c
+ 1700 03ab 0E       		.uleb128 0xe
+ 1701 03ac DE030000 		.4byte	.LASF50
+ 1702 03b0 01       		.byte	0x1
+ 1703 03b1 6C02     		.2byte	0x26c
+ 1704 03b3 81000000 		.4byte	0x81
+ 1705 03b7 00000000 		.4byte	.LFB82
+ 1706 03bb 18000000 		.4byte	.LFE82-.LFB82
+ 1707 03bf 01       		.uleb128 0x1
+ 1708 03c0 9C       		.byte	0x9c
+ 1709 03c1 0E       		.uleb128 0xe
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 42
+
+
+ 1710 03c2 AC030000 		.4byte	.LASF51
+ 1711 03c6 01       		.byte	0x1
+ 1712 03c7 6D02     		.2byte	0x26d
+ 1713 03c9 97000000 		.4byte	0x97
+ 1714 03cd 00000000 		.4byte	.LFB83
+ 1715 03d1 14000000 		.4byte	.LFE83-.LFB83
+ 1716 03d5 01       		.uleb128 0x1
+ 1717 03d6 9C       		.byte	0x9c
+ 1718 03d7 13       		.uleb128 0x13
+ 1719 03d8 E7030000 		.4byte	0x3e7
+ 1720 03dc E7030000 		.4byte	0x3e7
+ 1721 03e0 14       		.uleb128 0x14
+ 1722 03e1 DC000000 		.4byte	0xdc
+ 1723 03e5 0F       		.byte	0xf
+ 1724 03e6 00       		.byte	0
+ 1725 03e7 15       		.uleb128 0x15
+ 1726 03e8 30000000 		.4byte	0x30
+ 1727 03ec 08       		.uleb128 0x8
+ 1728 03ed 62040000 		.4byte	.LASF52
+ 1729 03f1 01       		.byte	0x1
+ 1730 03f2 22       		.byte	0x22
+ 1731 03f3 FD030000 		.4byte	0x3fd
+ 1732 03f7 05       		.uleb128 0x5
+ 1733 03f8 03       		.byte	0x3
+ 1734 03f9 00000000 		.4byte	enc_states
+ 1735 03fd 15       		.uleb128 0x15
+ 1736 03fe D7030000 		.4byte	0x3d7
+ 1737 0402 08       		.uleb128 0x8
+ 1738 0403 5E020000 		.4byte	.LASF53
+ 1739 0407 01       		.byte	0x1
+ 1740 0408 27       		.byte	0x27
+ 1741 0409 D0000000 		.4byte	0xd0
+ 1742 040d 05       		.uleb128 0x5
+ 1743 040e 03       		.byte	0x3
+ 1744 040f 00000000 		.4byte	SW_timeout
+ 1745 0413 08       		.uleb128 0x8
+ 1746 0414 1C020000 		.4byte	.LASF54
+ 1747 0418 01       		.byte	0x1
+ 1748 0419 33       		.byte	0x33
+ 1749 041a 81000000 		.4byte	0x81
+ 1750 041e 05       		.uleb128 0x5
+ 1751 041f 03       		.byte	0x3
+ 1752 0420 01000000 		.4byte	aPosition
+ 1753 0424 08       		.uleb128 0x8
+ 1754 0425 99000000 		.4byte	.LASF55
+ 1755 0429 01       		.byte	0x1
+ 1756 042a 34       		.byte	0x34
+ 1757 042b A3000000 		.4byte	0xa3
+ 1758 042f 05       		.uleb128 0x5
+ 1759 0430 03       		.byte	0x3
+ 1760 0431 02000000 		.4byte	aDirection
+ 1761 0435 08       		.uleb128 0x8
+ 1762 0436 C5030000 		.4byte	.LASF56
+ 1763 043a 01       		.byte	0x1
+ 1764 043b 35       		.byte	0x35
+ 1765 043c D0000000 		.4byte	0xd0
+ 1766 0440 05       		.uleb128 0x5
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 43
+
+
+ 1767 0441 03       		.byte	0x3
+ 1768 0442 03000000 		.4byte	fPositionChanged
+ 1769 0446 08       		.uleb128 0x8
+ 1770 0447 00000000 		.4byte	.LASF57
+ 1771 044b 01       		.byte	0x1
+ 1772 044c 3A       		.byte	0x3a
+ 1773 044d 97000000 		.4byte	0x97
+ 1774 0451 05       		.uleb128 0x5
+ 1775 0452 03       		.byte	0x3
+ 1776 0453 04000000 		.4byte	aInitialized
+ 1777 0457 08       		.uleb128 0x8
+ 1778 0458 4A020000 		.4byte	.LASF58
+ 1779 045c 01       		.byte	0x1
+ 1780 045d 3F       		.byte	0x3f
+ 1781 045e 81000000 		.4byte	0x81
+ 1782 0462 05       		.uleb128 0x5
+ 1783 0463 03       		.byte	0x3
+ 1784 0464 01000000 		.4byte	aIncrement
+ 1785 0468 08       		.uleb128 0x8
+ 1786 0469 39020000 		.4byte	.LASF59
+ 1787 046d 01       		.byte	0x1
+ 1788 046e 40       		.byte	0x40
+ 1789 046f 81000000 		.4byte	0x81
+ 1790 0473 05       		.uleb128 0x5
+ 1791 0474 03       		.byte	0x3
+ 1792 0475 02000000 		.4byte	aLowerBound
+ 1793 0479 08       		.uleb128 0x8
+ 1794 047a 61030000 		.4byte	.LASF60
+ 1795 047e 01       		.byte	0x1
+ 1796 047f 41       		.byte	0x41
+ 1797 0480 81000000 		.4byte	0x81
+ 1798 0484 05       		.uleb128 0x5
+ 1799 0485 03       		.byte	0x3
+ 1800 0486 03000000 		.4byte	aUpperBound
+ 1801 048a 08       		.uleb128 0x8
+ 1802 048b 4B040000 		.4byte	.LASF61
+ 1803 048f 01       		.byte	0x1
+ 1804 0490 42       		.byte	0x42
+ 1805 0491 97000000 		.4byte	0x97
+ 1806 0495 05       		.uleb128 0x5
+ 1807 0496 03       		.byte	0x3
+ 1808 0497 05000000 		.4byte	aCheckBounds
+ 1809 049b 16       		.uleb128 0x16
+ 1810 049c 8F040000 		.4byte	.LASF62
+ 1811 04a0 05       		.byte	0x5
+ 1812 04a1 1207     		.2byte	0x712
+ 1813 04a3 A7040000 		.4byte	0x4a7
+ 1814 04a7 06       		.uleb128 0x6
+ 1815 04a8 8C000000 		.4byte	0x8c
+ 1816 04ac 17       		.uleb128 0x17
+ 1817 04ad A2020000 		.4byte	.LASF63
+ 1818 04b1 01       		.byte	0x1
+ 1819 04b2 3B       		.byte	0x3b
+ 1820 04b3 97000000 		.4byte	0x97
+ 1821 04b7 05       		.uleb128 0x5
+ 1822 04b8 03       		.byte	0x3
+ 1823 04b9 00000000 		.4byte	Decoder_1_Enabled
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 44
+
+
+ 1824 04bd 00       		.byte	0
+ 1825              		.section	.debug_abbrev,"",%progbits
+ 1826              	.Ldebug_abbrev0:
+ 1827 0000 01       		.uleb128 0x1
+ 1828 0001 11       		.uleb128 0x11
+ 1829 0002 01       		.byte	0x1
+ 1830 0003 25       		.uleb128 0x25
+ 1831 0004 0E       		.uleb128 0xe
+ 1832 0005 13       		.uleb128 0x13
+ 1833 0006 0B       		.uleb128 0xb
+ 1834 0007 03       		.uleb128 0x3
+ 1835 0008 0E       		.uleb128 0xe
+ 1836 0009 1B       		.uleb128 0x1b
+ 1837 000a 0E       		.uleb128 0xe
+ 1838 000b 55       		.uleb128 0x55
+ 1839 000c 17       		.uleb128 0x17
+ 1840 000d 11       		.uleb128 0x11
+ 1841 000e 01       		.uleb128 0x1
+ 1842 000f 10       		.uleb128 0x10
+ 1843 0010 17       		.uleb128 0x17
+ 1844 0011 00       		.byte	0
+ 1845 0012 00       		.byte	0
+ 1846 0013 02       		.uleb128 0x2
+ 1847 0014 16       		.uleb128 0x16
+ 1848 0015 00       		.byte	0
+ 1849 0016 03       		.uleb128 0x3
+ 1850 0017 0E       		.uleb128 0xe
+ 1851 0018 3A       		.uleb128 0x3a
+ 1852 0019 0B       		.uleb128 0xb
+ 1853 001a 3B       		.uleb128 0x3b
+ 1854 001b 0B       		.uleb128 0xb
+ 1855 001c 49       		.uleb128 0x49
+ 1856 001d 13       		.uleb128 0x13
+ 1857 001e 00       		.byte	0
+ 1858 001f 00       		.byte	0
+ 1859 0020 03       		.uleb128 0x3
+ 1860 0021 24       		.uleb128 0x24
+ 1861 0022 00       		.byte	0
+ 1862 0023 0B       		.uleb128 0xb
+ 1863 0024 0B       		.uleb128 0xb
+ 1864 0025 3E       		.uleb128 0x3e
+ 1865 0026 0B       		.uleb128 0xb
+ 1866 0027 03       		.uleb128 0x3
+ 1867 0028 0E       		.uleb128 0xe
+ 1868 0029 00       		.byte	0
+ 1869 002a 00       		.byte	0
+ 1870 002b 04       		.uleb128 0x4
+ 1871 002c 24       		.uleb128 0x24
+ 1872 002d 00       		.byte	0
+ 1873 002e 0B       		.uleb128 0xb
+ 1874 002f 0B       		.uleb128 0xb
+ 1875 0030 3E       		.uleb128 0x3e
+ 1876 0031 0B       		.uleb128 0xb
+ 1877 0032 03       		.uleb128 0x3
+ 1878 0033 08       		.uleb128 0x8
+ 1879 0034 00       		.byte	0
+ 1880 0035 00       		.byte	0
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 45
+
+
+ 1881 0036 05       		.uleb128 0x5
+ 1882 0037 16       		.uleb128 0x16
+ 1883 0038 00       		.byte	0
+ 1884 0039 03       		.uleb128 0x3
+ 1885 003a 0E       		.uleb128 0xe
+ 1886 003b 3A       		.uleb128 0x3a
+ 1887 003c 0B       		.uleb128 0xb
+ 1888 003d 3B       		.uleb128 0x3b
+ 1889 003e 05       		.uleb128 0x5
+ 1890 003f 49       		.uleb128 0x49
+ 1891 0040 13       		.uleb128 0x13
+ 1892 0041 00       		.byte	0
+ 1893 0042 00       		.byte	0
+ 1894 0043 06       		.uleb128 0x6
+ 1895 0044 35       		.uleb128 0x35
+ 1896 0045 00       		.byte	0
+ 1897 0046 49       		.uleb128 0x49
+ 1898 0047 13       		.uleb128 0x13
+ 1899 0048 00       		.byte	0
+ 1900 0049 00       		.byte	0
+ 1901 004a 07       		.uleb128 0x7
+ 1902 004b 2E       		.uleb128 0x2e
+ 1903 004c 01       		.byte	0x1
+ 1904 004d 3F       		.uleb128 0x3f
+ 1905 004e 19       		.uleb128 0x19
+ 1906 004f 03       		.uleb128 0x3
+ 1907 0050 0E       		.uleb128 0xe
+ 1908 0051 3A       		.uleb128 0x3a
+ 1909 0052 0B       		.uleb128 0xb
+ 1910 0053 3B       		.uleb128 0x3b
+ 1911 0054 0B       		.uleb128 0xb
+ 1912 0055 49       		.uleb128 0x49
+ 1913 0056 13       		.uleb128 0x13
+ 1914 0057 11       		.uleb128 0x11
+ 1915 0058 01       		.uleb128 0x1
+ 1916 0059 12       		.uleb128 0x12
+ 1917 005a 06       		.uleb128 0x6
+ 1918 005b 40       		.uleb128 0x40
+ 1919 005c 18       		.uleb128 0x18
+ 1920 005d 9642     		.uleb128 0x2116
+ 1921 005f 19       		.uleb128 0x19
+ 1922 0060 01       		.uleb128 0x1
+ 1923 0061 13       		.uleb128 0x13
+ 1924 0062 00       		.byte	0
+ 1925 0063 00       		.byte	0
+ 1926 0064 08       		.uleb128 0x8
+ 1927 0065 34       		.uleb128 0x34
+ 1928 0066 00       		.byte	0
+ 1929 0067 03       		.uleb128 0x3
+ 1930 0068 0E       		.uleb128 0xe
+ 1931 0069 3A       		.uleb128 0x3a
+ 1932 006a 0B       		.uleb128 0xb
+ 1933 006b 3B       		.uleb128 0x3b
+ 1934 006c 0B       		.uleb128 0xb
+ 1935 006d 49       		.uleb128 0x49
+ 1936 006e 13       		.uleb128 0x13
+ 1937 006f 02       		.uleb128 0x2
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 46
+
+
+ 1938 0070 18       		.uleb128 0x18
+ 1939 0071 00       		.byte	0
+ 1940 0072 00       		.byte	0
+ 1941 0073 09       		.uleb128 0x9
+ 1942 0074 2E       		.uleb128 0x2e
+ 1943 0075 01       		.byte	0x1
+ 1944 0076 3F       		.uleb128 0x3f
+ 1945 0077 19       		.uleb128 0x19
+ 1946 0078 03       		.uleb128 0x3
+ 1947 0079 0E       		.uleb128 0xe
+ 1948 007a 3A       		.uleb128 0x3a
+ 1949 007b 0B       		.uleb128 0xb
+ 1950 007c 3B       		.uleb128 0x3b
+ 1951 007d 0B       		.uleb128 0xb
+ 1952 007e 49       		.uleb128 0x49
+ 1953 007f 13       		.uleb128 0x13
+ 1954 0080 11       		.uleb128 0x11
+ 1955 0081 01       		.uleb128 0x1
+ 1956 0082 12       		.uleb128 0x12
+ 1957 0083 06       		.uleb128 0x6
+ 1958 0084 40       		.uleb128 0x40
+ 1959 0085 18       		.uleb128 0x18
+ 1960 0086 9742     		.uleb128 0x2117
+ 1961 0088 19       		.uleb128 0x19
+ 1962 0089 01       		.uleb128 0x1
+ 1963 008a 13       		.uleb128 0x13
+ 1964 008b 00       		.byte	0
+ 1965 008c 00       		.byte	0
+ 1966 008d 0A       		.uleb128 0xa
+ 1967 008e 34       		.uleb128 0x34
+ 1968 008f 00       		.byte	0
+ 1969 0090 03       		.uleb128 0x3
+ 1970 0091 08       		.uleb128 0x8
+ 1971 0092 3A       		.uleb128 0x3a
+ 1972 0093 0B       		.uleb128 0xb
+ 1973 0094 3B       		.uleb128 0x3b
+ 1974 0095 0B       		.uleb128 0xb
+ 1975 0096 49       		.uleb128 0x49
+ 1976 0097 13       		.uleb128 0x13
+ 1977 0098 02       		.uleb128 0x2
+ 1978 0099 18       		.uleb128 0x18
+ 1979 009a 00       		.byte	0
+ 1980 009b 00       		.byte	0
+ 1981 009c 0B       		.uleb128 0xb
+ 1982 009d 2E       		.uleb128 0x2e
+ 1983 009e 00       		.byte	0
+ 1984 009f 3F       		.uleb128 0x3f
+ 1985 00a0 19       		.uleb128 0x19
+ 1986 00a1 03       		.uleb128 0x3
+ 1987 00a2 0E       		.uleb128 0xe
+ 1988 00a3 3A       		.uleb128 0x3a
+ 1989 00a4 0B       		.uleb128 0xb
+ 1990 00a5 3B       		.uleb128 0x3b
+ 1991 00a6 0B       		.uleb128 0xb
+ 1992 00a7 11       		.uleb128 0x11
+ 1993 00a8 01       		.uleb128 0x1
+ 1994 00a9 12       		.uleb128 0x12
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 47
+
+
+ 1995 00aa 06       		.uleb128 0x6
+ 1996 00ab 40       		.uleb128 0x40
+ 1997 00ac 18       		.uleb128 0x18
+ 1998 00ad 9742     		.uleb128 0x2117
+ 1999 00af 19       		.uleb128 0x19
+ 2000 00b0 00       		.byte	0
+ 2001 00b1 00       		.byte	0
+ 2002 00b2 0C       		.uleb128 0xc
+ 2003 00b3 2E       		.uleb128 0x2e
+ 2004 00b4 00       		.byte	0
+ 2005 00b5 3F       		.uleb128 0x3f
+ 2006 00b6 19       		.uleb128 0x19
+ 2007 00b7 03       		.uleb128 0x3
+ 2008 00b8 0E       		.uleb128 0xe
+ 2009 00b9 3A       		.uleb128 0x3a
+ 2010 00ba 0B       		.uleb128 0xb
+ 2011 00bb 3B       		.uleb128 0x3b
+ 2012 00bc 0B       		.uleb128 0xb
+ 2013 00bd 27       		.uleb128 0x27
+ 2014 00be 19       		.uleb128 0x19
+ 2015 00bf 11       		.uleb128 0x11
+ 2016 00c0 01       		.uleb128 0x1
+ 2017 00c1 12       		.uleb128 0x12
+ 2018 00c2 06       		.uleb128 0x6
+ 2019 00c3 40       		.uleb128 0x40
+ 2020 00c4 18       		.uleb128 0x18
+ 2021 00c5 9642     		.uleb128 0x2116
+ 2022 00c7 19       		.uleb128 0x19
+ 2023 00c8 00       		.byte	0
+ 2024 00c9 00       		.byte	0
+ 2025 00ca 0D       		.uleb128 0xd
+ 2026 00cb 2E       		.uleb128 0x2e
+ 2027 00cc 00       		.byte	0
+ 2028 00cd 3F       		.uleb128 0x3f
+ 2029 00ce 19       		.uleb128 0x19
+ 2030 00cf 03       		.uleb128 0x3
+ 2031 00d0 0E       		.uleb128 0xe
+ 2032 00d1 3A       		.uleb128 0x3a
+ 2033 00d2 0B       		.uleb128 0xb
+ 2034 00d3 3B       		.uleb128 0x3b
+ 2035 00d4 05       		.uleb128 0x5
+ 2036 00d5 11       		.uleb128 0x11
+ 2037 00d6 01       		.uleb128 0x1
+ 2038 00d7 12       		.uleb128 0x12
+ 2039 00d8 06       		.uleb128 0x6
+ 2040 00d9 40       		.uleb128 0x40
+ 2041 00da 18       		.uleb128 0x18
+ 2042 00db 9642     		.uleb128 0x2116
+ 2043 00dd 19       		.uleb128 0x19
+ 2044 00de 00       		.byte	0
+ 2045 00df 00       		.byte	0
+ 2046 00e0 0E       		.uleb128 0xe
+ 2047 00e1 2E       		.uleb128 0x2e
+ 2048 00e2 00       		.byte	0
+ 2049 00e3 3F       		.uleb128 0x3f
+ 2050 00e4 19       		.uleb128 0x19
+ 2051 00e5 03       		.uleb128 0x3
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 48
+
+
+ 2052 00e6 0E       		.uleb128 0xe
+ 2053 00e7 3A       		.uleb128 0x3a
+ 2054 00e8 0B       		.uleb128 0xb
+ 2055 00e9 3B       		.uleb128 0x3b
+ 2056 00ea 05       		.uleb128 0x5
+ 2057 00eb 49       		.uleb128 0x49
+ 2058 00ec 13       		.uleb128 0x13
+ 2059 00ed 11       		.uleb128 0x11
+ 2060 00ee 01       		.uleb128 0x1
+ 2061 00ef 12       		.uleb128 0x12
+ 2062 00f0 06       		.uleb128 0x6
+ 2063 00f1 40       		.uleb128 0x40
+ 2064 00f2 18       		.uleb128 0x18
+ 2065 00f3 9742     		.uleb128 0x2117
+ 2066 00f5 19       		.uleb128 0x19
+ 2067 00f6 00       		.byte	0
+ 2068 00f7 00       		.byte	0
+ 2069 00f8 0F       		.uleb128 0xf
+ 2070 00f9 2E       		.uleb128 0x2e
+ 2071 00fa 01       		.byte	0x1
+ 2072 00fb 3F       		.uleb128 0x3f
+ 2073 00fc 19       		.uleb128 0x19
+ 2074 00fd 03       		.uleb128 0x3
+ 2075 00fe 0E       		.uleb128 0xe
+ 2076 00ff 3A       		.uleb128 0x3a
+ 2077 0100 0B       		.uleb128 0xb
+ 2078 0101 3B       		.uleb128 0x3b
+ 2079 0102 05       		.uleb128 0x5
+ 2080 0103 27       		.uleb128 0x27
+ 2081 0104 19       		.uleb128 0x19
+ 2082 0105 49       		.uleb128 0x49
+ 2083 0106 13       		.uleb128 0x13
+ 2084 0107 11       		.uleb128 0x11
+ 2085 0108 01       		.uleb128 0x1
+ 2086 0109 12       		.uleb128 0x12
+ 2087 010a 06       		.uleb128 0x6
+ 2088 010b 40       		.uleb128 0x40
+ 2089 010c 18       		.uleb128 0x18
+ 2090 010d 9742     		.uleb128 0x2117
+ 2091 010f 19       		.uleb128 0x19
+ 2092 0110 01       		.uleb128 0x1
+ 2093 0111 13       		.uleb128 0x13
+ 2094 0112 00       		.byte	0
+ 2095 0113 00       		.byte	0
+ 2096 0114 10       		.uleb128 0x10
+ 2097 0115 05       		.uleb128 0x5
+ 2098 0116 00       		.byte	0
+ 2099 0117 03       		.uleb128 0x3
+ 2100 0118 0E       		.uleb128 0xe
+ 2101 0119 3A       		.uleb128 0x3a
+ 2102 011a 0B       		.uleb128 0xb
+ 2103 011b 3B       		.uleb128 0x3b
+ 2104 011c 05       		.uleb128 0x5
+ 2105 011d 49       		.uleb128 0x49
+ 2106 011e 13       		.uleb128 0x13
+ 2107 011f 02       		.uleb128 0x2
+ 2108 0120 18       		.uleb128 0x18
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 49
+
+
+ 2109 0121 00       		.byte	0
+ 2110 0122 00       		.byte	0
+ 2111 0123 11       		.uleb128 0x11
+ 2112 0124 34       		.uleb128 0x34
+ 2113 0125 00       		.byte	0
+ 2114 0126 03       		.uleb128 0x3
+ 2115 0127 0E       		.uleb128 0xe
+ 2116 0128 3A       		.uleb128 0x3a
+ 2117 0129 0B       		.uleb128 0xb
+ 2118 012a 3B       		.uleb128 0x3b
+ 2119 012b 05       		.uleb128 0x5
+ 2120 012c 49       		.uleb128 0x49
+ 2121 012d 13       		.uleb128 0x13
+ 2122 012e 02       		.uleb128 0x2
+ 2123 012f 18       		.uleb128 0x18
+ 2124 0130 00       		.byte	0
+ 2125 0131 00       		.byte	0
+ 2126 0132 12       		.uleb128 0x12
+ 2127 0133 2E       		.uleb128 0x2e
+ 2128 0134 01       		.byte	0x1
+ 2129 0135 3F       		.uleb128 0x3f
+ 2130 0136 19       		.uleb128 0x19
+ 2131 0137 03       		.uleb128 0x3
+ 2132 0138 0E       		.uleb128 0xe
+ 2133 0139 3A       		.uleb128 0x3a
+ 2134 013a 0B       		.uleb128 0xb
+ 2135 013b 3B       		.uleb128 0x3b
+ 2136 013c 05       		.uleb128 0x5
+ 2137 013d 27       		.uleb128 0x27
+ 2138 013e 19       		.uleb128 0x19
+ 2139 013f 49       		.uleb128 0x49
+ 2140 0140 13       		.uleb128 0x13
+ 2141 0141 11       		.uleb128 0x11
+ 2142 0142 01       		.uleb128 0x1
+ 2143 0143 12       		.uleb128 0x12
+ 2144 0144 06       		.uleb128 0x6
+ 2145 0145 40       		.uleb128 0x40
+ 2146 0146 18       		.uleb128 0x18
+ 2147 0147 9642     		.uleb128 0x2116
+ 2148 0149 19       		.uleb128 0x19
+ 2149 014a 01       		.uleb128 0x1
+ 2150 014b 13       		.uleb128 0x13
+ 2151 014c 00       		.byte	0
+ 2152 014d 00       		.byte	0
+ 2153 014e 13       		.uleb128 0x13
+ 2154 014f 01       		.uleb128 0x1
+ 2155 0150 01       		.byte	0x1
+ 2156 0151 49       		.uleb128 0x49
+ 2157 0152 13       		.uleb128 0x13
+ 2158 0153 01       		.uleb128 0x1
+ 2159 0154 13       		.uleb128 0x13
+ 2160 0155 00       		.byte	0
+ 2161 0156 00       		.byte	0
+ 2162 0157 14       		.uleb128 0x14
+ 2163 0158 21       		.uleb128 0x21
+ 2164 0159 00       		.byte	0
+ 2165 015a 49       		.uleb128 0x49
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 50
+
+
+ 2166 015b 13       		.uleb128 0x13
+ 2167 015c 2F       		.uleb128 0x2f
+ 2168 015d 0B       		.uleb128 0xb
+ 2169 015e 00       		.byte	0
+ 2170 015f 00       		.byte	0
+ 2171 0160 15       		.uleb128 0x15
+ 2172 0161 26       		.uleb128 0x26
+ 2173 0162 00       		.byte	0
+ 2174 0163 49       		.uleb128 0x49
+ 2175 0164 13       		.uleb128 0x13
+ 2176 0165 00       		.byte	0
+ 2177 0166 00       		.byte	0
+ 2178 0167 16       		.uleb128 0x16
+ 2179 0168 34       		.uleb128 0x34
+ 2180 0169 00       		.byte	0
+ 2181 016a 03       		.uleb128 0x3
+ 2182 016b 0E       		.uleb128 0xe
+ 2183 016c 3A       		.uleb128 0x3a
+ 2184 016d 0B       		.uleb128 0xb
+ 2185 016e 3B       		.uleb128 0x3b
+ 2186 016f 05       		.uleb128 0x5
+ 2187 0170 49       		.uleb128 0x49
+ 2188 0171 13       		.uleb128 0x13
+ 2189 0172 3F       		.uleb128 0x3f
+ 2190 0173 19       		.uleb128 0x19
+ 2191 0174 3C       		.uleb128 0x3c
+ 2192 0175 19       		.uleb128 0x19
+ 2193 0176 00       		.byte	0
+ 2194 0177 00       		.byte	0
+ 2195 0178 17       		.uleb128 0x17
+ 2196 0179 34       		.uleb128 0x34
+ 2197 017a 00       		.byte	0
+ 2198 017b 03       		.uleb128 0x3
+ 2199 017c 0E       		.uleb128 0xe
+ 2200 017d 3A       		.uleb128 0x3a
+ 2201 017e 0B       		.uleb128 0xb
+ 2202 017f 3B       		.uleb128 0x3b
+ 2203 0180 0B       		.uleb128 0xb
+ 2204 0181 49       		.uleb128 0x49
+ 2205 0182 13       		.uleb128 0x13
+ 2206 0183 3F       		.uleb128 0x3f
+ 2207 0184 19       		.uleb128 0x19
+ 2208 0185 02       		.uleb128 0x2
+ 2209 0186 18       		.uleb128 0x18
+ 2210 0187 00       		.byte	0
+ 2211 0188 00       		.byte	0
+ 2212 0189 00       		.byte	0
+ 2213              		.section	.debug_aranges,"",%progbits
+ 2214 0000 BC000000 		.4byte	0xbc
+ 2215 0004 0200     		.2byte	0x2
+ 2216 0006 00000000 		.4byte	.Ldebug_info0
+ 2217 000a 04       		.byte	0x4
+ 2218 000b 00       		.byte	0
+ 2219 000c 0000     		.2byte	0
+ 2220 000e 0000     		.2byte	0
+ 2221 0010 00000000 		.4byte	.LFB63
+ 2222 0014 3C000000 		.4byte	.LFE63-.LFB63
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 51
+
+
+ 2223 0018 00000000 		.4byte	.LFB64
+ 2224 001c 94000000 		.4byte	.LFE64-.LFB64
+ 2225 0020 00000000 		.4byte	.LFB65
+ 2226 0024 14000000 		.4byte	.LFE65-.LFB65
+ 2227 0028 00000000 		.4byte	.LFB66
+ 2228 002c 14000000 		.4byte	.LFE66-.LFB66
+ 2229 0030 00000000 		.4byte	.LFB67
+ 2230 0034 20000000 		.4byte	.LFE67-.LFB67
+ 2231 0038 00000000 		.4byte	.LFB68
+ 2232 003c 1C000000 		.4byte	.LFE68-.LFB68
+ 2233 0040 00000000 		.4byte	.LFB69
+ 2234 0044 0E000000 		.4byte	.LFE69-.LFB69
+ 2235 0048 00000000 		.4byte	.LFB70
+ 2236 004c 0E000000 		.4byte	.LFE70-.LFB70
+ 2237 0050 00000000 		.4byte	.LFB71
+ 2238 0054 18000000 		.4byte	.LFE71-.LFB71
+ 2239 0058 00000000 		.4byte	.LFB72
+ 2240 005c 84000000 		.4byte	.LFE72-.LFB72
+ 2241 0060 00000000 		.4byte	.LFB73
+ 2242 0064 18000000 		.4byte	.LFE73-.LFB73
+ 2243 0068 00000000 		.4byte	.LFB74
+ 2244 006c 14010000 		.4byte	.LFE74-.LFB74
+ 2245 0070 00000000 		.4byte	.LFB75
+ 2246 0074 14000000 		.4byte	.LFE75-.LFB75
+ 2247 0078 00000000 		.4byte	.LFB76
+ 2248 007c 30000000 		.4byte	.LFE76-.LFB76
+ 2249 0080 00000000 		.4byte	.LFB77
+ 2250 0084 68000000 		.4byte	.LFE77-.LFB77
+ 2251 0088 00000000 		.4byte	.LFB78
+ 2252 008c 44000000 		.4byte	.LFE78-.LFB78
+ 2253 0090 00000000 		.4byte	.LFB79
+ 2254 0094 76000000 		.4byte	.LFE79-.LFB79
+ 2255 0098 00000000 		.4byte	.LFB80
+ 2256 009c 18000000 		.4byte	.LFE80-.LFB80
+ 2257 00a0 00000000 		.4byte	.LFB81
+ 2258 00a4 18000000 		.4byte	.LFE81-.LFB81
+ 2259 00a8 00000000 		.4byte	.LFB82
+ 2260 00ac 18000000 		.4byte	.LFE82-.LFB82
+ 2261 00b0 00000000 		.4byte	.LFB83
+ 2262 00b4 14000000 		.4byte	.LFE83-.LFB83
+ 2263 00b8 00000000 		.4byte	0
+ 2264 00bc 00000000 		.4byte	0
+ 2265              		.section	.debug_ranges,"",%progbits
+ 2266              	.Ldebug_ranges0:
+ 2267 0000 00000000 		.4byte	.LFB63
+ 2268 0004 3C000000 		.4byte	.LFE63
+ 2269 0008 00000000 		.4byte	.LFB64
+ 2270 000c 94000000 		.4byte	.LFE64
+ 2271 0010 00000000 		.4byte	.LFB65
+ 2272 0014 14000000 		.4byte	.LFE65
+ 2273 0018 00000000 		.4byte	.LFB66
+ 2274 001c 14000000 		.4byte	.LFE66
+ 2275 0020 00000000 		.4byte	.LFB67
+ 2276 0024 20000000 		.4byte	.LFE67
+ 2277 0028 00000000 		.4byte	.LFB68
+ 2278 002c 1C000000 		.4byte	.LFE68
+ 2279 0030 00000000 		.4byte	.LFB69
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 52
+
+
+ 2280 0034 0E000000 		.4byte	.LFE69
+ 2281 0038 00000000 		.4byte	.LFB70
+ 2282 003c 0E000000 		.4byte	.LFE70
+ 2283 0040 00000000 		.4byte	.LFB71
+ 2284 0044 18000000 		.4byte	.LFE71
+ 2285 0048 00000000 		.4byte	.LFB72
+ 2286 004c 84000000 		.4byte	.LFE72
+ 2287 0050 00000000 		.4byte	.LFB73
+ 2288 0054 18000000 		.4byte	.LFE73
+ 2289 0058 00000000 		.4byte	.LFB74
+ 2290 005c 14010000 		.4byte	.LFE74
+ 2291 0060 00000000 		.4byte	.LFB75
+ 2292 0064 14000000 		.4byte	.LFE75
+ 2293 0068 00000000 		.4byte	.LFB76
+ 2294 006c 30000000 		.4byte	.LFE76
+ 2295 0070 00000000 		.4byte	.LFB77
+ 2296 0074 68000000 		.4byte	.LFE77
+ 2297 0078 00000000 		.4byte	.LFB78
+ 2298 007c 44000000 		.4byte	.LFE78
+ 2299 0080 00000000 		.4byte	.LFB79
+ 2300 0084 76000000 		.4byte	.LFE79
+ 2301 0088 00000000 		.4byte	.LFB80
+ 2302 008c 18000000 		.4byte	.LFE80
+ 2303 0090 00000000 		.4byte	.LFB81
+ 2304 0094 18000000 		.4byte	.LFE81
+ 2305 0098 00000000 		.4byte	.LFB82
+ 2306 009c 18000000 		.4byte	.LFE82
+ 2307 00a0 00000000 		.4byte	.LFB83
+ 2308 00a4 14000000 		.4byte	.LFE83
+ 2309 00a8 00000000 		.4byte	0
+ 2310 00ac 00000000 		.4byte	0
+ 2311              		.section	.debug_line,"",%progbits
+ 2312              	.Ldebug_line0:
+ 2313 0000 7D030000 		.section	.debug_str,"MS",%progbits,1
+ 2313      02005101 
+ 2313      00000201 
+ 2313      FB0E0D00 
+ 2313      01010101 
+ 2314              	.LASF57:
+ 2315 0000 61496E69 		.ascii	"aInitialized\000"
+ 2315      7469616C 
+ 2315      697A6564 
+ 2315      00
+ 2316              	.LASF66:
+ 2317 000d 433A5C55 		.ascii	"C:\\Users\\JeffSnyder\\dev\\Electrosteel_embedded\\"
+ 2317      73657273 
+ 2317      5C4A6566 
+ 2317      66536E79 
+ 2317      6465725C 
+ 2318 003b 50534F43 		.ascii	"PSOC5_electrosteel_stringsensors_newpcb_brain\\CE21"
+ 2318      355F656C 
+ 2318      65637472 
+ 2318      6F737465 
+ 2318      656C5F73 
+ 2319 006d 30353134 		.ascii	"0514_PSOC3_5_Thermistor.cydsn\000"
+ 2319      5F50534F 
+ 2319      43335F35 
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 53
+
+
+ 2319      5F546865 
+ 2319      726D6973 
+ 2320              	.LASF33:
+ 2321 008b 72657375 		.ascii	"result\000"
+ 2321      6C7400
+ 2322              	.LASF11:
+ 2323 0092 696E7438 		.ascii	"int8_t\000"
+ 2323      5F7400
+ 2324              	.LASF55:
+ 2325 0099 61446972 		.ascii	"aDirection\000"
+ 2325      65637469 
+ 2325      6F6E00
+ 2326              	.LASF2:
+ 2327 00a4 73686F72 		.ascii	"short int\000"
+ 2327      7420696E 
+ 2327      7400
+ 2328              	.LASF20:
+ 2329 00ae 73697A65 		.ascii	"sizetype\000"
+ 2329      74797065 
+ 2329      00
+ 2330              	.LASF21:
+ 2331 00b7 4465636F 		.ascii	"Decoder_1_CheckStatus\000"
+ 2331      6465725F 
+ 2331      315F4368 
+ 2331      65636B53 
+ 2331      74617475 
+ 2332              	.LASF64:
+ 2333 00cd 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 2333      43313120 
+ 2333      352E342E 
+ 2333      31203230 
+ 2333      31363036 
+ 2334 0100 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 2334      20726576 
+ 2334      6973696F 
+ 2334      6E203233 
+ 2334      37373135 
+ 2335 0133 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 2335      66756E63 
+ 2335      74696F6E 
+ 2335      2D736563 
+ 2335      74696F6E 
+ 2336              	.LASF65:
+ 2337 015b 47656E65 		.ascii	"Generated_Source\\PSoC5\\Decoder_1.c\000"
+ 2337      72617465 
+ 2337      645F536F 
+ 2337      75726365 
+ 2337      5C50536F 
+ 2338              	.LASF44:
+ 2339 017e 4465636F 		.ascii	"Decoder_1_Setup\000"
+ 2339      6465725F 
+ 2339      315F5365 
+ 2339      74757000 
+ 2340              	.LASF43:
+ 2341 018e 75426F75 		.ascii	"uBound\000"
+ 2341      6E6400
+ 2342              	.LASF34:
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 54
+
+
+ 2343 0195 4465636F 		.ascii	"Decoder_1_GetDirection\000"
+ 2343      6465725F 
+ 2343      315F4765 
+ 2343      74446972 
+ 2343      65637469 
+ 2344              	.LASF36:
+ 2345 01ac 4465636F 		.ascii	"Decoder_1_GetInitStatus\000"
+ 2345      6465725F 
+ 2345      315F4765 
+ 2345      74496E69 
+ 2345      74537461 
+ 2346              	.LASF39:
+ 2347 01c4 76616C75 		.ascii	"value\000"
+ 2347      6500
+ 2348              	.LASF42:
+ 2349 01ca 6C426F75 		.ascii	"lBound\000"
+ 2349      6E6400
+ 2350              	.LASF24:
+ 2351 01d1 696E6465 		.ascii	"index\000"
+ 2351      7800
+ 2352              	.LASF13:
+ 2353 01d7 75696E74 		.ascii	"uint8\000"
+ 2353      3800
+ 2354              	.LASF26:
+ 2355 01dd 4465636F 		.ascii	"Decoder_1_ClearInterrupt\000"
+ 2355      6465725F 
+ 2355      315F436C 
+ 2355      65617249 
+ 2355      6E746572 
+ 2356              	.LASF15:
+ 2357 01f6 666C6F61 		.ascii	"float\000"
+ 2357      7400
+ 2358              	.LASF25:
+ 2359 01fc 62697473 		.ascii	"bits\000"
+ 2359      00
+ 2360              	.LASF47:
+ 2361 0201 626F756E 		.ascii	"bounds\000"
+ 2361      647300
+ 2362              	.LASF41:
+ 2363 0208 4465636F 		.ascii	"Decoder_1_SetBounds\000"
+ 2363      6465725F 
+ 2363      315F5365 
+ 2363      74426F75 
+ 2363      6E647300 
+ 2364              	.LASF54:
+ 2365 021c 61506F73 		.ascii	"aPosition\000"
+ 2365      6974696F 
+ 2365      6E00
+ 2366              	.LASF8:
+ 2367 0226 6C6F6E67 		.ascii	"long long int\000"
+ 2367      206C6F6E 
+ 2367      6720696E 
+ 2367      7400
+ 2368              	.LASF14:
+ 2369 0234 696E7438 		.ascii	"int8\000"
+ 2369      00
+ 2370              	.LASF59:
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 55
+
+
+ 2371 0239 614C6F77 		.ascii	"aLowerBound\000"
+ 2371      6572426F 
+ 2371      756E6400 
+ 2372              	.LASF17:
+ 2373 0245 63686172 		.ascii	"char\000"
+ 2373      00
+ 2374              	.LASF58:
+ 2375 024a 61496E63 		.ascii	"aIncrement\000"
+ 2375      72656D65 
+ 2375      6E7400
+ 2376              	.LASF6:
+ 2377 0255 6C6F6E67 		.ascii	"long int\000"
+ 2377      20696E74 
+ 2377      00
+ 2378              	.LASF53:
+ 2379 025e 53575F74 		.ascii	"SW_timeout\000"
+ 2379      696D656F 
+ 2379      757400
+ 2380              	.LASF46:
+ 2381 0269 696E6372 		.ascii	"increment\000"
+ 2381      656D656E 
+ 2381      7400
+ 2382              	.LASF48:
+ 2383 0273 4465636F 		.ascii	"Decoder_1_GetIncrement\000"
+ 2383      6465725F 
+ 2383      315F4765 
+ 2383      74496E63 
+ 2383      72656D65 
+ 2384              	.LASF49:
+ 2385 028a 4465636F 		.ascii	"Decoder_1_GetLowerBound\000"
+ 2385      6465725F 
+ 2385      315F4765 
+ 2385      744C6F77 
+ 2385      6572426F 
+ 2386              	.LASF63:
+ 2387 02a2 4465636F 		.ascii	"Decoder_1_Enabled\000"
+ 2387      6465725F 
+ 2387      315F456E 
+ 2387      61626C65 
+ 2387      6400
+ 2388              	.LASF19:
+ 2389 02b4 6C6F6E67 		.ascii	"long double\000"
+ 2389      20646F75 
+ 2389      626C6500 
+ 2390              	.LASF1:
+ 2391 02c0 756E7369 		.ascii	"unsigned char\000"
+ 2391      676E6564 
+ 2391      20636861 
+ 2391      7200
+ 2392              	.LASF31:
+ 2393 02ce 4465636F 		.ascii	"Decoder_1_myDtrInt\000"
+ 2393      6465725F 
+ 2393      315F6D79 
+ 2393      44747249 
+ 2393      6E7400
+ 2394              	.LASF38:
+ 2395 02e1 4465636F 		.ascii	"Decoder_1_SetIncrement\000"
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 56
+
+
+ 2395      6465725F 
+ 2395      315F5365 
+ 2395      74496E63 
+ 2395      72656D65 
+ 2396              	.LASF35:
+ 2397 02f8 4465636F 		.ascii	"Decoder_1_GetPositionChanged\000"
+ 2397      6465725F 
+ 2397      315F4765 
+ 2397      74506F73 
+ 2397      6974696F 
+ 2398              	.LASF9:
+ 2399 0315 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 2399      206C6F6E 
+ 2399      6720756E 
+ 2399      7369676E 
+ 2399      65642069 
+ 2400              	.LASF27:
+ 2401 032c 4465636F 		.ascii	"Decoder_1_Start\000"
+ 2401      6465725F 
+ 2401      315F5374 
+ 2401      61727400 
+ 2402              	.LASF10:
+ 2403 033c 756E7369 		.ascii	"unsigned int\000"
+ 2403      676E6564 
+ 2403      20696E74 
+ 2403      00
+ 2404              	.LASF22:
+ 2405 0349 4465636F 		.ascii	"Decoder_1_CheckRotation\000"
+ 2405      6465725F 
+ 2405      315F4368 
+ 2405      65636B52 
+ 2405      6F746174 
+ 2406              	.LASF60:
+ 2407 0361 61557070 		.ascii	"aUpperBound\000"
+ 2407      6572426F 
+ 2407      756E6400 
+ 2408              	.LASF30:
+ 2409 036d 4465636F 		.ascii	"Decoder_1_SetInputsHiZ\000"
+ 2409      6465725F 
+ 2409      315F5365 
+ 2409      74496E70 
+ 2409      75747348 
+ 2410              	.LASF3:
+ 2411 0384 73686F72 		.ascii	"short unsigned int\000"
+ 2411      7420756E 
+ 2411      7369676E 
+ 2411      65642069 
+ 2411      6E7400
+ 2412              	.LASF0:
+ 2413 0397 7369676E 		.ascii	"signed char\000"
+ 2413      65642063 
+ 2413      68617200 
+ 2414              	.LASF4:
+ 2415 03a3 5F5F696E 		.ascii	"__int8_t\000"
+ 2415      74385F74 
+ 2415      00
+ 2416              	.LASF51:
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 57
+
+
+ 2417 03ac 4465636F 		.ascii	"Decoder_1_GetCheckBounds\000"
+ 2417      6465725F 
+ 2417      315F4765 
+ 2417      74436865 
+ 2417      636B426F 
+ 2418              	.LASF56:
+ 2419 03c5 66506F73 		.ascii	"fPositionChanged\000"
+ 2419      6974696F 
+ 2419      6E436861 
+ 2419      6E676564 
+ 2419      00
+ 2420              	.LASF12:
+ 2421 03d6 696E7433 		.ascii	"int32_t\000"
+ 2421      325F7400 
+ 2422              	.LASF50:
+ 2423 03de 4465636F 		.ascii	"Decoder_1_GetUpperBound\000"
+ 2423      6465725F 
+ 2423      315F4765 
+ 2423      74557070 
+ 2423      6572426F 
+ 2424              	.LASF32:
+ 2425 03f6 4465636F 		.ascii	"Decoder_1_GetPosition\000"
+ 2425      6465725F 
+ 2425      315F4765 
+ 2425      74506F73 
+ 2425      6974696F 
+ 2426              	.LASF23:
+ 2427 040c 656E5F64 		.ascii	"en_dir\000"
+ 2427      697200
+ 2428              	.LASF18:
+ 2429 0413 72656738 		.ascii	"reg8\000"
+ 2429      00
+ 2430              	.LASF7:
+ 2431 0418 6C6F6E67 		.ascii	"long unsigned int\000"
+ 2431      20756E73 
+ 2431      69676E65 
+ 2431      6420696E 
+ 2431      7400
+ 2432              	.LASF16:
+ 2433 042a 646F7562 		.ascii	"double\000"
+ 2433      6C6500
+ 2434              	.LASF29:
+ 2435 0431 4465636F 		.ascii	"Decoder_1_SetInputsPullUp\000"
+ 2435      6465725F 
+ 2435      315F5365 
+ 2435      74496E70 
+ 2435      75747350 
+ 2436              	.LASF61:
+ 2437 044b 61436865 		.ascii	"aCheckBounds\000"
+ 2437      636B426F 
+ 2437      756E6473 
+ 2437      00
+ 2438              	.LASF5:
+ 2439 0458 5F5F696E 		.ascii	"__int32_t\000"
+ 2439      7433325F 
+ 2439      7400
+ 2440              	.LASF52:
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb9Jo23.s 			page 58
+
+
+ 2441 0462 656E635F 		.ascii	"enc_states\000"
+ 2441      73746174 
+ 2441      657300
+ 2442              	.LASF40:
+ 2443 046d 4465636F 		.ascii	"Decoder_1_SetCheckBounds\000"
+ 2443      6465725F 
+ 2443      315F5365 
+ 2443      74436865 
+ 2443      636B426F 
+ 2444              	.LASF45:
+ 2445 0486 706F7369 		.ascii	"position\000"
+ 2445      74696F6E 
+ 2445      00
+ 2446              	.LASF62:
+ 2447 048f 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 2447      52784275 
+ 2447      66666572 
+ 2447      00
+ 2448              	.LASF28:
+ 2449 049c 4465636F 		.ascii	"Decoder_1_Stop\000"
+ 2449      6465725F 
+ 2449      315F5374 
+ 2449      6F7000
+ 2450              	.LASF37:
+ 2451 04ab 4465636F 		.ascii	"Decoder_1_SetPosition\000"
+ 2451      6465725F 
+ 2451      315F5365 
+ 2451      74506F73 
+ 2451      6974696F 
+ 2452              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

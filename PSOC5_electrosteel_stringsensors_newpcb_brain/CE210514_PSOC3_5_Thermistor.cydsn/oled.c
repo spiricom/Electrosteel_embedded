@@ -205,7 +205,7 @@ void OLEDclear(int width, int height)
 
 void OLEDclearLine(OLEDLine line)
 {
-	GFXfillRect(&theGFX, 0, (line%2)*16, 128, 16, theGFX.textbgcolor);
+	GFXfillRect(&theGFX, 0, (line%4)*16, 128, 16, theGFX.textbgcolor);
 	//ssd1306_display_full_buffer();
 }
 

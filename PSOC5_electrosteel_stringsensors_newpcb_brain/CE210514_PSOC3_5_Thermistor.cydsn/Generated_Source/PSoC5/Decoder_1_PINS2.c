@@ -1,5 +1,5 @@
 /*******************************************************************************
-* File Name: quad1_b.c  
+* File Name: Decoder_1_PINS2.c  
 * Version 2.20
 *
 * Description:
@@ -15,15 +15,15 @@
 *******************************************************************************/
 
 #include "cytypes.h"
-#include "quad1_b.h"
+#include "Decoder_1_PINS2.h"
 
 /* APIs are not generated for P15[7:6] on PSoC 5 */
 #if !(CY_PSOC5A &&\
-	 quad1_b__PORT == 15 && ((quad1_b__MASK & 0xC0) != 0))
+	 Decoder_1_PINS2__PORT == 15 && ((Decoder_1_PINS2__MASK & 0xC0) != 0))
 
 
 /*******************************************************************************
-* Function Name: quad1_b_Write
+* Function Name: Decoder_1_PINS2_Write
 ****************************************************************************//**
 *
 * \brief Writes the value to the physical port (data output register), masking
@@ -52,17 +52,17 @@
 *  this function.
 *
 * \funcusage
-*  \snippet quad1_b_SUT.c usage_quad1_b_Write
+*  \snippet Decoder_1_PINS2_SUT.c usage_Decoder_1_PINS2_Write
 *******************************************************************************/
-void quad1_b_Write(uint8 value)
+void Decoder_1_PINS2_Write(uint8 value)
 {
-    uint8 staticBits = (quad1_b_DR & (uint8)(~quad1_b_MASK));
-    quad1_b_DR = staticBits | ((uint8)(value << quad1_b_SHIFT) & quad1_b_MASK);
+    uint8 staticBits = (Decoder_1_PINS2_DR & (uint8)(~Decoder_1_PINS2_MASK));
+    Decoder_1_PINS2_DR = staticBits | ((uint8)(value << Decoder_1_PINS2_SHIFT) & Decoder_1_PINS2_MASK);
 }
 
 
 /*******************************************************************************
-* Function Name: quad1_b_SetDriveMode
+* Function Name: Decoder_1_PINS2_SetDriveMode
 ****************************************************************************//**
 *
 * \brief Sets the drive mode for each of the Pins component's pins.
@@ -85,16 +85,17 @@ void quad1_b_Write(uint8 value)
 *  APIs (primary method) or disable interrupts around this function.
 *
 * \funcusage
-*  \snippet quad1_b_SUT.c usage_quad1_b_SetDriveMode
+*  \snippet Decoder_1_PINS2_SUT.c usage_Decoder_1_PINS2_SetDriveMode
 *******************************************************************************/
-void quad1_b_SetDriveMode(uint8 mode)
+void Decoder_1_PINS2_SetDriveMode(uint8 mode)
 {
-	CyPins_SetPinDriveMode(quad1_b_0, mode);
+	CyPins_SetPinDriveMode(Decoder_1_PINS2_0, mode);
+	CyPins_SetPinDriveMode(Decoder_1_PINS2_1, mode);
 }
 
 
 /*******************************************************************************
-* Function Name: quad1_b_Read
+* Function Name: Decoder_1_PINS2_Read
 ****************************************************************************//**
 *
 * \brief Reads the associated physical port (pin status register) and masks 
@@ -108,16 +109,16 @@ void quad1_b_SetDriveMode(uint8 mode)
 *  The current value for the pins in the component as a right justified number.
 *
 * \funcusage
-*  \snippet quad1_b_SUT.c usage_quad1_b_Read  
+*  \snippet Decoder_1_PINS2_SUT.c usage_Decoder_1_PINS2_Read  
 *******************************************************************************/
-uint8 quad1_b_Read(void)
+uint8 Decoder_1_PINS2_Read(void)
 {
-    return (quad1_b_PS & quad1_b_MASK) >> quad1_b_SHIFT;
+    return (Decoder_1_PINS2_PS & Decoder_1_PINS2_MASK) >> Decoder_1_PINS2_SHIFT;
 }
 
 
 /*******************************************************************************
-* Function Name: quad1_b_ReadDataReg
+* Function Name: Decoder_1_PINS2_ReadDataReg
 ****************************************************************************//**
 *
 * \brief Reads the associated physical port's data output register and masks 
@@ -126,8 +127,8 @@ uint8 quad1_b_Read(void)
 *
 * The data output register controls the signal applied to the physical pin in 
 * conjunction with the drive mode parameter. This is not the same as the 
-* preferred quad1_b_Read() API because the 
-* quad1_b_ReadDataReg() reads the data register instead of the status 
+* preferred Decoder_1_PINS2_Read() API because the 
+* Decoder_1_PINS2_ReadDataReg() reads the data register instead of the status 
 * register. For output pins this is a useful function to determine the value 
 * just written to the pin.
 *
@@ -136,19 +137,19 @@ uint8 quad1_b_Read(void)
 *  justified number for the component instance.
 *
 * \funcusage
-*  \snippet quad1_b_SUT.c usage_quad1_b_ReadDataReg 
+*  \snippet Decoder_1_PINS2_SUT.c usage_Decoder_1_PINS2_ReadDataReg 
 *******************************************************************************/
-uint8 quad1_b_ReadDataReg(void)
+uint8 Decoder_1_PINS2_ReadDataReg(void)
 {
-    return (quad1_b_DR & quad1_b_MASK) >> quad1_b_SHIFT;
+    return (Decoder_1_PINS2_DR & Decoder_1_PINS2_MASK) >> Decoder_1_PINS2_SHIFT;
 }
 
 
 /* If interrupt is connected for this Pins component */ 
-#if defined(quad1_b_INTSTAT) 
+#if defined(Decoder_1_PINS2_INTSTAT) 
 
     /*******************************************************************************
-    * Function Name: quad1_b_SetInterruptMode
+    * Function Name: Decoder_1_PINS2_SetInterruptMode
     ****************************************************************************//**
     *
     * \brief Configures the interrupt mode for each of the Pins component's
@@ -161,12 +162,12 @@ uint8 quad1_b_ReadDataReg(void)
     * \param position
     *  The pin position as listed in the Pins component. You may OR these to be 
     *  able to configure the interrupt mode of multiple pins within a Pins 
-    *  component. Or you may use quad1_b_INTR_ALL to configure the
+    *  component. Or you may use Decoder_1_PINS2_INTR_ALL to configure the
     *  interrupt mode of all the pins in the Pins component.       
-    *  - quad1_b_0_INTR       (First pin in the list)
-    *  - quad1_b_1_INTR       (Second pin in the list)
+    *  - Decoder_1_PINS2_0_INTR       (First pin in the list)
+    *  - Decoder_1_PINS2_1_INTR       (Second pin in the list)
     *  - ...
-    *  - quad1_b_INTR_ALL     (All pins in Pins component)
+    *  - Decoder_1_PINS2_INTR_ALL     (All pins in Pins component)
     *
     * \param mode
     *  Interrupt mode for the selected pins. Valid options are documented in
@@ -182,19 +183,23 @@ uint8 quad1_b_ReadDataReg(void)
     *  port.
     *
     * \funcusage
-    *  \snippet quad1_b_SUT.c usage_quad1_b_SetInterruptMode
+    *  \snippet Decoder_1_PINS2_SUT.c usage_Decoder_1_PINS2_SetInterruptMode
     *******************************************************************************/
-    void quad1_b_SetInterruptMode(uint16 position, uint16 mode)
+    void Decoder_1_PINS2_SetInterruptMode(uint16 position, uint16 mode)
     {
-		if((position & quad1_b_0_INTR) != 0u) 
+		if((position & Decoder_1_PINS2_0_INTR) != 0u) 
 		{ 
-			 quad1_b_0_INTTYPE_REG = (uint8)mode; 
+			 Decoder_1_PINS2_0_INTTYPE_REG = (uint8)mode; 
+		} 
+		if((position & Decoder_1_PINS2_1_INTR) != 0u) 
+		{ 
+			 Decoder_1_PINS2_1_INTTYPE_REG = (uint8)mode; 
 		}
     }
     
     
     /*******************************************************************************
-    * Function Name: quad1_b_ClearInterrupt
+    * Function Name: Decoder_1_PINS2_ClearInterrupt
     ****************************************************************************//**
     *
     * \brief Clears any active interrupts attached with the component and returns 
@@ -211,11 +216,11 @@ uint8 quad1_b_ReadDataReg(void)
     *  those associated with the Pins component.
     *
     * \funcusage
-    *  \snippet quad1_b_SUT.c usage_quad1_b_ClearInterrupt
+    *  \snippet Decoder_1_PINS2_SUT.c usage_Decoder_1_PINS2_ClearInterrupt
     *******************************************************************************/
-    uint8 quad1_b_ClearInterrupt(void)
+    uint8 Decoder_1_PINS2_ClearInterrupt(void)
     {
-        return (quad1_b_INTSTAT & quad1_b_MASK) >> quad1_b_SHIFT;
+        return (Decoder_1_PINS2_INTSTAT & Decoder_1_PINS2_MASK) >> Decoder_1_PINS2_SHIFT;
     }
 
 #endif /* If Interrupts Are Enabled for this Pins component */ 

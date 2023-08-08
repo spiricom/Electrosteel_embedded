@@ -44,7 +44,7 @@
 
 #define MACRO_CLIPPED_LENGTH 9
 #define NAME_CLIPPED_LENGTH 12
-#define COPEDENT_NAME_CLIPPED_LENGTH 9
+#define COPEDENT_NAME_CLIPPED_LENGTH 10
 #define myBufferSize 32
 void parseSysex(void);
 
@@ -104,6 +104,8 @@ uint16_t numMappings = 0;
 volatile uint8_t parseThatMF = 0;
 volatile float valCheck = 0.0f;
 volatile float testVal = 0.0f;
+float transposeFloat = 0.0f;
+
 
 int numStrings = 10;
 /*
@@ -563,7 +565,7 @@ int main(void)
 
 
     
-    CyDelay(2000);
+    CyDelay(1000);
     //read from eeprom which copedents are loaded on which necks
     patchNum = EEPROM_ReadByte(EEPROM_CURRENT_PRESET_OFFSET);
     neckByte = EEPROM_ReadByte(EEPROM_NECKS_OFFSET);
@@ -572,6 +574,7 @@ int main(void)
     currentNeck = neckByte & 1;
     transposeSemitones = (int8_t)EEPROM_ReadByte(EEPROM_TRANSPOSE_OFFSET);
     transposeCents = (int8_t)EEPROM_ReadByte(EEPROM_TRANSPOSE_OFFSET + 1);
+    transposeFloat = ((float)transposeSemitones) + (((float)transposeCents) * 0.01f);
     midiSendOn = EEPROM_ReadByte(EEPROM_MIDI_SEND_OFFSET)&1;
     midiBarSendOn = EEPROM_ReadByte(EEPROM_MIDI_SEND_OFFSET)&(1<<1);
     pitchSmoothing = EEPROM_ReadByte(EEPROM_PITCHSMOOTHING_OFFSET);
@@ -637,23 +640,13 @@ int main(void)
         }
         presetAlreadyDisplayed[i] = 0;
     }
-    
-    //QuadDec_1_Start();
     LED_amber1_Write(0);
     LED_amber2_Write(1);
     LED_amber3_Write(0);
     LED_amber4_Write(0);
     LED_green1_Write(dualSlider);
-
-
-
-
-
     LED_red1_Write(currentNeck);
     LED_green2_Write(!currentNeck);
-
-
-    
     ADC_SAR_Seq_1_Start();
     ADC_SAR_Seq_1_StartConvert();
 
@@ -1240,7 +1233,18 @@ int main(void)
             float myMappedPos;
             if (dualSlider)
             {
-               myMappedPos = map(i, 2, 7, invStringMappedPositions[0], invStringMappedPositions[1]);
+               if ((bar[0] != 65535) && (bar[1] != 65535))
+                {
+                    myMappedPos = map(i, 2, 7, invStringMappedPositions[0], invStringMappedPositions[1]);
+                }
+                else if (bar[0] != 65535)
+                {
+                    myMappedPos = invStringMappedPositions[0];
+                }
+                else
+                {
+                    myMappedPos = invStringMappedPositions[1];
+                }
             }
             else
             {
@@ -1259,7 +1263,7 @@ int main(void)
                         (copedent[currentCopedent][9][i] * pedals_float[6]) +
                         (copedent[currentCopedent][3][i] * pedals_float[7]) +
                         (copedent[currentCopedent][1][i] * pedals_float[8]) +
-                        (copedent[currentCopedent][2][i] * pedals_float[9]));
+                        (copedent[currentCopedent][2][i] * pedals_float[9])) + transposeFloat;
 
             
             float openStringMIDI  = copedent[currentCopedent][0][i];
@@ -1389,8 +1393,8 @@ int main(void)
             myArray[2] =  mappingArray[1];
             myArray[3] =  mappingArray[2];
             myArray[4] =  mappingArray[3];
-             myArray[5] =  mappingArray[4];
-             myArray[6] =  mappingArray[5];
+            myArray[5] =  mappingArray[4];
+            myArray[6] =  mappingArray[5];
             myArray[30] = 254;
             myArray[31] = 253;
             sendMappingChangeUpdate = 0;
@@ -1444,27 +1448,8 @@ int main(void)
             myArray[31] = 253;
             
             sendKnobs = 1; // for next time around, might make this slower though
-            /*
-            for (int i = 0; i < 16; i++)
-            {
-                myArray[i+56] = encoderVal[i];
-            }
-            */
         }
 
-        
-
-/*
-        for(int i = 0; i < myBufferSize; i++)
-        {
-            SPIM_1_WriteTxData(myArray[i]);
-        }
-    */    
-        
-
-       
-        
-        
         //parse input from synth board (names)
         if ((inBuffer[0] == 253) && (inBuffer[31] == 254))
         {
@@ -1736,7 +1721,8 @@ void displayCurrentPresetNameAndCopedent()
         OLEDwriteInt(patchNum , 2, 0,FirstLine);
         //OLEDwriteString(" ", 1, OLEDgetCursor(), FirstLine);
         OLEDwriteString((char *)&presetNamesArray[patchNum][0], NAME_CLIPPED_LENGTH, 0, SecondLine);
-        OLEDwriteInt(currentCopedent , 2, 0,FourthLine);
+        GFXwriteFastHLine(&theGFX, 0, 40, 128, 1);
+        OLEDwriteInt(currentCopedent , 1, 0,FourthLine);
         OLEDwriteString(" ", 1, OLEDgetCursor(), FourthLine);
         OLEDwriteString((char *)&copedentNamesArray[currentCopedent][0], COPEDENT_NAME_CLIPPED_LENGTH, OLEDgetCursor(), FourthLine);
         mainOLEDWaitingToSend = 1;
@@ -2397,191 +2383,271 @@ void USB_callbackLocalMidiEvent(uint8 cable, uint8 *midiMsg) CYREENTRANT
     }
 }    
 
-void scanUI(void)
-{
-    uint8_t tempButtons = Status_Reg_1_Read();
-        if (!(tempButtons&(1<<4)))
-        {
-            if (octave > 4)
-            {
-                octave = 4;
-            }
-            else if ((oct1Up) && (octave > 0))
-            {
-                octave--;
-            }
-            LED_amber1_Write(1);
-            LED_amber2_Write(0);
-            LED_amber3_Write(0);
-            LED_amber4_Write(0);
-            oct1Up = 0;
-        }
-        
-        else if ((tempButtons&(1<<4)))
-        {
-            oct1Up = 1;
-        }
-        
-        if (!oct2_Read())
-        {
-            octave = 5;
-            LED_amber1_Write(0);
-            LED_amber2_Write(1);
-            LED_amber3_Write(0);
-            LED_amber4_Write(0);
-        }
-        if (!oct3_Read())
-        {
-            octave = 6;
-            LED_amber1_Write(0);
-            LED_amber2_Write(0);
-            LED_amber3_Write(1);
-            LED_amber4_Write(0);            
-        }
-        if (!(tempButtons&(1<<5)))
-        {
-            if (octave < 7)
-            {
-                octave = 7;
-
-            }
-            else if ((oct4Up) && (octave < 11))
-            {
-                octave++;
-
-            }
-            LED_amber1_Write(0);
-            LED_amber2_Write(0);
-            LED_amber3_Write(0);
-            LED_amber4_Write(1);
-            oct4Up = 0;
-        }
-        
-        else if ((tempButtons&(1<<5)))
-        {
-            oct4Up = 1;
-        }
-        
-        if (!neck1_button_Read())
-        {
-            currentNeck = 0;
-            currentCopedent = necks[currentNeck];
-            neckByte = (necks[0]<<5) + (necks[1]<<2) + currentNeck;
-            EEPROM_WriteByte(neckByte, EEPROM_NECKS_OFFSET);
-            LED_red1_Write(0);
-            LED_green2_Write(1);
-            if (!editMode)
-            {
-                displayCurrentPresetNameAndCopedent();
-            }
-            else
-            {
-                exitEditModeMenu();   
-            }
-        }
-        if (!neck2_button_Read())
-        {
-            currentNeck = 1;
-            currentCopedent = necks[currentNeck];    
-            neckByte = (necks[0]<<5) + (necks[1]<<2) + currentNeck;
-            EEPROM_WriteByte(neckByte, EEPROM_NECKS_OFFSET);
-            LED_red1_Write(1);
-            LED_green2_Write(0);          
-            if (!editMode)
-            {
-                displayCurrentPresetNameAndCopedent();
-            }
-            else
-            {
-                exitEditModeMenu();   
-            }
-        }
-        
-        if ((!(tempButtons&(1<<6))) && (shiftUp))
-        {
-            dualSlider = !dualSlider;
-            LED_green1_Write(dualSlider);
-            EEPROM_WriteByte(dualSlider, EEPROM_DUAL_SLIDER_OFFSET);
-            shiftUp = 0;
-        }
-        else if ((tempButtons&(1<<6)))
-        {
-            shiftUp = 1;
-        }
-
-        if ((!(tempButtons&(1<<0))) && (button1Up))
-        {
-            leftPressed();
-            button1Up = 0;
-        }
-        else if ((tempButtons&(1<<0)))
-        {
-            button1Up = 1;
-        }
-        
-        if ((!(tempButtons&(1<<1))) && (button2Up))
-        {
-            rightPressed();
-            button2Up = 0;
-        }
-        else if ((tempButtons&(1<<1)))
-        {
-            button2Up = 1;
-        }
-        
-        if ((!(tempButtons&(1<<2))) && (button3Up))
-        {
-            downPressed();
-            button3Up = 0;
-        }
-        else if ((tempButtons&(1<<2)))
-        {
-            button3Up = 1;
-        }
-        
-        if ((!(tempButtons&(1<<3))) && (button4Up))
-        {
-            upPressed();
-            button4Up = 0;
-        }
-        else if ((tempButtons&(1<<3)))
-        {
-            button4Up = 1;
-        }
-        
-        if ((!edit_button_Read()) && (editUp))
-        {
-            editMode = !editMode;
-            if (editMode)
-            {
-                enterEditModeMenu();
-            }
-            else
-            {
-                exitEditModeMenu();
-            }
-            editUp = 0;
-        }
-        else if (edit_button_Read())
-        {
-            editUp = 1;
-        }
-        
-        if ((!(tempButtons&(1<<7))) && (encoderUp))
-        {
-            
-        }
-        else if ((tempButtons&(1<<7)))
-        {
-            encoderUp = 1;
-        }
-        
-        prevOctave = octave;
-}
-
+int8_t prevEncoderVal = 0;
+uint8_t encoderWatch = 0;
 //signed so that we can check if it goes below zero
 int8_t menuPosition[3][2];
 enum direction{Left, Right, Down, Up, Enter};
+uint8_t semitonesOrCents = 0;
+
+
+void scanUI(void)
+{
+    uint8_t tempButtons = Status_Reg_1_Read();
+    if (!(tempButtons&(1<<4)))
+    {
+        if (octave > 4)
+        {
+            octave = 4;
+        }
+        else if ((oct1Up) && (octave > 0))
+        {
+            octave--;
+        }
+        LED_amber1_Write(1);
+        LED_amber2_Write(0);
+        LED_amber3_Write(0);
+        LED_amber4_Write(0);
+        oct1Up = 0;
+    }
+    
+    else if ((tempButtons&(1<<4)))
+    {
+        oct1Up = 1;
+    }
+    
+    if (!oct2_Read())
+    {
+        octave = 5;
+        LED_amber1_Write(0);
+        LED_amber2_Write(1);
+        LED_amber3_Write(0);
+        LED_amber4_Write(0);
+    }
+    if (!oct3_Read())
+    {
+        octave = 6;
+        LED_amber1_Write(0);
+        LED_amber2_Write(0);
+        LED_amber3_Write(1);
+        LED_amber4_Write(0);            
+    }
+    if (!(tempButtons&(1<<5)))
+    {
+        if (octave < 7)
+        {
+            octave = 7;
+
+        }
+        else if ((oct4Up) && (octave < 11))
+        {
+            octave++;
+
+        }
+        LED_amber1_Write(0);
+        LED_amber2_Write(0);
+        LED_amber3_Write(0);
+        LED_amber4_Write(1);
+        oct4Up = 0;
+    }
+    
+    else if ((tempButtons&(1<<5)))
+    {
+        oct4Up = 1;
+    }
+    
+    if (!neck1_button_Read())
+    {
+        currentNeck = 0;
+        currentCopedent = necks[currentNeck];
+        neckByte = (necks[0]<<5) + (necks[1]<<2) + currentNeck;
+        EEPROM_WriteByte(neckByte, EEPROM_NECKS_OFFSET);
+        LED_red1_Write(0);
+        LED_green2_Write(1);
+        if (!editMode)
+        {
+            displayCurrentPresetNameAndCopedent();
+        }
+        else
+        {
+            exitEditModeMenu();   
+        }
+    }
+    if (!neck2_button_Read())
+    {
+        currentNeck = 1;
+        currentCopedent = necks[currentNeck];    
+        neckByte = (necks[0]<<5) + (necks[1]<<2) + currentNeck;
+        EEPROM_WriteByte(neckByte, EEPROM_NECKS_OFFSET);
+        LED_red1_Write(1);
+        LED_green2_Write(0);          
+        if (!editMode)
+        {
+            displayCurrentPresetNameAndCopedent();
+        }
+        else
+        {
+            exitEditModeMenu();   
+        }
+    }
+    
+    if ((!(tempButtons&(1<<6))) && (shiftUp))
+    {
+        dualSlider = !dualSlider;
+        LED_green1_Write(dualSlider);
+        EEPROM_WriteByte(dualSlider, EEPROM_DUAL_SLIDER_OFFSET);
+        shiftUp = 0;
+    }
+    else if ((tempButtons&(1<<6)))
+    {
+        shiftUp = 1;
+    }
+
+    if ((!(tempButtons&(1<<0))) && (button1Up))
+    {
+        leftPressed();
+        button1Up = 0;
+    }
+    else if ((tempButtons&(1<<0)))
+    {
+        button1Up = 1;
+    }
+    
+    if ((!(tempButtons&(1<<1))) && (button2Up))
+    {
+        rightPressed();
+        button2Up = 0;
+    }
+    else if ((tempButtons&(1<<1)))
+    {
+        button2Up = 1;
+    }
+    
+    if ((!(tempButtons&(1<<2))) && (button3Up))
+    {
+        downPressed();
+        button3Up = 0;
+    }
+    else if ((tempButtons&(1<<2)))
+    {
+        button3Up = 1;
+    }
+    
+    if ((!(tempButtons&(1<<3))) && (button4Up))
+    {
+        upPressed();
+        button4Up = 0;
+    }
+    else if ((tempButtons&(1<<3)))
+    {
+        button4Up = 1;
+    }
+    
+    if ((!edit_button_Read()) && (editUp))
+    {
+        editMode = !editMode;
+        if (editMode)
+        {
+            enterEditModeMenu();
+        }
+        else
+        {
+            exitEditModeMenu();
+        }
+        editUp = 0;
+    }
+    else if (edit_button_Read())
+    {
+        editUp = 1;
+    }
+    
+    if ((!(tempButtons&(1<<7))) && (encoderUp))
+    {
+        
+    }
+    else if ((tempButtons&(1<<7)))
+    {
+        encoderUp = 1;
+    }
+    
+    prevOctave = octave;
+    if (editMode)
+    {
+        if (encoderWatch)
+        {
+            int8_t currentEncoderVal = Decoder_1_GetPosition();
+            if (menuPosition[0][0] == TransposeMenu) //editing transpose
+            {
+                if (prevEncoderVal != currentEncoderVal)
+                {
+                   // OLEDclear(128, 64);
+                    myGFX_setFont(2);
+                    OLEDtextColor(1, 0);
+                    OLEDclearLine(ThirdLine);
+                    OLEDclearLine(FourthLine);
+                    float theMultiplier = 1.0f;
+                    if (semitonesOrCents == 1)
+                    {
+                        theMultiplier = 0.01f;
+                    }
+                    myGFX_setFont(1);
+                    transposeFloat = transposeFloat - (((float)Decoder_1_GetPosition()) * theMultiplier);
+                    Decoder_1_SetPosition(0);
+                    if (transposeFloat < -12.0)
+                    {
+                        transposeFloat = -12.0;
+                    }
+                    else if (transposeFloat > 12.0)
+                    {
+                        transposeFloat = 12.0;
+                    }
+                    float absTransposeFloat = transposeFloat;
+                    GFXsetCursor(&theGFX, 20,53);
+                    if (transposeFloat < 0.0f)
+                    {
+                        GFXwrite(&theGFX, 45);
+                        absTransposeFloat = -absTransposeFloat;
+                    }
+                    else
+                    {
+                        GFXwrite(&theGFX, 32);
+                    }
+                    if (!semitonesOrCents)
+                    {
+                        OLEDtextColor(0, 1);
+                        GFXfillRect(&theGFX, 32, 34, 30, 25, theGFX.textbgcolor);
+                    }
+
+                    uint8_t currentChar = ((uint8_t)(absTransposeFloat / 10.0f));  
+                    absTransposeFloat -= currentChar * 10.0f;
+                    GFXwrite(&theGFX, currentChar + 48);
+                    currentChar = ((uint8_t)absTransposeFloat);    
+                    GFXwrite(&theGFX, currentChar + 48);
+                    OLEDtextColor(1, 0);
+
+                    GFXwrite(&theGFX, 46); //decimal point
+                    if (semitonesOrCents)
+                    {
+                        OLEDtextColor(0, 1);
+                        GFXfillRect(&theGFX, 70, 34, 30, 25, theGFX.textbgcolor);
+                    }
+                    absTransposeFloat -= currentChar;
+                    currentChar = ((uint8_t)(absTransposeFloat*10.0f));    
+                    GFXwrite(&theGFX, currentChar + 48);
+                    absTransposeFloat -= (currentChar/10.0f);
+                    currentChar = ((uint8_t)(absTransposeFloat*100.0f));    
+                    GFXwrite(&theGFX, currentChar + 48);
+                    OLEDtextColor(1, 0);
+                    mainOLEDWaitingToSend = 1;
+                }
+            }
+            prevEncoderVal = currentEncoderVal;
+        }
+    }
+    
+}
+
+
 
 
 const char* const calibrationNames[] = { "  SET LEVERS ", "  SET FRETS  ", 0 }; 
@@ -2625,6 +2691,15 @@ void exitEditModeMenu(void)
     {
         exitFretCalibrationMode();
     }
+    if (menuPosition[0][0] == TransposeMenu)
+    {
+        transposeSemitones = (int8_t)transposeFloat;
+        transposeCents = (int8_t)((transposeFloat - transposeSemitones) * 100.0f);
+        EEPROM_WriteByte(transposeSemitones, EEPROM_TRANSPOSE_OFFSET);
+        EEPROM_WriteByte(transposeCents, EEPROM_TRANSPOSE_OFFSET + 1);
+    }
+    encoderWatch = 0;
+    Decoder_1_Stop();
     editMode = 0;
     LED_red2_Write(editMode);
     displayCurrentPresetNameAndCopedent();
@@ -2636,7 +2711,7 @@ void menuAction(enum direction action)
 {
     uint8_t whatToDraw = 0;
     
-    if (menuPosition[0][0] == 0) //we are at the main menu
+    if (menuPosition[0][0] == MainMenu) //we are at the main menu
     {
         //if we went up or down, switch the menu item
         if (action == Up)
@@ -2665,7 +2740,7 @@ void menuAction(enum direction action)
         }
         //ignore left button
     }
-    else if (menuPosition[0][0] == 1) //we are at the calibration submenu
+    else if (menuPosition[0][0] == CalibrationMenu) //we are at the calibration submenu
     {
         //if we went up or down, switch the menu item
         if (action == Up)
@@ -2691,14 +2766,14 @@ void menuAction(enum direction action)
             if (menuPosition[1][1] == 0)
             {
                 //calibrate levers
-                menuPosition[0][0] = 3; //means calibrating levers now
+                menuPosition[0][0] = CalibrateLeversMenu; //means calibrating levers now
                 whatToDraw = 0;
                 enterLeverCalibrationMode();
             }
             if (menuPosition[1][1] == 1)
             {
                 //calibrate bar slider frets
-                menuPosition[0][0] = 4; //means calibrating frets now
+                menuPosition[0][0] = CalibrateFretsMenu; //means calibrating frets now
                 whatToDraw = 0;
                 enterFretCalibrationMode();
             }
@@ -2710,7 +2785,7 @@ void menuAction(enum direction action)
             whatToDraw = 1;
         }
     }
-    else if (menuPosition[0][0] == 2) //we are at the settings submenu
+    else if (menuPosition[0][0] == SettingsMenu) //we are at the settings submenu
     {
         //if we went up or down, switch the menu item
         if (action == Up)
@@ -2735,10 +2810,19 @@ void menuAction(enum direction action)
         {
             if (menuPosition[2][1] == 0)
             {
-                //calibrate levers
-                menuPosition[0][0] = 5; //means first setting
+                //transpose
+                menuPosition[0][0] = TransposeMenu; //means transpose
+                Decoder_1_Start();
                 whatToDraw = 0;
-                
+                encoderWatch = 1;
+                OLEDclear(128, 64);
+                myGFX_setFont(2);
+                OLEDtextColor(1, 0);
+                OLEDwriteString("USE VALUE KNOB", 14, 1, FirstLine);
+                OLEDwriteString("TO SET TRANSP ", 14, 1, SecondLine);
+                prevEncoderVal = 127;
+                Decoder_1_SetPosition(0);
+                mainOLEDWaitingToSend = 1;
             }
         }
         else if (action == Left) 
@@ -2782,6 +2866,20 @@ void menuAction(enum direction action)
                OLEDwriteInt(whichFretArray[fretToCalibrate], 2, 40, ThirdLine);
                mainOLEDWaitingToSend = 1;
             }
+        }
+    }
+    else if (menuPosition[0][0] == 5) //we are in transpose
+    {
+        //when user presses -> button, then store the current fret and increment which fret to store next
+        if (action == Right)
+        {
+            semitonesOrCents = (semitonesOrCents+1)&1;
+            prevEncoderVal = 127;
+        }
+        if (action == Left)
+        {
+            semitonesOrCents = (semitonesOrCents-1)&1;
+            prevEncoderVal = 127;
         }
     }
     if (whatToDraw == 1)

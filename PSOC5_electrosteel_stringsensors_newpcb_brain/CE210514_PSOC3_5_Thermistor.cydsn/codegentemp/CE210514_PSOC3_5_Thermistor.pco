@@ -1,11 +1,11 @@
 # CE210514_PSOC3_5_Thermistor
-# 2023-08-06 18:24:17Z
+# 2023-08-08 00:31:17Z
 
 # IO_0@[IOP=(1)][IoId=(0)] is reserved: SWDDebugEnabled
 dont_use_io iocell 1 0
 # IO_1@[IOP=(1)][IoId=(1)] is reserved: SWDDebugEnabled
 dont_use_io iocell 1 1
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active_split\" 2 4 1 0
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active_split\" 0 4 1 0
 set_location "ClockBlock" clockblockcell -1 -1 0
 set_io "MISO_1(0)" iocell 15 0
 set_io "MOSI_1(0)" iocell 15 1
@@ -28,8 +28,6 @@ set_io "SCLK_3(0)" iocell 3 4
 set_io "MOSI_3(0)" iocell 3 3
 set_io "knob2(0)" iocell 0 1
 set_io "knob1(0)" iocell 0 0
-set_io "quad1_a(0)" iocell 4 3
-set_io "quad1_b(0)" iocell 4 2
 set_io "MISO_2(0)" iocell 5 0
 set_io "testpin6(0)" iocell 2 0
 set_location "vBusPin" logicalport -1 -1 12
@@ -56,54 +54,57 @@ set_io "button1(0)" iocell 1 2
 set_io "button2(0)" iocell 1 3
 set_io "button3(0)" iocell 1 4
 set_io "button4(0)" iocell 1 5
+set_location "\Decoder_1:PINS2\" logicalport -1 -1 4
+set_io "\Decoder_1:PINS2(0)\" iocell 4 2
+set_io "\Decoder_1:PINS2(1)\" iocell 4 3
 set_io "encoder_button(0)" iocell 5 7
 set_io "neck1_button(0)" iocell 2 1
 set_io "neck2_button(0)" iocell 2 2
 set_io "shift_button(0)" iocell 2 4
 set_io "edit_button(0)" iocell 2 3
-set_location "\SPIM_1:BSPIM:load_rx_data\" 2 1 0 2
-set_location "Net_1042" 1 2 0 1
-set_location "\SPIM_1:BSPIM:tx_status_0\" 1 2 0 3
-set_location "\SPIM_1:BSPIM:tx_status_4\" 2 1 0 3
-set_location "\SPIM_1:BSPIM:rx_status_6\" 2 2 0 2
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\" 2 4 0 2
-set_location "\ADC_SAR_Seq_1:bSAR_SEQ:cnt_enable\" 1 3 0 3
-set_location "\SPIS_2:BSPIS:inv_ss\" 3 0 0 1
-set_location "\SPIS_2:BSPIS:tx_load\" 3 0 1 1
-set_location "\SPIS_2:BSPIS:byte_complete\" 3 1 0 1
-set_location "\SPIS_2:BSPIS:rx_buf_overrun\" 3 1 1 1
-set_location "Net_1160" 3 0 0 3
-set_location "\SPIS_2:BSPIS:mosi_buf_overrun\" 3 0 1 2
-set_location "\SPIS_2:BSPIS:tx_status_0\" 3 1 0 2
-set_location "\SPIS_2:BSPIS:rx_status_4\" 3 1 0 3
-set_location "\SPIS_2:BSPIS:mosi_to_dp\" 3 0 1 0
-set_location "\SPIS_1:BSPIS:inv_ss\" 1 2 0 2
-set_location "\SPIS_1:BSPIS:tx_load\" 0 4 1 3
-set_location "\SPIS_1:BSPIS:byte_complete\" 1 3 0 2
-set_location "\SPIS_1:BSPIS:rx_buf_overrun\" 3 1 1 3
-set_location "Net_1344" 1 2 1 1
-set_location "\SPIS_1:BSPIS:mosi_buf_overrun\" 0 4 1 0
-set_location "\SPIS_1:BSPIS:tx_status_0\" 1 3 0 0
-set_location "\SPIS_1:BSPIS:rx_status_4\" 1 4 1 3
-set_location "\SPIS_1:BSPIS:mosi_to_dp\" 0 4 1 2
-set_location "\I2C_1:bI2C_UDB:status_5\" 1 5 1 2
-set_location "\I2C_1:bI2C_UDB:status_4\" 2 1 1 2
-set_location "SCLK_2(0)_SYNC" 0 0 5 0
-set_location "\I2C_1:bI2C_UDB:cnt_reset\" 1 2 1 0
-set_location "\I2C_1:bI2C_UDB:cs_addr_clkgen_1\" 1 3 1 3
-set_location "\I2C_1:bI2C_UDB:cs_addr_clkgen_0\" 1 5 0 1
-set_location "\I2C_1:bI2C_UDB:m_state_0_split\" 1 0 1 0
-set_location "\I2C_1:bI2C_UDB:cs_addr_shifter_1\" 2 5 0 1
-set_location "\I2C_1:bI2C_UDB:cs_addr_shifter_0\" 1 3 1 2
-set_location "MOSI_2(0)_SYNC" 0 5 5 0
-set_location "\I2C_1:bI2C_UDB:m_state_2_split\" 1 0 0 0
-set_location "\I2C_1:bI2C_UDB:m_state_4_split\" 1 1 0 0
-set_location "\SPIM_1:BSPIM:BitCounter\" 2 3 7
-set_location "\SPIM_1:BSPIM:mosi_pre_reg_split_1\" 0 2 0 0
-set_location "\SPIM_1:BSPIM:TxStsReg\" 1 1 4
-set_location "\SPIM_1:BSPIM:RxStsReg\" 2 2 4
-set_location "\SPIM_1:BSPIM:sR8:Dp:u0\" 2 2 2
-set_location "\USB:Vbus_ps:sts:sts_reg\" 1 5 3
+set_location "\SPIM_1:BSPIM:load_rx_data\" 3 3 1 2
+set_location "Net_1042" 3 1 1 0
+set_location "\SPIM_1:BSPIM:tx_status_0\" 3 3 1 3
+set_location "\SPIM_1:BSPIM:tx_status_4\" 3 3 0 2
+set_location "\SPIM_1:BSPIM:rx_status_6\" 3 5 0 2
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\" 0 5 1 3
+set_location "\ADC_SAR_Seq_1:bSAR_SEQ:cnt_enable\" 2 1 0 3
+set_location "\SPIS_2:BSPIS:inv_ss\" 2 1 1 2
+set_location "\SPIS_2:BSPIS:tx_load\" 1 3 1 2
+set_location "\SPIS_2:BSPIS:byte_complete\" 1 2 1 2
+set_location "\SPIS_2:BSPIS:rx_buf_overrun\" 1 2 0 1
+set_location "Net_1160" 2 1 1 1
+set_location "\SPIS_2:BSPIS:mosi_buf_overrun\" 1 3 1 1
+set_location "\SPIS_2:BSPIS:tx_status_0\" 1 2 1 1
+set_location "\SPIS_2:BSPIS:rx_status_4\" 1 2 0 3
+set_location "\SPIS_2:BSPIS:mosi_to_dp\" 1 2 0 2
+set_location "\SPIS_1:BSPIS:inv_ss\" 0 4 0 3
+set_location "\SPIS_1:BSPIS:tx_load\" 3 0 0 2
+set_location "\SPIS_1:BSPIS:byte_complete\" 2 1 0 2
+set_location "\SPIS_1:BSPIS:rx_buf_overrun\" 2 1 1 3
+set_location "Net_1344" 3 1 1 1
+set_location "\SPIS_1:BSPIS:mosi_buf_overrun\" 3 0 0 3
+set_location "\SPIS_1:BSPIS:tx_status_0\" 2 1 0 0
+set_location "\SPIS_1:BSPIS:rx_status_4\" 3 1 1 3
+set_location "\SPIS_1:BSPIS:mosi_to_dp\" 3 0 0 0
+set_location "\I2C_1:bI2C_UDB:status_5\" 0 3 1 2
+set_location "\I2C_1:bI2C_UDB:status_4\" 1 5 0 3
+set_location "SCLK_2(0)_SYNC" 1 0 5 0
+set_location "\I2C_1:bI2C_UDB:cnt_reset\" 1 0 1 0
+set_location "\I2C_1:bI2C_UDB:cs_addr_clkgen_1\" 1 3 0 3
+set_location "\I2C_1:bI2C_UDB:cs_addr_clkgen_0\" 1 0 1 1
+set_location "\I2C_1:bI2C_UDB:m_state_0_split\" 2 5 0 0
+set_location "\I2C_1:bI2C_UDB:cs_addr_shifter_1\" 1 5 0 1
+set_location "\I2C_1:bI2C_UDB:cs_addr_shifter_0\" 1 3 0 2
+set_location "MOSI_2(0)_SYNC" 1 0 5 1
+set_location "\I2C_1:bI2C_UDB:m_state_2_split\" 2 5 1 0
+set_location "\I2C_1:bI2C_UDB:m_state_4_split\" 2 4 0 0
+set_location "\SPIM_1:BSPIM:BitCounter\" 3 5 7
+set_location "\SPIM_1:BSPIM:mosi_pre_reg_split_1\" 3 3 0 0
+set_location "\SPIM_1:BSPIM:TxStsReg\" 3 3 4
+set_location "\SPIM_1:BSPIM:RxStsReg\" 3 4 4
+set_location "\SPIM_1:BSPIM:sR8:Dp:u0\" 3 2 2
+set_location "\USB:Vbus_ps:sts:sts_reg\" 2 0 3
 set_location "\USB:dp_int\" interrupt -1 -1 12
 set_location "\USB:USB\" usbcell -1 -1 0
 set_location "\USB:ep_2\" interrupt -1 -1 3
@@ -112,163 +113,164 @@ set_location "\USB:ep_0\" interrupt -1 -1 24
 set_location "\USB:bus_reset\" interrupt -1 -1 23
 set_location "\USB:arb_int\" interrupt -1 -1 22
 set_location "\ADC_SAR_Seq_1:SAR:ADC_SAR\" sarcell -1 -1 0
-set_location "\ADC_SAR_Seq_1:bSAR_SEQ:CtrlReg\" 1 5 6
-set_location "\ADC_SAR_Seq_1:bSAR_SEQ:ChannelCounter\" 2 4 7
-set_location "\ADC_SAR_Seq_1:bSAR_SEQ:EOCSts\" 1 2 3
+set_location "\ADC_SAR_Seq_1:bSAR_SEQ:CtrlReg\" 0 3 6
+set_location "\ADC_SAR_Seq_1:bSAR_SEQ:ChannelCounter\" 1 4 7
+set_location "\ADC_SAR_Seq_1:bSAR_SEQ:EOCSts\" 0 4 3
 set_location "\ADC_SAR_Seq_1:TempBuf\" drqcell -1 -1 5
 set_location "\ADC_SAR_Seq_1:FinalBuf\" drqcell -1 -1 4
 set_location "\ADC_SAR_Seq_1:IRQ\" interrupt -1 -1 0
-set_location "\ADC_SAR_Seq_1:Sync:genblk1[0]:INST\" 0 5 5 1
-set_location "\SPIS_2:BSPIS:sync_1\" 3 1 5 2
-set_location "\SPIS_2:BSPIS:sync_2\" 3 5 5 0
-set_location "\SPIS_2:BSPIS:sync_3\" 3 1 5 0
-set_location "\SPIS_2:BSPIS:sync_4\" 3 1 5 1
-set_location "\SPIS_2:BSPIS:BitCounter\" 3 0 7
-set_location "\SPIS_2:BSPIS:TxStsReg\" 3 3 4
-set_location "\SPIS_2:BSPIS:RxStsReg\" 3 2 4
-set_location "\SPIS_2:BSPIS:sR8:Dp:u0\" 3 0 2
+set_location "\ADC_SAR_Seq_1:Sync:genblk1[0]:INST\" 0 5 5 0
+set_location "\SPIS_2:BSPIS:sync_1\" 1 3 5 2
+set_location "\SPIS_2:BSPIS:sync_2\" 1 3 5 1
+set_location "\SPIS_2:BSPIS:sync_3\" 1 3 5 0
+set_location "\SPIS_2:BSPIS:sync_4\" 0 2 5 0
+set_location "\SPIS_2:BSPIS:BitCounter\" 2 2 7
+set_location "\SPIS_2:BSPIS:TxStsReg\" 1 1 4
+set_location "\SPIS_2:BSPIS:RxStsReg\" 1 2 4
+set_location "\SPIS_2:BSPIS:sR8:Dp:u0\" 1 2 2
 set_location "my_Vbus_ISR" interrupt -1 -1 11
 set_location "isr_SPI2_ss" interrupt -1 -1 5
-set_location "\SPIS_1:BSPIS:sync_1\" 0 3 5 1
-set_location "\SPIS_1:BSPIS:sync_2\" 0 3 5 0
-set_location "\SPIS_1:BSPIS:sync_3\" 0 2 5 0
-set_location "\SPIS_1:BSPIS:sync_4\" 0 3 5 2
-set_location "\SPIS_1:BSPIS:BitCounter\" 0 4 7
-set_location "\SPIS_1:BSPIS:TxStsReg\" 1 3 4
-set_location "\SPIS_1:BSPIS:RxStsReg\" 1 4 4
-set_location "\SPIS_1:BSPIS:sR8:Dp:u0\" 0 4 2
+set_location "\SPIS_1:BSPIS:sync_1\" 3 1 5 1
+set_location "\SPIS_1:BSPIS:sync_2\" 3 1 5 0
+set_location "\SPIS_1:BSPIS:sync_3\" 3 1 5 3
+set_location "\SPIS_1:BSPIS:sync_4\" 3 1 5 2
+set_location "\SPIS_1:BSPIS:BitCounter\" 3 0 7
+set_location "\SPIS_1:BSPIS:TxStsReg\" 2 1 4
+set_location "\SPIS_1:BSPIS:RxStsReg\" 3 2 4
+set_location "\SPIS_1:BSPIS:sR8:Dp:u0\" 3 0 2
 set_location "\I2C_1:I2C_IRQ\" interrupt -1 -1 1
-set_location "\I2C_1:bI2C_UDB:SyncCtl:CtrlReg\" 1 0 6
-set_location "\I2C_1:bI2C_UDB:StsReg\" 2 5 4
-set_location "\I2C_1:bI2C_UDB:Shifter:u0\" 2 3 2
-set_location "\I2C_1:bI2C_UDB:Master:ClkGen:u0\" 1 3 2
+set_location "\I2C_1:bI2C_UDB:SyncCtl:CtrlReg\" 2 3 6
+set_location "\I2C_1:bI2C_UDB:StsReg\" 1 5 4
+set_location "\I2C_1:bI2C_UDB:Shifter:u0\" 1 3 2
+set_location "\I2C_1:bI2C_UDB:Master:ClkGen:u0\" 1 1 2
 set_location "isr_SPI1_ss" interrupt -1 -1 4
 set_location "DMA_2" drqcell -1 -1 1
 set_location "DMA_1" drqcell -1 -1 0
+set_location "\Decoder_1:isrDtr\" interrupt -1 -1 8
 set_location "DMA_3" drqcell -1 -1 2
 set_location "DMA_4" drqcell -1 -1 3
-set_location "\Status_Reg_1:sts:sts_reg\" 0 1 3
-set_location "Net_415" 2 2 0 1
-set_location "\SPIM_1:BSPIM:state_2\" 2 3 1 0
-set_location "\SPIM_1:BSPIM:state_1\" 2 1 0 1
-set_location "\SPIM_1:BSPIM:state_0\" 2 3 1 1
-set_location "Net_437" 2 3 1 2
-set_location "\SPIM_1:BSPIM:mosi_hs_reg\" 0 3 1 0
-set_location "\SPIM_1:BSPIM:mosi_pre_reg\" 0 2 0 1
-set_location "\SPIM_1:BSPIM:load_cond\" 2 2 0 0
-set_location "\SPIM_1:BSPIM:mosi_from_dp_reg\" 0 2 0 3
-set_location "\SPIM_1:BSPIM:ld_ident\" 2 1 0 0
-set_location "\SPIM_1:BSPIM:cnt_enable\" 0 3 1 2
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\" 2 4 0 0
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\" 2 4 0 3
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\" 1 4 1 2
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\" 2 4 0 1
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\" 1 4 1 0
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\" 1 4 1 1
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_0\" 3 5 1 1
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_1\" 3 5 0 2
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_2\" 3 5 1 3
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_3\" 3 5 0 3
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_4\" 3 4 0 3
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_5\" 3 2 0 1
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_6\" 3 4 1 1
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_7\" 0 2 1 0
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_8\" 3 5 1 2
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_9\" 3 3 1 2
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_10\" 0 0 0 2
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_11\" 0 4 0 2
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_12\" 3 2 1 2
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_13\" 2 0 1 1
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_14\" 0 4 0 1
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_15\" 3 3 1 3
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_16\" 0 0 0 1
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_17\" 0 2 1 1
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_18\" 0 0 0 0
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_19\" 3 4 1 2
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_20\" 0 2 1 2
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_21\" 3 3 0 1
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_22\" 1 4 0 3
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_23\" 3 4 0 0
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_24\" 0 0 0 3
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_25\" 2 0 0 0
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_26\" 2 2 1 0
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_27\" 3 3 1 0
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_28\" 0 2 1 3
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_29\" 3 3 0 2
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_30\" 3 4 0 1
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_31\" 2 0 0 1
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_32\" 0 4 0 0
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_33\" 2 5 1 2
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_34\" 2 0 1 3
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_35\" 2 5 1 3
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_36\" 3 2 1 0
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_37\" 3 4 1 0
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_38\" 2 2 1 2
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_39\" 2 0 1 2
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_40\" 2 0 0 2
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_41\" 0 4 0 3
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_42\" 1 4 0 1
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_43\" 3 4 1 3
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_44\" 3 3 0 0
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_45\" 2 5 1 0
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_46\" 3 5 0 0
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_47\" 2 2 1 1
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_48\" 3 2 0 0
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_49\" 3 2 1 1
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_50\" 2 5 1 1
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_51\" 2 0 0 3
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_52\" 3 3 1 1
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_53\" 2 0 1 0
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_54\" 2 2 1 3
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_55\" 3 2 0 2
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_56\" 3 4 0 2
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_57\" 3 5 0 1
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_58\" 1 4 0 2
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_59\" 1 4 0 0
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_60\" 3 5 1 0
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_61\" 3 3 0 3
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_62\" 3 2 1 3
-set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_63\" 3 2 0 3
-set_location "Net_535" 1 3 1 0
-set_location "\ADC_SAR_Seq_1:bSAR_SEQ:bus_clk_nrq_reg\" 1 2 0 0
-set_location "\ADC_SAR_Seq_1:bSAR_SEQ:nrq_reg\" 1 3 1 1
-set_location "\SPIS_2:BSPIS:dpcounter_one_reg\" 3 1 1 2
-set_location "\SPIS_2:BSPIS:mosi_buf_overrun_fin\" 3 1 1 0
-set_location "\SPIS_2:BSPIS:mosi_tmp\" 3 0 1 3
-set_location "\SPIS_1:BSPIS:dpcounter_one_reg\" 1 3 0 1
-set_location "\SPIS_1:BSPIS:mosi_buf_overrun_fin\" 3 1 0 0
-set_location "\SPIS_1:BSPIS:mosi_tmp\" 0 4 1 1
-set_location "\I2C_1:bI2C_UDB:sda_in_reg\" 2 3 0 2
-set_location "\I2C_1:bI2C_UDB:m_state_4\" 1 1 1 1
-set_location "\I2C_1:bI2C_UDB:m_state_3\" 2 1 1 0
-set_location "\I2C_1:bI2C_UDB:m_state_2\" 0 0 1 1
-set_location "\I2C_1:bI2C_UDB:m_state_1\" 0 5 1 0
-set_location "\I2C_1:bI2C_UDB:m_state_0\" 0 0 1 0
-set_location "\I2C_1:bI2C_UDB:status_3\" 0 5 0 0
-set_location "\I2C_1:bI2C_UDB:status_2\" 0 5 0 1
-set_location "\I2C_1:bI2C_UDB:status_1\" 2 5 0 0
-set_location "\I2C_1:bI2C_UDB:status_0\" 2 5 0 2
-set_location "\I2C_1:bI2C_UDB:scl_in_reg\" 2 3 0 0
-set_location "\I2C_1:bI2C_UDB:scl_in_last_reg\" 1 2 1 2
-set_location "\I2C_1:bI2C_UDB:scl_in_last2_reg\" 1 5 1 3
-set_location "\I2C_1:bI2C_UDB:sda_in_last_reg\" 1 2 1 3
-set_location "\I2C_1:bI2C_UDB:sda_in_last2_reg\" 1 5 1 1
-set_location "\I2C_1:bI2C_UDB:clkgen_tc1_reg\" 2 3 0 1
-set_location "\I2C_1:bI2C_UDB:lost_arb_reg\" 3 0 0 2
-set_location "\SPIM_1:BSPIM:mosi_pre_reg_split\" 0 3 0 0
-set_location "\I2C_1:bI2C_UDB:clkgen_tc2_reg\" 1 1 0 3
-set_location "\I2C_1:bI2C_UDB:bus_busy_reg\" 1 5 1 0
-set_location "\I2C_1:bI2C_UDB:clk_eq_reg\" 2 3 0 3
-set_location "\I2C_1:Net_643_3\" 1 5 0 0
-set_location "\I2C_1:sda_x_wire\" 1 1 1 0
-set_location "\I2C_1:bI2C_UDB:m_reset\" 3 0 0 0
-set_location "Net_1532_0" 0 1 0 3
-set_location "Net_1532_1" 0 1 1 2
-set_location "Net_1532_2" 0 1 0 1
+set_location "\Status_Reg_1:sts:sts_reg\" 0 0 3
+set_location "Net_415" 3 1 0 2
+set_location "\SPIM_1:BSPIM:state_2\" 3 4 1 0
+set_location "\SPIM_1:BSPIM:state_1\" 3 3 1 0
+set_location "\SPIM_1:BSPIM:state_0\" 3 4 1 2
+set_location "Net_437" 3 3 1 1
+set_location "\SPIM_1:BSPIM:mosi_hs_reg\" 3 1 0 0
+set_location "\SPIM_1:BSPIM:mosi_pre_reg\" 3 1 1 2
+set_location "\SPIM_1:BSPIM:load_cond\" 3 5 0 0
+set_location "\SPIM_1:BSPIM:mosi_from_dp_reg\" 3 1 0 1
+set_location "\SPIM_1:BSPIM:ld_ident\" 3 4 1 1
+set_location "\SPIM_1:BSPIM:cnt_enable\" 3 5 0 1
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\" 0 5 1 0
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\" 0 4 0 0
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\" 0 5 1 1
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\" 0 5 1 2
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\" 0 4 0 2
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\" 0 4 0 1
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_0\" 3 0 1 3
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_1\" 3 4 0 0
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_2\" 3 4 0 1
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_3\" 3 4 0 2
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_4\" 3 5 1 0
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_5\" 0 0 0 3
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_6\" 1 4 1 2
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_7\" 1 4 1 1
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_8\" 2 0 1 1
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_9\" 3 5 1 2
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_10\" 3 0 1 0
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_11\" 0 0 0 2
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_12\" 3 2 0 0
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_13\" 2 0 0 3
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_14\" 2 2 1 2
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_15\" 0 5 0 0
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_16\" 3 0 1 1
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_17\" 0 3 0 1
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_18\" 2 0 1 3
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_19\" 2 3 0 3
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_20\" 3 2 0 3
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_21\" 2 3 0 0
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_22\" 2 0 1 2
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_23\" 1 4 1 3
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_24\" 0 1 1 2
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_25\" 2 3 0 1
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_26\" 2 3 1 0
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_27\" 2 2 1 0
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_28\" 3 0 1 2
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_29\" 0 2 1 1
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_30\" 0 2 1 3
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_31\" 2 2 1 3
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_32\" 0 0 0 1
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_33\" 2 0 0 1
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_34\" 2 3 1 2
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_35\" 2 3 1 3
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_36\" 0 3 0 3
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_37\" 3 2 0 1
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_38\" 2 2 1 1
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_39\" 3 5 1 3
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_40\" 0 3 0 2
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_41\" 0 1 1 3
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_42\" 2 2 0 3
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_43\" 0 1 1 1
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_44\" 1 4 1 0
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_45\" 0 2 1 0
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_46\" 2 0 1 0
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_47\" 0 0 0 0
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_48\" 0 5 0 1
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_49\" 3 2 0 2
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_50\" 0 5 0 2
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_51\" 3 5 1 1
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_52\" 0 1 1 0
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_53\" 2 2 0 0
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_54\" 3 4 0 3
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_55\" 2 2 0 1
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_56\" 0 2 1 2
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_57\" 2 3 0 2
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_58\" 2 0 0 0
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_59\" 0 3 0 0
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_60\" 2 3 1 1
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_61\" 2 2 0 2
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_62\" 2 0 0 2
+set_location "\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_63\" 0 5 0 3
+set_location "Net_535" 1 3 0 0
+set_location "\ADC_SAR_Seq_1:bSAR_SEQ:bus_clk_nrq_reg\" 1 3 1 0
+set_location "\ADC_SAR_Seq_1:bSAR_SEQ:nrq_reg\" 1 3 0 1
+set_location "\SPIS_2:BSPIS:dpcounter_one_reg\" 1 2 1 3
+set_location "\SPIS_2:BSPIS:mosi_buf_overrun_fin\" 1 2 1 0
+set_location "\SPIS_2:BSPIS:mosi_tmp\" 1 2 0 0
+set_location "\SPIS_1:BSPIS:dpcounter_one_reg\" 2 1 0 1
+set_location "\SPIS_1:BSPIS:mosi_buf_overrun_fin\" 2 1 1 0
+set_location "\SPIS_1:BSPIS:mosi_tmp\" 3 0 0 1
+set_location "\I2C_1:bI2C_UDB:sda_in_reg\" 1 0 0 1
+set_location "\I2C_1:bI2C_UDB:m_state_4\" 1 4 0 1
+set_location "\I2C_1:bI2C_UDB:m_state_3\" 2 4 1 0
+set_location "\I2C_1:bI2C_UDB:m_state_2\" 1 1 1 0
+set_location "\I2C_1:bI2C_UDB:m_state_1\" 0 2 0 0
+set_location "\I2C_1:bI2C_UDB:m_state_0\" 1 5 0 0
+set_location "\I2C_1:bI2C_UDB:status_3\" 1 5 1 0
+set_location "\I2C_1:bI2C_UDB:status_2\" 1 5 1 1
+set_location "\I2C_1:bI2C_UDB:status_1\" 1 1 1 1
+set_location "\I2C_1:bI2C_UDB:status_0\" 1 1 1 2
+set_location "\I2C_1:bI2C_UDB:scl_in_reg\" 1 0 0 0
+set_location "\I2C_1:bI2C_UDB:scl_in_last_reg\" 1 0 1 2
+set_location "\I2C_1:bI2C_UDB:scl_in_last2_reg\" 0 3 1 3
+set_location "\I2C_1:bI2C_UDB:sda_in_last_reg\" 1 0 1 3
+set_location "\I2C_1:bI2C_UDB:sda_in_last2_reg\" 0 3 1 1
+set_location "\I2C_1:bI2C_UDB:clkgen_tc1_reg\" 1 1 0 1
+set_location "\I2C_1:bI2C_UDB:lost_arb_reg\" 1 1 0 3
+set_location "\SPIM_1:BSPIM:mosi_pre_reg_split\" 3 2 1 0
+set_location "\I2C_1:bI2C_UDB:clkgen_tc2_reg\" 2 4 1 3
+set_location "\I2C_1:bI2C_UDB:bus_busy_reg\" 0 3 1 0
+set_location "\I2C_1:bI2C_UDB:clk_eq_reg\" 1 0 0 3
+set_location "\I2C_1:Net_643_3\" 1 1 0 0
+set_location "\I2C_1:sda_x_wire\" 1 4 0 0
+set_location "\I2C_1:bI2C_UDB:m_reset\" 3 3 0 1
+set_location "Net_1532_0" 0 0 1 2
+set_location "Net_1532_1" 0 1 0 0
+set_location "Net_1532_2" 0 1 0 3
 set_location "Net_1532_3" 0 1 0 2
-set_location "Net_1532_4" 0 1 1 1
-set_location "Net_1532_5" 0 1 1 0
-set_location "Net_1532_6" 0 1 0 0
-set_location "Net_1532_7" 0 1 1 3
-set_location "SDA_1(0)_SYNC" 2 1 5 0
-set_location "SCL_1(0)_SYNC" 3 4 5 0
+set_location "Net_1532_4" 0 0 1 1
+set_location "Net_1532_5" 0 0 1 3
+set_location "Net_1532_6" 0 1 0 1
+set_location "Net_1532_7" 0 0 1 0
+set_location "SDA_1(0)_SYNC" 1 0 5 3
+set_location "SCL_1(0)_SYNC" 1 0 5 2

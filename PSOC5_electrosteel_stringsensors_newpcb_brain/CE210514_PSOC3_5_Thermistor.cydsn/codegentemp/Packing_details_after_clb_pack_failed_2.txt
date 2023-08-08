@@ -4,9 +4,9 @@ UDB 0
 ------------------------------------------------------
 	PLD 0:
 		 Instances:
-			\I2C_1:bI2C_UDB:clkgen_tc2_reg\
-			\I2C_1:bI2C_UDB:status_4\
 			\I2C_1:bI2C_UDB:m_state_3\
+			\I2C_1:bI2C_UDB:status_4\
+			\I2C_1:bI2C_UDB:clkgen_tc2_reg\
 
 		 Clock net: Net_1390
 		 Set/Reset net: 
@@ -42,38 +42,37 @@ UDB 0
 
 	PLD 1:
 		 Instances:
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active_split\
+			\I2C_1:bI2C_UDB:m_state_4_split\
 
 		 Clock net: 
 		 Set/Reset net: 
 		 Enable net: 
 
 		 Input nets:
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
-			\ADC_SAR_Seq_1:ch_addr_0\
-			\ADC_SAR_Seq_1:ch_addr_1\
-			\ADC_SAR_Seq_1:ch_addr_2\
-			\ADC_SAR_Seq_1:ch_addr_3\
-			\ADC_SAR_Seq_1:ch_addr_4\
-			\ADC_SAR_Seq_1:ch_addr_5\
+			\I2C_1:bI2C_UDB:clkgen_tc1_reg\
+			\I2C_1:bI2C_UDB:control_2\
+			\I2C_1:bI2C_UDB:control_5\
+			\I2C_1:bI2C_UDB:control_6\
+			\I2C_1:bI2C_UDB:lost_arb_reg\
+			\I2C_1:bI2C_UDB:m_reset\
+			\I2C_1:bI2C_UDB:m_state_0\
+			\I2C_1:bI2C_UDB:m_state_1\
+			\I2C_1:bI2C_UDB:m_state_2\
+			\I2C_1:bI2C_UDB:m_state_3\
+			\I2C_1:bI2C_UDB:m_state_4\
+			\I2C_1:bI2C_UDB:tx_reg_empty\
 
 		 Output nets:
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active_split\
+			\I2C_1:bI2C_UDB:m_state_4_split\
 
 		 Product terms:
-			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:ch_addr_0\
-			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:ch_addr_1\
-			!\ADC_SAR_Seq_1:ch_addr_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\
-			!\ADC_SAR_Seq_1:ch_addr_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\
-			!\ADC_SAR_Seq_1:ch_addr_2\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\
-			!\ADC_SAR_Seq_1:ch_addr_3\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\
-			!\ADC_SAR_Seq_1:ch_addr_4\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\
-			!\ADC_SAR_Seq_1:ch_addr_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
+			!\I2C_1:bI2C_UDB:clkgen_tc1_reg\ * !\I2C_1:bI2C_UDB:m_reset\ * \I2C_1:bI2C_UDB:m_state_4\
+			!\I2C_1:bI2C_UDB:control_2\ * !\I2C_1:bI2C_UDB:control_5\ * !\I2C_1:bI2C_UDB:control_6\ * !\I2C_1:bI2C_UDB:lost_arb_reg\ * !\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_4\ * !\I2C_1:bI2C_UDB:tx_reg_empty\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:m_state_0\ * \I2C_1:bI2C_UDB:m_state_1\ * \I2C_1:bI2C_UDB:m_state_2\
+			!\I2C_1:bI2C_UDB:lost_arb_reg\ * !\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_0\ * !\I2C_1:bI2C_UDB:m_state_3\ * !\I2C_1:bI2C_UDB:tx_reg_empty\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:m_state_1\ * \I2C_1:bI2C_UDB:m_state_2\
+			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_0\ * !\I2C_1:bI2C_UDB:m_state_3\ * \I2C_1:bI2C_UDB:m_state_4\
+			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_1\ * !\I2C_1:bI2C_UDB:m_state_3\ * \I2C_1:bI2C_UDB:m_state_4\
+			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_2\ * !\I2C_1:bI2C_UDB:m_state_3\ * \I2C_1:bI2C_UDB:m_state_4\
+			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_4\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:m_state_0\ * \I2C_1:bI2C_UDB:m_state_1\ * \I2C_1:bI2C_UDB:m_state_2\ * \I2C_1:bI2C_UDB:m_state_3\
 
 	Datapath:
 		 Instances:
@@ -95,34 +94,40 @@ UDB 0
 
 	Control, status and sync:
 		 Instances:
-			\ADC_SAR_Seq_1:bSAR_SEQ:ChannelCounter\ : count7cell
+			\I2C_1:bI2C_UDB:SyncCtl:CtrlReg\ : controlcell
+			\I2C_1:bI2C_UDB:StsReg\ : statusicell
 
-		 Clock net: \ADC_SAR_Seq_1:clock\
+		 Clock net: Net_1390
 		 Set/Reset net: 
-		 Enable net: \ADC_SAR_Seq_1:bSAR_SEQ:enable\
+		 Enable net: 
 
 		 Input nets:
-			\ADC_SAR_Seq_1:bSAR_SEQ:cnt_enable\
-			\ADC_SAR_Seq_1:bSAR_SEQ:load_period\
+			ClockBlock_BUS_CLK
+			\I2C_1:bI2C_UDB:status_0\
+			\I2C_1:bI2C_UDB:status_1\
+			\I2C_1:bI2C_UDB:status_2\
+			\I2C_1:bI2C_UDB:status_3\
+			\I2C_1:bI2C_UDB:status_4\
+			\I2C_1:bI2C_UDB:status_5\
 
 		 Output nets:
-			\ADC_SAR_Seq_1:ch_addr_0\
-			\ADC_SAR_Seq_1:ch_addr_1\
-			\ADC_SAR_Seq_1:ch_addr_2\
-			\ADC_SAR_Seq_1:ch_addr_3\
-			\ADC_SAR_Seq_1:ch_addr_4\
-			\ADC_SAR_Seq_1:ch_addr_5\
+			\I2C_1:Net_697\
+			\I2C_1:bI2C_UDB:control_1\
+			\I2C_1:bI2C_UDB:control_2\
+			\I2C_1:bI2C_UDB:control_4\
+			\I2C_1:bI2C_UDB:control_5\
+			\I2C_1:bI2C_UDB:control_6\
+			\I2C_1:bI2C_UDB:control_7\
 
 	Local clock and reset nets:
-			\ADC_SAR_Seq_1:bSAR_SEQ:enable\
 
 ======================================================
 UDB 1
 ------------------------------------------------------
 	PLD 0:
 		 Instances:
-			\I2C_1:sda_x_wire\
 			\I2C_1:bI2C_UDB:m_state_4\
+			\I2C_1:sda_x_wire\
 
 		 Clock net: Net_1390
 		 Set/Reset net: 
@@ -157,7 +162,7 @@ UDB 1
 
 	PLD 1:
 		 Instances:
-			\I2C_1:bI2C_UDB:m_state_0_split\
+			\I2C_1:bI2C_UDB:m_state_2_split\
 
 		 Clock net: 
 		 Set/Reset net: 
@@ -168,7 +173,6 @@ UDB 1
 			\I2C_1:bI2C_UDB:control_4\
 			\I2C_1:bI2C_UDB:control_5\
 			\I2C_1:bI2C_UDB:control_6\
-			\I2C_1:bI2C_UDB:control_7\
 			\I2C_1:bI2C_UDB:lost_arb_reg\
 			\I2C_1:bI2C_UDB:m_reset\
 			\I2C_1:bI2C_UDB:m_state_0\
@@ -176,42 +180,42 @@ UDB 1
 			\I2C_1:bI2C_UDB:m_state_2\
 			\I2C_1:bI2C_UDB:m_state_3\
 			\I2C_1:bI2C_UDB:m_state_4\
+			\I2C_1:bI2C_UDB:tx_reg_empty\
 
 		 Output nets:
-			\I2C_1:bI2C_UDB:m_state_0_split\
+			\I2C_1:bI2C_UDB:m_state_2_split\
 
 		 Product terms:
-			!\I2C_1:bI2C_UDB:control_5\ * !\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_0\ * !\I2C_1:bI2C_UDB:m_state_1\ * !\I2C_1:bI2C_UDB:m_state_2\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:control_4\ * \I2C_1:bI2C_UDB:m_state_3\
-			!\I2C_1:bI2C_UDB:lost_arb_reg\ * !\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_4\ * \I2C_1:bI2C_UDB:control_6\ * \I2C_1:bI2C_UDB:m_state_0\ * \I2C_1:bI2C_UDB:m_state_1\ * \I2C_1:bI2C_UDB:m_state_2\
-			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_0\ * !\I2C_1:bI2C_UDB:m_state_1\ * !\I2C_1:bI2C_UDB:m_state_3\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:m_state_2\
-			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_0\ * !\I2C_1:bI2C_UDB:m_state_2\ * !\I2C_1:bI2C_UDB:m_state_3\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:control_7\ * \I2C_1:bI2C_UDB:m_state_1\
-			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_0\ * !\I2C_1:bI2C_UDB:m_state_3\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:m_state_4\
-			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_1\ * !\I2C_1:bI2C_UDB:m_state_2\ * !\I2C_1:bI2C_UDB:m_state_3\ * !\I2C_1:bI2C_UDB:m_state_4\ * \I2C_1:bI2C_UDB:m_state_0\
-			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_1\ * !\I2C_1:bI2C_UDB:m_state_2\ * \I2C_1:bI2C_UDB:m_state_0\ * \I2C_1:bI2C_UDB:m_state_3\ * \I2C_1:bI2C_UDB:m_state_4\
-			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_4\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:m_state_1\ * \I2C_1:bI2C_UDB:m_state_2\ * \I2C_1:bI2C_UDB:m_state_3\
+			!\I2C_1:bI2C_UDB:control_5\ * !\I2C_1:bI2C_UDB:control_6\ * !\I2C_1:bI2C_UDB:m_state_3\ * !\I2C_1:bI2C_UDB:m_state_4\ * !\I2C_1:bI2C_UDB:tx_reg_empty\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:m_state_2\
+			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_1\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:control_4\ * \I2C_1:bI2C_UDB:m_state_3\ * \I2C_1:bI2C_UDB:m_state_4\
+			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_1\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:m_state_0\ * \I2C_1:bI2C_UDB:m_state_3\ * \I2C_1:bI2C_UDB:m_state_4\
+			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_2\ * !\I2C_1:bI2C_UDB:m_state_3\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:m_state_0\ * \I2C_1:bI2C_UDB:m_state_1\ * \I2C_1:bI2C_UDB:m_state_4\
+			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_4\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:m_state_0\ * \I2C_1:bI2C_UDB:m_state_1\ * \I2C_1:bI2C_UDB:m_state_3\
+			!\I2C_1:bI2C_UDB:m_state_0\ * !\I2C_1:bI2C_UDB:m_state_3\ * !\I2C_1:bI2C_UDB:m_state_4\ * !\I2C_1:bI2C_UDB:tx_reg_empty\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:m_state_2\
+			!\I2C_1:bI2C_UDB:m_state_1\ * !\I2C_1:bI2C_UDB:m_state_3\ * !\I2C_1:bI2C_UDB:m_state_4\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:m_state_2\
+			!\I2C_1:bI2C_UDB:m_state_3\ * !\I2C_1:bI2C_UDB:m_state_4\ * !\I2C_1:bI2C_UDB:tx_reg_empty\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:lost_arb_reg\ * \I2C_1:bI2C_UDB:m_state_2\
 
 	Datapath:
 
 	Control, status and sync:
 		 Instances:
-			\I2C_1:bI2C_UDB:SyncCtl:CtrlReg\ : controlcell
-			\USB:Vbus_ps:sts:sts_reg\ : statuscell
+			\Status_Reg_1:sts:sts_reg\ : statuscell
 
-		 Clock net: Net_1390
+		 Clock net: 
 		 Set/Reset net: 
 		 Enable net: 
 
 		 Input nets:
-			ClockBlock_BUS_CLK
-			Net_472
+			Net_1532_0
+			Net_1532_1
+			Net_1532_2
+			Net_1532_3
+			Net_1532_4
+			Net_1532_5
+			Net_1532_6
+			Net_1532_7
 
 		 Output nets:
-			\I2C_1:bI2C_UDB:control_1\
-			\I2C_1:bI2C_UDB:control_2\
-			\I2C_1:bI2C_UDB:control_4\
-			\I2C_1:bI2C_UDB:control_5\
-			\I2C_1:bI2C_UDB:control_6\
-			\I2C_1:bI2C_UDB:control_7\
 
 	Local clock and reset nets:
 
@@ -220,10 +224,119 @@ UDB 10
 ------------------------------------------------------
 	PLD 0:
 		 Instances:
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_51\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_16\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_62\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_0\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_1\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_2\
+
+		 Clock net: \ADC_SAR_Seq_1:clock\
+		 Set/Reset net: 
+		 Enable net: 
+
+		 Input nets:
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
+
+		 Output nets:
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_0\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_1\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_2\
+
+		 Product terms:
+			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\
+			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\
+			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
+			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\
+
+	PLD 1:
+		 Instances:
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_11\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_3\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_12\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_10\
+
+		 Clock net: \ADC_SAR_Seq_1:clock\
+		 Set/Reset net: 
+		 Enable net: 
+
+		 Input nets:
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
+
+		 Output nets:
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_3\
+
+		 Product terms:
+			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\
+			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\
+			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\
+			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\
+
+	Datapath:
+
+	Control, status and sync:
+		 Instances:
+			\ADC_SAR_Seq_1:bSAR_SEQ:EOCSts\ : statuscell
+
+		 Clock net: \ADC_SAR_Seq_1:clock\
+		 Set/Reset net: 
+		 Enable net: \ADC_SAR_Seq_1:bSAR_SEQ:enable\
+
+		 Input nets:
+			Net_535
+
+		 Output nets:
+
+	Local clock and reset nets:
+			\ADC_SAR_Seq_1:bSAR_SEQ:enable\
+
+======================================================
+UDB 11
+------------------------------------------------------
+	PLD 0:
+		 Instances:
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_34\
 			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_14\
 			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_15\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_13\
+
+		 Clock net: \ADC_SAR_Seq_1:clock\
+		 Set/Reset net: 
+		 Enable net: 
+
+		 Input nets:
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
+
+		 Output nets:
+
+		 Product terms:
+			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
+			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\
+			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\
+			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\
+
+	PLD 1:
+		 Instances:
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_18\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_16\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_19\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_17\
 
 		 Clock net: \ADC_SAR_Seq_1:clock\
 		 Set/Reset net: 
@@ -242,34 +355,6 @@ UDB 10
 
 		 Product terms:
 			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\
-			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\
-			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
-			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\
-
-	PLD 1:
-		 Instances:
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_19\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_17\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_18\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_20\
-
-		 Clock net: \ADC_SAR_Seq_1:clock\
-		 Set/Reset net: 
-		 Enable net: 
-
-		 Input nets:
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
-
-		 Output nets:
-
-		 Product terms:
-			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\
 			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\
 			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\
 			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\
@@ -302,14 +387,14 @@ UDB 10
 	Local clock and reset nets:
 
 ======================================================
-UDB 11
+UDB 12
 ------------------------------------------------------
 	PLD 0:
 		 Instances:
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_48\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_28\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_20\
 			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_22\
 			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_21\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_23\
 
 		 Clock net: \ADC_SAR_Seq_1:clock\
 		 Set/Reset net: 
@@ -327,17 +412,17 @@ UDB 11
 		 Output nets:
 
 		 Product terms:
-			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
+			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\
+			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\
 			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\
 			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\
-			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\
 
 	PLD 1:
 		 Instances:
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_27\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_25\
 			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_26\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_23\
 			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_24\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_25\
 
 		 Clock net: \ADC_SAR_Seq_1:clock\
 		 Set/Reset net: 
@@ -358,7 +443,7 @@ UDB 11
 			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\
 			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\
 			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\
-			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\
+			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\
 
 	Datapath:
 
@@ -388,14 +473,14 @@ UDB 11
 	Local clock and reset nets:
 
 ======================================================
-UDB 12
+UDB 13
 ------------------------------------------------------
 	PLD 0:
 		 Instances:
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_33\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_28\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_46\
 			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_29\
 			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_30\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_27\
 
 		 Clock net: \ADC_SAR_Seq_1:clock\
 		 Set/Reset net: 
@@ -413,17 +498,17 @@ UDB 12
 		 Output nets:
 
 		 Product terms:
-			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\
+			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
 			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\
-			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
 			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\
+			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\
 
 	PLD 1:
 		 Instances:
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_35\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_33\
 			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_31\
 			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_32\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_34\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_35\
 
 		 Clock net: \ADC_SAR_Seq_1:clock\
 		 Set/Reset net: 
@@ -442,7 +527,7 @@ UDB 12
 
 		 Product terms:
 			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
-			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
+			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
 			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
 			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\
 
@@ -471,14 +556,14 @@ UDB 12
 	Local clock and reset nets:
 
 ======================================================
-UDB 13
+UDB 14
 ------------------------------------------------------
 	PLD 0:
 		 Instances:
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_58\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_37\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_41\
 			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_38\
 			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_36\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_37\
 
 		 Clock net: \ADC_SAR_Seq_1:clock\
 		 Set/Reset net: 
@@ -497,16 +582,16 @@ UDB 13
 
 		 Product terms:
 			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
-			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
 			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
+			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
 			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
 
 	PLD 1:
 		 Instances:
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_42\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_41\
 			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_39\
 			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_40\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_42\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_43\
 
 		 Clock net: \ADC_SAR_Seq_1:clock\
 		 Set/Reset net: 
@@ -526,7 +611,7 @@ UDB 13
 		 Product terms:
 			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
 			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
-			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
+			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
 			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
 
 	Datapath:
@@ -536,13 +621,13 @@ UDB 13
 	Local clock and reset nets:
 
 ======================================================
-UDB 14
+UDB 15
 ------------------------------------------------------
 	PLD 0:
 		 Instances:
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_9\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_43\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_6\
 			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_44\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_47\
 			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_45\
 
 		 Clock net: \ADC_SAR_Seq_1:clock\
@@ -562,16 +647,16 @@ UDB 14
 
 		 Product terms:
 			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
-			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\
+			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\
 			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
-			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
+			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
 
 	PLD 1:
 		 Instances:
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_46\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_47\
 			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_4\
 			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_49\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_50\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_48\
 
 		 Clock net: \ADC_SAR_Seq_1:clock\
 		 Set/Reset net: 
@@ -589,10 +674,10 @@ UDB 14
 		 Output nets:
 
 		 Product terms:
+			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
 			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\
-			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
+			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
 			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
-			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
 
 	Datapath:
 
@@ -601,14 +686,14 @@ UDB 14
 	Local clock and reset nets:
 
 ======================================================
-UDB 15
+UDB 16
 ------------------------------------------------------
 	PLD 0:
 		 Instances:
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_8\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_7\
 			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_52\
 			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_53\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_50\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_51\
 
 		 Clock net: \ADC_SAR_Seq_1:clock\
 		 Set/Reset net: 
@@ -626,17 +711,17 @@ UDB 15
 		 Output nets:
 
 		 Product terms:
-			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\
 			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
-			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
 			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
+			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
+			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\
 
 	PLD 1:
 		 Instances:
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_57\
 			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_54\
 			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_55\
 			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_56\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_57\
 
 		 Clock net: \ADC_SAR_Seq_1:clock\
 		 Set/Reset net: 
@@ -666,14 +751,14 @@ UDB 15
 	Local clock and reset nets:
 
 ======================================================
-UDB 16
+UDB 17
 ------------------------------------------------------
 	PLD 0:
 		 Instances:
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_63\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_5\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_58\
 			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_59\
 			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_60\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_5\
 
 		 Clock net: \ADC_SAR_Seq_1:clock\
 		 Set/Reset net: 
@@ -692,16 +777,16 @@ UDB 16
 
 		 Product terms:
 			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
+			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
 			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\
 			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
 
 	PLD 1:
 		 Instances:
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_9\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_8\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_63\
 			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_61\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_62\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_6\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_7\
 
 		 Clock net: \ADC_SAR_Seq_1:clock\
 		 Set/Reset net: 
@@ -719,10 +804,10 @@ UDB 16
 		 Output nets:
 
 		 Product terms:
-			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\
-			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
+			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\
+			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\
 			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
-			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
 
 	Datapath:
 
@@ -731,13 +816,13 @@ UDB 16
 	Local clock and reset nets:
 
 ======================================================
-UDB 17
+UDB 18
 ------------------------------------------------------
 	PLD 0:
 		 Instances:
 			\SPIM_1:BSPIM:mosi_hs_reg\
-			\SPIM_1:BSPIM:mosi_from_dp_reg\
 			\SPIM_1:BSPIM:cnt_enable\
+			\SPIM_1:BSPIM:mosi_from_dp_reg\
 
 		 Clock net: \SPIM_1:Net_276\
 		 Set/Reset net: 
@@ -769,120 +854,36 @@ UDB 17
 
 	PLD 1:
 		 Instances:
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\
-
-		 Clock net: \ADC_SAR_Seq_1:clock\
-		 Set/Reset net: 
-		 Enable net: 
-
-		 Input nets:
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active_split\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
-			\ADC_SAR_Seq_1:ch_addr_2\
-			\ADC_SAR_Seq_1:ch_addr_3\
-			\ADC_SAR_Seq_1:ch_addr_4\
-			\ADC_SAR_Seq_1:ch_addr_5\
-
-		 Output nets:
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\
-
-		 Product terms:
-			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * \ADC_SAR_Seq_1:ch_addr_2\
-			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * \ADC_SAR_Seq_1:ch_addr_3\
-			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * \ADC_SAR_Seq_1:ch_addr_4\
-			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:ch_addr_5\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active_split\
-			\ADC_SAR_Seq_1:ch_addr_2\
-			\ADC_SAR_Seq_1:ch_addr_3\
-			\ADC_SAR_Seq_1:ch_addr_4\
-
-	Datapath:
-
-	Control, status and sync:
-
-	Local clock and reset nets:
-
-======================================================
-UDB 18
-------------------------------------------------------
-	PLD 0:
-		 Instances:
-			\I2C_1:bI2C_UDB:m_state_2\
-			\I2C_1:bI2C_UDB:cs_addr_clkgen_0\
-			\I2C_1:bI2C_UDB:cs_addr_shifter_1\
-
-		 Clock net: Net_1390
-		 Set/Reset net: 
-		 Enable net: 
-
-		 Input nets:
-			\I2C_1:bI2C_UDB:clk_eq_reg\
-			\I2C_1:bI2C_UDB:clkgen_tc1_reg\
-			\I2C_1:bI2C_UDB:m_reset\
-			\I2C_1:bI2C_UDB:m_state_0\
-			\I2C_1:bI2C_UDB:m_state_1\
-			\I2C_1:bI2C_UDB:m_state_2\
-			\I2C_1:bI2C_UDB:m_state_2_split\
-			\I2C_1:bI2C_UDB:m_state_3\
-			\I2C_1:bI2C_UDB:m_state_4\
-			\I2C_1:bI2C_UDB:tx_reg_empty\
-
-		 Output nets:
-			\I2C_1:bI2C_UDB:cs_addr_clkgen_0\
-			\I2C_1:bI2C_UDB:cs_addr_shifter_1\
-			\I2C_1:bI2C_UDB:m_state_2\
-
-		 Product terms:
-			!\I2C_1:bI2C_UDB:clk_eq_reg\
-			!\I2C_1:bI2C_UDB:clkgen_tc1_reg\
-			!\I2C_1:bI2C_UDB:m_state_0\ * !\I2C_1:bI2C_UDB:m_state_1\ * !\I2C_1:bI2C_UDB:m_state_2\ * !\I2C_1:bI2C_UDB:m_state_3\ * !\I2C_1:bI2C_UDB:m_state_4\
-			!\I2C_1:bI2C_UDB:m_state_0\ * !\I2C_1:bI2C_UDB:m_state_1\ * !\I2C_1:bI2C_UDB:m_state_2\ * !\I2C_1:bI2C_UDB:m_state_3\ * !\I2C_1:bI2C_UDB:m_state_4\ * \I2C_1:bI2C_UDB:tx_reg_empty\
-			\I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:m_state_2\ * \I2C_1:bI2C_UDB:m_state_3\ * \I2C_1:bI2C_UDB:m_state_4\
-			\I2C_1:bI2C_UDB:m_reset\ * \I2C_1:bI2C_UDB:m_state_2\
-			\I2C_1:bI2C_UDB:m_state_2_split\
-			\I2C_1:bI2C_UDB:tx_reg_empty\
-
-	PLD 1:
-		 Instances:
 			\SPIS_2:BSPIS:mosi_to_dp\
-			\SPIS_2:BSPIS:mosi_buf_overrun\
-			\SPIS_2:BSPIS:tx_load\
-			\SPIS_2:BSPIS:mosi_tmp\
+			Net_1042
 
-		 Clock net: Net_1449
+		 Clock net: 
 		 Set/Reset net: 
 		 Enable net: 
 
 		 Input nets:
 			Net_1157
+			Net_437
+			\SPIM_1:BSPIM:mosi_hs_reg\
+			\SPIM_1:BSPIM:state_0\
+			\SPIM_1:BSPIM:state_1\
+			\SPIM_1:BSPIM:state_2\
 			\SPIS_2:BSPIS:count_0\
 			\SPIS_2:BSPIS:count_1\
 			\SPIS_2:BSPIS:count_2\
 			\SPIS_2:BSPIS:count_3\
-			\SPIS_2:BSPIS:dpMOSI_fifo_full\
 			\SPIS_2:BSPIS:mosi_tmp\
 
 		 Output nets:
-			\SPIS_2:BSPIS:mosi_buf_overrun\
-			\SPIS_2:BSPIS:mosi_tmp\
+			Net_1042
 			\SPIS_2:BSPIS:mosi_to_dp\
-			\SPIS_2:BSPIS:tx_load\
 
 		 Product terms:
+			!Net_437 * !\SPIM_1:BSPIM:state_0\ * \SPIM_1:BSPIM:mosi_hs_reg\
+			!Net_437 * !\SPIM_1:BSPIM:state_2\ * \SPIM_1:BSPIM:mosi_hs_reg\
+			!Net_437 * \SPIM_1:BSPIM:mosi_hs_reg\ * \SPIM_1:BSPIM:state_1\
 			!\SPIS_2:BSPIS:count_0\ * \SPIS_2:BSPIS:mosi_tmp\
 			!\SPIS_2:BSPIS:count_1\ * !\SPIS_2:BSPIS:count_2\ * !\SPIS_2:BSPIS:count_3\ * Net_1157 * \SPIS_2:BSPIS:count_0\
-			!\SPIS_2:BSPIS:count_1\ * !\SPIS_2:BSPIS:count_2\ * !\SPIS_2:BSPIS:count_3\ * \SPIS_2:BSPIS:count_0\
-			!\SPIS_2:BSPIS:count_1\ * !\SPIS_2:BSPIS:count_2\ * !\SPIS_2:BSPIS:count_3\ * \SPIS_2:BSPIS:count_0\ * \SPIS_2:BSPIS:dpMOSI_fifo_full\
-			Net_1157
 			\SPIS_2:BSPIS:count_1\ * \SPIS_2:BSPIS:mosi_tmp\
 			\SPIS_2:BSPIS:count_2\ * \SPIS_2:BSPIS:mosi_tmp\
 			\SPIS_2:BSPIS:count_3\ * \SPIS_2:BSPIS:mosi_tmp\
@@ -970,10 +971,10 @@ UDB 19
 
 	PLD 1:
 		 Instances:
-			\SPIS_2:BSPIS:rx_status_4\
-			\SPIS_1:BSPIS:rx_status_4\
-			\SPIS_1:BSPIS:mosi_tmp\
+			\SPIS_2:BSPIS:mosi_buf_overrun\
+			\SPIS_2:BSPIS:tx_load\
 			\SPIS_1:BSPIS:mosi_buf_overrun\
+			\SPIS_1:BSPIS:mosi_tmp\
 
 		 Clock net: Net_1342_SYNCOUT
 		 Set/Reset net: 
@@ -986,19 +987,22 @@ UDB 19
 			\SPIS_1:BSPIS:count_2\
 			\SPIS_1:BSPIS:count_3\
 			\SPIS_1:BSPIS:dpMOSI_fifo_full\
-			\SPIS_1:BSPIS:dpMOSI_fifo_not_empty\
-			\SPIS_2:BSPIS:dpMOSI_fifo_not_empty\
+			\SPIS_2:BSPIS:count_0\
+			\SPIS_2:BSPIS:count_1\
+			\SPIS_2:BSPIS:count_2\
+			\SPIS_2:BSPIS:count_3\
+			\SPIS_2:BSPIS:dpMOSI_fifo_full\
 
 		 Output nets:
 			\SPIS_1:BSPIS:mosi_buf_overrun\
 			\SPIS_1:BSPIS:mosi_tmp\
-			\SPIS_1:BSPIS:rx_status_4\
-			\SPIS_2:BSPIS:rx_status_4\
+			\SPIS_2:BSPIS:mosi_buf_overrun\
+			\SPIS_2:BSPIS:tx_load\
 
 		 Product terms:
 			!\SPIS_1:BSPIS:count_1\ * !\SPIS_1:BSPIS:count_2\ * !\SPIS_1:BSPIS:count_3\ * \SPIS_1:BSPIS:count_0\ * \SPIS_1:BSPIS:dpMOSI_fifo_full\
-			!\SPIS_1:BSPIS:dpMOSI_fifo_not_empty\
-			!\SPIS_2:BSPIS:dpMOSI_fifo_not_empty\
+			!\SPIS_2:BSPIS:count_1\ * !\SPIS_2:BSPIS:count_2\ * !\SPIS_2:BSPIS:count_3\ * \SPIS_2:BSPIS:count_0\
+			!\SPIS_2:BSPIS:count_1\ * !\SPIS_2:BSPIS:count_2\ * !\SPIS_2:BSPIS:count_3\ * \SPIS_2:BSPIS:count_0\ * \SPIS_2:BSPIS:dpMOSI_fifo_full\
 			Net_1295_SYNCOUT
 
 	Datapath:
@@ -1049,8 +1053,8 @@ UDB 2
 	PLD 0:
 		 Instances:
 			\SPIM_1:BSPIM:state_0\
-			\SPIM_1:BSPIM:tx_status_0\
 			\SPIM_1:BSPIM:load_rx_data\
+			\SPIM_1:BSPIM:tx_status_0\
 			\SPIM_1:BSPIM:state_1\
 
 		 Clock net: \SPIM_1:Net_276\
@@ -1172,72 +1176,57 @@ UDB 20
 	PLD 0:
 		 Instances:
 			\ADC_SAR_Seq_1:bSAR_SEQ:nrq_reg\
+			\SPIS_2:BSPIS:tx_status_0\
+			\SPIS_2:BSPIS:byte_complete\
 			Net_535
-			Net_1042
-			\I2C_1:bI2C_UDB:cs_addr_shifter_0\
 
 		 Clock net: \ADC_SAR_Seq_1:clock\
 		 Set/Reset net: 
 		 Enable net: \ADC_SAR_Seq_1:bSAR_SEQ:enable\
 
 		 Input nets:
-			Net_437
 			\ADC_SAR_Seq_1:bSAR_SEQ:bus_clk_nrq_reg\
 			\ADC_SAR_Seq_1:bSAR_SEQ:nrq_reg\
-			\I2C_1:bI2C_UDB:clkgen_tc\
-			\I2C_1:bI2C_UDB:cnt_reset\
-			\I2C_1:bI2C_UDB:m_state_3\
-			\I2C_1:bI2C_UDB:m_state_4\
-			\SPIM_1:BSPIM:mosi_hs_reg\
-			\SPIM_1:BSPIM:state_0\
-			\SPIM_1:BSPIM:state_1\
-			\SPIM_1:BSPIM:state_2\
+			\SPIS_2:BSPIS:dpcounter_one_fin\
+			\SPIS_2:BSPIS:dpcounter_one_reg\
+			\SPIS_2:BSPIS:miso_tx_empty_reg_fin\
 
 		 Output nets:
-			Net_1042
 			Net_535
 			\ADC_SAR_Seq_1:bSAR_SEQ:nrq_reg\
-			\I2C_1:bI2C_UDB:cs_addr_shifter_0\
+			\SPIS_2:BSPIS:byte_complete\
+			\SPIS_2:BSPIS:tx_status_0\
 
 		 Product terms:
-			!Net_437 * !\SPIM_1:BSPIM:state_0\ * \SPIM_1:BSPIM:mosi_hs_reg\
-			!Net_437 * !\SPIM_1:BSPIM:state_2\ * \SPIM_1:BSPIM:mosi_hs_reg\
-			!Net_437 * \SPIM_1:BSPIM:mosi_hs_reg\ * \SPIM_1:BSPIM:state_1\
 			!\ADC_SAR_Seq_1:bSAR_SEQ:nrq_reg\ * \ADC_SAR_Seq_1:bSAR_SEQ:bus_clk_nrq_reg\
-			!\I2C_1:bI2C_UDB:clkgen_tc\ * !\I2C_1:bI2C_UDB:cnt_reset\
-			!\I2C_1:bI2C_UDB:m_state_3\ * !\I2C_1:bI2C_UDB:m_state_4\
+			!\SPIS_2:BSPIS:dpcounter_one_reg\ * \SPIS_2:BSPIS:dpcounter_one_fin\
+			!\SPIS_2:BSPIS:dpcounter_one_reg\ * \SPIS_2:BSPIS:dpcounter_one_fin\ * \SPIS_2:BSPIS:miso_tx_empty_reg_fin\
 			\ADC_SAR_Seq_1:bSAR_SEQ:bus_clk_nrq_reg\
-			\I2C_1:bI2C_UDB:m_state_3\ * \I2C_1:bI2C_UDB:m_state_4\
 
 	PLD 1:
 		 Instances:
-			Net_1532_4
-			Net_1532_2
-			Net_1532_0
-			\I2C_1:bI2C_UDB:cs_addr_clkgen_1\
+			\SPIS_1:BSPIS:rx_status_4\
+			\SPIS_2:BSPIS:inv_ss\
+			\SPIS_2:BSPIS:dpcounter_one_reg\
 
-		 Clock net: Net_1589
+		 Clock net: \SPIS_2:Net_81\
 		 Set/Reset net: 
 		 Enable net: 
 
 		 Input nets:
-			Net_1560_0
-			Net_1560_2
-			Net_1560_4
-			\I2C_1:bI2C_UDB:clkgen_tc\
-			\I2C_1:bI2C_UDB:cnt_reset\
+			Net_1455
+			\SPIS_1:BSPIS:dpMOSI_fifo_not_empty\
+			\SPIS_2:BSPIS:dpcounter_one_fin\
 
 		 Output nets:
-			Net_1532_0
-			Net_1532_2
-			Net_1532_4
-			\I2C_1:bI2C_UDB:cs_addr_clkgen_1\
+			\SPIS_1:BSPIS:rx_status_4\
+			\SPIS_2:BSPIS:dpcounter_one_reg\
+			\SPIS_2:BSPIS:inv_ss\
 
 		 Product terms:
-			!\I2C_1:bI2C_UDB:clkgen_tc\ * !\I2C_1:bI2C_UDB:cnt_reset\
-			Net_1560_0
-			Net_1560_2
-			Net_1560_4
+			!Net_1455
+			!\SPIS_1:BSPIS:dpMOSI_fifo_not_empty\
+			\SPIS_2:BSPIS:dpcounter_one_fin\
 
 	Datapath:
 
@@ -1266,7 +1255,7 @@ UDB 21
 		 Instances:
 			\SPIM_1:BSPIM:mosi_pre_reg\
 			\SPIS_1:BSPIS:tx_status_0\
-			\SPIS_2:BSPIS:tx_status_0\
+			\ADC_SAR_Seq_1:bSAR_SEQ:cnt_enable\
 			\SPIS_1:BSPIS:byte_complete\
 
 		 Clock net: \SPIM_1:Net_276\
@@ -1274,30 +1263,28 @@ UDB 21
 		 Enable net: 
 
 		 Input nets:
+			Net_534
+			\ADC_SAR_Seq_1:bSAR_SEQ:load_period\
 			\SPIM_1:BSPIM:mosi_pre_reg_split\
 			\SPIM_1:BSPIM:mosi_pre_reg_split_1\
 			\SPIS_1:BSPIS:dpcounter_one_fin\
 			\SPIS_1:BSPIS:dpcounter_one_reg\
 			\SPIS_1:BSPIS:miso_tx_empty_reg_fin\
-			\SPIS_2:BSPIS:dpcounter_one_fin\
-			\SPIS_2:BSPIS:dpcounter_one_reg\
-			\SPIS_2:BSPIS:miso_tx_empty_reg_fin\
 
 		 Output nets:
+			\ADC_SAR_Seq_1:bSAR_SEQ:cnt_enable\
 			\SPIM_1:BSPIM:mosi_pre_reg\
 			\SPIS_1:BSPIS:byte_complete\
 			\SPIS_1:BSPIS:tx_status_0\
-			\SPIS_2:BSPIS:tx_status_0\
 
 		 Product terms:
+			!Net_534 * !\ADC_SAR_Seq_1:bSAR_SEQ:load_period\
 			!\SPIM_1:BSPIM:mosi_pre_reg_split\ * !\SPIM_1:BSPIM:mosi_pre_reg_split_1\
 			!\SPIS_1:BSPIS:dpcounter_one_reg\ * \SPIS_1:BSPIS:dpcounter_one_fin\
 			!\SPIS_1:BSPIS:dpcounter_one_reg\ * \SPIS_1:BSPIS:dpcounter_one_fin\ * \SPIS_1:BSPIS:miso_tx_empty_reg_fin\
-			!\SPIS_2:BSPIS:dpcounter_one_reg\ * \SPIS_2:BSPIS:dpcounter_one_fin\ * \SPIS_2:BSPIS:miso_tx_empty_reg_fin\
 
 	PLD 1:
 		 Instances:
-			\SPIS_2:BSPIS:byte_complete\
 			\SPIS_1:BSPIS:dpcounter_one_reg\
 
 		 Clock net: \SPIS_1:Net_81\
@@ -1306,32 +1293,28 @@ UDB 21
 
 		 Input nets:
 			\SPIS_1:BSPIS:dpcounter_one_fin\
-			\SPIS_2:BSPIS:dpcounter_one_fin\
-			\SPIS_2:BSPIS:dpcounter_one_reg\
 
 		 Output nets:
 			\SPIS_1:BSPIS:dpcounter_one_reg\
-			\SPIS_2:BSPIS:byte_complete\
 
 		 Product terms:
-			!\SPIS_2:BSPIS:dpcounter_one_reg\ * \SPIS_2:BSPIS:dpcounter_one_fin\
 			\SPIS_1:BSPIS:dpcounter_one_fin\
 
 	Datapath:
 
 	Control, status and sync:
 		 Instances:
-			\SPIS_2:BSPIS:TxStsReg\ : statusicell
+			\SPIS_1:BSPIS:TxStsReg\ : statusicell
 
-		 Clock net: \SPIS_2:Net_81\
+		 Clock net: \SPIS_1:Net_81\
 		 Set/Reset net: 
 		 Enable net: 
 
 		 Input nets:
-			\SPIS_2:BSPIS:byte_complete\
-			\SPIS_2:BSPIS:miso_tx_empty_reg_fin\
-			\SPIS_2:BSPIS:tx_status_0\
-			\SPIS_2:BSPIS:tx_status_1\
+			\SPIS_1:BSPIS:byte_complete\
+			\SPIS_1:BSPIS:miso_tx_empty_reg_fin\
+			\SPIS_1:BSPIS:tx_status_0\
+			\SPIS_1:BSPIS:tx_status_1\
 
 		 Output nets:
 
@@ -1342,16 +1325,17 @@ UDB 22
 ------------------------------------------------------
 	PLD 0:
 		 Instances:
-			Net_1160
-			\SPIS_1:BSPIS:mosi_buf_overrun_fin\
-			Net_1344
 			\SPIS_1:BSPIS:rx_buf_overrun\
+			Net_1160
+			Net_1344
+			\SPIS_2:BSPIS:mosi_tmp\
 
-		 Clock net: \SPIS_1:Net_81\
+		 Clock net: Net_1449
 		 Set/Reset net: 
 		 Enable net: 
 
 		 Input nets:
+			Net_1157
 			Net_1455
 			Net_1467
 			\SPIS_1:BSPIS:miso_from_dp\
@@ -1362,17 +1346,61 @@ UDB 22
 		 Output nets:
 			Net_1160
 			Net_1344
-			\SPIS_1:BSPIS:mosi_buf_overrun_fin\
 			\SPIS_1:BSPIS:rx_buf_overrun\
+			\SPIS_2:BSPIS:mosi_tmp\
 
 		 Product terms:
 			!Net_1455 * \SPIS_2:BSPIS:miso_from_dp\
 			!Net_1467 * \SPIS_1:BSPIS:miso_from_dp\
 			!\SPIS_1:BSPIS:mosi_buf_overrun_fin\ * \SPIS_1:BSPIS:mosi_buf_overrun_reg\
-			\SPIS_1:BSPIS:mosi_buf_overrun_reg\
+			Net_1157
 
 	PLD 1:
 		 Instances:
+			\SPIS_1:BSPIS:mosi_buf_overrun_fin\
+
+		 Clock net: \SPIS_1:Net_81\
+		 Set/Reset net: 
+		 Enable net: 
+
+		 Input nets:
+			\SPIS_1:BSPIS:mosi_buf_overrun_reg\
+
+		 Output nets:
+			\SPIS_1:BSPIS:mosi_buf_overrun_fin\
+
+		 Product terms:
+			\SPIS_1:BSPIS:mosi_buf_overrun_reg\
+
+	Datapath:
+
+	Control, status and sync:
+		 Instances:
+			\SPIS_1:BSPIS:RxStsReg\ : statusicell
+
+		 Clock net: \SPIS_1:Net_81\
+		 Set/Reset net: 
+		 Enable net: 
+
+		 Input nets:
+			\SPIS_1:BSPIS:dpMOSI_fifo_full_reg\
+			\SPIS_1:BSPIS:dpMOSI_fifo_not_empty\
+			\SPIS_1:BSPIS:rx_buf_overrun\
+			\SPIS_1:BSPIS:rx_status_4\
+
+		 Output nets:
+			Net_1362
+
+	Local clock and reset nets:
+			Net_1449
+
+======================================================
+UDB 23
+------------------------------------------------------
+	PLD 0:
+		 Instances:
+			\SPIS_1:BSPIS:inv_ss\
+			\SPIS_2:BSPIS:rx_status_4\
 			\SPIS_2:BSPIS:mosi_buf_overrun_fin\
 			\SPIS_2:BSPIS:rx_buf_overrun\
 
@@ -1381,16 +1409,51 @@ UDB 22
 		 Enable net: 
 
 		 Input nets:
+			Net_1467
+			\SPIS_2:BSPIS:dpMOSI_fifo_not_empty\
 			\SPIS_2:BSPIS:mosi_buf_overrun_fin\
 			\SPIS_2:BSPIS:mosi_buf_overrun_reg\
 
 		 Output nets:
+			\SPIS_1:BSPIS:inv_ss\
 			\SPIS_2:BSPIS:mosi_buf_overrun_fin\
 			\SPIS_2:BSPIS:rx_buf_overrun\
+			\SPIS_2:BSPIS:rx_status_4\
 
 		 Product terms:
+			!Net_1467
+			!\SPIS_2:BSPIS:dpMOSI_fifo_not_empty\
 			!\SPIS_2:BSPIS:mosi_buf_overrun_fin\ * \SPIS_2:BSPIS:mosi_buf_overrun_reg\
 			\SPIS_2:BSPIS:mosi_buf_overrun_reg\
+
+	PLD 1:
+		 Instances:
+			Net_1532_3
+			Net_1532_4
+			Net_1532_2
+			Net_1532_0
+
+		 Clock net: Net_1589
+		 Set/Reset net: 
+		 Enable net: 
+
+		 Input nets:
+			Net_1560_0
+			Net_1560_2
+			Net_1560_3
+			Net_1560_4
+
+		 Output nets:
+			Net_1532_0
+			Net_1532_2
+			Net_1532_3
+			Net_1532_4
+
+		 Product terms:
+			Net_1560_0
+			Net_1560_2
+			Net_1560_3
+			Net_1560_4
 
 	Datapath:
 
@@ -1414,96 +1477,13 @@ UDB 22
 	Local clock and reset nets:
 
 ======================================================
-UDB 23
-------------------------------------------------------
-	PLD 0:
-		 Instances:
-			\SPIS_1:BSPIS:inv_ss\
-			\SPIS_2:BSPIS:inv_ss\
-			\SPIS_2:BSPIS:dpcounter_one_reg\
-			\ADC_SAR_Seq_1:bSAR_SEQ:cnt_enable\
-
-		 Clock net: \SPIS_2:Net_81\
-		 Set/Reset net: 
-		 Enable net: 
-
-		 Input nets:
-			Net_1455
-			Net_1467
-			Net_534
-			\ADC_SAR_Seq_1:bSAR_SEQ:load_period\
-			\SPIS_2:BSPIS:dpcounter_one_fin\
-
-		 Output nets:
-			\ADC_SAR_Seq_1:bSAR_SEQ:cnt_enable\
-			\SPIS_1:BSPIS:inv_ss\
-			\SPIS_2:BSPIS:dpcounter_one_reg\
-			\SPIS_2:BSPIS:inv_ss\
-
-		 Product terms:
-			!Net_1455
-			!Net_1467
-			!Net_534 * !\ADC_SAR_Seq_1:bSAR_SEQ:load_period\
-			\SPIS_2:BSPIS:dpcounter_one_fin\
-
-	PLD 1:
-		 Instances:
-			Net_1532_3
-			Net_1532_1
-			Net_1532_6
-			Net_1532_5
-
-		 Clock net: Net_1589
-		 Set/Reset net: 
-		 Enable net: 
-
-		 Input nets:
-			Net_1560_1
-			Net_1560_3
-			Net_1560_5
-			Net_1560_6
-
-		 Output nets:
-			Net_1532_1
-			Net_1532_3
-			Net_1532_5
-			Net_1532_6
-
-		 Product terms:
-			Net_1560_1
-			Net_1560_3
-			Net_1560_5
-			Net_1560_6
-
-	Datapath:
-
-	Control, status and sync:
-		 Instances:
-			\Status_Reg_1:sts:sts_reg\ : statuscell
-
-		 Clock net: 
-		 Set/Reset net: 
-		 Enable net: 
-
-		 Input nets:
-			Net_1532_0
-			Net_1532_1
-			Net_1532_2
-			Net_1532_3
-			Net_1532_4
-			Net_1532_5
-			Net_1532_6
-			Net_1532_7
-
-		 Output nets:
-
-	Local clock and reset nets:
-
-======================================================
 UDB 24
 ------------------------------------------------------
 	PLD 0:
 		 Instances:
+			Net_1532_1
+			Net_1532_6
+			Net_1532_5
 			Net_1532_7
 
 		 Clock net: Net_1589
@@ -1511,19 +1491,65 @@ UDB 24
 		 Enable net: 
 
 		 Input nets:
+			Net_1560_1
+			Net_1560_5
+			Net_1560_6
 			Net_1560_7
 
 		 Output nets:
+			Net_1532_1
+			Net_1532_5
+			Net_1532_6
 			Net_1532_7
 
 		 Product terms:
+			Net_1560_1
+			Net_1560_5
+			Net_1560_6
 			Net_1560_7
 
 	PLD 1:
 		 Instances:
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\
 			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\
+
+		 Clock net: \ADC_SAR_Seq_1:clock\
+		 Set/Reset net: 
+		 Enable net: 
+
+		 Input nets:
+			\ADC_SAR_Seq_1:ch_addr_2\
+			\ADC_SAR_Seq_1:ch_addr_3\
+			\ADC_SAR_Seq_1:ch_addr_4\
+			\ADC_SAR_Seq_1:ch_addr_5\
+
+		 Output nets:
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
+
+		 Product terms:
+			\ADC_SAR_Seq_1:ch_addr_2\
+			\ADC_SAR_Seq_1:ch_addr_3\
+			\ADC_SAR_Seq_1:ch_addr_4\
+			\ADC_SAR_Seq_1:ch_addr_5\
+
+	Datapath:
+
+	Control, status and sync:
+
+	Local clock and reset nets:
+
+======================================================
+UDB 25
+------------------------------------------------------
+	PLD 0:
+		 Instances:
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\
 
 		 Clock net: \ADC_SAR_Seq_1:clock\
 		 Set/Reset net: 
@@ -1532,17 +1558,16 @@ UDB 24
 		 Input nets:
 			\ADC_SAR_Seq_1:ch_addr_0\
 			\ADC_SAR_Seq_1:ch_addr_1\
-			\ADC_SAR_Seq_1:ch_addr_5\
 
 		 Output nets:
 			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\
 			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
 
 		 Product terms:
 			\ADC_SAR_Seq_1:ch_addr_0\
 			\ADC_SAR_Seq_1:ch_addr_1\
-			\ADC_SAR_Seq_1:ch_addr_5\
+
+	PLD 1:
 
 	Datapath:
 
@@ -1593,162 +1618,71 @@ UDB 3
 
 	PLD 1:
 		 Instances:
-			\I2C_1:bI2C_UDB:m_state_2_split\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active_split\
 
 		 Clock net: 
 		 Set/Reset net: 
 		 Enable net: 
 
 		 Input nets:
-			\I2C_1:bI2C_UDB:clkgen_tc1_reg\
-			\I2C_1:bI2C_UDB:control_4\
-			\I2C_1:bI2C_UDB:control_5\
-			\I2C_1:bI2C_UDB:control_6\
-			\I2C_1:bI2C_UDB:lost_arb_reg\
-			\I2C_1:bI2C_UDB:m_reset\
-			\I2C_1:bI2C_UDB:m_state_0\
-			\I2C_1:bI2C_UDB:m_state_1\
-			\I2C_1:bI2C_UDB:m_state_2\
-			\I2C_1:bI2C_UDB:m_state_3\
-			\I2C_1:bI2C_UDB:m_state_4\
-			\I2C_1:bI2C_UDB:tx_reg_empty\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
+			\ADC_SAR_Seq_1:ch_addr_0\
+			\ADC_SAR_Seq_1:ch_addr_1\
+			\ADC_SAR_Seq_1:ch_addr_2\
+			\ADC_SAR_Seq_1:ch_addr_3\
+			\ADC_SAR_Seq_1:ch_addr_4\
+			\ADC_SAR_Seq_1:ch_addr_5\
 
 		 Output nets:
-			\I2C_1:bI2C_UDB:m_state_2_split\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active_split\
 
 		 Product terms:
-			!\I2C_1:bI2C_UDB:control_5\ * !\I2C_1:bI2C_UDB:control_6\ * !\I2C_1:bI2C_UDB:m_state_3\ * !\I2C_1:bI2C_UDB:m_state_4\ * !\I2C_1:bI2C_UDB:tx_reg_empty\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:m_state_2\
-			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_1\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:control_4\ * \I2C_1:bI2C_UDB:m_state_3\ * \I2C_1:bI2C_UDB:m_state_4\
-			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_1\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:m_state_0\ * \I2C_1:bI2C_UDB:m_state_3\ * \I2C_1:bI2C_UDB:m_state_4\
-			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_2\ * !\I2C_1:bI2C_UDB:m_state_3\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:m_state_0\ * \I2C_1:bI2C_UDB:m_state_1\ * \I2C_1:bI2C_UDB:m_state_4\
-			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_4\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:m_state_0\ * \I2C_1:bI2C_UDB:m_state_1\ * \I2C_1:bI2C_UDB:m_state_3\
-			!\I2C_1:bI2C_UDB:m_state_0\ * !\I2C_1:bI2C_UDB:m_state_3\ * !\I2C_1:bI2C_UDB:m_state_4\ * !\I2C_1:bI2C_UDB:tx_reg_empty\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:m_state_2\
-			!\I2C_1:bI2C_UDB:m_state_1\ * !\I2C_1:bI2C_UDB:m_state_3\ * !\I2C_1:bI2C_UDB:m_state_4\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:m_state_2\
-			!\I2C_1:bI2C_UDB:m_state_3\ * !\I2C_1:bI2C_UDB:m_state_4\ * !\I2C_1:bI2C_UDB:tx_reg_empty\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:lost_arb_reg\ * \I2C_1:bI2C_UDB:m_state_2\
+			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:ch_addr_0\
+			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:ch_addr_1\
+			!\ADC_SAR_Seq_1:ch_addr_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\
+			!\ADC_SAR_Seq_1:ch_addr_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\
+			!\ADC_SAR_Seq_1:ch_addr_2\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\
+			!\ADC_SAR_Seq_1:ch_addr_3\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\
+			!\ADC_SAR_Seq_1:ch_addr_4\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\
+			!\ADC_SAR_Seq_1:ch_addr_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
 
 	Datapath:
 
 	Control, status and sync:
 		 Instances:
-			\SPIM_1:BSPIM:RxStsReg\ : statusicell
+			\ADC_SAR_Seq_1:bSAR_SEQ:ChannelCounter\ : count7cell
 
-		 Clock net: \SPIM_1:Net_276\
+		 Clock net: \ADC_SAR_Seq_1:clock\
 		 Set/Reset net: 
-		 Enable net: 
+		 Enable net: \ADC_SAR_Seq_1:bSAR_SEQ:enable\
 
 		 Input nets:
-			\SPIM_1:BSPIM:rx_status_4\
-			\SPIM_1:BSPIM:rx_status_5\
-			\SPIM_1:BSPIM:rx_status_6\
+			\ADC_SAR_Seq_1:bSAR_SEQ:cnt_enable\
+			\ADC_SAR_Seq_1:bSAR_SEQ:load_period\
 
 		 Output nets:
-			Net_1497
+			\ADC_SAR_Seq_1:ch_addr_0\
+			\ADC_SAR_Seq_1:ch_addr_1\
+			\ADC_SAR_Seq_1:ch_addr_2\
+			\ADC_SAR_Seq_1:ch_addr_3\
+			\ADC_SAR_Seq_1:ch_addr_4\
+			\ADC_SAR_Seq_1:ch_addr_5\
 
 	Local clock and reset nets:
+			\ADC_SAR_Seq_1:bSAR_SEQ:enable\
 
 ======================================================
 UDB 4
 ------------------------------------------------------
 	PLD 0:
 		 Instances:
-			\I2C_1:bI2C_UDB:m_state_0\
-			\I2C_1:bI2C_UDB:status_1\
-
-		 Clock net: Net_1390
-		 Set/Reset net: 
-		 Enable net: 
-
-		 Input nets:
-			\I2C_1:Net_1109_1_SYNCOUT\
-			\I2C_1:bI2C_UDB:clkgen_tc1_reg\
-			\I2C_1:bI2C_UDB:m_reset\
-			\I2C_1:bI2C_UDB:m_state_0\
-			\I2C_1:bI2C_UDB:m_state_0_split\
-			\I2C_1:bI2C_UDB:m_state_1\
-			\I2C_1:bI2C_UDB:m_state_2\
-			\I2C_1:bI2C_UDB:m_state_3\
-			\I2C_1:bI2C_UDB:m_state_4\
-			\I2C_1:bI2C_UDB:status_1\
-			\I2C_1:bI2C_UDB:tx_reg_empty\
-
-		 Output nets:
-			\I2C_1:bI2C_UDB:m_state_0\
-			\I2C_1:bI2C_UDB:status_1\
-
-		 Product terms:
-			!\I2C_1:Net_1109_1_SYNCOUT\ * !\I2C_1:bI2C_UDB:m_state_1\ * !\I2C_1:bI2C_UDB:m_state_2\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:m_state_0\ * \I2C_1:bI2C_UDB:m_state_3\ * \I2C_1:bI2C_UDB:m_state_4\ * \I2C_1:bI2C_UDB:status_1\
-			!\I2C_1:bI2C_UDB:clkgen_tc1_reg\ * !\I2C_1:bI2C_UDB:m_reset\ * \I2C_1:bI2C_UDB:m_state_0\
-			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_0\ * !\I2C_1:bI2C_UDB:m_state_1\ * !\I2C_1:bI2C_UDB:m_state_3\ * !\I2C_1:bI2C_UDB:tx_reg_empty\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\
-			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_0\ * !\I2C_1:bI2C_UDB:m_state_4\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:m_state_3\
-			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_1\ * !\I2C_1:bI2C_UDB:m_state_2\ * !\I2C_1:bI2C_UDB:status_1\ * \I2C_1:Net_1109_1_SYNCOUT\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:m_state_0\ * \I2C_1:bI2C_UDB:m_state_3\ * \I2C_1:bI2C_UDB:m_state_4\
-			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_4\ * \I2C_1:bI2C_UDB:m_state_0\ * \I2C_1:bI2C_UDB:m_state_1\ * \I2C_1:bI2C_UDB:m_state_2\ * \I2C_1:bI2C_UDB:tx_reg_empty\
-			\I2C_1:bI2C_UDB:m_reset\ * \I2C_1:bI2C_UDB:status_1\
-			\I2C_1:bI2C_UDB:m_state_0_split\
-
-	PLD 1:
-		 Instances:
-			\I2C_1:bI2C_UDB:m_state_4_split\
-
-		 Clock net: 
-		 Set/Reset net: 
-		 Enable net: 
-
-		 Input nets:
-			\I2C_1:bI2C_UDB:clkgen_tc1_reg\
-			\I2C_1:bI2C_UDB:control_2\
-			\I2C_1:bI2C_UDB:control_5\
-			\I2C_1:bI2C_UDB:control_6\
-			\I2C_1:bI2C_UDB:lost_arb_reg\
-			\I2C_1:bI2C_UDB:m_reset\
-			\I2C_1:bI2C_UDB:m_state_0\
-			\I2C_1:bI2C_UDB:m_state_1\
-			\I2C_1:bI2C_UDB:m_state_2\
-			\I2C_1:bI2C_UDB:m_state_3\
-			\I2C_1:bI2C_UDB:m_state_4\
-			\I2C_1:bI2C_UDB:tx_reg_empty\
-
-		 Output nets:
-			\I2C_1:bI2C_UDB:m_state_4_split\
-
-		 Product terms:
-			!\I2C_1:bI2C_UDB:clkgen_tc1_reg\ * !\I2C_1:bI2C_UDB:m_reset\ * \I2C_1:bI2C_UDB:m_state_4\
-			!\I2C_1:bI2C_UDB:control_2\ * !\I2C_1:bI2C_UDB:control_5\ * !\I2C_1:bI2C_UDB:control_6\ * !\I2C_1:bI2C_UDB:lost_arb_reg\ * !\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_4\ * !\I2C_1:bI2C_UDB:tx_reg_empty\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:m_state_0\ * \I2C_1:bI2C_UDB:m_state_1\ * \I2C_1:bI2C_UDB:m_state_2\
-			!\I2C_1:bI2C_UDB:lost_arb_reg\ * !\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_0\ * !\I2C_1:bI2C_UDB:m_state_3\ * !\I2C_1:bI2C_UDB:tx_reg_empty\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:m_state_1\ * \I2C_1:bI2C_UDB:m_state_2\
-			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_0\ * !\I2C_1:bI2C_UDB:m_state_3\ * \I2C_1:bI2C_UDB:m_state_4\
-			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_1\ * !\I2C_1:bI2C_UDB:m_state_3\ * \I2C_1:bI2C_UDB:m_state_4\
-			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_2\ * !\I2C_1:bI2C_UDB:m_state_3\ * \I2C_1:bI2C_UDB:m_state_4\
-			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_4\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:m_state_0\ * \I2C_1:bI2C_UDB:m_state_1\ * \I2C_1:bI2C_UDB:m_state_2\ * \I2C_1:bI2C_UDB:m_state_3\
-
-	Datapath:
-
-	Control, status and sync:
-		 Instances:
-			\I2C_1:bI2C_UDB:StsReg\ : statusicell
-
-		 Clock net: Net_1390
-		 Set/Reset net: 
-		 Enable net: 
-
-		 Input nets:
-			\I2C_1:bI2C_UDB:status_0\
-			\I2C_1:bI2C_UDB:status_1\
-			\I2C_1:bI2C_UDB:status_2\
-			\I2C_1:bI2C_UDB:status_3\
-			\I2C_1:bI2C_UDB:status_4\
-			\I2C_1:bI2C_UDB:status_5\
-
-		 Output nets:
-			\I2C_1:Net_697\
-
-	Local clock and reset nets:
-
-======================================================
-UDB 5
-------------------------------------------------------
-	PLD 0:
-		 Instances:
-			\I2C_1:bI2C_UDB:status_0\
 			\I2C_1:Net_643_3\
+			\I2C_1:bI2C_UDB:status_0\
 
 		 Clock net: Net_1390
 		 Set/Reset net: 
@@ -1780,6 +1714,116 @@ UDB 5
 			!\I2C_1:bI2C_UDB:cs_addr_shifter_1\ * !\I2C_1:bI2C_UDB:m_reset\ * \I2C_1:bI2C_UDB:status_0\
 			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_3\ * !\I2C_1:bI2C_UDB:m_state_4\ * \I2C_1:bI2C_UDB:m_state_1\ * \I2C_1:bI2C_UDB:m_state_2\
 			!\I2C_1:bI2C_UDB:m_reset\ * \I2C_1:bI2C_UDB:cnt_reset\
+
+	PLD 1:
+		 Instances:
+			\I2C_1:bI2C_UDB:m_state_0_split\
+
+		 Clock net: 
+		 Set/Reset net: 
+		 Enable net: 
+
+		 Input nets:
+			\I2C_1:bI2C_UDB:clkgen_tc1_reg\
+			\I2C_1:bI2C_UDB:control_4\
+			\I2C_1:bI2C_UDB:control_5\
+			\I2C_1:bI2C_UDB:control_6\
+			\I2C_1:bI2C_UDB:control_7\
+			\I2C_1:bI2C_UDB:lost_arb_reg\
+			\I2C_1:bI2C_UDB:m_reset\
+			\I2C_1:bI2C_UDB:m_state_0\
+			\I2C_1:bI2C_UDB:m_state_1\
+			\I2C_1:bI2C_UDB:m_state_2\
+			\I2C_1:bI2C_UDB:m_state_3\
+			\I2C_1:bI2C_UDB:m_state_4\
+
+		 Output nets:
+			\I2C_1:bI2C_UDB:m_state_0_split\
+
+		 Product terms:
+			!\I2C_1:bI2C_UDB:control_5\ * !\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_0\ * !\I2C_1:bI2C_UDB:m_state_1\ * !\I2C_1:bI2C_UDB:m_state_2\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:control_4\ * \I2C_1:bI2C_UDB:m_state_3\
+			!\I2C_1:bI2C_UDB:lost_arb_reg\ * !\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_4\ * \I2C_1:bI2C_UDB:control_6\ * \I2C_1:bI2C_UDB:m_state_0\ * \I2C_1:bI2C_UDB:m_state_1\ * \I2C_1:bI2C_UDB:m_state_2\
+			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_0\ * !\I2C_1:bI2C_UDB:m_state_1\ * !\I2C_1:bI2C_UDB:m_state_3\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:m_state_2\
+			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_0\ * !\I2C_1:bI2C_UDB:m_state_2\ * !\I2C_1:bI2C_UDB:m_state_3\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:control_7\ * \I2C_1:bI2C_UDB:m_state_1\
+			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_0\ * !\I2C_1:bI2C_UDB:m_state_3\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:m_state_4\
+			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_1\ * !\I2C_1:bI2C_UDB:m_state_2\ * !\I2C_1:bI2C_UDB:m_state_3\ * !\I2C_1:bI2C_UDB:m_state_4\ * \I2C_1:bI2C_UDB:m_state_0\
+			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_1\ * !\I2C_1:bI2C_UDB:m_state_2\ * \I2C_1:bI2C_UDB:m_state_0\ * \I2C_1:bI2C_UDB:m_state_3\ * \I2C_1:bI2C_UDB:m_state_4\
+			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_4\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:m_state_1\ * \I2C_1:bI2C_UDB:m_state_2\ * \I2C_1:bI2C_UDB:m_state_3\
+
+	Datapath:
+		 Instances:
+			\I2C_1:bI2C_UDB:Master:ClkGen:u0\
+
+		 Clock net: Net_1390
+		 Set/Reset net: 
+		 Enable net: 
+
+		 Input nets:
+			ClockBlock_BUS_CLK
+			\I2C_1:bI2C_UDB:cs_addr_clkgen_0\
+			\I2C_1:bI2C_UDB:cs_addr_clkgen_1\
+
+		 Output nets:
+			\I2C_1:bI2C_UDB:clkgen_cl1\
+			\I2C_1:bI2C_UDB:clkgen_tc\
+
+	Control, status and sync:
+		 Instances:
+			\SPIS_2:BSPIS:TxStsReg\ : statusicell
+
+		 Clock net: \SPIS_2:Net_81\
+		 Set/Reset net: 
+		 Enable net: 
+
+		 Input nets:
+			\SPIS_2:BSPIS:byte_complete\
+			\SPIS_2:BSPIS:miso_tx_empty_reg_fin\
+			\SPIS_2:BSPIS:tx_status_0\
+			\SPIS_2:BSPIS:tx_status_1\
+
+		 Output nets:
+
+	Local clock and reset nets:
+
+======================================================
+UDB 5
+------------------------------------------------------
+	PLD 0:
+		 Instances:
+			\I2C_1:bI2C_UDB:status_1\
+			\I2C_1:bI2C_UDB:status_2\
+			\I2C_1:bI2C_UDB:sda_in_reg\
+
+		 Clock net: Net_1390
+		 Set/Reset net: 
+		 Enable net: 
+
+		 Input nets:
+			\I2C_1:Net_1109_1_SYNCOUT\
+			\I2C_1:bI2C_UDB:clkgen_tc1_reg\
+			\I2C_1:bI2C_UDB:m_reset\
+			\I2C_1:bI2C_UDB:m_state_0\
+			\I2C_1:bI2C_UDB:m_state_1\
+			\I2C_1:bI2C_UDB:m_state_2\
+			\I2C_1:bI2C_UDB:m_state_3\
+			\I2C_1:bI2C_UDB:m_state_4\
+			\I2C_1:bI2C_UDB:status_1\
+			\I2C_1:bI2C_UDB:status_2\
+
+		 Output nets:
+			\I2C_1:bI2C_UDB:sda_in_reg\
+			\I2C_1:bI2C_UDB:status_1\
+			\I2C_1:bI2C_UDB:status_2\
+
+		 Product terms:
+			!\I2C_1:Net_1109_1_SYNCOUT\ * !\I2C_1:bI2C_UDB:m_state_1\ * !\I2C_1:bI2C_UDB:m_state_2\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:m_state_0\ * \I2C_1:bI2C_UDB:m_state_3\ * \I2C_1:bI2C_UDB:m_state_4\ * \I2C_1:bI2C_UDB:status_1\
+			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_1\ * !\I2C_1:bI2C_UDB:m_state_2\ * !\I2C_1:bI2C_UDB:status_1\ * \I2C_1:Net_1109_1_SYNCOUT\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:m_state_0\ * \I2C_1:bI2C_UDB:m_state_3\ * \I2C_1:bI2C_UDB:m_state_4\
+			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_2\ * !\I2C_1:bI2C_UDB:m_state_3\ * !\I2C_1:bI2C_UDB:m_state_4\ * !\I2C_1:bI2C_UDB:status_2\ * \I2C_1:bI2C_UDB:m_state_0\ * \I2C_1:bI2C_UDB:m_state_1\
+			!\I2C_1:bI2C_UDB:m_state_0\ * !\I2C_1:bI2C_UDB:m_state_1\ * !\I2C_1:bI2C_UDB:m_state_2\ * !\I2C_1:bI2C_UDB:m_state_3\ * !\I2C_1:bI2C_UDB:m_state_4\ * \I2C_1:bI2C_UDB:status_2\
+			!\I2C_1:bI2C_UDB:m_state_1\ * !\I2C_1:bI2C_UDB:m_state_3\ * !\I2C_1:bI2C_UDB:m_state_4\ * \I2C_1:bI2C_UDB:m_state_0\ * \I2C_1:bI2C_UDB:m_state_2\ * \I2C_1:bI2C_UDB:status_2\
+			\I2C_1:Net_1109_1_SYNCOUT\
+			\I2C_1:bI2C_UDB:m_reset\ * \I2C_1:bI2C_UDB:status_1\
+			\I2C_1:bI2C_UDB:m_reset\ * \I2C_1:bI2C_UDB:status_2\
 
 	PLD 1:
 		 Instances:
@@ -1816,37 +1860,20 @@ UDB 5
 			!\SPIM_1:BSPIM:state_0\ * \SPIM_1:BSPIM:mosi_pre_reg\ * \SPIM_1:BSPIM:state_1\ * \SPIM_1:BSPIM:state_2\
 
 	Datapath:
-		 Instances:
-			\I2C_1:bI2C_UDB:Master:ClkGen:u0\
-
-		 Clock net: Net_1390
-		 Set/Reset net: 
-		 Enable net: 
-
-		 Input nets:
-			ClockBlock_BUS_CLK
-			\I2C_1:bI2C_UDB:cs_addr_clkgen_0\
-			\I2C_1:bI2C_UDB:cs_addr_clkgen_1\
-
-		 Output nets:
-			\I2C_1:bI2C_UDB:clkgen_cl1\
-			\I2C_1:bI2C_UDB:clkgen_tc\
 
 	Control, status and sync:
 		 Instances:
-			\SPIS_1:BSPIS:TxStsReg\ : statusicell
+			SDA_1(0)_SYNC : synccell
 
-		 Clock net: \SPIS_1:Net_81\
+		 Clock net: ClockBlock_BUS_CLK
 		 Set/Reset net: 
 		 Enable net: 
 
 		 Input nets:
-			\SPIS_1:BSPIS:byte_complete\
-			\SPIS_1:BSPIS:miso_tx_empty_reg_fin\
-			\SPIS_1:BSPIS:tx_status_0\
-			\SPIS_1:BSPIS:tx_status_1\
+			\I2C_1:Net_1109_1\
 
 		 Output nets:
+			\I2C_1:Net_1109_1_SYNCOUT\
 
 	Local clock and reset nets:
 
@@ -1855,7 +1882,8 @@ UDB 6
 ------------------------------------------------------
 	PLD 0:
 		 Instances:
-			\I2C_1:bI2C_UDB:m_state_1\
+			\I2C_1:bI2C_UDB:m_state_2\
+			\I2C_1:bI2C_UDB:m_state_0\
 
 		 Clock net: Net_1390
 		 Set/Reset net: 
@@ -1865,24 +1893,27 @@ UDB 6
 			\I2C_1:bI2C_UDB:clkgen_tc1_reg\
 			\I2C_1:bI2C_UDB:m_reset\
 			\I2C_1:bI2C_UDB:m_state_0\
+			\I2C_1:bI2C_UDB:m_state_0_split\
 			\I2C_1:bI2C_UDB:m_state_1\
 			\I2C_1:bI2C_UDB:m_state_2\
+			\I2C_1:bI2C_UDB:m_state_2_split\
 			\I2C_1:bI2C_UDB:m_state_3\
 			\I2C_1:bI2C_UDB:m_state_4\
 			\I2C_1:bI2C_UDB:tx_reg_empty\
 
 		 Output nets:
-			\I2C_1:bI2C_UDB:m_state_1\
+			\I2C_1:bI2C_UDB:m_state_0\
+			\I2C_1:bI2C_UDB:m_state_2\
 
 		 Product terms:
-			!\I2C_1:bI2C_UDB:clkgen_tc1_reg\ * !\I2C_1:bI2C_UDB:m_reset\ * \I2C_1:bI2C_UDB:m_state_1\
-			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_0\ * !\I2C_1:bI2C_UDB:m_state_1\ * !\I2C_1:bI2C_UDB:m_state_3\ * !\I2C_1:bI2C_UDB:m_state_4\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:m_state_2\
-			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_0\ * !\I2C_1:bI2C_UDB:m_state_3\ * \I2C_1:bI2C_UDB:m_state_1\ * \I2C_1:bI2C_UDB:m_state_4\
-			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_0\ * !\I2C_1:bI2C_UDB:m_state_4\ * \I2C_1:bI2C_UDB:m_state_1\ * \I2C_1:bI2C_UDB:m_state_3\
-			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_1\ * !\I2C_1:bI2C_UDB:m_state_2\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:m_state_0\
-			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_1\ * !\I2C_1:bI2C_UDB:m_state_4\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:m_state_0\ * \I2C_1:bI2C_UDB:m_state_3\
-			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_3\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:m_state_0\ * \I2C_1:bI2C_UDB:m_state_2\ * \I2C_1:bI2C_UDB:m_state_4\
-			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_3\ * \I2C_1:bI2C_UDB:m_state_1\ * \I2C_1:bI2C_UDB:m_state_2\ * \I2C_1:bI2C_UDB:tx_reg_empty\
+			!\I2C_1:bI2C_UDB:clkgen_tc1_reg\ * !\I2C_1:bI2C_UDB:m_reset\ * \I2C_1:bI2C_UDB:m_state_0\
+			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_0\ * !\I2C_1:bI2C_UDB:m_state_1\ * !\I2C_1:bI2C_UDB:m_state_3\ * !\I2C_1:bI2C_UDB:tx_reg_empty\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\
+			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_0\ * !\I2C_1:bI2C_UDB:m_state_4\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:m_state_3\
+			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_4\ * \I2C_1:bI2C_UDB:m_state_0\ * \I2C_1:bI2C_UDB:m_state_1\ * \I2C_1:bI2C_UDB:m_state_2\ * \I2C_1:bI2C_UDB:tx_reg_empty\
+			\I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:m_state_2\ * \I2C_1:bI2C_UDB:m_state_3\ * \I2C_1:bI2C_UDB:m_state_4\
+			\I2C_1:bI2C_UDB:m_reset\ * \I2C_1:bI2C_UDB:m_state_2\
+			\I2C_1:bI2C_UDB:m_state_0_split\
+			\I2C_1:bI2C_UDB:m_state_2_split\
 
 	PLD 1:
 		 Instances:
@@ -1949,96 +1980,90 @@ UDB 7
 ------------------------------------------------------
 	PLD 0:
 		 Instances:
-			\I2C_1:bI2C_UDB:status_3\
-			\I2C_1:bI2C_UDB:status_2\
+			\I2C_1:bI2C_UDB:m_state_1\
 
 		 Clock net: Net_1390
 		 Set/Reset net: 
 		 Enable net: 
 
 		 Input nets:
-			\I2C_1:bI2C_UDB:cs_addr_shifter_1\
+			\I2C_1:bI2C_UDB:clkgen_tc1_reg\
 			\I2C_1:bI2C_UDB:m_reset\
 			\I2C_1:bI2C_UDB:m_state_0\
 			\I2C_1:bI2C_UDB:m_state_1\
 			\I2C_1:bI2C_UDB:m_state_2\
 			\I2C_1:bI2C_UDB:m_state_3\
 			\I2C_1:bI2C_UDB:m_state_4\
-			\I2C_1:bI2C_UDB:status_2\
-			\I2C_1:bI2C_UDB:status_3\
+			\I2C_1:bI2C_UDB:tx_reg_empty\
 
 		 Output nets:
-			\I2C_1:bI2C_UDB:status_2\
-			\I2C_1:bI2C_UDB:status_3\
+			\I2C_1:bI2C_UDB:m_state_1\
 
 		 Product terms:
-			!\I2C_1:bI2C_UDB:cs_addr_shifter_1\ * !\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_2\ * !\I2C_1:bI2C_UDB:m_state_3\ * !\I2C_1:bI2C_UDB:m_state_4\ * !\I2C_1:bI2C_UDB:status_3\ * \I2C_1:bI2C_UDB:m_state_0\ * \I2C_1:bI2C_UDB:m_state_1\
-			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_2\ * !\I2C_1:bI2C_UDB:m_state_3\ * !\I2C_1:bI2C_UDB:m_state_4\ * !\I2C_1:bI2C_UDB:status_2\ * \I2C_1:bI2C_UDB:m_state_0\ * \I2C_1:bI2C_UDB:m_state_1\
-			!\I2C_1:bI2C_UDB:m_state_0\ * !\I2C_1:bI2C_UDB:m_state_1\ * !\I2C_1:bI2C_UDB:m_state_2\ * !\I2C_1:bI2C_UDB:m_state_3\ * !\I2C_1:bI2C_UDB:m_state_4\ * \I2C_1:bI2C_UDB:status_2\
-			!\I2C_1:bI2C_UDB:m_state_0\ * !\I2C_1:bI2C_UDB:m_state_1\ * !\I2C_1:bI2C_UDB:m_state_2\ * !\I2C_1:bI2C_UDB:m_state_3\ * !\I2C_1:bI2C_UDB:m_state_4\ * \I2C_1:bI2C_UDB:status_3\
-			!\I2C_1:bI2C_UDB:m_state_1\ * !\I2C_1:bI2C_UDB:m_state_3\ * !\I2C_1:bI2C_UDB:m_state_4\ * \I2C_1:bI2C_UDB:m_state_0\ * \I2C_1:bI2C_UDB:m_state_2\ * \I2C_1:bI2C_UDB:status_2\
-			\I2C_1:bI2C_UDB:cs_addr_shifter_1\ * \I2C_1:bI2C_UDB:status_3\
-			\I2C_1:bI2C_UDB:m_reset\ * \I2C_1:bI2C_UDB:status_2\
-			\I2C_1:bI2C_UDB:m_reset\ * \I2C_1:bI2C_UDB:status_3\
+			!\I2C_1:bI2C_UDB:clkgen_tc1_reg\ * !\I2C_1:bI2C_UDB:m_reset\ * \I2C_1:bI2C_UDB:m_state_1\
+			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_0\ * !\I2C_1:bI2C_UDB:m_state_1\ * !\I2C_1:bI2C_UDB:m_state_3\ * !\I2C_1:bI2C_UDB:m_state_4\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:m_state_2\
+			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_0\ * !\I2C_1:bI2C_UDB:m_state_3\ * \I2C_1:bI2C_UDB:m_state_1\ * \I2C_1:bI2C_UDB:m_state_4\
+			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_0\ * !\I2C_1:bI2C_UDB:m_state_4\ * \I2C_1:bI2C_UDB:m_state_1\ * \I2C_1:bI2C_UDB:m_state_3\
+			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_1\ * !\I2C_1:bI2C_UDB:m_state_2\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:m_state_0\
+			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_1\ * !\I2C_1:bI2C_UDB:m_state_4\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:m_state_0\ * \I2C_1:bI2C_UDB:m_state_3\
+			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_3\ * \I2C_1:bI2C_UDB:clkgen_tc1_reg\ * \I2C_1:bI2C_UDB:m_state_0\ * \I2C_1:bI2C_UDB:m_state_2\ * \I2C_1:bI2C_UDB:m_state_4\
+			!\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_3\ * \I2C_1:bI2C_UDB:m_state_1\ * \I2C_1:bI2C_UDB:m_state_2\ * \I2C_1:bI2C_UDB:tx_reg_empty\
 
 	PLD 1:
 		 Instances:
-			\I2C_1:bI2C_UDB:scl_in_last_reg\
-			\I2C_1:bI2C_UDB:lost_arb_reg\
-			\I2C_1:bI2C_UDB:cnt_reset\
-			\I2C_1:bI2C_UDB:scl_in_last2_reg\
+			\I2C_1:bI2C_UDB:clkgen_tc1_reg\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\
+			\I2C_1:bI2C_UDB:cs_addr_clkgen_1\
 
 		 Clock net: Net_1390
 		 Set/Reset net: 
 		 Enable net: 
 
 		 Input nets:
-			\I2C_1:Net_643_3\
-			\I2C_1:bI2C_UDB:clkgen_tc1_reg\
-			\I2C_1:bI2C_UDB:cs_addr_shifter_1\
-			\I2C_1:bI2C_UDB:lost_arb_reg\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active_split\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
+			\ADC_SAR_Seq_1:ch_addr_2\
+			\ADC_SAR_Seq_1:ch_addr_3\
+			\ADC_SAR_Seq_1:ch_addr_4\
+			\ADC_SAR_Seq_1:ch_addr_5\
+			\I2C_1:bI2C_UDB:clkgen_tc\
+			\I2C_1:bI2C_UDB:cnt_reset\
 			\I2C_1:bI2C_UDB:m_reset\
-			\I2C_1:bI2C_UDB:m_state_0\
-			\I2C_1:bI2C_UDB:m_state_1\
-			\I2C_1:bI2C_UDB:m_state_2\
-			\I2C_1:bI2C_UDB:m_state_3\
-			\I2C_1:bI2C_UDB:m_state_4\
-			\I2C_1:bI2C_UDB:scl_in_last_reg\
-			\I2C_1:bI2C_UDB:scl_in_reg\
 
 		 Output nets:
-			\I2C_1:bI2C_UDB:cnt_reset\
-			\I2C_1:bI2C_UDB:lost_arb_reg\
-			\I2C_1:bI2C_UDB:scl_in_last2_reg\
-			\I2C_1:bI2C_UDB:scl_in_last_reg\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\
+			\I2C_1:bI2C_UDB:clkgen_tc1_reg\
+			\I2C_1:bI2C_UDB:cs_addr_clkgen_1\
 
 		 Product terms:
-			!\I2C_1:bI2C_UDB:clkgen_tc1_reg\ * !\I2C_1:bI2C_UDB:scl_in_reg\ * \I2C_1:Net_643_3\ * \I2C_1:bI2C_UDB:m_state_0\ * \I2C_1:bI2C_UDB:m_state_1\ * \I2C_1:bI2C_UDB:scl_in_last_reg\
-			!\I2C_1:bI2C_UDB:clkgen_tc1_reg\ * !\I2C_1:bI2C_UDB:scl_in_reg\ * \I2C_1:Net_643_3\ * \I2C_1:bI2C_UDB:m_state_2\ * \I2C_1:bI2C_UDB:scl_in_last_reg\
-			!\I2C_1:bI2C_UDB:clkgen_tc1_reg\ * !\I2C_1:bI2C_UDB:scl_in_reg\ * \I2C_1:Net_643_3\ * \I2C_1:bI2C_UDB:m_state_3\ * \I2C_1:bI2C_UDB:scl_in_last_reg\
-			!\I2C_1:bI2C_UDB:clkgen_tc1_reg\ * !\I2C_1:bI2C_UDB:scl_in_reg\ * \I2C_1:Net_643_3\ * \I2C_1:bI2C_UDB:m_state_4\ * \I2C_1:bI2C_UDB:scl_in_last_reg\
-			!\I2C_1:bI2C_UDB:cs_addr_shifter_1\ * !\I2C_1:bI2C_UDB:m_reset\ * \I2C_1:bI2C_UDB:lost_arb_reg\
-			\I2C_1:bI2C_UDB:scl_in_last_reg\
-			\I2C_1:bI2C_UDB:scl_in_reg\
+			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * \ADC_SAR_Seq_1:ch_addr_2\
+			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * \ADC_SAR_Seq_1:ch_addr_3\
+			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * \ADC_SAR_Seq_1:ch_addr_4\
+			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:ch_addr_5\
+			!\I2C_1:bI2C_UDB:clkgen_tc\ * !\I2C_1:bI2C_UDB:cnt_reset\
+			!\I2C_1:bI2C_UDB:clkgen_tc\ * !\I2C_1:bI2C_UDB:cnt_reset\ * !\I2C_1:bI2C_UDB:m_reset\
+			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active_split\
 
 	Datapath:
 
 	Control, status and sync:
 		 Instances:
-			\SPIS_1:BSPIS:RxStsReg\ : statusicell
+			\SPIM_1:BSPIM:RxStsReg\ : statusicell
 
-		 Clock net: \SPIS_1:Net_81\
+		 Clock net: \SPIM_1:Net_276\
 		 Set/Reset net: 
 		 Enable net: 
 
 		 Input nets:
-			\SPIS_1:BSPIS:dpMOSI_fifo_full_reg\
-			\SPIS_1:BSPIS:dpMOSI_fifo_not_empty\
-			\SPIS_1:BSPIS:rx_buf_overrun\
-			\SPIS_1:BSPIS:rx_status_4\
+			\SPIM_1:BSPIM:rx_status_4\
+			\SPIM_1:BSPIM:rx_status_5\
+			\SPIM_1:BSPIM:rx_status_6\
 
 		 Output nets:
-			Net_1362
+			Net_1497
 
 	Local clock and reset nets:
 
@@ -2047,7 +2072,103 @@ UDB 8
 ------------------------------------------------------
 	PLD 0:
 		 Instances:
-			\I2C_1:bI2C_UDB:sda_in_last_reg\
+			\I2C_1:bI2C_UDB:lost_arb_reg\
+			\I2C_1:bI2C_UDB:cs_addr_shifter_1\
+			\I2C_1:bI2C_UDB:status_3\
+
+		 Clock net: Net_1390
+		 Set/Reset net: 
+		 Enable net: 
+
+		 Input nets:
+			\I2C_1:bI2C_UDB:clkgen_tc1_reg\
+			\I2C_1:bI2C_UDB:cs_addr_shifter_1\
+			\I2C_1:bI2C_UDB:lost_arb_reg\
+			\I2C_1:bI2C_UDB:m_reset\
+			\I2C_1:bI2C_UDB:m_state_0\
+			\I2C_1:bI2C_UDB:m_state_1\
+			\I2C_1:bI2C_UDB:m_state_2\
+			\I2C_1:bI2C_UDB:m_state_3\
+			\I2C_1:bI2C_UDB:m_state_4\
+			\I2C_1:bI2C_UDB:status_3\
+			\I2C_1:bI2C_UDB:tx_reg_empty\
+
+		 Output nets:
+			\I2C_1:bI2C_UDB:cs_addr_shifter_1\
+			\I2C_1:bI2C_UDB:lost_arb_reg\
+			\I2C_1:bI2C_UDB:status_3\
+
+		 Product terms:
+			!\I2C_1:bI2C_UDB:clkgen_tc1_reg\
+			!\I2C_1:bI2C_UDB:cs_addr_shifter_1\ * !\I2C_1:bI2C_UDB:m_reset\ * !\I2C_1:bI2C_UDB:m_state_2\ * !\I2C_1:bI2C_UDB:m_state_3\ * !\I2C_1:bI2C_UDB:m_state_4\ * !\I2C_1:bI2C_UDB:status_3\ * \I2C_1:bI2C_UDB:m_state_0\ * \I2C_1:bI2C_UDB:m_state_1\
+			!\I2C_1:bI2C_UDB:cs_addr_shifter_1\ * !\I2C_1:bI2C_UDB:m_reset\ * \I2C_1:bI2C_UDB:lost_arb_reg\
+			!\I2C_1:bI2C_UDB:m_state_0\ * !\I2C_1:bI2C_UDB:m_state_1\ * !\I2C_1:bI2C_UDB:m_state_2\ * !\I2C_1:bI2C_UDB:m_state_3\ * !\I2C_1:bI2C_UDB:m_state_4\
+			!\I2C_1:bI2C_UDB:m_state_0\ * !\I2C_1:bI2C_UDB:m_state_1\ * !\I2C_1:bI2C_UDB:m_state_2\ * !\I2C_1:bI2C_UDB:m_state_3\ * !\I2C_1:bI2C_UDB:m_state_4\ * \I2C_1:bI2C_UDB:status_3\
+			\I2C_1:bI2C_UDB:cs_addr_shifter_1\ * \I2C_1:bI2C_UDB:status_3\
+			\I2C_1:bI2C_UDB:m_reset\ * \I2C_1:bI2C_UDB:status_3\
+			\I2C_1:bI2C_UDB:tx_reg_empty\
+
+	PLD 1:
+		 Instances:
+			\I2C_1:bI2C_UDB:scl_in_last_reg\
+			\I2C_1:bI2C_UDB:cs_addr_shifter_0\
+			\I2C_1:bI2C_UDB:cnt_reset\
+
+		 Clock net: Net_1390
+		 Set/Reset net: 
+		 Enable net: 
+
+		 Input nets:
+			\I2C_1:Net_643_3\
+			\I2C_1:bI2C_UDB:clkgen_tc1_reg\
+			\I2C_1:bI2C_UDB:clkgen_tc\
+			\I2C_1:bI2C_UDB:cnt_reset\
+			\I2C_1:bI2C_UDB:m_state_0\
+			\I2C_1:bI2C_UDB:m_state_1\
+			\I2C_1:bI2C_UDB:m_state_2\
+			\I2C_1:bI2C_UDB:m_state_3\
+			\I2C_1:bI2C_UDB:m_state_4\
+			\I2C_1:bI2C_UDB:scl_in_last_reg\
+			\I2C_1:bI2C_UDB:scl_in_reg\
+
+		 Output nets:
+			\I2C_1:bI2C_UDB:cnt_reset\
+			\I2C_1:bI2C_UDB:cs_addr_shifter_0\
+			\I2C_1:bI2C_UDB:scl_in_last_reg\
+
+		 Product terms:
+			!\I2C_1:bI2C_UDB:clkgen_tc1_reg\ * !\I2C_1:bI2C_UDB:scl_in_reg\ * \I2C_1:Net_643_3\ * \I2C_1:bI2C_UDB:m_state_0\ * \I2C_1:bI2C_UDB:m_state_1\ * \I2C_1:bI2C_UDB:scl_in_last_reg\
+			!\I2C_1:bI2C_UDB:clkgen_tc1_reg\ * !\I2C_1:bI2C_UDB:scl_in_reg\ * \I2C_1:Net_643_3\ * \I2C_1:bI2C_UDB:m_state_2\ * \I2C_1:bI2C_UDB:scl_in_last_reg\
+			!\I2C_1:bI2C_UDB:clkgen_tc1_reg\ * !\I2C_1:bI2C_UDB:scl_in_reg\ * \I2C_1:Net_643_3\ * \I2C_1:bI2C_UDB:m_state_3\ * \I2C_1:bI2C_UDB:scl_in_last_reg\
+			!\I2C_1:bI2C_UDB:clkgen_tc1_reg\ * !\I2C_1:bI2C_UDB:scl_in_reg\ * \I2C_1:Net_643_3\ * \I2C_1:bI2C_UDB:m_state_4\ * \I2C_1:bI2C_UDB:scl_in_last_reg\
+			!\I2C_1:bI2C_UDB:clkgen_tc\ * !\I2C_1:bI2C_UDB:cnt_reset\
+			!\I2C_1:bI2C_UDB:m_state_3\ * !\I2C_1:bI2C_UDB:m_state_4\
+			\I2C_1:bI2C_UDB:m_state_3\ * \I2C_1:bI2C_UDB:m_state_4\
+			\I2C_1:bI2C_UDB:scl_in_reg\
+
+	Datapath:
+
+	Control, status and sync:
+		 Instances:
+			\USB:Vbus_ps:sts:sts_reg\ : statuscell
+
+		 Clock net: 
+		 Set/Reset net: 
+		 Enable net: 
+
+		 Input nets:
+			Net_472
+
+		 Output nets:
+
+	Local clock and reset nets:
+
+======================================================
+UDB 9
+------------------------------------------------------
+	PLD 0:
+		 Instances:
+			\I2C_1:bI2C_UDB:scl_in_last2_reg\
 			\I2C_1:bI2C_UDB:status_5\
 			\I2C_1:bI2C_UDB:bus_busy_reg\
 			\I2C_1:bI2C_UDB:sda_in_last2_reg\
@@ -2064,12 +2185,11 @@ UDB 8
 			\I2C_1:bI2C_UDB:scl_in_reg\
 			\I2C_1:bI2C_UDB:sda_in_last2_reg\
 			\I2C_1:bI2C_UDB:sda_in_last_reg\
-			\I2C_1:bI2C_UDB:sda_in_reg\
 
 		 Output nets:
 			\I2C_1:bI2C_UDB:bus_busy_reg\
+			\I2C_1:bI2C_UDB:scl_in_last2_reg\
 			\I2C_1:bI2C_UDB:sda_in_last2_reg\
-			\I2C_1:bI2C_UDB:sda_in_last_reg\
 			\I2C_1:bI2C_UDB:status_5\
 
 		 Product terms:
@@ -2077,15 +2197,15 @@ UDB 8
 			!\I2C_1:bI2C_UDB:sda_in_last2_reg\ * \I2C_1:bI2C_UDB:bus_busy_reg\ * \I2C_1:bI2C_UDB:scl_in_last2_reg\ * \I2C_1:bI2C_UDB:scl_in_last_reg\ * \I2C_1:bI2C_UDB:scl_in_reg\ * \I2C_1:bI2C_UDB:sda_in_last_reg\
 			!\I2C_1:bI2C_UDB:sda_in_last2_reg\ * \I2C_1:bI2C_UDB:scl_in_last2_reg\ * \I2C_1:bI2C_UDB:scl_in_last_reg\ * \I2C_1:bI2C_UDB:scl_in_reg\ * \I2C_1:bI2C_UDB:sda_in_last_reg\
 			\I2C_1:bI2C_UDB:bus_busy_reg\ * \I2C_1:bI2C_UDB:m_reset\
+			\I2C_1:bI2C_UDB:scl_in_last_reg\
 			\I2C_1:bI2C_UDB:sda_in_last_reg\
-			\I2C_1:bI2C_UDB:sda_in_reg\
 
 	PLD 1:
 		 Instances:
-			\I2C_1:bI2C_UDB:clkgen_tc1_reg\
 			\I2C_1:bI2C_UDB:scl_in_reg\
+			\I2C_1:bI2C_UDB:sda_in_last_reg\
+			\I2C_1:bI2C_UDB:cs_addr_clkgen_0\
 			\I2C_1:bI2C_UDB:clk_eq_reg\
-			\I2C_1:bI2C_UDB:sda_in_reg\
 
 		 Clock net: Net_1390
 		 Set/Reset net: 
@@ -2093,31 +2213,35 @@ UDB 8
 
 		 Input nets:
 			\I2C_1:Net_1109_0_SYNCOUT\
-			\I2C_1:Net_1109_1_SYNCOUT\
 			\I2C_1:Net_643_3\
-			\I2C_1:bI2C_UDB:clkgen_tc\
-			\I2C_1:bI2C_UDB:cnt_reset\
-			\I2C_1:bI2C_UDB:m_reset\
+			\I2C_1:bI2C_UDB:clk_eq_reg\
+			\I2C_1:bI2C_UDB:m_state_0\
+			\I2C_1:bI2C_UDB:m_state_1\
+			\I2C_1:bI2C_UDB:m_state_2\
+			\I2C_1:bI2C_UDB:m_state_3\
+			\I2C_1:bI2C_UDB:m_state_4\
+			\I2C_1:bI2C_UDB:sda_in_reg\
+			\I2C_1:bI2C_UDB:tx_reg_empty\
 
 		 Output nets:
 			\I2C_1:bI2C_UDB:clk_eq_reg\
-			\I2C_1:bI2C_UDB:clkgen_tc1_reg\
+			\I2C_1:bI2C_UDB:cs_addr_clkgen_0\
 			\I2C_1:bI2C_UDB:scl_in_reg\
-			\I2C_1:bI2C_UDB:sda_in_reg\
+			\I2C_1:bI2C_UDB:sda_in_last_reg\
 
 		 Product terms:
 			!\I2C_1:Net_1109_0_SYNCOUT\ * !\I2C_1:Net_643_3\
-			!\I2C_1:bI2C_UDB:clkgen_tc\ * !\I2C_1:bI2C_UDB:cnt_reset\ * !\I2C_1:bI2C_UDB:m_reset\
+			!\I2C_1:bI2C_UDB:clk_eq_reg\
+			!\I2C_1:bI2C_UDB:m_state_0\ * !\I2C_1:bI2C_UDB:m_state_1\ * !\I2C_1:bI2C_UDB:m_state_2\ * !\I2C_1:bI2C_UDB:m_state_3\ * !\I2C_1:bI2C_UDB:m_state_4\ * \I2C_1:bI2C_UDB:tx_reg_empty\
 			\I2C_1:Net_1109_0_SYNCOUT\
 			\I2C_1:Net_1109_0_SYNCOUT\ * \I2C_1:Net_643_3\
-			\I2C_1:Net_1109_1_SYNCOUT\
+			\I2C_1:bI2C_UDB:sda_in_reg\
 
 	Datapath:
 
 	Control, status and sync:
 		 Instances:
 			SCL_1(0)_SYNC : synccell
-			SDA_1(0)_SYNC : synccell
 
 		 Clock net: ClockBlock_BUS_CLK
 		 Set/Reset net: 
@@ -2125,91 +2249,8 @@ UDB 8
 
 		 Input nets:
 			\I2C_1:Net_1109_0\
-			\I2C_1:Net_1109_1\
 
 		 Output nets:
 			\I2C_1:Net_1109_0_SYNCOUT\
-			\I2C_1:Net_1109_1_SYNCOUT\
 
 	Local clock and reset nets:
-
-======================================================
-UDB 9
-------------------------------------------------------
-	PLD 0:
-		 Instances:
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_13\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_2\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_0\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_1\
-
-		 Clock net: \ADC_SAR_Seq_1:clock\
-		 Set/Reset net: 
-		 Enable net: 
-
-		 Input nets:
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
-
-		 Output nets:
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_0\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_1\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_2\
-
-		 Product terms:
-			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\
-			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\
-			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\
-			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\
-
-	PLD 1:
-		 Instances:
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_12\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_10\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_11\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_3\
-
-		 Clock net: \ADC_SAR_Seq_1:clock\
-		 Set/Reset net: 
-		 Enable net: 
-
-		 Input nets:
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\
-
-		 Output nets:
-			\ADC_SAR_Seq_1:AMuxHw_2_Decoder_one_hot_3\
-
-		 Product terms:
-			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\
-			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\
-			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\
-			!\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_2\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_4\ * !\ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_5\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_is_active\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_0\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_1\ * \ADC_SAR_Seq_1:AMuxHw_2_Decoder_old_id_3\
-
-	Datapath:
-
-	Control, status and sync:
-		 Instances:
-			\ADC_SAR_Seq_1:bSAR_SEQ:EOCSts\ : statuscell
-
-		 Clock net: \ADC_SAR_Seq_1:clock\
-		 Set/Reset net: 
-		 Enable net: \ADC_SAR_Seq_1:bSAR_SEQ:enable\
-
-		 Input nets:
-			Net_535
-
-		 Output nets:
-
-	Local clock and reset nets:
-			\ADC_SAR_Seq_1:bSAR_SEQ:enable\
