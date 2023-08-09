@@ -1,4 +1,4 @@
-Loading plugins phase: Elapsed time ==> 0s.334ms
+Loading plugins phase: Elapsed time ==> 0s.343ms
 <CYPRESSTAG name="CyDsfit arguments...">
 cydsfit arguments: -.fdsnotice -.fdswarpdepfile=warp_dependencies.txt -.fdselabdepfile=elab_dependencies.txt -.fdsbldfile=generated_files.txt -.fdsreffile=referenced_files.txt -p C:\Users\JeffSnyder\dev\Electrosteel_embedded\PSOC5_electrosteel_stringsensors_newpcb\CE210514_PSOC3_5_Thermistor.cydsn\CE210514_PSOC3_5_Thermistor.cyprj -d CY8C5888AXI-LP096 -s C:\Users\JeffSnyder\dev\Electrosteel_embedded\PSOC5_electrosteel_stringsensors_newpcb\CE210514_PSOC3_5_Thermistor.cydsn\Generated_Source\PSoC5 -- -yv2 -q10 -ygs -o2 -v3 -.fftcfgtype=LE
 </CYPRESSTAG>
@@ -12,10 +12,10 @@ ADD: fit.M0032: warning: Clock Warning: (SPIM_1_IntClock's accuracy range '9.429
  * C:\Users\JeffSnyder\dev\Electrosteel_embedded\PSOC5_electrosteel_stringsensors_newpcb\CE210514_PSOC3_5_Thermistor.cydsn\CE210514_PSOC3_5_Thermistor.cydwr (SPIM_1_IntClock)
 
 </CYPRESSTAG>
-Elaboration phase: Elapsed time ==> 2s.427ms
+Elaboration phase: Elapsed time ==> 2s.473ms
 <CYPRESSTAG name="HDL generation results...">
 </CYPRESSTAG>
-HDL generation phase: Elapsed time ==> 0s.089ms
+HDL generation phase: Elapsed time ==> 0s.099ms
 <CYPRESSTAG name="Synthesis results...">
 
      | | | | | | |
@@ -49,7 +49,7 @@ Options  :    -yv2 -q10 -ygs -o2 -v3 -.fftcfgtype=LE -ya -.fftprj=C:\Users\JeffS
 ======================================================================
 
 vlogfe V6.3 IR 41:  Verilog parser
-Mon Jan 09 17:46:11 2023
+Mon Aug 07 12:03:40 2023
 
 
 ======================================================================
@@ -59,7 +59,7 @@ Options  :    -yv2 -q10 CE210514_PSOC3_5_Thermistor.v
 ======================================================================
 
 vpp V6.3 IR 41:  Verilog Pre-Processor
-Mon Jan 09 17:46:11 2023
+Mon Aug 07 12:03:40 2023
 
 Flattening file 'C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\psoc\content\CyPrimitives\cyprimitives.cylib\cy_analog_virtualmux_v1_0\cy_analog_virtualmux_v1_0.v'
 Flattening file 'C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\psoc\content\CyPrimitives\cyprimitives.cylib\cy_virtualmux_v1_0\cy_virtualmux_v1_0.v'
@@ -109,7 +109,7 @@ Options  :    -yv2 -q10 -ygs -o2 -v3 -.fftcfgtype=LE -ya -.fftprj=C:\Users\JeffS
 ======================================================================
 
 tovif V6.3 IR 41:  High-level synthesis
-Mon Jan 09 17:46:12 2023
+Mon Aug 07 12:03:40 2023
 
 Linking 'C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\warp\lib\common\std.vhd'.
 Linking 'C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\warp\lib\common\cypress.vhd'.
@@ -150,7 +150,7 @@ Options  :    -yv2 -q10 -ygs -o2 -v3 -.fftcfgtype=LE -ya -.fftprj=C:\Users\JeffS
 ======================================================================
 
 topld V6.3 IR 41:  Synthesis and optimization
-Mon Jan 09 17:46:12 2023
+Mon Aug 07 12:03:41 2023
 
 Linking 'C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\warp\lib\common\std.vhd'.
 Linking 'C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\warp\lib\common\cypress.vhd'.
@@ -299,7 +299,7 @@ Aliasing \SPIM_1:BSPIM:mosi_pre_reg\\D\ to zero
 Aliasing \SPIM_1:BSPIM:dpcounter_one_reg\\D\ to \SPIM_1:BSPIM:load_rx_data\
 Removing Lhs of wire one[6] = tmpOE__MISO_1_net_0[1]
 Removing Lhs of wire tmpOE__MOSI_1_net_0[9] = tmpOE__MISO_1_net_0[1]
-Removing Rhs of wire Net_1042[10] = \SPIM_2:BSPIM:mosi_reg\[440]
+Removing Rhs of wire Net_1042[10] = \SPIM_2:BSPIM:mosi_reg\[438]
 Removing Lhs of wire tmpOE__SCLK_1_net_0[16] = tmpOE__MISO_1_net_0[1]
 Removing Rhs of wire \ADC_1:Net_488\[30] = \ADC_1:Net_250\[74]
 Removing Lhs of wire \ADC_1:Net_481\[33] = zero[2]
@@ -320,89 +320,89 @@ Removing Rhs of wire \CapSense:IdacCH0:Net_123\[105] = \CapSense:IdacCH0:Net_157
 Removing Lhs of wire \CapSense:IdacCH0:Net_195\[111] = zero[2]
 Removing Lhs of wire \CapSense:tmpOE__CmodCH0_net_0\[114] = tmpOE__MISO_1_net_0[1]
 Removing Lhs of wire \CapSense:tmpOE__PortCH0_net_0\[121] = zero[2]
-Removing Rhs of wire \CapSense:PreChargeClk\[134] = \CapSense:ClockGen:tmp_pclk\[385]
-Removing Lhs of wire \CapSense:Net_375\[139] = zero[2]
-Removing Rhs of wire \CapSense:clk\[141] = \CapSense:Net_1644\[394]
-Removing Lhs of wire \CapSense:Net_373\[142] = tmpOE__MISO_1_net_0[1]
-Removing Rhs of wire \CapSense:DigitalClk\[145] = \CapSense:ClockGen:tmp_dpulse\[252]
-Removing Rhs of wire \CapSense:mrst\[222] = \CapSense:ClockGen:cstate_1\[379]
-Removing Lhs of wire \CapSense:MeasureCH0:load_enable\[228] = \CapSense:MeasureCH0:wndState_0\[225]
-Removing Rhs of wire \CapSense:Net_1603\[232] = \CapSense:MeasureCH0:wndState_3\[221]
-Removing Lhs of wire \CapSense:Net_371\[234] = tmpOE__MISO_1_net_0[1]
-Removing Rhs of wire \CapSense:ClockGen:inter_reset\[251] = \CapSense:ClockGen:cstate_0\[380]
-Removing Lhs of wire \CapSense:ClockGen:cs_addr_2\[254] = zero[2]
-Removing Rhs of wire \CapSense:ClockGen:cs_addr_1\[255] = \CapSense:ClockGen:z0\[259]
-Removing Lhs of wire \CapSense:ClockGen:cs_addr_0\[256] = \CapSense:ClockGen:inter_reset\[251]
-Removing Lhs of wire \CapSense:ClockGen:prs_cs_addr_2\[290] = \CapSense:ClockGen:inter_reset\[251]
-Removing Lhs of wire \CapSense:ClockGen:prs_cs_addr_1\[291] = zero[2]
-Removing Lhs of wire \CapSense:ClockGen:prs_cs_addr_0\[292] = \CapSense:ClockGen:clock_detect_reg\[239]
-Removing Lhs of wire \CapSense:ClockGen:tmp_ppulse\[376] = \CapSense:ClockGen:tmp_ppulse_reg\[373]
-Removing Lhs of wire \CapSense:ClockGen:mesen\[381] = \CapSense:ClockGen:control_1\[248]
-Removing Lhs of wire \CapSense:ClockGen:syncen\[382] = \CapSense:ClockGen:control_0\[249]
-Removing Lhs of wire \CapSense:ClockGen:prescaler\[383] = \CapSense:ClockGen:tmp_ppulse_reg\[373]
-Removing Lhs of wire \CapSense:ClockGen:bitstream\[384] = \CapSense:ClockGen:cmsb_reg\[367]
-Removing Lhs of wire \CapSense:ClockGen:work_en\[387] = \CapSense:ClockGen:cstate_2\[378]
-Removing Lhs of wire \CapSense:ClockGen:ch0en\[388] = \CapSense:ClockGen:control_2\[247]
-Removing Rhs of wire \SPIM_2:Net_276\[427] = \SPIM_2:Net_288\[428]
-Removing Rhs of wire \SPIM_2:BSPIM:load_rx_data\[432] = \SPIM_2:BSPIM:dpcounter_one\[433]
-Removing Lhs of wire \SPIM_2:BSPIM:pol_supprt\[434] = zero[2]
-Removing Lhs of wire \SPIM_2:BSPIM:miso_to_dp\[435] = \SPIM_2:Net_244\[436]
-Removing Lhs of wire \SPIM_2:Net_244\[436] = Net_19[3]
-Removing Rhs of wire \SPIM_2:BSPIM:tx_status_1\[462] = \SPIM_2:BSPIM:dpMOSI_fifo_empty\[463]
-Removing Rhs of wire \SPIM_2:BSPIM:tx_status_2\[464] = \SPIM_2:BSPIM:dpMOSI_fifo_not_full\[465]
-Removing Lhs of wire \SPIM_2:BSPIM:tx_status_3\[466] = \SPIM_2:BSPIM:load_rx_data\[432]
-Removing Rhs of wire \SPIM_2:BSPIM:rx_status_4\[468] = \SPIM_2:BSPIM:dpMISO_fifo_full\[469]
-Removing Rhs of wire \SPIM_2:BSPIM:rx_status_5\[470] = \SPIM_2:BSPIM:dpMISO_fifo_not_empty\[471]
-Removing Lhs of wire \SPIM_2:BSPIM:tx_status_6\[473] = zero[2]
-Removing Lhs of wire \SPIM_2:BSPIM:tx_status_5\[474] = zero[2]
-Removing Lhs of wire \SPIM_2:BSPIM:rx_status_3\[475] = zero[2]
-Removing Lhs of wire \SPIM_2:BSPIM:rx_status_2\[476] = zero[2]
-Removing Lhs of wire \SPIM_2:BSPIM:rx_status_1\[477] = zero[2]
-Removing Lhs of wire \SPIM_2:BSPIM:rx_status_0\[478] = zero[2]
-Removing Lhs of wire \SPIM_2:Net_273\[488] = zero[2]
-Removing Lhs of wire \SPIM_2:Net_289\[527] = zero[2]
-Removing Lhs of wire tmpOE__Vout_3_net_0[529] = tmpOE__MISO_1_net_0[1]
-Removing Lhs of wire tmpOE__SS_1_net_0[543] = tmpOE__MISO_1_net_0[1]
-Removing Lhs of wire tmpOE__SS_2_net_0[549] = tmpOE__MISO_1_net_0[1]
-Removing Rhs of wire \SPIM_1:Net_276\[555] = \SPIM_1:Net_288\[556]
-Removing Rhs of wire \SPIM_1:BSPIM:load_rx_data\[560] = \SPIM_1:BSPIM:dpcounter_one\[561]
-Removing Lhs of wire \SPIM_1:BSPIM:pol_supprt\[562] = zero[2]
-Removing Lhs of wire \SPIM_1:BSPIM:miso_to_dp\[563] = \SPIM_1:Net_244\[564]
-Removing Lhs of wire \SPIM_1:Net_244\[564] = Net_1415[656]
-Removing Rhs of wire Net_23[568] = \SPIM_1:BSPIM:mosi_reg\[569]
-Removing Rhs of wire \SPIM_1:BSPIM:tx_status_1\[590] = \SPIM_1:BSPIM:dpMOSI_fifo_empty\[591]
-Removing Rhs of wire \SPIM_1:BSPIM:tx_status_2\[592] = \SPIM_1:BSPIM:dpMOSI_fifo_not_full\[593]
-Removing Lhs of wire \SPIM_1:BSPIM:tx_status_3\[594] = \SPIM_1:BSPIM:load_rx_data\[560]
-Removing Rhs of wire \SPIM_1:BSPIM:rx_status_4\[596] = \SPIM_1:BSPIM:dpMISO_fifo_full\[597]
-Removing Rhs of wire \SPIM_1:BSPIM:rx_status_5\[598] = \SPIM_1:BSPIM:dpMISO_fifo_not_empty\[599]
-Removing Lhs of wire \SPIM_1:BSPIM:tx_status_6\[601] = zero[2]
-Removing Lhs of wire \SPIM_1:BSPIM:tx_status_5\[602] = zero[2]
-Removing Lhs of wire \SPIM_1:BSPIM:rx_status_3\[603] = zero[2]
-Removing Lhs of wire \SPIM_1:BSPIM:rx_status_2\[604] = zero[2]
-Removing Lhs of wire \SPIM_1:BSPIM:rx_status_1\[605] = zero[2]
-Removing Lhs of wire \SPIM_1:BSPIM:rx_status_0\[606] = zero[2]
-Removing Lhs of wire \SPIM_1:Net_273\[616] = zero[2]
-Removing Lhs of wire \SPIM_1:Net_289\[657] = zero[2]
-Removing Lhs of wire tmpOE__SCLK_2_net_0[659] = tmpOE__MISO_1_net_0[1]
-Removing Lhs of wire tmpOE__Vout_4_net_0[665] = tmpOE__MISO_1_net_0[1]
-Removing Lhs of wire tmpOE__LED_net_0[671] = tmpOE__MISO_1_net_0[1]
-Removing Lhs of wire tmpOE__MISO_2_net_0[677] = tmpOE__MISO_1_net_0[1]
-Removing Lhs of wire tmpOE__MOSI_2_net_0[682] = tmpOE__MISO_1_net_0[1]
-Removing Lhs of wire tmpOE__midtop_wiper2_net_0[688] = tmpOE__MISO_1_net_0[1]
-Removing Lhs of wire tmpOE__midbottom_wiper1_net_0[694] = tmpOE__MISO_1_net_0[1]
-Removing Lhs of wire tmpOE__midbottom_wiper2_net_0[700] = tmpOE__MISO_1_net_0[1]
-Removing Lhs of wire tmpOE__midtop_wiper1_net_0[706] = tmpOE__MISO_1_net_0[1]
-Removing Lhs of wire \CapSense:ClockGen:clock_detect_reg\\D\[719] = \CapSense:ClockGen:clock_detect\[377]
-Removing Lhs of wire \CapSense:ClockGen:tmp_ppulse_reg\\D\[720] = \CapSense:ClockGen:tmp_ppulse_udb\[374]
-Removing Lhs of wire \CapSense:ClockGen:tmp_ppulse_dly\\D\[721] = \CapSense:ClockGen:tmp_ppulse_reg\[373]
-Removing Lhs of wire \SPIM_2:BSPIM:so_send_reg\\D\[725] = zero[2]
-Removing Lhs of wire \SPIM_2:BSPIM:mosi_pre_reg\\D\[731] = zero[2]
-Removing Lhs of wire \SPIM_2:BSPIM:dpcounter_one_reg\\D\[733] = \SPIM_2:BSPIM:load_rx_data\[432]
-Removing Lhs of wire \SPIM_2:BSPIM:mosi_from_dp_reg\\D\[734] = \SPIM_2:BSPIM:mosi_from_dp\[446]
-Removing Lhs of wire \SPIM_1:BSPIM:so_send_reg\\D\[738] = zero[2]
-Removing Lhs of wire \SPIM_1:BSPIM:mosi_pre_reg\\D\[743] = zero[2]
-Removing Lhs of wire \SPIM_1:BSPIM:dpcounter_one_reg\\D\[745] = \SPIM_1:BSPIM:load_rx_data\[560]
-Removing Lhs of wire \SPIM_1:BSPIM:mosi_from_dp_reg\\D\[746] = \SPIM_1:BSPIM:mosi_from_dp\[575]
+Removing Rhs of wire \CapSense:PreChargeClk\[132] = \CapSense:ClockGen:tmp_pclk\[383]
+Removing Lhs of wire \CapSense:Net_375\[137] = zero[2]
+Removing Rhs of wire \CapSense:clk\[139] = \CapSense:Net_1644\[392]
+Removing Lhs of wire \CapSense:Net_373\[140] = tmpOE__MISO_1_net_0[1]
+Removing Rhs of wire \CapSense:DigitalClk\[143] = \CapSense:ClockGen:tmp_dpulse\[250]
+Removing Rhs of wire \CapSense:mrst\[220] = \CapSense:ClockGen:cstate_1\[377]
+Removing Lhs of wire \CapSense:MeasureCH0:load_enable\[226] = \CapSense:MeasureCH0:wndState_0\[223]
+Removing Rhs of wire \CapSense:Net_1603\[230] = \CapSense:MeasureCH0:wndState_3\[219]
+Removing Lhs of wire \CapSense:Net_371\[232] = tmpOE__MISO_1_net_0[1]
+Removing Rhs of wire \CapSense:ClockGen:inter_reset\[249] = \CapSense:ClockGen:cstate_0\[378]
+Removing Lhs of wire \CapSense:ClockGen:cs_addr_2\[252] = zero[2]
+Removing Rhs of wire \CapSense:ClockGen:cs_addr_1\[253] = \CapSense:ClockGen:z0\[257]
+Removing Lhs of wire \CapSense:ClockGen:cs_addr_0\[254] = \CapSense:ClockGen:inter_reset\[249]
+Removing Lhs of wire \CapSense:ClockGen:prs_cs_addr_2\[288] = \CapSense:ClockGen:inter_reset\[249]
+Removing Lhs of wire \CapSense:ClockGen:prs_cs_addr_1\[289] = zero[2]
+Removing Lhs of wire \CapSense:ClockGen:prs_cs_addr_0\[290] = \CapSense:ClockGen:clock_detect_reg\[237]
+Removing Lhs of wire \CapSense:ClockGen:tmp_ppulse\[374] = \CapSense:ClockGen:tmp_ppulse_reg\[371]
+Removing Lhs of wire \CapSense:ClockGen:mesen\[379] = \CapSense:ClockGen:control_1\[246]
+Removing Lhs of wire \CapSense:ClockGen:syncen\[380] = \CapSense:ClockGen:control_0\[247]
+Removing Lhs of wire \CapSense:ClockGen:prescaler\[381] = \CapSense:ClockGen:tmp_ppulse_reg\[371]
+Removing Lhs of wire \CapSense:ClockGen:bitstream\[382] = \CapSense:ClockGen:cmsb_reg\[365]
+Removing Lhs of wire \CapSense:ClockGen:work_en\[385] = \CapSense:ClockGen:cstate_2\[376]
+Removing Lhs of wire \CapSense:ClockGen:ch0en\[386] = \CapSense:ClockGen:control_2\[245]
+Removing Rhs of wire \SPIM_2:Net_276\[425] = \SPIM_2:Net_288\[426]
+Removing Rhs of wire \SPIM_2:BSPIM:load_rx_data\[430] = \SPIM_2:BSPIM:dpcounter_one\[431]
+Removing Lhs of wire \SPIM_2:BSPIM:pol_supprt\[432] = zero[2]
+Removing Lhs of wire \SPIM_2:BSPIM:miso_to_dp\[433] = \SPIM_2:Net_244\[434]
+Removing Lhs of wire \SPIM_2:Net_244\[434] = Net_19[3]
+Removing Rhs of wire \SPIM_2:BSPIM:tx_status_1\[460] = \SPIM_2:BSPIM:dpMOSI_fifo_empty\[461]
+Removing Rhs of wire \SPIM_2:BSPIM:tx_status_2\[462] = \SPIM_2:BSPIM:dpMOSI_fifo_not_full\[463]
+Removing Lhs of wire \SPIM_2:BSPIM:tx_status_3\[464] = \SPIM_2:BSPIM:load_rx_data\[430]
+Removing Rhs of wire \SPIM_2:BSPIM:rx_status_4\[466] = \SPIM_2:BSPIM:dpMISO_fifo_full\[467]
+Removing Rhs of wire \SPIM_2:BSPIM:rx_status_5\[468] = \SPIM_2:BSPIM:dpMISO_fifo_not_empty\[469]
+Removing Lhs of wire \SPIM_2:BSPIM:tx_status_6\[471] = zero[2]
+Removing Lhs of wire \SPIM_2:BSPIM:tx_status_5\[472] = zero[2]
+Removing Lhs of wire \SPIM_2:BSPIM:rx_status_3\[473] = zero[2]
+Removing Lhs of wire \SPIM_2:BSPIM:rx_status_2\[474] = zero[2]
+Removing Lhs of wire \SPIM_2:BSPIM:rx_status_1\[475] = zero[2]
+Removing Lhs of wire \SPIM_2:BSPIM:rx_status_0\[476] = zero[2]
+Removing Lhs of wire \SPIM_2:Net_273\[486] = zero[2]
+Removing Lhs of wire \SPIM_2:Net_289\[525] = zero[2]
+Removing Lhs of wire tmpOE__Vout_3_net_0[527] = tmpOE__MISO_1_net_0[1]
+Removing Lhs of wire tmpOE__SS_1_net_0[541] = tmpOE__MISO_1_net_0[1]
+Removing Lhs of wire tmpOE__SS_2_net_0[547] = tmpOE__MISO_1_net_0[1]
+Removing Rhs of wire \SPIM_1:Net_276\[553] = \SPIM_1:Net_288\[554]
+Removing Rhs of wire \SPIM_1:BSPIM:load_rx_data\[558] = \SPIM_1:BSPIM:dpcounter_one\[559]
+Removing Lhs of wire \SPIM_1:BSPIM:pol_supprt\[560] = zero[2]
+Removing Lhs of wire \SPIM_1:BSPIM:miso_to_dp\[561] = \SPIM_1:Net_244\[562]
+Removing Lhs of wire \SPIM_1:Net_244\[562] = Net_1415[654]
+Removing Rhs of wire Net_23[566] = \SPIM_1:BSPIM:mosi_reg\[567]
+Removing Rhs of wire \SPIM_1:BSPIM:tx_status_1\[588] = \SPIM_1:BSPIM:dpMOSI_fifo_empty\[589]
+Removing Rhs of wire \SPIM_1:BSPIM:tx_status_2\[590] = \SPIM_1:BSPIM:dpMOSI_fifo_not_full\[591]
+Removing Lhs of wire \SPIM_1:BSPIM:tx_status_3\[592] = \SPIM_1:BSPIM:load_rx_data\[558]
+Removing Rhs of wire \SPIM_1:BSPIM:rx_status_4\[594] = \SPIM_1:BSPIM:dpMISO_fifo_full\[595]
+Removing Rhs of wire \SPIM_1:BSPIM:rx_status_5\[596] = \SPIM_1:BSPIM:dpMISO_fifo_not_empty\[597]
+Removing Lhs of wire \SPIM_1:BSPIM:tx_status_6\[599] = zero[2]
+Removing Lhs of wire \SPIM_1:BSPIM:tx_status_5\[600] = zero[2]
+Removing Lhs of wire \SPIM_1:BSPIM:rx_status_3\[601] = zero[2]
+Removing Lhs of wire \SPIM_1:BSPIM:rx_status_2\[602] = zero[2]
+Removing Lhs of wire \SPIM_1:BSPIM:rx_status_1\[603] = zero[2]
+Removing Lhs of wire \SPIM_1:BSPIM:rx_status_0\[604] = zero[2]
+Removing Lhs of wire \SPIM_1:Net_273\[614] = zero[2]
+Removing Lhs of wire \SPIM_1:Net_289\[655] = zero[2]
+Removing Lhs of wire tmpOE__SCLK_2_net_0[657] = tmpOE__MISO_1_net_0[1]
+Removing Lhs of wire tmpOE__Vout_4_net_0[663] = tmpOE__MISO_1_net_0[1]
+Removing Lhs of wire tmpOE__LED_net_0[669] = tmpOE__MISO_1_net_0[1]
+Removing Lhs of wire tmpOE__MISO_2_net_0[675] = tmpOE__MISO_1_net_0[1]
+Removing Lhs of wire tmpOE__MOSI_2_net_0[680] = tmpOE__MISO_1_net_0[1]
+Removing Lhs of wire tmpOE__midtop_wiper2_net_0[686] = tmpOE__MISO_1_net_0[1]
+Removing Lhs of wire tmpOE__midbottom_wiper1_net_0[692] = tmpOE__MISO_1_net_0[1]
+Removing Lhs of wire tmpOE__midbottom_wiper2_net_0[698] = tmpOE__MISO_1_net_0[1]
+Removing Lhs of wire tmpOE__midtop_wiper1_net_0[704] = tmpOE__MISO_1_net_0[1]
+Removing Lhs of wire \CapSense:ClockGen:clock_detect_reg\\D\[717] = \CapSense:ClockGen:clock_detect\[375]
+Removing Lhs of wire \CapSense:ClockGen:tmp_ppulse_reg\\D\[718] = \CapSense:ClockGen:tmp_ppulse_udb\[372]
+Removing Lhs of wire \CapSense:ClockGen:tmp_ppulse_dly\\D\[719] = \CapSense:ClockGen:tmp_ppulse_reg\[371]
+Removing Lhs of wire \SPIM_2:BSPIM:so_send_reg\\D\[723] = zero[2]
+Removing Lhs of wire \SPIM_2:BSPIM:mosi_pre_reg\\D\[729] = zero[2]
+Removing Lhs of wire \SPIM_2:BSPIM:dpcounter_one_reg\\D\[731] = \SPIM_2:BSPIM:load_rx_data\[430]
+Removing Lhs of wire \SPIM_2:BSPIM:mosi_from_dp_reg\\D\[732] = \SPIM_2:BSPIM:mosi_from_dp\[444]
+Removing Lhs of wire \SPIM_1:BSPIM:so_send_reg\\D\[736] = zero[2]
+Removing Lhs of wire \SPIM_1:BSPIM:mosi_pre_reg\\D\[741] = zero[2]
+Removing Lhs of wire \SPIM_1:BSPIM:dpcounter_one_reg\\D\[743] = \SPIM_1:BSPIM:load_rx_data\[558]
+Removing Lhs of wire \SPIM_1:BSPIM:mosi_from_dp_reg\\D\[744] = \SPIM_1:BSPIM:mosi_from_dp\[573]
 
 ------------------------------------------------------
 Aliased 0 equations, 106 wires.
@@ -458,7 +458,7 @@ Circuit simplification results:
 ------------------------------------------------------
 Alias Detection
 ------------------------------------------------------
-Removing Rhs of wire \CapSense:IdacCH0:Net_123\[105] = \CapSense:MeasureCH0:cmp_in_reg\[148]
+Removing Rhs of wire \CapSense:IdacCH0:Net_123\[105] = \CapSense:MeasureCH0:cmp_in_reg\[146]
 
 ------------------------------------------------------
 Aliased 0 equations, 1 wires.
@@ -491,14 +491,14 @@ CYPRESS_DIR    : C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\wa
 Warp Program   : C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\warp\bin\warp.exe
 Warp Arguments : -yv2 -q10 -ygs -o2 -v3 -.fftcfgtype=LE -ya -.fftprj=C:\Users\JeffSnyder\dev\Electrosteel_embedded\PSOC5_electrosteel_stringsensors_newpcb\CE210514_PSOC3_5_Thermistor.cydsn\CE210514_PSOC3_5_Thermistor.cyprj -dcpsoc3 CE210514_PSOC3_5_Thermistor.v -verilog
 </CYPRESSTAG>
-Warp synthesis phase: Elapsed time ==> 1s.943ms
+Warp synthesis phase: Elapsed time ==> 2s.135ms
 <CYPRESSTAG name="Fitter results...">
 <CYPRESSTAG name="Fitter startup details...">
-cyp3fit: V4.4.0.80, Family: PSoC3, Started at: Monday, 09 January 2023 17:46:13
+cyp3fit: V4.4.0.80, Family: PSoC3, Started at: Monday, 07 August 2023 12:03:41
 Options: -yv2 -q10 -ygs -o2 -v3 -.fftcfgtype=LE -ya -.fftprj=C:\Users\JeffSnyder\dev\Electrosteel_embedded\PSOC5_electrosteel_stringsensors_newpcb\CE210514_PSOC3_5_Thermistor.cydsn\CE210514_PSOC3_5_Thermistor.cyprj -d CY8C5888AXI-LP096 CE210514_PSOC3_5_Thermistor.v -verilog
 </CYPRESSTAG>
 <CYPRESSTAG name="Design parsing">
-Design parsing phase: Elapsed time ==> 0s.021ms
+Design parsing phase: Elapsed time ==> 0s.022ms
 </CYPRESSTAG>
 <CYPRESSTAG name="Tech Mapping">
 <CYPRESSTAG name="Initial Mapping" icon="FILE_RPT_TECHM">
@@ -1173,88 +1173,6 @@ Design Equations
             pa_out => \CapSense:PortCH0(9)\__PA ,
             pad => \CapSense:PortCH0(9)_PAD\ ,
             analog_term => \CapSense:Net_1410_9\ );
-        Properties:
-        {
-        }
-
-    Pin : Name = \CapSense:PortCH0(10)\
-        Attributes:
-            Alias: Button10__BTN
-            In Group/Port: True
-            In Sync Option: AUTO
-            Out Sync Option: AUTO
-            Interrupt generated: False
-            Interrupt mode: NONE
-            Drive mode: OPEN_DRAIN_LO
-            VTrip: CMOS
-            Slew: FAST
-            Input Sync needed: False
-            Output Sync needed: False
-            SC shield enabled: False
-            POR State: INP_DIS_HI_Z
-            LCD Mode: COMMON
-            Register Mode: RegComb
-            CaSense Mode: PULLDOWN
-            Treat as pin: True
-            Is OE Registered: False
-            Uses Analog: True
-            Can contain Digital: False
-            Is SIO: False
-            SIO Output Buf: NONREGULATED
-            SIO Input Buf: SINGLE_ENDED
-            SIO HiFreq: LOW
-            SIO Hyst: DISABLED
-            SIO Vtrip: MULTIPLIER_0_5
-            SIO Multiplier Index: 0
-            SIO RefSel: VCC_IO
-            Required Capabilities: ANALOG
-            Initial Value: 0
-            IO Voltage: 0
-        PORT MAP (
-            pa_out => \CapSense:PortCH0(10)\__PA ,
-            pad => \CapSense:PortCH0(10)_PAD\ ,
-            analog_term => \CapSense:Net_1410_10\ );
-        Properties:
-        {
-        }
-
-    Pin : Name = \CapSense:PortCH0(11)\
-        Attributes:
-            Alias: Button11__BTN
-            In Group/Port: True
-            In Sync Option: AUTO
-            Out Sync Option: AUTO
-            Interrupt generated: False
-            Interrupt mode: NONE
-            Drive mode: OPEN_DRAIN_LO
-            VTrip: CMOS
-            Slew: FAST
-            Input Sync needed: False
-            Output Sync needed: False
-            SC shield enabled: False
-            POR State: INP_DIS_HI_Z
-            LCD Mode: COMMON
-            Register Mode: RegComb
-            CaSense Mode: PULLDOWN
-            Treat as pin: True
-            Is OE Registered: False
-            Uses Analog: True
-            Can contain Digital: False
-            Is SIO: False
-            SIO Output Buf: NONREGULATED
-            SIO Input Buf: SINGLE_ENDED
-            SIO HiFreq: LOW
-            SIO Hyst: DISABLED
-            SIO Vtrip: MULTIPLIER_0_5
-            SIO Multiplier Index: 0
-            SIO RefSel: VCC_IO
-            Required Capabilities: ANALOG
-            Initial Value: 0
-            IO Voltage: 0
-        PORT MAP (
-            pa_out => \CapSense:PortCH0(11)\__PA ,
-            pad => \CapSense:PortCH0(11)_PAD\ ,
-            analog_term => \CapSense:Net_1410_11\ );
         Properties:
         {
         }
@@ -2935,7 +2853,7 @@ Analog Clocks                 :    1 :    3 :    4 : 25.00 %
 CapSense Buffers              :    1 :    1 :    2 : 50.00 %
 Digital Filter Block          :    0 :    1 :    1 :  0.00 %
 Interrupts                    :    2 :   30 :   32 :  6.25 %
-IO                            :   31 :   41 :   72 : 43.06 %
+IO                            :   29 :   43 :   72 : 40.28 %
 Segment LCD                   :    0 :    1 :    1 :  0.00 %
 CAN 2.0b                      :    0 :    1 :    1 :  0.00 %
 I2C                           :    0 :    1 :    1 :  0.00 %
@@ -2963,8 +2881,8 @@ Analog (SC/CT) Blocks         :    0 :    4 :    4 :  0.00 %
 DAC                           :      :      :      :        
   VIDAC                       :    2 :    2 :    4 : 50.00 %
 </CYPRESSTAG>
-Technology Mapping: Elapsed time ==> 0s.563ms
-Tech Mapping phase: Elapsed time ==> 0s.638ms
+Technology Mapping: Elapsed time ==> 0s.648ms
+Tech Mapping phase: Elapsed time ==> 0s.723ms
 </CYPRESSTAG>
 <CYPRESSTAG name="Analog Placement">
 Initial Analog Placement Results:
@@ -2983,8 +2901,6 @@ IO_2@[IOP=(3)][IoId=(2)] : \ADC_1:Bypass_P32(0)\ (fixed, DSM-ExtVrefR)
 IO_4@[IOP=(15)][IoId=(4)] : \CapSense:CmodCH0(0)\ (fixed)
 IO_7@[IOP=(2)][IoId=(7)] : \CapSense:PortCH0(0)\ (fixed)
 IO_6@[IOP=(2)][IoId=(6)] : \CapSense:PortCH0(1)\ (fixed)
-IO_2@[IOP=(2)][IoId=(2)] : \CapSense:PortCH0(10)\ (fixed)
-IO_1@[IOP=(2)][IoId=(1)] : \CapSense:PortCH0(11)\ (fixed)
 IO_5@[IOP=(2)][IoId=(5)] : \CapSense:PortCH0(2)\ (fixed)
 IO_4@[IOP=(2)][IoId=(4)] : \CapSense:PortCH0(3)\ (fixed)
 IO_3@[IOP=(2)][IoId=(3)] : \CapSense:PortCH0(4)\ (fixed)
@@ -3004,8 +2920,8 @@ VIDAC[0]@[FFB(VIDAC,0)] : \CapSense:IdacCH0:viDAC8\
 Vref[3]@[FFB(Vref,3)] : \CapSense:VrefRefCH0\
 VIDAC[1]@[FFB(VIDAC,1)] : \IDAC8_1:viDAC8\
 Vref[6]@[FFB(Vref,6)] : vRef_2
-Log: apr.M0058: The analog placement iterative improvement is 38% done. (App=cydsfit)
-Log: apr.M0058: The analog placement iterative improvement is 84% done. (App=cydsfit)
+Log: apr.M0058: The analog placement iterative improvement is 40% done. (App=cydsfit)
+Log: apr.M0058: The analog placement iterative improvement is 88% done. (App=cydsfit)
 Analog Placement Results:
 IO_1@[IOP=(5)][IoId=(1)] : LED(0) (fixed)
 IO_6@[IOP=(5)][IoId=(6)] : MISO_1(0) (fixed)
@@ -3022,8 +2938,6 @@ IO_2@[IOP=(3)][IoId=(2)] : \ADC_1:Bypass_P32(0)\ (fixed, DSM-ExtVrefR)
 IO_4@[IOP=(15)][IoId=(4)] : \CapSense:CmodCH0(0)\ (fixed)
 IO_7@[IOP=(2)][IoId=(7)] : \CapSense:PortCH0(0)\ (fixed)
 IO_6@[IOP=(2)][IoId=(6)] : \CapSense:PortCH0(1)\ (fixed)
-IO_2@[IOP=(2)][IoId=(2)] : \CapSense:PortCH0(10)\ (fixed)
-IO_1@[IOP=(2)][IoId=(1)] : \CapSense:PortCH0(11)\ (fixed)
 IO_5@[IOP=(2)][IoId=(5)] : \CapSense:PortCH0(2)\ (fixed)
 IO_4@[IOP=(2)][IoId=(4)] : \CapSense:PortCH0(3)\ (fixed)
 IO_3@[IOP=(2)][IoId=(3)] : \CapSense:PortCH0(4)\ (fixed)
@@ -3044,16 +2958,13 @@ Vref[3]@[FFB(Vref,3)] : \CapSense:VrefRefCH0\
 VIDAC[3]@[FFB(VIDAC,3)] : \IDAC8_1:viDAC8\
 Vref[6]@[FFB(Vref,6)] : vRef_2
 
-Analog Placement phase: Elapsed time ==> 5s.654ms
+Analog Placement phase: Elapsed time ==> 4s.520ms
 </CYPRESSTAG>
 <CYPRESSTAG name="Analog Routing">
 Net "Net_1424" overuses wire "AGL[6]"
-Net "Net_1424" overuses wire "GPIO P0[4] Mux__3b"
-Net "Net_1424" overuses wire "GPIO P0[4] Mux__2b"
-Net "AmuxEye::AMux_1_CYAMUXSIDE_A" overuses wire "AGL[6]"
-Net "Net_1424" overuses wire "AGL[6]"
 Net "Net_1424" overuses wire "DSM+ Sw__3b"
 Net "Net_1424" overuses wire "dsm0+ Wire"
+Net "Net_1426" overuses wire "amuxbusL"
 Net "AmuxEye::AMux_1_CYAMUXSIDE_A" overuses wire "dsm0+ Wire"
 Net "AmuxEye::AMux_1_CYAMUXSIDE_A" overuses wire "DSM+ Sw__3b"
 Net "AmuxEye::AMux_1_CYAMUXSIDE_A" overuses wire "AGL[6]"
@@ -3063,6 +2974,21 @@ Net "AmuxEye::AMux_1_CYAMUXSIDE_B" overuses wire "Vssa Wire Alt2"
 Net "AmuxEye::AMux_1_CYAMUXSIDE_B" overuses wire "Vssa Wire"
 Net "AmuxNose::AMux_1_CYAMUXSIDE_B" overuses wire "Vssa Wire Alt2"
 Net "AmuxNose::AMux_1_CYAMUXSIDE_B" overuses wire "Vssa Wire"
+Net "AmuxEye::\CapSense:AMuxCH0\" overuses wire "amuxbusL"
+Net "AmuxEye::\CapSense:AMuxCH0\" overuses wire "amuxbusL"
+Net "AmuxEye::\CapSense:AMuxCH0\" overuses wire "amuxbusL"
+Net "AmuxEye::\CapSense:AMuxCH0\" overuses wire "amuxbusL"
+Net "AmuxEye::\CapSense:AMuxCH0\" overuses wire "amuxbusL"
+Net "AmuxEye::\CapSense:AMuxCH0\" overuses wire "amuxbusL"
+Net "AmuxEye::\CapSense:AMuxCH0\" overuses wire "amuxbusL"
+Net "AmuxEye::\CapSense:AMuxCH0\" overuses wire "amuxbusL"
+Net "AmuxEye::\CapSense:AMuxCH0\" overuses wire "amuxbusL"
+Net "AmuxEye::\CapSense:AMuxCH0\" overuses wire "amuxbusL"
+Net "AmuxEye::\CapSense:AMuxCH0\" overuses wire "amuxbusL"
+Net "AmuxEye::\CapSense:AMuxCH0\" overuses wire "amuxbusL"
+Net "AmuxEye::\CapSense:AMuxCH0\" overuses wire "amuxbusL"
+Net "Net_1424" overuses wire "AGL[6]"
+Net "AmuxEye::AMux_1_CYAMUXSIDE_A" overuses wire "AGL[6]"
 Net "Net_1424" overuses wire "amuxbusL"
 Net "Net_1428" overuses wire "AGL[4]"
 Net "AmuxEye::AMux_1_CYAMUXSIDE_A" overuses wire "AGL[4]"
@@ -3079,8 +3005,6 @@ Net "AmuxEye::\CapSense:AMuxCH0\" overuses wire "amuxbusL"
 Net "AmuxEye::\CapSense:AMuxCH0\" overuses wire "amuxbusL"
 Net "AmuxEye::\CapSense:AMuxCH0\" overuses wire "amuxbusL"
 Net "AmuxEye::\CapSense:AMuxCH0\" overuses wire "amuxbusL"
-Net "AmuxEye::\CapSense:AMuxCH0\" overuses wire "amuxbusL"
-Net "AmuxEye::\CapSense:AMuxCH0\" overuses wire "amuxbusL"
 Net "Net_1424" overuses wire "AGL[6]"
 Net "AmuxEye::AMux_1_CYAMUXSIDE_A" overuses wire "AGL[6]"
 Net "Net_1424" overuses wire "amuxbusL"
@@ -3097,13 +3021,9 @@ Net "AmuxEye::\CapSense:AMuxCH0\" overuses wire "amuxbusL"
 Net "AmuxEye::\CapSense:AMuxCH0\" overuses wire "amuxbusL"
 Net "AmuxEye::\CapSense:AMuxCH0\" overuses wire "amuxbusL"
 Net "AmuxEye::\CapSense:AMuxCH0\" overuses wire "amuxbusL"
-Net "AmuxEye::\CapSense:AMuxCH0\" overuses wire "amuxbusL"
-Net "AmuxEye::\CapSense:AMuxCH0\" overuses wire "amuxbusL"
 Net "Net_1424" overuses wire "AGL[6]"
 Net "AmuxEye::AMux_1_CYAMUXSIDE_A" overuses wire "AGL[6]"
 Net "Net_1424" overuses wire "amuxbusL"
-Net "AmuxEye::\CapSense:AMuxCH0\" overuses wire "amuxbusL"
-Net "AmuxEye::\CapSense:AMuxCH0\" overuses wire "amuxbusL"
 Net "AmuxEye::\CapSense:AMuxCH0\" overuses wire "amuxbusL"
 Net "AmuxEye::\CapSense:AMuxCH0\" overuses wire "amuxbusL"
 Net "AmuxEye::\CapSense:AMuxCH0\" overuses wire "amuxbusL"
@@ -3121,7 +3041,7 @@ Net "Net_1426" overuses wire "AGL[7]"
 Net "AmuxEye::AMux_1_CYAMUXSIDE_A" overuses wire "AGL[7]"
 Net "AmuxEye::AMux_1_CYAMUXSIDE_A" overuses wire "GPIO P3[5] Mux__4b"
 Net "AmuxEye::AMux_1_CYAMUXSIDE_A" overuses wire "GPIO P3[5] Mux__3b"
-Analog Routing phase: Elapsed time ==> 0s.124ms
+Analog Routing phase: Elapsed time ==> 0s.126ms
 </CYPRESSTAG>
 <CYPRESSTAG name="Analog Code Generation">
 ============ Analog Final Answer Routes ============
@@ -3137,9 +3057,9 @@ Map of net to items {
     p4_2
     agl6_x_p4_2
     agl6
-    agl6_x_comp_0_vplus
-    comp_0_vplus
-    agl5_x_comp_0_vplus
+    agl6_x_sc_2_vin
+    sc_2_vin
+    agl5_x_sc_2_vin
     agl5
     agl5_x_agr5
     agr5
@@ -3202,12 +3122,6 @@ Map of net to items {
   Net: \CapSense:Net_1410_9\ {
     p2_0
   }
-  Net: \CapSense:Net_1410_10\ {
-    p2_2
-  }
-  Net: \CapSense:Net_1410_11\ {
-    p2_1
-  }
   Net: \CapSense:Net_1917\ {
     p15_4
     agl0_x_p15_4
@@ -3250,9 +3164,9 @@ Map of net to items {
     agl2
     agl2_x_agr2
     agr2
-    agr2_x_comp_1_vplus
-    comp_1_vplus
-    agr6_x_comp_1_vplus
+    agr2_x_comp_1_vminus
+    comp_1_vminus
+    agr6_x_comp_1_vminus
     agr6
     agr6_x_p3_6
     agl7_x_dsm_0_vplus
@@ -3283,34 +3197,30 @@ Map of net to items {
   Net: AmuxNet::\CapSense:AMuxCH0\ {
     amuxbusl
     amuxbusl_x_comp_2_vplus
-    amuxbusl_x_vidac_0_iout
     amuxbusl_x_p6_4
+    amuxbusl_x_p2_6
+    amuxbusl_x_p2_3
+    amuxbusl_x_p6_6
     amuxbusl_x_p6_5
     amuxbusl_x_p2_0
     amuxbusl_x_p6_7
-    amuxbusl_x_p6_6
-    amuxbusl_x_p2_1
-    amuxbusl_x_p2_4
-    amuxbusl_x_p2_3
-    amuxbusl_x_p2_2
     amuxbusl_x_p2_5
-    amuxbusl_x_p2_6
+    amuxbusl_x_p2_4
     amuxbusl_x_p2_7
+    amuxbusl_x_vidac_0_iout
     amuxbusl_x_p15_4
     comp_2_vplus
-    vidac_0_iout
     p6_4
+    p2_6
+    p2_3
+    p6_6
     p6_5
     p2_0
     p6_7
-    p6_6
-    p2_1
-    p2_4
-    p2_3
-    p2_2
     p2_5
-    p2_6
+    p2_4
     p2_7
+    vidac_0_iout
     p15_4
   }
 }
@@ -3319,9 +3229,9 @@ Map of item to net {
   p4_2                                             -> Net_1424
   agl6_x_p4_2                                      -> Net_1424
   agl6                                             -> Net_1424
-  agl6_x_comp_0_vplus                              -> Net_1424
-  comp_0_vplus                                     -> Net_1424
-  agl5_x_comp_0_vplus                              -> Net_1424
+  agl6_x_sc_2_vin                                  -> Net_1424
+  sc_2_vin                                         -> Net_1424
+  agl5_x_sc_2_vin                                  -> Net_1424
   agl5                                             -> Net_1424
   agl5_x_agr5                                      -> Net_1424
   agr5                                             -> Net_1424
@@ -3366,17 +3276,15 @@ Map of item to net {
   p6_6                                             -> \CapSense:Net_1410_7\
   p6_7                                             -> \CapSense:Net_1410_8\
   p2_0                                             -> \CapSense:Net_1410_9\
-  p2_2                                             -> \CapSense:Net_1410_10\
-  p2_1                                             -> \CapSense:Net_1410_11\
   comp_2_vplus                                     -> \CapSense:Net_282\
   vidac_0_iout                                     -> \CapSense:Net_1425\
   agl2_x_dsm_0_vplus                               -> AmuxNet::AMux_1_CYAMUXSIDE_A
   agl2                                             -> AmuxNet::AMux_1_CYAMUXSIDE_A
   agl2_x_agr2                                      -> AmuxNet::AMux_1_CYAMUXSIDE_A
   agr2                                             -> AmuxNet::AMux_1_CYAMUXSIDE_A
-  agr2_x_comp_1_vplus                              -> AmuxNet::AMux_1_CYAMUXSIDE_A
-  comp_1_vplus                                     -> AmuxNet::AMux_1_CYAMUXSIDE_A
-  agr6_x_comp_1_vplus                              -> AmuxNet::AMux_1_CYAMUXSIDE_A
+  agr2_x_comp_1_vminus                             -> AmuxNet::AMux_1_CYAMUXSIDE_A
+  comp_1_vminus                                    -> AmuxNet::AMux_1_CYAMUXSIDE_A
+  agr6_x_comp_1_vminus                             -> AmuxNet::AMux_1_CYAMUXSIDE_A
   agr6                                             -> AmuxNet::AMux_1_CYAMUXSIDE_A
   agr6_x_p3_6                                      -> AmuxNet::AMux_1_CYAMUXSIDE_A
   agl7_x_dsm_0_vplus                               -> AmuxNet::AMux_1_CYAMUXSIDE_A
@@ -3393,19 +3301,17 @@ Map of item to net {
   agr4                                             -> AmuxNet::AMux_2
   agl4_x_agr4                                      -> AmuxNet::AMux_2
   amuxbusl_x_comp_2_vplus                          -> AmuxNet::\CapSense:AMuxCH0\
-  amuxbusl_x_vidac_0_iout                          -> AmuxNet::\CapSense:AMuxCH0\
   amuxbusl_x_p6_4                                  -> AmuxNet::\CapSense:AMuxCH0\
+  amuxbusl_x_p2_6                                  -> AmuxNet::\CapSense:AMuxCH0\
+  amuxbusl_x_p2_3                                  -> AmuxNet::\CapSense:AMuxCH0\
+  amuxbusl_x_p6_6                                  -> AmuxNet::\CapSense:AMuxCH0\
   amuxbusl_x_p6_5                                  -> AmuxNet::\CapSense:AMuxCH0\
   amuxbusl_x_p2_0                                  -> AmuxNet::\CapSense:AMuxCH0\
   amuxbusl_x_p6_7                                  -> AmuxNet::\CapSense:AMuxCH0\
-  amuxbusl_x_p6_6                                  -> AmuxNet::\CapSense:AMuxCH0\
-  amuxbusl_x_p2_1                                  -> AmuxNet::\CapSense:AMuxCH0\
-  amuxbusl_x_p2_4                                  -> AmuxNet::\CapSense:AMuxCH0\
-  amuxbusl_x_p2_3                                  -> AmuxNet::\CapSense:AMuxCH0\
-  amuxbusl_x_p2_2                                  -> AmuxNet::\CapSense:AMuxCH0\
   amuxbusl_x_p2_5                                  -> AmuxNet::\CapSense:AMuxCH0\
-  amuxbusl_x_p2_6                                  -> AmuxNet::\CapSense:AMuxCH0\
+  amuxbusl_x_p2_4                                  -> AmuxNet::\CapSense:AMuxCH0\
   amuxbusl_x_p2_7                                  -> AmuxNet::\CapSense:AMuxCH0\
+  amuxbusl_x_vidac_0_iout                          -> AmuxNet::\CapSense:AMuxCH0\
   amuxbusl_x_p15_4                                 -> AmuxNet::\CapSense:AMuxCH0\
 }
 Mux Info {
@@ -3423,9 +3329,9 @@ Mux Info {
         p3_6
         agr6_x_p3_6
         agr6
-        agr6_x_comp_1_vplus
-        comp_1_vplus
-        agr2_x_comp_1_vplus
+        agr6_x_comp_1_vminus
+        comp_1_vminus
+        agr2_x_comp_1_vminus
         agr2
         agl2_x_agr2
         agl2
@@ -3441,9 +3347,9 @@ Mux Info {
         agl6
         agl6_x_agr6
         agr6
-        agr6_x_comp_1_vplus
-        comp_1_vplus
-        agr2_x_comp_1_vplus
+        agr6_x_comp_1_vminus
+        comp_1_vminus
+        agr2_x_comp_1_vminus
         agr2
         agl2_x_agr2
         agl2
@@ -3655,26 +3561,6 @@ Mux Info {
       }
     }
     Arm: 10 {
-      Net:   \CapSense:Net_1410_10\
-      Outer: amuxbusl_x_p2_2
-      Inner: __open__
-      Path {
-        p2_2
-        amuxbusl_x_p2_2
-        amuxbusl
-      }
-    }
-    Arm: 11 {
-      Net:   \CapSense:Net_1410_11\
-      Outer: amuxbusl_x_p2_1
-      Inner: __open__
-      Path {
-        p2_1
-        amuxbusl_x_p2_1
-        amuxbusl
-      }
-    }
-    Arm: 12 {
       Net:   \CapSense:Net_1917\
       Outer: amuxbusl_x_p15_4
       Inner: __open__
@@ -3684,7 +3570,7 @@ Mux Info {
         amuxbusl
       }
     }
-    Arm: 13 {
+    Arm: 11 {
       Net:   \CapSense:Net_282\
       Outer: amuxbusl_x_comp_2_vplus
       Inner: __open__
@@ -3694,7 +3580,7 @@ Mux Info {
         amuxbusl
       }
     }
-    Arm: 14 {
+    Arm: 12 {
       Net:   \CapSense:Net_1425\
       Outer: amuxbusl_x_vidac_0_iout
       Inner: __open__
@@ -3710,7 +3596,7 @@ Dump of CyP35AnalogRoutingResultsDB
 IsVddaHalfUsedForComp = False
 IsVddaHalfUsedForSar0 = False
 IsVddaHalfUsedForSar1 = False
-Analog Code Generation phase: Elapsed time ==> 0s.286ms
+Analog Code Generation phase: Elapsed time ==> 0s.273ms
 </CYPRESSTAG>
 <CYPRESSTAG name="Digital Placement">
 <CYPRESSTAG name="Detailed placement messages">
@@ -3745,7 +3631,7 @@ PLD Packing: Elapsed time ==> 0s.002ms
 Initial Partitioning Summary not displayed at this verbose level.</CYPRESSTAG>
 <CYPRESSTAG name="Final Partitioning Summary">
 Final Partitioning Summary not displayed at this verbose level.</CYPRESSTAG>
-Partitioning: Elapsed time ==> 0s.106ms
+Partitioning: Elapsed time ==> 0s.105ms
 </CYPRESSTAG>
 <CYPRESSTAG name="Final Placement Summary">
 
@@ -5524,90 +5410,6 @@ Pin : Name = \CapSense:PortCH0(9)\
     {
     }
 
-[IoId=1]: 
-Pin : Name = \CapSense:PortCH0(11)\
-    Attributes:
-        Alias: Button11__BTN
-        In Group/Port: True
-        In Sync Option: AUTO
-        Out Sync Option: AUTO
-        Interrupt generated: False
-        Interrupt mode: NONE
-        Drive mode: OPEN_DRAIN_LO
-        VTrip: CMOS
-        Slew: FAST
-        Input Sync needed: False
-        Output Sync needed: False
-        SC shield enabled: False
-        POR State: INP_DIS_HI_Z
-        LCD Mode: COMMON
-        Register Mode: RegComb
-        CaSense Mode: PULLDOWN
-        Treat as pin: True
-        Is OE Registered: False
-        Uses Analog: True
-        Can contain Digital: False
-        Is SIO: False
-        SIO Output Buf: NONREGULATED
-        SIO Input Buf: SINGLE_ENDED
-        SIO HiFreq: LOW
-        SIO Hyst: DISABLED
-        SIO Vtrip: MULTIPLIER_0_5
-        SIO Multiplier Index: 0
-        SIO RefSel: VCC_IO
-        Required Capabilities: ANALOG
-        Initial Value: 0
-        IO Voltage: 0
-    PORT MAP (
-        pa_out => \CapSense:PortCH0(11)\__PA ,
-        pad => \CapSense:PortCH0(11)_PAD\ ,
-        analog_term => \CapSense:Net_1410_11\ );
-    Properties:
-    {
-    }
-
-[IoId=2]: 
-Pin : Name = \CapSense:PortCH0(10)\
-    Attributes:
-        Alias: Button10__BTN
-        In Group/Port: True
-        In Sync Option: AUTO
-        Out Sync Option: AUTO
-        Interrupt generated: False
-        Interrupt mode: NONE
-        Drive mode: OPEN_DRAIN_LO
-        VTrip: CMOS
-        Slew: FAST
-        Input Sync needed: False
-        Output Sync needed: False
-        SC shield enabled: False
-        POR State: INP_DIS_HI_Z
-        LCD Mode: COMMON
-        Register Mode: RegComb
-        CaSense Mode: PULLDOWN
-        Treat as pin: True
-        Is OE Registered: False
-        Uses Analog: True
-        Can contain Digital: False
-        Is SIO: False
-        SIO Output Buf: NONREGULATED
-        SIO Input Buf: SINGLE_ENDED
-        SIO HiFreq: LOW
-        SIO Hyst: DISABLED
-        SIO Vtrip: MULTIPLIER_0_5
-        SIO Multiplier Index: 0
-        SIO RefSel: VCC_IO
-        Required Capabilities: ANALOG
-        Initial Value: 0
-        IO Voltage: 0
-    PORT MAP (
-        pa_out => \CapSense:PortCH0(10)\__PA ,
-        pad => \CapSense:PortCH0(10)_PAD\ ,
-        analog_term => \CapSense:Net_1410_10\ );
-    Properties:
-    {
-    }
-
 [IoId=3]: 
 Pin : Name = \CapSense:PortCH0(4)\
     Attributes:
@@ -6484,7 +6286,7 @@ DSM group 0:
         Properties:
         {
             cy_registers = ""
-            resolution = 12
+            resolution = 16
         }
 Decimator group 0: 
     Decimator Block @ F(Decimator,0): 
@@ -6580,11 +6382,9 @@ Blocks not positioned by the digital component placer:
     Amux Block @ <No Location>: 
     amuxcell: Name =\CapSense:AMuxCH0\
         PORT MAP (
-            muxin_14 => \CapSense:Net_1425\ ,
-            muxin_13 => \CapSense:Net_282\ ,
-            muxin_12 => \CapSense:Net_1917\ ,
-            muxin_11 => \CapSense:Net_1410_11\ ,
-            muxin_10 => \CapSense:Net_1410_10\ ,
+            muxin_12 => \CapSense:Net_1425\ ,
+            muxin_11 => \CapSense:Net_282\ ,
+            muxin_10 => \CapSense:Net_1917\ ,
             muxin_9 => \CapSense:Net_1410_9\ ,
             muxin_8 => \CapSense:Net_1410_8\ ,
             muxin_7 => \CapSense:Net_1410_7\ ,
@@ -6602,8 +6402,8 @@ Blocks not positioned by the digital component placer:
             connect_mode = 1
             cy_registers = ""
             hw_control = 0
-            init_mux_sel = "000000000000000"
-            muxin_width = 15
+            init_mux_sel = "0000000000000"
+            muxin_width = 13
             one_active = 0
         }
     Amux Block @ <No Location>: 
@@ -6664,76 +6464,74 @@ Blocks not positioned by the digital component placer:
 ------------------------------------------------------------
 Port Configuration report
 ------------------------------------------------------------
-     |     |       | Interrupt |                  |                        | 
-Port | Pin | Fixed |      Type |       Drive Mode |                   Name | Connections
------+-----+-------+-----------+------------------+------------------------+-------------------------------
-   0 |   0 |     * |      NONE |      HI_Z_ANALOG |              Vout_4(0) | Analog(Net_1428)
-     |   2 |     * |      NONE |      HI_Z_ANALOG |    midbottom_wiper2(0) | Analog(Net_1426)
-     |   3 |     * |      NONE |      HI_Z_ANALOG |    midbottom_wiper1(0) | Analog(Net_1426)
------+-----+-------+-----------+------------------+------------------------+-------------------------------
-   1 |   4 |     * |      NONE |         CMOS_OUT |              SCLK_2(0) | In(Net_1416)
-     |   5 |     * |      NONE |         CMOS_OUT |                SS_2(0) | In(Net_1421)
-     |   6 |     * |      NONE |     HI_Z_DIGITAL |              MISO_2(0) | FB(Net_1415)
-     |   7 |     * |      NONE |         CMOS_OUT |              MOSI_2(0) | In(Net_23)
------+-----+-------+-----------+------------------+------------------------+-------------------------------
-   2 |   0 |     * |      NONE |    OPEN_DRAIN_LO |  \CapSense:PortCH0(9)\ | Analog(\CapSense:Net_1410_9\)
-     |   1 |     * |      NONE |    OPEN_DRAIN_LO | \CapSense:PortCH0(11)\ | Analog(\CapSense:Net_1410_11\)
-     |   2 |     * |      NONE |    OPEN_DRAIN_LO | \CapSense:PortCH0(10)\ | Analog(\CapSense:Net_1410_10\)
-     |   3 |     * |      NONE |    OPEN_DRAIN_LO |  \CapSense:PortCH0(4)\ | Analog(\CapSense:Net_1410_4\)
-     |   4 |     * |      NONE |    OPEN_DRAIN_LO |  \CapSense:PortCH0(3)\ | Analog(\CapSense:Net_1410_3\)
-     |   5 |     * |      NONE |    OPEN_DRAIN_LO |  \CapSense:PortCH0(2)\ | Analog(\CapSense:Net_1410_2\)
-     |   6 |     * |      NONE |    OPEN_DRAIN_LO |  \CapSense:PortCH0(1)\ | Analog(\CapSense:Net_1410_1\)
-     |   7 |     * |      NONE |    OPEN_DRAIN_LO |  \CapSense:PortCH0(0)\ | Analog(\CapSense:Net_1410_0\)
------+-----+-------+-----------+------------------+------------------------+-------------------------------
-   3 |   1 |     * |      NONE |      HI_Z_ANALOG |       midtop_wiper1(0) | Analog(Net_1424)
-     |   2 |     * |      NONE |      HI_Z_ANALOG |  \ADC_1:Bypass_P32(0)\ | Analog(\ADC_1:Net_23\)
-     |   6 |     * |      NONE |      HI_Z_ANALOG |              Vout_3(0) | Analog(Net_1322)
------+-----+-------+-----------+------------------+------------------------+-------------------------------
-   4 |   2 |     * |      NONE |      HI_Z_ANALOG |       midtop_wiper2(0) | Analog(Net_1424)
------+-----+-------+-----------+------------------+------------------------+-------------------------------
-   5 |   1 |     * |      NONE |         CMOS_OUT |                 LED(0) | 
-     |   4 |     * |      NONE |         CMOS_OUT |              SCLK_1(0) | In(Net_415)
-     |   5 |     * |      NONE |         CMOS_OUT |                SS_1(0) | In(Net_437)
-     |   6 |     * |      NONE |     HI_Z_DIGITAL |              MISO_1(0) | FB(Net_19)
-     |   7 |     * |      NONE |         CMOS_OUT |              MOSI_1(0) | In(Net_1042)
------+-----+-------+-----------+------------------+------------------------+-------------------------------
-   6 |   4 |     * |      NONE |    OPEN_DRAIN_LO |  \CapSense:PortCH0(5)\ | Analog(\CapSense:Net_1410_5\)
-     |   5 |     * |      NONE |    OPEN_DRAIN_LO |  \CapSense:PortCH0(6)\ | Analog(\CapSense:Net_1410_6\)
-     |   6 |     * |      NONE |    OPEN_DRAIN_LO |  \CapSense:PortCH0(7)\ | Analog(\CapSense:Net_1410_7\)
-     |   7 |     * |      NONE |    OPEN_DRAIN_LO |  \CapSense:PortCH0(8)\ | Analog(\CapSense:Net_1410_8\)
------+-----+-------+-----------+------------------+------------------------+-------------------------------
-  15 |   4 |     * |      NONE |      HI_Z_ANALOG |  \CapSense:CmodCH0(0)\ | Analog(\CapSense:Net_1917\)
------------------------------------------------------------------------------------------------------------
+     |     |       | Interrupt |                  |                       | 
+Port | Pin | Fixed |      Type |       Drive Mode |                  Name | Connections
+-----+-----+-------+-----------+------------------+-----------------------+------------------------------
+   0 |   0 |     * |      NONE |      HI_Z_ANALOG |             Vout_4(0) | Analog(Net_1428)
+     |   2 |     * |      NONE |      HI_Z_ANALOG |   midbottom_wiper2(0) | Analog(Net_1426)
+     |   3 |     * |      NONE |      HI_Z_ANALOG |   midbottom_wiper1(0) | Analog(Net_1426)
+-----+-----+-------+-----------+------------------+-----------------------+------------------------------
+   1 |   4 |     * |      NONE |         CMOS_OUT |             SCLK_2(0) | In(Net_1416)
+     |   5 |     * |      NONE |         CMOS_OUT |               SS_2(0) | In(Net_1421)
+     |   6 |     * |      NONE |     HI_Z_DIGITAL |             MISO_2(0) | FB(Net_1415)
+     |   7 |     * |      NONE |         CMOS_OUT |             MOSI_2(0) | In(Net_23)
+-----+-----+-------+-----------+------------------+-----------------------+------------------------------
+   2 |   0 |     * |      NONE |    OPEN_DRAIN_LO | \CapSense:PortCH0(9)\ | Analog(\CapSense:Net_1410_9\)
+     |   3 |     * |      NONE |    OPEN_DRAIN_LO | \CapSense:PortCH0(4)\ | Analog(\CapSense:Net_1410_4\)
+     |   4 |     * |      NONE |    OPEN_DRAIN_LO | \CapSense:PortCH0(3)\ | Analog(\CapSense:Net_1410_3\)
+     |   5 |     * |      NONE |    OPEN_DRAIN_LO | \CapSense:PortCH0(2)\ | Analog(\CapSense:Net_1410_2\)
+     |   6 |     * |      NONE |    OPEN_DRAIN_LO | \CapSense:PortCH0(1)\ | Analog(\CapSense:Net_1410_1\)
+     |   7 |     * |      NONE |    OPEN_DRAIN_LO | \CapSense:PortCH0(0)\ | Analog(\CapSense:Net_1410_0\)
+-----+-----+-------+-----------+------------------+-----------------------+------------------------------
+   3 |   1 |     * |      NONE |      HI_Z_ANALOG |      midtop_wiper1(0) | Analog(Net_1424)
+     |   2 |     * |      NONE |      HI_Z_ANALOG | \ADC_1:Bypass_P32(0)\ | Analog(\ADC_1:Net_23\)
+     |   6 |     * |      NONE |      HI_Z_ANALOG |             Vout_3(0) | Analog(Net_1322)
+-----+-----+-------+-----------+------------------+-----------------------+------------------------------
+   4 |   2 |     * |      NONE |      HI_Z_ANALOG |      midtop_wiper2(0) | Analog(Net_1424)
+-----+-----+-------+-----------+------------------+-----------------------+------------------------------
+   5 |   1 |     * |      NONE |         CMOS_OUT |                LED(0) | 
+     |   4 |     * |      NONE |         CMOS_OUT |             SCLK_1(0) | In(Net_415)
+     |   5 |     * |      NONE |         CMOS_OUT |               SS_1(0) | In(Net_437)
+     |   6 |     * |      NONE |     HI_Z_DIGITAL |             MISO_1(0) | FB(Net_19)
+     |   7 |     * |      NONE |         CMOS_OUT |             MOSI_1(0) | In(Net_1042)
+-----+-----+-------+-----------+------------------+-----------------------+------------------------------
+   6 |   4 |     * |      NONE |    OPEN_DRAIN_LO | \CapSense:PortCH0(5)\ | Analog(\CapSense:Net_1410_5\)
+     |   5 |     * |      NONE |    OPEN_DRAIN_LO | \CapSense:PortCH0(6)\ | Analog(\CapSense:Net_1410_6\)
+     |   6 |     * |      NONE |    OPEN_DRAIN_LO | \CapSense:PortCH0(7)\ | Analog(\CapSense:Net_1410_7\)
+     |   7 |     * |      NONE |    OPEN_DRAIN_LO | \CapSense:PortCH0(8)\ | Analog(\CapSense:Net_1410_8\)
+-----+-----+-------+-----------+------------------+-----------------------+------------------------------
+  15 |   4 |     * |      NONE |      HI_Z_ANALOG | \CapSense:CmodCH0(0)\ | Analog(\CapSense:Net_1917\)
+---------------------------------------------------------------------------------------------------------
 </CYPRESSTAG>
 </CYPRESSTAG>
 </CYPRESSTAG>
-Digital component placer commit/Report: Elapsed time ==> 0s.357ms
-Digital Placement phase: Elapsed time ==> 2s.379ms
+Digital component placer commit/Report: Elapsed time ==> 0s.424ms
+Digital Placement phase: Elapsed time ==> 2s.452ms
 </CYPRESSTAG>
 <CYPRESSTAG name="Digital Routing">
 "C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\bin/sjrouter.exe" --xml-path "C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\dev\psoc5/psoc5lp/route_arch-rrg.cydata" --vh2-path "CE210514_PSOC3_5_Thermistor_r.vh2" --pcf-path "CE210514_PSOC3_5_Thermistor.pco" --des-name "CE210514_PSOC3_5_Thermistor" --dsf-path "CE210514_PSOC3_5_Thermistor.dsf" --sdc-path "CE210514_PSOC3_5_Thermistor.sdc" --lib-path "CE210514_PSOC3_5_Thermistor_r.lib"
 Routing successful.
-Digital Routing phase: Elapsed time ==> 2s.367ms
+Digital Routing phase: Elapsed time ==> 2s.416ms
 </CYPRESSTAG>
 <CYPRESSTAG name="Bitstream Generation">
-Bitstream Generation phase: Elapsed time ==> 0s.201ms
+Bitstream Generation phase: Elapsed time ==> 0s.232ms
 </CYPRESSTAG>
 <CYPRESSTAG name="Bitstream Verification">
-Bitstream Verification phase: Elapsed time ==> 0s.037ms
+Bitstream Verification phase: Elapsed time ==> 0s.041ms
 </CYPRESSTAG>
 <CYPRESSTAG name="Static timing analysis">
 Timing report is in CE210514_PSOC3_5_Thermistor_timing.html.
-Static timing analysis phase: Elapsed time ==> 0s.651ms
+Static timing analysis phase: Elapsed time ==> 0s.649ms
 </CYPRESSTAG>
 <CYPRESSTAG name="Data reporting">
 Data reporting phase: Elapsed time ==> 0s.000ms
 </CYPRESSTAG>
 <CYPRESSTAG name="Database update...">
-Design database save phase: Elapsed time ==> 0s.251ms
+Design database save phase: Elapsed time ==> 0s.274ms
 </CYPRESSTAG>
-cydsfit: Elapsed time ==> 12s.640ms
+cydsfit: Elapsed time ==> 11s.761ms
 </CYPRESSTAG>
-Fitter phase: Elapsed time ==> 12s.641ms
-API generation phase: Elapsed time ==> 2s.345ms
-Dependency generation phase: Elapsed time ==> 0s.015ms
+Fitter phase: Elapsed time ==> 11s.761ms
+API generation phase: Elapsed time ==> 2s.610ms
+Dependency generation phase: Elapsed time ==> 0s.021ms
 Cleanup phase: Elapsed time ==> 0s.001ms

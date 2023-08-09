@@ -43,8 +43,6 @@
 #include "measurement.h"
 #include <stdio.h>
 
-#define REFERENCE_RESISTOR 20000
-
 #define barBufferSize 8
 #define touchBufferSize 4
 
@@ -85,7 +83,7 @@ int main(void)
     SPIM_1_Start();
     SPIM_2_Start();
     
-    CyDelay(2000);
+    CyDelay(500);
     CapSense_Start();     
     
     CyDelay(500);
@@ -110,7 +108,7 @@ int main(void)
         CapSense_UpdateEnabledBaselines();
         CapSense_ScanEnabledWidgets();  
         
-        int isSensorOn1 = (CapSense_sensorRaw[11] - CapSense_sensorBaseline[11]) > thresholdArray[11];
+        int isSensorOn1 = (CapSense_sensorRaw[9] - CapSense_sensorBaseline[9]) > thresholdArray[9];
         if (isSensorOn1)
         {
             LED_Write(1);
@@ -125,7 +123,7 @@ int main(void)
         for (i = 0; i < 2; i++)
         {
             barArray[counter++] = ((uint16_t) linearPotValue32Bit[i]) >> 8;
-            barArray[counter++] = linearPotValue32Bit[i] & 0xff;
+            barArray[counter++] = ((uint16_t) linearPotValue32Bit[i]) & 0xff;
         }
 
 
@@ -152,7 +150,7 @@ int main(void)
             barArray[4] |= (isSensorOn << i);
 
         }
-        for (i = 8; i < 12; i++)
+        for (i = 8; i < 10; i++)
         {
            int isSensorOn = (CapSense_sensorRaw[i] - CapSense_sensorBaseline[i]) > thresholdArray[i];
             touchArray[1] |= (isSensorOn << (i - 8));
@@ -175,6 +173,8 @@ int main(void)
     }
 }
 float resistorRatio[2];
+int8_t currentPast = 0;
+int32_t resistorPast[30][3];
 void scanLinearResistor(uint8_t channel)
 {  
         int32 iVtherm = 0;
@@ -205,12 +205,18 @@ void scanLinearResistor(uint8_t channel)
             iRes = 65535;
         }
         else
-        
-        {
+        {          
             resistorRatio[channel] = ((float)iVref / (float)iVtherm);
             iRes = (int32)(((float)iVref / (float)iVtherm) * 32000.0f);
         }
-        
+        if (iRes < 0)
+        {
+            iRes = 0;
+        }
+        if (iRes > 65535)
+        {
+            iRes = 65535;
+        }
         linearPotValue32Bit[channel] = iRes;
 }
 

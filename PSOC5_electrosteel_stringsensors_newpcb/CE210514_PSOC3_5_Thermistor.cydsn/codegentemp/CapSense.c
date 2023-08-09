@@ -41,7 +41,7 @@ volatile uint8 CapSense_sensorIndex;    /* Index of scannig sensor */
 uint16 CapSense_sensorRaw[CapSense_TOTAL_SENSOR_COUNT]; 
 
 uint8 CapSense_sensorEnableMask[(((CapSense_TOTAL_SENSOR_COUNT - 1u) / 8u) + 1u)] = {
-0xFFu, 0xFu, };
+0xFFu, 0x3u, };
 
 uint8 CYXDATA * const CYCODE CapSense_pcTable[] = {
     (uint8 CYXDATA *)CapSense_PortCH0__Button0__BTN__PC, 
@@ -54,8 +54,6 @@ uint8 CYXDATA * const CYCODE CapSense_pcTable[] = {
     (uint8 CYXDATA *)CapSense_PortCH0__Button7__BTN__PC, 
     (uint8 CYXDATA *)CapSense_PortCH0__Button8__BTN__PC, 
     (uint8 CYXDATA *)CapSense_PortCH0__Button9__BTN__PC, 
-    (uint8 CYXDATA *)CapSense_PortCH0__Button10__BTN__PC, 
-    (uint8 CYXDATA *)CapSense_PortCH0__Button11__BTN__PC, 
 };
 
 const uint8 CYCODE CapSense_portTable[] = {
@@ -69,8 +67,6 @@ const uint8 CYCODE CapSense_portTable[] = {
     CapSense_PortCH0__Button7__BTN__PORT, 
     CapSense_PortCH0__Button8__BTN__PORT, 
     CapSense_PortCH0__Button9__BTN__PORT, 
-    CapSense_PortCH0__Button10__BTN__PORT, 
-    CapSense_PortCH0__Button11__BTN__PORT, 
 };
 
 const uint8 CYCODE CapSense_maskTable[] = {
@@ -84,8 +80,6 @@ const uint8 CYCODE CapSense_maskTable[] = {
     CapSense_PortCH0__Button7__BTN__MASK,
     CapSense_PortCH0__Button8__BTN__MASK,
     CapSense_PortCH0__Button9__BTN__MASK,
-    CapSense_PortCH0__Button10__BTN__MASK,
-    CapSense_PortCH0__Button11__BTN__MASK,
 };
 
 uint8 CYXDATA * const CYCODE CapSense_csTable[] = {
@@ -95,12 +89,10 @@ uint8 CYXDATA * const CYCODE CapSense_csTable[] = {
 };
 
 uint8 CapSense_idacSettings[] = {
-    50u,50u,50u,50u,50u,50u,50u,50u,50u,50u,200u,200u,
+    50u,50u,50u,50u,50u,50u,50u,50u,50u,50u,
 };
 
 uint8 CapSense_widgetResolution[] = {
-    CapSense_PWM_RESOLUTION_8_BITS,
-    CapSense_PWM_RESOLUTION_8_BITS,
     CapSense_PWM_RESOLUTION_8_BITS,
     CapSense_PWM_RESOLUTION_8_BITS,
     CapSense_PWM_RESOLUTION_8_BITS,
@@ -126,8 +118,6 @@ const uint8 CYCODE CapSense_widgetNumber[] = {
     7u, /* Button7__BTN */
     8u, /* Button8__BTN */
     9u, /* Button9__BTN */
-    10u, /* Button10__BTN */
-    11u, /* Button11__BTN */
     
 };
 

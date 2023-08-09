@@ -725,8 +725,8 @@ static void AnalogSetDefault(void)
 	CY_SET_XTND_REG8((void CYFAR *)CYREG_PRT4_AG, 0x04u);
 	CY_SET_XTND_REG8((void CYFAR *)CYREG_PRT15_AG, 0x10u);
 	CY_SET_XTND_REG8((void CYFAR *)CYREG_CAPSL_CFG0, 0x00u);
-	CY_SET_XTND_REG8((void CYFAR *)CYREG_CMP0_SW0, 0x60u);
-	CY_SET_XTND_REG8((void CYFAR *)CYREG_CMP1_SW0, 0x44u);
+	CY_SET_XTND_REG8((void CYFAR *)CYREG_SC2_SW0, 0x60u);
+	CY_SET_XTND_REG8((void CYFAR *)CYREG_CMP1_SW4, 0x44u);
 	CY_SET_XTND_REG8((void CYFAR *)CYREG_CMP2_SW3, 0x20u);
 	CY_SET_XTND_REG16((void CYFAR *)CYREG_OPAMP0_MX, 0x0404u);
 	CY_SET_XTND_REG8((void CYFAR *)CYREG_BUS_SW0, 0x24u);
@@ -988,7 +988,7 @@ void AMux_2_Unset(uint8 channel)
 
 /* This is an implementation detail of the AMux. Code that depends on it may be
    incompatible with other versions of PSoC Creator. */
-uint8 CYXDATA * const CYCODE CapSense_AMuxCH0__addrTable[15] = {
+uint8 CYXDATA * const CYCODE CapSense_AMuxCH0__addrTable[13] = {
 	(uint8 CYXDATA *)CYREG_PRT2_AMUX, 
 	(uint8 CYXDATA *)CYREG_PRT2_AMUX, 
 	(uint8 CYXDATA *)CYREG_PRT2_AMUX, 
@@ -998,8 +998,6 @@ uint8 CYXDATA * const CYCODE CapSense_AMuxCH0__addrTable[15] = {
 	(uint8 CYXDATA *)CYREG_PRT6_AMUX, 
 	(uint8 CYXDATA *)CYREG_PRT6_AMUX, 
 	(uint8 CYXDATA *)CYREG_PRT6_AMUX, 
-	(uint8 CYXDATA *)CYREG_PRT2_AMUX, 
-	(uint8 CYXDATA *)CYREG_PRT2_AMUX, 
 	(uint8 CYXDATA *)CYREG_PRT2_AMUX, 
 	(uint8 CYXDATA *)CYREG_PRT15_AMUX, 
 	(uint8 CYXDATA *)CYREG_CMP2_SW3, 
@@ -1008,7 +1006,7 @@ uint8 CYXDATA * const CYCODE CapSense_AMuxCH0__addrTable[15] = {
 
 /* This is an implementation detail of the AMux. Code that depends on it may be
    incompatible with other versions of PSoC Creator. */
-const uint8 CYCODE CapSense_AMuxCH0__maskTable[15] = {
+const uint8 CYCODE CapSense_AMuxCH0__maskTable[13] = {
 	0x80u, 
 	0x40u, 
 	0x20u, 
@@ -1019,8 +1017,6 @@ const uint8 CYCODE CapSense_AMuxCH0__maskTable[15] = {
 	0x40u, 
 	0x80u, 
 	0x01u, 
-	0x04u, 
-	0x02u, 
 	0x10u, 
 	0x01u, 
 	0x10u, 
@@ -1041,7 +1037,7 @@ const uint8 CYCODE CapSense_AMuxCH0__maskTable[15] = {
 *******************************************************************************/
 void CapSense_AMuxCH0_Set(uint8 channel)
 {
-	if (channel < 15)
+	if (channel < 13)
 	{
 		*CapSense_AMuxCH0__addrTable[channel] |= CapSense_AMuxCH0__maskTable[channel];
 	}
@@ -1063,7 +1059,7 @@ void CapSense_AMuxCH0_Set(uint8 channel)
 *******************************************************************************/
 void CapSense_AMuxCH0_Unset(uint8 channel)
 {
-	if (channel < 15)
+	if (channel < 13)
 	{
 		*CapSense_AMuxCH0__addrTable[channel] &= (uint8)~CapSense_AMuxCH0__maskTable[channel];
 	}

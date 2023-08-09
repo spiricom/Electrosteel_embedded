@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc9motdg.s 			page 1
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccJRGlhD.s 			page 1
 
 
    1              		.syntax unified
@@ -58,7 +58,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc9motdg.s 			page 1
   24:Generated_Source\PSoC5/QuadDec_1_PM.c **** /*******************************************************************************
   25:Generated_Source\PSoC5/QuadDec_1_PM.c **** * Function Name: QuadDec_1_SaveConfig
   26:Generated_Source\PSoC5/QuadDec_1_PM.c **** ********************************************************************************
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc9motdg.s 			page 2
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccJRGlhD.s 			page 2
 
 
   27:Generated_Source\PSoC5/QuadDec_1_PM.c **** * Summary:
@@ -85,13 +85,13 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc9motdg.s 			page 1
   41              		.cfi_def_cfa_register 7
   39:Generated_Source\PSoC5/QuadDec_1_PM.c ****     #if (QuadDec_1_COUNTER_SIZE == QuadDec_1_COUNTER_SIZE_8_BIT)
   40:Generated_Source\PSoC5/QuadDec_1_PM.c ****         QuadDec_1_Cnt8_SaveConfig();
+  42              		.loc 1 40 0
+  43 0004 FFF7FEFF 		bl	QuadDec_1_Cnt8_SaveConfig
   41:Generated_Source\PSoC5/QuadDec_1_PM.c ****     #else 
   42:Generated_Source\PSoC5/QuadDec_1_PM.c ****         /* (QuadDec_1_COUNTER_SIZE == QuadDec_1_COUNTER_SIZE_16_BIT) || 
   43:Generated_Source\PSoC5/QuadDec_1_PM.c ****          * (QuadDec_1_COUNTER_SIZE == QuadDec_1_COUNTER_SIZE_32_BIT)
   44:Generated_Source\PSoC5/QuadDec_1_PM.c ****          */
   45:Generated_Source\PSoC5/QuadDec_1_PM.c ****         QuadDec_1_Cnt16_SaveConfig();
-  42              		.loc 1 45 0
-  43 0004 FFF7FEFF 		bl	QuadDec_1_Cnt16_SaveConfig
   46:Generated_Source\PSoC5/QuadDec_1_PM.c ****     #endif /* (QuadDec_1_COUNTER_SIZE == QuadDec_1_COUNTER_SIZE_8_BIT) */
   47:Generated_Source\PSoC5/QuadDec_1_PM.c **** }
   44              		.loc 1 47 0
@@ -118,7 +118,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc9motdg.s 			page 1
   55:Generated_Source\PSoC5/QuadDec_1_PM.c **** *
   56:Generated_Source\PSoC5/QuadDec_1_PM.c **** * Parameters:
   57:Generated_Source\PSoC5/QuadDec_1_PM.c **** *  None.
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc9motdg.s 			page 3
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccJRGlhD.s 			page 3
 
 
   58:Generated_Source\PSoC5/QuadDec_1_PM.c **** *
@@ -140,13 +140,13 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc9motdg.s 			page 1
   67              		.cfi_def_cfa_register 7
   65:Generated_Source\PSoC5/QuadDec_1_PM.c ****     #if (QuadDec_1_COUNTER_SIZE == QuadDec_1_COUNTER_SIZE_8_BIT)
   66:Generated_Source\PSoC5/QuadDec_1_PM.c ****         QuadDec_1_Cnt8_RestoreConfig();
+  68              		.loc 1 66 0
+  69 0004 FFF7FEFF 		bl	QuadDec_1_Cnt8_RestoreConfig
   67:Generated_Source\PSoC5/QuadDec_1_PM.c ****     #else 
   68:Generated_Source\PSoC5/QuadDec_1_PM.c ****         /* (QuadDec_1_COUNTER_SIZE == QuadDec_1_COUNTER_SIZE_16_BIT) || 
   69:Generated_Source\PSoC5/QuadDec_1_PM.c ****          * (QuadDec_1_COUNTER_SIZE == QuadDec_1_COUNTER_SIZE_32_BIT) 
   70:Generated_Source\PSoC5/QuadDec_1_PM.c ****          */
   71:Generated_Source\PSoC5/QuadDec_1_PM.c ****         QuadDec_1_Cnt16_RestoreConfig();
-  68              		.loc 1 71 0
-  69 0004 FFF7FEFF 		bl	QuadDec_1_Cnt16_RestoreConfig
   72:Generated_Source\PSoC5/QuadDec_1_PM.c ****     #endif /* (QuadDec_1_COUNTER_SIZE == QuadDec_1_COUNTER_SIZE_8_BIT) */
   73:Generated_Source\PSoC5/QuadDec_1_PM.c **** }
   70              		.loc 1 73 0
@@ -178,7 +178,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc9motdg.s 			page 1
   86:Generated_Source\PSoC5/QuadDec_1_PM.c **** * Return:
   87:Generated_Source\PSoC5/QuadDec_1_PM.c **** *  None.
   88:Generated_Source\PSoC5/QuadDec_1_PM.c **** *
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc9motdg.s 			page 4
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccJRGlhD.s 			page 4
 
 
   89:Generated_Source\PSoC5/QuadDec_1_PM.c **** * Global Variables:
@@ -238,12 +238,12 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc9motdg.s 			page 1
  117 0028 00BF     		nop
  118 002a 80BD     		pop	{r7, pc}
  119              	.L7:
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc9motdg.s 			page 5
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccJRGlhD.s 			page 5
 
 
  120              		.align	2
  121              	.L6:
- 122 002c 9C640040 		.word	1073767580
+ 122 002c 98640040 		.word	1073767576
  123 0030 00000000 		.word	QuadDec_1_backup
  124              		.cfi_endproc
  125              	.LFE2:
@@ -298,18 +298,18 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc9motdg.s 			page 1
  150 000c 002B     		cmp	r3, #0
  151 000e 03D0     		beq	.L10
  134:Generated_Source\PSoC5/QuadDec_1_PM.c ****     {
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc9motdg.s 			page 6
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccJRGlhD.s 			page 6
 
 
  135:Generated_Source\PSoC5/QuadDec_1_PM.c ****         #if (QuadDec_1_COUNTER_SIZE == QuadDec_1_COUNTER_SIZE_8_BIT)
  136:Generated_Source\PSoC5/QuadDec_1_PM.c ****             QuadDec_1_Cnt8_Enable();
+ 152              		.loc 1 136 0
+ 153 0010 FFF7FEFF 		bl	QuadDec_1_Cnt8_Enable
  137:Generated_Source\PSoC5/QuadDec_1_PM.c ****         #else 
  138:Generated_Source\PSoC5/QuadDec_1_PM.c ****             /* (QuadDec_1_COUNTER_SIZE == QuadDec_1_COUNTER_SIZE_16_BIT) || 
  139:Generated_Source\PSoC5/QuadDec_1_PM.c ****             *  (QuadDec_1_COUNTER_SIZE == QuadDec_1_COUNTER_SIZE_32_BIT) 
  140:Generated_Source\PSoC5/QuadDec_1_PM.c ****             */
  141:Generated_Source\PSoC5/QuadDec_1_PM.c ****             QuadDec_1_Cnt16_Enable();
- 152              		.loc 1 141 0
- 153 0010 FFF7FEFF 		bl	QuadDec_1_Cnt16_Enable
  142:Generated_Source\PSoC5/QuadDec_1_PM.c ****         #endif /* (QuadDec_1_COUNTER_SIZE == QuadDec_1_COUNTER_SIZE_8_BIT) */
  143:Generated_Source\PSoC5/QuadDec_1_PM.c **** 
  144:Generated_Source\PSoC5/QuadDec_1_PM.c ****         /* Enable component's operation */
@@ -358,7 +358,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc9motdg.s 			page 1
  193 0033 03       		.uleb128 0x3
  194 0034 08       		.byte	0x8
  195 0035 05       		.byte	0x5
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc9motdg.s 			page 7
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccJRGlhD.s 			page 7
 
 
  196 0036 00000000 		.4byte	.LASF1
@@ -418,7 +418,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc9motdg.s 			page 1
  250 009a 04       		.uleb128 0x4
  251 009b CF010000 		.4byte	.LASF15
  252 009f 02       		.byte	0x2
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc9motdg.s 			page 8
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccJRGlhD.s 			page 8
 
 
  253 00a0 9302     		.2byte	0x293
@@ -478,7 +478,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc9motdg.s 			page 1
  307 0110 42010000 		.4byte	.LASF25
  308 0114 01       		.byte	0x1
  309 0115 15       		.byte	0x15
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc9motdg.s 			page 9
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccJRGlhD.s 			page 9
 
 
  310 0116 C0000000 		.4byte	0xc0
@@ -538,7 +538,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc9motdg.s 			page 1
  364 002f 0B       		.uleb128 0xb
  365 0030 3B       		.uleb128 0x3b
  366 0031 05       		.uleb128 0x5
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc9motdg.s 			page 10
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccJRGlhD.s 			page 10
 
 
  367 0032 49       		.uleb128 0x49
@@ -598,7 +598,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc9motdg.s 			page 1
  421 0068 00       		.byte	0
  422 0069 3F       		.uleb128 0x3f
  423 006a 19       		.uleb128 0x19
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc9motdg.s 			page 11
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccJRGlhD.s 			page 11
 
 
  424 006b 03       		.uleb128 0x3
@@ -658,7 +658,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc9motdg.s 			page 1
  478 0000 00000000 		.4byte	.LFB0
  479 0004 0C000000 		.4byte	.LFE0
  480 0008 00000000 		.4byte	.LFB1
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc9motdg.s 			page 12
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccJRGlhD.s 			page 12
 
 
  481 000c 0C000000 		.4byte	.LFE1
@@ -670,7 +670,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc9motdg.s 			page 1
  487 0024 00000000 		.4byte	0
  488              		.section	.debug_line,"",%progbits
  489              	.Ldebug_line0:
- 490 0000 AB000000 		.section	.debug_str,"MS",%progbits,1
+ 490 0000 AD000000 		.section	.debug_str,"MS",%progbits,1
  490      02005800 
  490      00000201 
  490      FB0E0D00 
@@ -718,7 +718,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc9motdg.s 			page 1
  506      65436F6E 
  507              	.LASF12:
  508 0083 666C6F61 		.ascii	"float\000"
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc9motdg.s 			page 13
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccJRGlhD.s 			page 13
 
 
  508      7400
@@ -778,7 +778,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc9motdg.s 			page 1
  529              	.LASF3:
  530 0180 7369676E 		.ascii	"signed char\000"
  530      65642063 
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\cc9motdg.s 			page 14
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccJRGlhD.s 			page 14
 
 
  530      68617200 

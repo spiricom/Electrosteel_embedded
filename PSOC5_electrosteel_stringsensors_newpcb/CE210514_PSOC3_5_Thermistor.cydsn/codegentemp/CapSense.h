@@ -179,8 +179,8 @@ CY_ISR_PROTO(CapSense_IsrCH0_ISR);
 *           API Constants
 ***************************************/
 
-#define CapSense_TOTAL_SENSOR_COUNT            (12u)
-#define CapSense_TOTAL_SCANSLOT_COUNT            (12u)
+#define CapSense_TOTAL_SENSOR_COUNT            (10u)
+#define CapSense_TOTAL_SCANSLOT_COUNT            (10u)
 #define CapSense_TOTAL_RB_NUMBER            (1u)
 #define CapSense_TOTAL_RB_NUMBER__CH0            (1u)
 
@@ -195,12 +195,10 @@ CY_ISR_PROTO(CapSense_IsrCH0_ISR);
 #define CapSense_SENSOR_BUTTON7__BTN    (7u)
 #define CapSense_SENSOR_BUTTON8__BTN    (8u)
 #define CapSense_SENSOR_BUTTON9__BTN    (9u)
-#define CapSense_SENSOR_BUTTON10__BTN    (10u)
-#define CapSense_SENSOR_BUTTON11__BTN    (11u)
 /* AMux Cmod, Comparator and Idac Channels definitions */
-#define CapSense_AMuxCH0_CMOD_CHANNEL          (12u)
-#define CapSense_AMuxCH0_CMP_VP_CHANNEL        (13u)
-#define CapSense_AMuxCH0_IDAC_CHANNEL          (14u)
+#define CapSense_AMuxCH0_CMOD_CHANNEL          (10u)
+#define CapSense_AMuxCH0_CMP_VP_CHANNEL        (11u)
+#define CapSense_AMuxCH0_IDAC_CHANNEL          (12u)
 
 
 

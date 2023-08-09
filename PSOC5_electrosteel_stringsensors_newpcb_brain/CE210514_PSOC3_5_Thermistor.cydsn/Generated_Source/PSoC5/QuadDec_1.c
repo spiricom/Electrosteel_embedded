@@ -199,10 +199,10 @@ void QuadDec_1_Stop(void)
 *  of the 32-bit counter, when Counter size equal 32-bit.
 *
 *******************************************************************************/
-int16 QuadDec_1_GetCounter(void) 
+int8 QuadDec_1_GetCounter(void) 
 {
-    int16 count;
-    uint16 tmpCnt;
+    int8 count;
+    uint8 tmpCnt;
 
     #if (QuadDec_1_COUNTER_SIZE == QuadDec_1_COUNTER_SIZE_32_BIT)
         int16 hwCount;
@@ -224,8 +224,8 @@ int16 QuadDec_1_GetCounter(void)
             tmpCnt = QuadDec_1_Cnt16_ReadCounter();
         #endif  /* QuadDec_1_COUNTER_SIZE == QuadDec_1_COUNTER_SIZE_8_BIT */
 
-        count = (int16) ((int32) tmpCnt -
-                (int32) QuadDec_1_COUNTER_INIT_VALUE);
+        count = (int8) ((int16) tmpCnt -
+                (int16) QuadDec_1_COUNTER_INIT_VALUE);
 
     #endif /* QuadDec_1_COUNTER_SIZE == QuadDec_1_COUNTER_SIZE_32_BIT */ 
 
@@ -255,19 +255,19 @@ int16 QuadDec_1_GetCounter(void)
 *  No.
 *
 *******************************************************************************/
-void QuadDec_1_SetCounter(int16 value) 
+void QuadDec_1_SetCounter(int8 value) 
 {
     #if ((QuadDec_1_COUNTER_SIZE == QuadDec_1_COUNTER_SIZE_8_BIT) || \
          (QuadDec_1_COUNTER_SIZE == QuadDec_1_COUNTER_SIZE_16_BIT))
-        uint16 count;
+        uint8 count;
         
         if (value >= 0)
         {
-            count = (uint16) value + QuadDec_1_COUNTER_INIT_VALUE;
+            count = (uint8) value + QuadDec_1_COUNTER_INIT_VALUE;
         }
         else
         {
-            count = QuadDec_1_COUNTER_INIT_VALUE - (uint16)(-value);
+            count = QuadDec_1_COUNTER_INIT_VALUE - (uint8)(-value);
         }
         #if (QuadDec_1_COUNTER_SIZE == QuadDec_1_COUNTER_SIZE_8_BIT)
             QuadDec_1_Cnt8_WriteCounter(count);
