@@ -94,6 +94,8 @@ extern volatile uint8_t currentActivePreset;
 extern param params[NUM_PARAMS];
 extern mapping mappings[MAX_NUM_MAPPINGS];
 extern volatile float audioMasterLevel;
+extern uint8_t fxPre;
+extern uint8_t pedalControlsMaster;
 extern uint8_t numMappings;
 extern uint8_t diskBusy;
 extern uint8_t volatile interruptChecker;

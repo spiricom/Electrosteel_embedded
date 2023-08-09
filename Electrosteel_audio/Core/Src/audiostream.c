@@ -46,7 +46,6 @@ int newPluck = 0;
 int newBar = 0;
 
 uint8_t pluck[26];
-uint8_t bar[8];
 
 uint8_t oscToTick = NUM_OSC;
 uint8_t filterToTick = NUM_FILT;
@@ -71,14 +70,11 @@ volatile int lastStringPlusOne = 0;
 
 
 float mtofTable[MTOF_TABLE_SIZE]__ATTR_RAM_D1;
-float mappingToMIDITable[MAPPING_TABLE_SIZE]__ATTR_RAM_D1;
 
 //float atoDbTable[ATODB_TABLE_SIZE]__ATTR_RAM_D1;
 //float dbtoATable[DBTOA_TABLE_SIZE]__ATTR_RAM_D1;
 
-float midiTableMappingScalar = 1.0f;
 float barInMIDI[NUM_STRINGS_PER_BOARD];
-float invMapping[NUM_STRINGS_PER_BOARD];
 
 
 uint8_t numStringsThisBoard = NUM_STRINGS_PER_BOARD;
@@ -428,17 +424,7 @@ void audioInit(I2C_HandleTypeDef* hi2c, SAI_HandleTypeDef* hsaiOut, SAI_HandleTy
 
 	LEAF_generate_mtof(mtofTable, -163.8375f, 163.8375f,  MTOF_TABLE_SIZE); //mtof table for fast calc
 
-	//a table that maps bar mapping values (frequency ratios from 1 to 8) to midinote offsets caused by the bar (for the filter computation, which stays in midi world)
-    float increment = 1.0f / (float)(MAPPING_TABLE_SIZE - 1);
-    float x = 0.0f;
-    float scalar = 7.0f;
-    midiTableMappingScalar = (MAPPING_TABLE_SIZE - 1) / scalar;
-    for (int i = 0; i < MAPPING_TABLE_SIZE; i++)
-    {
-        float mappingVal = (((x * scalar) + 1.0f) * 220.0f);
-        mappingToMIDITable[i] = (ftom(mappingVal)) - 57.0f;
-        x += increment;
-    }
+
 
 
 	int bit0 = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_1);
@@ -712,127 +698,11 @@ void audioFrame(uint16_t buffer_offset)
 	{
 		for (int j = 0; j < 2; j++)
 		{
-
-			if ((stringPositions[j] == 65535) || (stringPositions[j] > fretMeasurements[0][j]))
-			{
-				stringMappedPositions[j] = 1.0f;
-			}
-			else if ((stringPositions[j] >= fretMeasurements[1][j]) && (stringPositions[j] <= fretMeasurements[0][j]))
-			{
-				stringMappedPositions[j] = map((float)stringPositions[j], fretMeasurements[0][j], fretMeasurements[1][j], fretScaling[0], fretScaling[1]);
-			}
-			else if ((stringPositions[j] >= fretMeasurements[2][j]) && (stringPositions[j] < fretMeasurements[1][j]))
-			{
-				stringMappedPositions[j] = map((float)stringPositions[j], fretMeasurements[1][j], fretMeasurements[2][j], fretScaling[1], fretScaling[2]);
-			}
-			else if ((stringPositions[j] >= fretMeasurements[3][j]) && (stringPositions[j] <= fretMeasurements[2][j]))
-			{
-				stringMappedPositions[j] = map((float)stringPositions[j], fretMeasurements[2][j], fretMeasurements[3][j], fretScaling[2], fretScaling[3]);
-			}
-			else
-			{
-				stringMappedPositions[j] = map((float)stringPositions[j], fretMeasurements[3][j], fretMeasurements[4][j], fretScaling[3], fretScaling[4]);
-			}
-		}
-		float myMappedPos = 0.0f;
-		for (int i = 0; i < numStringsThisBoard; i++)
-		{
-
-			if (dualSlider)
-			{
-				if ((stringMappedPositions[0] == 1.0f) && (stringMappedPositions[1] < 1.0f))
-				{
-					stringMappedPositions[0] = stringMappedPositions[1];
-				}
-				else if ((stringMappedPositions[1] == 1.0f) && (stringMappedPositions[0] < 1.0f))
-				{
-					stringMappedPositions[1] = stringMappedPositions[0];
-				}
-				myMappedPos = LEAF_interpolation_linear(stringMappedPositions[0], stringMappedPositions[1], ((float)(i+firstString)) * .1f);// * 0.090909090909091f);
-			}
-			else
-			{
-				myMappedPos =  stringMappedPositions[0];
-			}
-
-			myMappedPos = tSlide_tick(&freqSlider[i], myMappedPos);
-			invMapping[i] = (1.0f / myMappedPos);
-
-			int barTableIndex = (int)(((invMapping[i] - 1.0f) * midiTableMappingScalar) + 0.5f);
-			barInMIDI[i] = mappingToMIDITable[barTableIndex];
-			/*
-			float tempMIDI = stringMIDIPitches[i];
-			int tempIndex = (int)((tempMIDI * 100.0f) + 16384.5f);
-			tempIndex = LEAF_clip(0, tempIndex, 32767);
-			float tempFreq = mtofTable[tempIndex];
-			invMapping[i] = (1.0f / myMappedPos);
-			tempFreq = invMapping[i] * tempFreq;
-			stringFrequencies[i] = tSlide_tick(&freqSlider[i], tempFreq);
-			*/
-			//tempFreq = tSlide_tick(&freqSlider[i], tempFreq);
-			//tExpSmooth_setDest(&stringFreqSmoothers[i], tempFreq);
+			barInMIDI[j] = stringPositions[j] * 0.001953125f; // squish 0-65535 to 0-127 range ( / 512)
 		}
 		newBar = 0;
 	}
 
-
-	//new message format
-	// 12 strings midi pitches as 16bit numbers = 24 values, plus an identification byte and two check bytes at the end = 27 bytes.
-	//other options are
-#if 0
-	if (newLevers)
-	{
-		int currentLeverBufferL = currentLeverBuffer;
-
-		if ((SPI_LEVERS[30 + (currentLeverBufferL * 74)] == 254) && (SPI_LEVERS[31 + (currentLeverBufferL * 74)] == 253))
-		{
-			for (int i = 0; i < 16; i++)
-			{
-				paramsFromBrain[i] = SPI_LEVERS[(i + 56) + (currentLeverBuffer * 74)] * 0.003921568627451f; //scaled 0.0 to 1.0
-
-			}
-
-			union breakFloat tempBreak;
-
-			for (int i = 0; i < numStringsThisBoard; i++)
-			{
-				tempBreak.b[0] = SPI_LEVERS[((i+firstString) * 4) + (currentLeverBufferL * 74)];
-				tempBreak.b[1] = SPI_LEVERS[((i+firstString) * 4) + 1 + (currentLeverBufferL * 74)];
-				tempBreak.b[2] = SPI_LEVERS[((i+firstString) * 4) + 2 + (currentLeverBufferL * 74)];
-				tempBreak.b[3] = SPI_LEVERS[((i+firstString) * 4) + 3 + (currentLeverBufferL * 74)];
-				stringMIDIPitches[i] = tempBreak.f;
-			}
-
-			for (int i = 0; i < 4; i++)
-			{
-				tExpSmooth_setDest(&knobSmoothers[i], (SPI_LEVERS[(i + 49) + (currentLeverBufferL * 74)] * 0.0078125)); //   divided by 128
-			}
-
-			int modeBit = SPI_LEVERS[48 + (currentLeverBufferL * 74)];
-
-			neck = (modeBit >> 6) & 1;
-			dualSlider = (modeBit >> 5) & 1;
-
-			edit = (modeBit >> 4) & 1;
-			voice = SPI_LEVERS[55 + (currentLeverBufferL * 74)];
-
-			if (voice != prevVoice)
-			{
-				presetWaitingToLoad = 1;
-				presetNumberToLoad = voice;
-			}
-			prevVoice = voice;
-
-			octave = (((int32_t) (modeBit & 15) - 2 ) * 12.0f);
-			//octaveIndex = (modeBit & 15);
-			//octave = powf(2.0f,((int32_t) (modeBit & 3) - 1 ));
-
-			volumePedalInt = ((uint16_t)SPI_LEVERS[53 + (currentLeverBufferL * 74)] << 8) + ((uint16_t)SPI_LEVERS[54 + (currentLeverBufferL * 74)] & 0xff);
-			volumePedal = volumePedalInt * 0.0002442002442f;
-			tExpSmooth_setDest(&volumeSmoother,volumePedal);
-		}
-	}
-#endif
 
 	if (newPluck)
 	{
@@ -1252,7 +1122,7 @@ void __ATTR_ITCMRAM oscillator_tick(float note, int string)
 		freqToSmooth = (freqToSmooth1 * (1.0f - tempIndexF)) + (freqToSmooth2 * tempIndexF);
 		timeApprox = DWT->CYCCNT - tempCountappr;
 
-		float finalFreq = (freqToSmooth * invMapping[string] * freqMult[osc][string]) + freqOffset;
+		float finalFreq = (freqToSmooth * freqMult[osc][string]) + freqOffset;
 
 		float sample = 0.0f;
 
@@ -1366,7 +1236,7 @@ float __ATTR_ITCMRAM filter_tick(float* samples, float note, int string)
 			note = 0.0f; //is this necessary?
 		}
 
-		cutoff[f] = MIDIcutoff + ((note + barInMIDI[string]) * keyFollow);
+		cutoff[f] = MIDIcutoff + (note * keyFollow);
 
 		cutoff[f] = LEAF_clip(0.0f, (cutoff[f]-16.0f) * 35.929824561403509f, 4095.0f);
 		//smoothing may not be necessary
@@ -1706,13 +1576,12 @@ uint32_t timeTick = 0;
 uint32_t oversampleCount = 0;
 uint32_t oscCountdown = 0;
 uint8_t interrupted = 0;
-
+uint8_t fxPre = 0;
 float  audioTickL(void)
 {
 	interrupted = 0;
 	uint32_t tempCount5 = DWT->CYCCNT;
 	float masterSample = 0.0f;
-	uint8_t fxPre = (params[FXPREPOST_PARAMS_OFFSET].realVal[0] > 0.5f); // ok to use [0] because it's not changeable by mapping so not per voice
 	//run mapping ticks for all strings
 	tickMappings();
 
@@ -1736,17 +1605,23 @@ float  audioTickL(void)
 	{
 		float sample = 0.0f;
 
-		//get midi from frequency
-		//float tempFreq = stringFrequencies[v]* octaveRatios[stringOctaveIndex[v]];
-		//tempIndex = (tempFreq * )
-		//note[v] = ftom(stringFrequencies[v] * octaveRatios[stringOctaveIndex[v]]);
 		note[v] = stringMIDIPitches[v] + stringOctave[v];
 		sourceValues[MIDI_KEY_SOURCE_OFFSET][v] = (note[v] - midiKeySubtractor) * midiKeyDivisor;
 
+		//check for sanity of note range
 		if (note[v] < 0.0f)
 		{
 			note[v] = 0.0f;
 		}
+		if (note[v] > 127.0f)
+		{
+			note[v] = 127.0f;
+		}
+		if (isnan(note[v]))
+		{
+			note[v] = 64.0f;
+		}
+
 		envelope_tick(v);
 		lfo_tick(v);
 		oscillator_tick(note[v], v);
@@ -1760,7 +1635,7 @@ float  audioTickL(void)
 		}
 		filterSamps[0] += noiseOuts[0][v];
 		filterSamps[1] += noiseOuts[1][v];
-		//sample = filterSamps[0];
+
 
 		sample = filter_tick(&filterSamps[0], note[v], v);
 
@@ -1793,7 +1668,14 @@ float  audioTickL(void)
 			//hard clip before downsampling to get a little more antialiasing from clipped signal.
 			for (int i = 0; i < (OVERSAMPLE); i++)
 			{
-				oversamplerArray[i] = LEAF_clip(-1.0f, oversamplerArray[i], 1.0f);
+				if (oversamplerArray[i]> 1.0f)
+				{
+					oversamplerArray[i]= 1.0f;
+				}
+				else if (oversamplerArray[i] < -1.0f)
+				{
+					oversamplerArray[i]= -1.0f;
+				}
 			}
 			//downsample to get back to normal sample rate
 			sample = tOversampler_downsample(&os[v], oversamplerArray);
@@ -1959,7 +1841,7 @@ float  audioTickString(void)
 			note[i] = 0.0f;
 		}
 
-		float finalFreq = mtof(note[i]) * invMapping[i] ;
+		float finalFreq = mtof(note[i]);
 		float dampFreq = faster_mtof((knobScaled[11] * 140.0f)+60.0f);
 		float decay = 0.1f;
 		if (lsDecay[i])
@@ -2061,7 +1943,7 @@ float  audioTickString2(void)
 		float freqToSmooth1 = mtofTable[tempIndexI & 32767];
 		float freqToSmooth2 = mtofTable[(tempIndexI + 1) & 32767];
 		float freqToSmooth = (freqToSmooth1 * (1.0f - tempIndexF)) + (freqToSmooth2 * tempIndexF);
-		float finalFreq = freqToSmooth * invMapping[i] ;
+		float finalFreq = freqToSmooth;
 
 		tLivingString2_setFreq(&strings[i], finalFreq);
 

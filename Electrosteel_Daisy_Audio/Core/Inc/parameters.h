@@ -25,6 +25,8 @@ enum SPIMessage
 	WaitingForLoadAck,
 	ReceivingSingleParamChange,
 	ReceivingMappingChange,
+	ReceivingPresetRequestCommand,
+	ReceivingBootloadCommand,
 	ReceivingEnd =  253
 };
 
