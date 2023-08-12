@@ -69,7 +69,7 @@
 // then try to reprogram both PSOC and other STM32 to wait 2 seconds before sending data, to avoid SPI interrupts screwing init up.
 
 
-
+uint8_t firmwareUpdateRequested = 0;
 
 
 uint8_t SPI_PLUCK_RX[PLUCK_BUFFER_SIZE_TIMES_TWO] __ATTR_RAM_D3;
@@ -93,17 +93,29 @@ uint8_t buttonPressed = 0;
 uint8_t resetFlag = 0;
 
 
+uint8_t brainFirmwareBuffer[2097152] __ATTR_SDRAM; // 2 MB of space for firmware
+uint8_t pluckFirmwareBuffer[2097152] __ATTR_SDRAM; // 2 MB of space for firmware
+
+uint32_t brainFirmwareSize = 0;
+uint32_t pluckFirmwareSize = 0;
+uint8_t foundBrainFirmware = 0;
+uint8_t foundPluckFirmware = 0;
+uint32_t brainFirmwareBufferIndex = 0;
+uint32_t pluckFirmwareBufferIndex = 0;
 volatile uint8_t writingState = 0;
 volatile float 	audioMasterLevel = 1.0f;
+uint8_t fxPre = 0;
+uint8_t pedalControlsMaster = 0;
+
 FIL fdst;
 uint8_t buffer[4096] __ATTR_RAM_D2_DMA;
 volatile uint16_t bufferPos = 0;
 FRESULT res;
 
 volatile uint8_t presetNumberToSave;
-volatile uint8_t presetNumberToLoad = 11;
+volatile uint8_t presetNumberToLoad = 0;
 volatile uint8_t tuningNumberToSave;
-volatile uint8_t currentActivePreset = 0;
+volatile uint8_t currentActivePreset = 127;//
 volatile uint8_t presetName[14];
 volatile uint8_t presetNamesArray[MAX_NUM_PRESETS][14]__ATTR_RAM_D2;
 volatile uint8_t whichPresetToSendName = 0;
@@ -134,8 +146,11 @@ int oscsEnabled[3] = {0,0,0};
 float midiKeyDivisor;
 float midiKeySubtractor;
 
+uint8_t prevKnobByte[12];
+
 uint8_t volatile interruptChecker = 0;
 
+uint8_t volatile memoryTest[700];
 
 uint8_t volatile foundOne = 0;
 uint8_t loadFailed = 0;
@@ -159,6 +174,7 @@ static int checkForSDCardPreset(uint8_t value);
 static void writePresetToSDCard(int fileSize);
 void __ATTR_ITCMRAM parsePreset(int size, int presetNumber);
 void getPresetNamesFromSDCard(void);
+static void checkForBootloadableFiles(void);
 
 
 /* USER CODE END PFP */
@@ -197,7 +213,7 @@ int main(void)
   MPU_Config();
 
   /* Enable I-Cache---------------------------------------------------------*/
- // SCB_EnableICache();
+  SCB_EnableICache();
 
   /* Enable D-Cache---------------------------------------------------------*/
   SCB_EnableDCache();
@@ -236,7 +252,7 @@ int main(void)
   MX_SPI6_Init();
   MX_RNG_Init();
   /* USER CODE BEGIN 2 */
-  HAL_Delay(500);
+
 	int bit0 = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_15);
 	int bit1 = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_14);
 	int bit2 = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_2);
@@ -254,6 +270,11 @@ int main(void)
 
 	  	  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
 	}
+	HAL_Delay(500);
+    if (boardNumber !=0)
+    {
+    	HAL_I2C_Slave_Receive_IT(&hi2c1, buffer, 4096);
+    }
 
   /* Enable write access to Backup domain */
    PWR->CR1 |= PWR_CR1_DBP;
@@ -315,7 +336,7 @@ int main(void)
   {
 	  getPresetNamesFromSDCard();
 	  //foundOne  = checkForSDCardPreset(presetNumberToLoad);
-	  presetWaitingToLoad = 1;
+	  //presetWaitingToLoad = 1;
 	  diskBusy = 1;
   }
   else
@@ -394,32 +415,14 @@ int main(void)
 	  parsePreset(presetWaitingToParse, presetNumberToLoad);
 	}
 */
-    //HAL_SPI_Receive_DMA(&hspi2, SPI_RX, BAR_BUFFER_SIZE_TIMES_TWO);
+
     HAL_SPI_Receive_DMA(&hspi6, SPI_PLUCK_RX, PLUCK_BUFFER_SIZE_TIMES_TWO);
-    //if (boardNumber != 0)
-    {
-    	//HAL_SPI_Receive_DMA(&hspi1, SPI_LEVERS, LEVER_BUFFER_SIZE_TIMES_TWO);
-    	//
 
-    	 // GPIO_InitTypeDef GPIO_InitStruct = {0};
-  	  	 // GPIO_InitStruct.Pin = GPIO_PIN_6;
-  	  	 // GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  	  	 // GPIO_InitStruct.Pull = GPIO_PULLUP;
-  	  	 // HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-    }
-   // else
-    {
-    	HAL_SPI_TransmitReceive_DMA(&hspi1, SPI_LEVERS_TX, SPI_LEVERS, LEVER_BUFFER_SIZE_TIMES_TWO);
-    }
-    //HAL_Delay(20 00); // necessary?
+    HAL_SPI_TransmitReceive_DMA(&hspi1, SPI_LEVERS_TX, SPI_LEVERS, LEVER_BUFFER_SIZE_TIMES_TWO);
 
 
     audioStart(&hsai_BlockB1, &hsai_BlockA1);
-    if (boardNumber !=0)
-    {
-    	HAL_I2C_Slave_Receive_IT(&hi2c1, buffer, 4096);
-    }
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -430,25 +433,13 @@ int main(void)
 	  {
 		  if (presetWaitingToLoad > 0)
 		  {
-			  /*
-			  //HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_SET);
-			  for (int i = 0; i < 2; i++)
-			  {
-				  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
-				  HAL_Delay(1);
-				  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
-				  HAL_Delay(1);
-			  }
-			  */
+
 			  if (!i2cSending)
 			  {
-				  //HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
-				  //HAL_Delay(2);
-				  //HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
-				  //HAL_Delay(2);
+
 				  checkForSDCardPreset(presetNumberToLoad);
 			  }
-			  //HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_RESET);
+
 		  }
 		  else if (presetWaitingToWrite > 0)
 		  {
@@ -474,6 +465,10 @@ int main(void)
 		  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
 	  }
 
+	  if (firmwareUpdateRequested)
+	  {
+		  checkForBootloadableFiles();
+	  }
 	  uint32_t rand;
 	  HAL_RNG_GenerateRandomNumber(&hrng, &rand);
 
@@ -785,6 +780,84 @@ static int checkForSDCardPreset(uint8_t numberToLoad)
 }
 
 
+
+
+static void checkForBootloadableFiles(void)
+{
+
+	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0, GPIO_PIN_SET);
+	if(BSP_SD_IsDetected())
+	{
+		for (int i = 0; i < AUDIO_BUFFER_SIZE; i+=2)
+		{
+			audioOutBuffer[i] = 0;
+			audioOutBuffer[i + 1] = 0;
+		}
+		diskBusy = 1;
+		loadFailed = 0;
+
+		disk_initialize(0);
+
+	    disk_status(0);
+		uint bytesRead;
+		if(f_mount(&SDFatFS,  SDPath, 1) == FR_OK)
+		{
+
+			FRESULT res;
+			/* Start to search for firmware files */
+			char finalString[10];
+			//Read Brain Firmware
+			strcat(finalString, "brain.bin");
+
+			res = f_findfirst(&dir, &fno, SDPath, finalString);
+
+			if(res == FR_OK)
+			{
+				if(f_open(&SDFile, fno.fname, FA_OPEN_ALWAYS | FA_READ) == FR_OK)
+				{
+				    brainFirmwareSize = f_size(&SDFile);
+
+					f_read(&SDFile, &brainFirmwareBuffer, brainFirmwareSize, &bytesRead);
+					f_close(&SDFile);
+
+					for (int i = 0; i< 700; i++)
+					{
+						memoryTest[i] = brainFirmwareBuffer[i];
+					}
+					foundBrainFirmware = 1;
+					brainFirmwareBufferIndex = 0;
+				}
+			}
+
+			//Read Pluck Firmware
+			char finalString2[10];
+			//Read Brain Firmware
+			strcat(finalString2, "pluck.bin");
+			res = f_findfirst(&dir, &fno, SDPath, finalString2);
+
+			if(res == FR_OK)
+			{
+				if(f_open(&SDFile, fno.fname, FA_OPEN_ALWAYS | FA_READ) == FR_OK)
+				{
+					brainFirmwareSize = f_size(&SDFile);
+
+					f_read(&SDFile, &pluckFirmwareBuffer, pluckFirmwareSize, &bytesRead);
+					f_close(&SDFile);
+					foundPluckFirmware = 1;
+					pluckFirmwareBufferIndex = 0;
+				}
+			}
+		}
+	}
+	firmwareUpdateRequested = 0;
+
+
+	diskBusy = 0;
+	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0, GPIO_PIN_RESET);
+}
+
+
+
 static void writePresetToSDCard(int fileSize)
 {
 	__disable_irq();
@@ -920,20 +993,20 @@ void SDRAM_init()
 
 float __ATTR_ITCMRAM scaleDefault(float input)
 {
-	input = LEAF_clip(0.f, input, 1.f);
+	//input = LEAF_clip(0.f, input, 1.f);
 	return input;
 }
 
 float __ATTR_ITCMRAM scaleTwo(float input)
 {
-	input = LEAF_clip(0.f, input, 1.f);
+	//input = LEAF_clip(0.f, input, 1.f);
 	return (input * 2.0f);
 }
 
 float __ATTR_ITCMRAM scaleOscPitch(float input)
 {
 	//input = LEAF_clip(0.0f, input, 1.0f);
-	return (input * 48.0f) - 24.0f;
+	return ((input * 2.0f) - 1.0f);
 }
 
 float __ATTR_ITCMRAM scaleOscFine(float input)
@@ -1316,268 +1389,385 @@ void setLFOShapes(int LFOShape, int i)
 	}
 }
 
+uint8_t brainFirmwareEndSignal = 0;
+uint8_t brainFirmwareSendInProgress = 0;
+uint8_t rowNumber = 0;
+uint8_t arrayNumber = 0;
+uint16_t positionInRowLine = 0;
+
+uint8_t fromHex(char value)
+{
+	if (('0' <= value) && (value <= '9'))
+		return (uint8_t) (value - '0');
+	if (('a' <= value) && (value <= 'f'))
+		return (uint8_t) (10 + value - 'a');
+	if (('A' <= value) && (value <= 'F'))
+		return (uint8_t) (10 + value - 'A');
+	return 0;
+}
+uint8_t fromAscii(uint8_t input1, uint8_t input2)
+{
+	return ((fromHex(input1)<<4) | (fromHex(input2)));
+}
+
 void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 {
 	interruptChecker = 1;
 
-	// if the first number is a 1 then it's a midi note/ctrl/bend message
-	if (SPI_LEVERS[offset] == ReceivingPitches)
+	if (foundBrainFirmware)
 	{
-		 uint8_t currentByte = offset+1;
-		 for (int i = 0; i < numStringsThisBoard; i++)
-		 {
-			float myPitch = (float)(SPI_LEVERS[((i+firstString) * 2) + currentByte] << 8) + SPI_LEVERS[((i+firstString) * 2) + 1 + currentByte];
-			myPitch = myPitch * 0.001953154802777f; //(128 / 65535) scale the 16 bit integer into midinotes.
-			if ((myPitch > 0.0f) && (myPitch < 140.0f))
-			{
-				stringMIDIPitches[i] = myPitch;
-			}
-		 }
-		 HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_SET);
-		 whichBar = 0;
-		 updateStateFromSPIMessage(offset);
-		 HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_RESET);
-		 //HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
-	}
-	// if the first number is a 2 then it's a preset write
-	else if (SPI_LEVERS[offset] == ReceivingPreset)
-	{
-		//got a new preset to write to memory
-		 //HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
-
-		 //if you aren't already writing a preset to memory, start the process
-		 if (writingState != ReceivingPreset)
-		 {
-			 writingState = ReceivingPreset; // set the flag to let the mcu know that a preset write is in progress
-				for (int i = 0; i < AUDIO_BUFFER_SIZE; i+=2)
-				{
-					audioOutBuffer[i] = 0;
-					audioOutBuffer[i + 1] = 0;
-				}
-			 diskBusy = 1;
-			 audioMasterLevel = 0.0f;
-			 //write the raw data as a preset number on the SD card
-			 bufferPos = 0;
-		 }
-		 presetNumberToSave = SPI_LEVERS[offset + 1];
-		 uint8_t currentByte = offset+2; // first number says what it is 2nd number says which number it is
-
-		 for (int i = 0; i < 28; i++)
-		 {
-			 buffer[bufferPos++] = SPI_LEVERS[currentByte + i];
-
-		 }
-		 //HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
-	}
-	else if (SPI_LEVERS[offset] == ReceivingKnobs)
-	{
-		 uint8_t currentByte = offset+1;
-
-			for (int i = 0; i < 12; i++)
-			{
-				tExpSmooth_setDest(&knobSmoothers[i], (SPI_LEVERS[i + currentByte] * 0.003921568627451f)); //scaled 0.0 to 1.0
-			}
-			currentByte += 12;
-			for (int i = 0; i < 10; i++)
-			{
-				tExpSmooth_setDest(&pedalSmoothers[i], (SPI_LEVERS[i + currentByte ] * 0.003921568627451f)); //scaled 0.0 to 1.0
-			}
-			HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_SET);
-			whichBar = 1;
-			updateStateFromSPIMessage(offset);
-			HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_RESET);
-
-	}
-	else if (SPI_LEVERS[offset] == ReceivingEnd)
-	{
-		if(writingState == ReceivingPreset)
+		if (brainFirmwareEndSignal)
 		{
-			 writingState = 0;
-			 presetNumberToLoad = presetNumberToSave;
-			 /* Parse into Audio Params */
-			 presetWaitingToParse = bufferPos;
-			 presetWaitingToWrite = bufferPos;
+			SPI_LEVERS_TX[offset] = 249; //special byte that says I'm done sending you firmware, you doofus, now use it;
+			SPI_LEVERS_TX[offset+1] = brainFirmwareSize >> 24;
+			SPI_LEVERS_TX[offset+2] = brainFirmwareSize >> 16;
+			SPI_LEVERS_TX[offset+3] = brainFirmwareSize >> 8;
+			SPI_LEVERS_TX[offset+4] = brainFirmwareSize && 0xff;
+			SPI_LEVERS_TX[offset+31] = 254;
+			brainFirmwareEndSignal = 0;
+			brainFirmwareSendInProgress = 0;
+			foundBrainFirmware = 0;
 		}
-	}
-
-	else if (SPI_LEVERS[offset] == ReceivingSingleParamChange)
-	{
-
-		if (presetReady)
+		else if (brainFirmwareSendInProgress)
 		{
-
-			uint8_t currentByte = offset+1;
-
-			uint16_t whichParam = ((SPI_LEVERS[currentByte]<< 8) + SPI_LEVERS[currentByte+1]);
-			currentByte = currentByte + 2;
-
-
-			for (int v = 0; v < NUM_STRINGS_PER_BOARD; v++)
+			uint8_t rowEnded = 0;
+			SPI_LEVERS_TX[offset] = 251; //special byte that says it's a firmware chunk
+			for (int i = 0; i < 30; i++)
 			{
-				//get the zero-to-one-value
-				params[whichParam].zeroToOneVal[v] = INV_TWO_TO_16 * ((SPI_LEVERS[currentByte] << 8) + SPI_LEVERS[currentByte+1]);
-			}
+				//go byte by byte and parse them out of the ascii hex values
+				uint8_t val1 = brainFirmwareBuffer[brainFirmwareBufferIndex];
+				uint8_t val2 = brainFirmwareBuffer[brainFirmwareBufferIndex+1];
+				uint8_t valToSend = fromAscii(val1, val2);
 
-			if ((whichParam == Effect1FXType) || (whichParam == Effect2FXType) || (whichParam == Effect3FXType) || (whichParam == Effect4FXType))
-			{
-				uint8_t whichEffect = (whichParam - Effect1FXType) / EffectParamsNum;
-				FXType effectType = roundf(params[whichParam].zeroToOneVal[0] * (NUM_EFFECT_TYPES-1));
-				param *FXAlias = &params[whichParam + 1];
-
-				if (effectType > FXLowpass)
+				if (positionInRowLine < 294)
 				{
-					FXAlias[2].scaleFunc = &scaleFilterResonance;
-				}
-				setEffectsFunctions(effectType, whichEffect);
-				FXAlias[0].setParam = effectSetters[whichEffect].setParam1;
-				FXAlias[1].setParam = effectSetters[whichEffect].setParam2;
-				FXAlias[2].setParam = effectSetters[whichEffect].setParam3;
-				FXAlias[3].setParam = effectSetters[whichEffect].setParam4;
-				FXAlias[4].setParam = effectSetters[whichEffect].setParam5;
-			}
-
-			for (int v = 0; v < NUM_STRINGS_PER_BOARD; v++)
-			{
-				//set the real value based on the scale function
-				params[whichParam].realVal[v] = params[whichParam].scaleFunc(params[whichParam].zeroToOneVal[v]);
-				//set the actual parameter
-				params[whichParam].setParam(params[whichParam].realVal[v], params[whichParam].objectNumber, v);
-			}
-			if ((whichParam == Osc1ShapeSet) || (whichParam == Osc2ShapeSet) || (whichParam == Osc3ShapeSet))
-			{
-				int whichOsc =(whichParam - Osc1ShapeSet) / OscParamsNum;
-				int oscshape = roundf(params[whichParam].realVal[0] * (NUM_OSC_SHAPES-1));
-				setOscilllatorShapes(oscshape, whichOsc);
-			}
-			if ((whichParam == Osc1) || (whichParam == Osc2) ||(whichParam == Osc3))
-			{
-				int whichOsc = (whichParam - Osc1) / OscParamsNum;
-				if (params[whichParam].realVal[0]  > 0.5f)
-				{
-					oscsEnabled[whichOsc] = 1;
+					SPI_LEVERS_TX[offset+i+1] = valToSend;
 				}
 				else
 				{
-					oscsEnabled[whichOsc] = 0;
+					rowEnded = 1;
 				}
-				int enabledCount = 0;
-
-				for (int j = 0; j < 3; j++)
+				positionInRowLine++;
+				if (rowEnded == 0)
 				{
-					enabledCount += oscsEnabled[j];
+					brainFirmwareBufferIndex += 2;
 				}
-				oscAmpMult = oscAmpMultArray[enabledCount];
-			}
-			if ((whichParam == Filter1Type) || (whichParam == Filter1Type))
-			{
-				int whichFilter = (whichParam - Filter1Type) / FilterParamsNum;
-				int filterType = roundf(params[whichParam].realVal[0] * (NUM_FILTER_TYPES-1));
-				setFilterTypes(filterType, whichFilter);
-				int filterResParamNum = Filter1Resonance + (whichFilter * FilterParamsNum);
-				int filterGainParamNum = Filter1Gain + (whichFilter * FilterParamsNum);
-				params[filterResParamNum].setParam = filterSetters[whichFilter].setQ;
-				params[filterGainParamNum].setParam = filterSetters[whichFilter].setGain;
-
-				//set the resonance and gain params of that filter
-				for (int v = 0; v < NUM_STRINGS_PER_BOARD; v++)
+				else
 				{
-					params[filterResParamNum].setParam(params[filterResParamNum].realVal[v], params[filterResParamNum].objectNumber, v);
-					params[filterGainParamNum].setParam(params[filterGainParamNum].realVal[v], params[filterGainParamNum].objectNumber, v);
+					positionInRowLine = 0;
+					for (uint8_t j = 0; j<10; j++)
+					{
+						if (brainFirmwareBuffer[brainFirmwareBufferIndex+j] == 0x3a)
+						{
+							brainFirmwareBufferIndex = brainFirmwareBufferIndex+j+1; // start after the header, so it's the first real byte after the ":"
+						}
+					}
+					rowEnded = 0;
+					i-=1;//push i back one because otherwise it increments even though we didn't send, just prepped for next send
 				}
 			}
-			if ((whichParam == LFO1ShapeSet) || (whichParam == LFO2ShapeSet) || (whichParam == LFO3ShapeSet) || (whichParam == LFO4ShapeSet))
+			SPI_LEVERS_TX[offset+31] = 254;
+			if (brainFirmwareBufferIndex >= brainFirmwareSize)
 			{
-				int whichLFO = (whichParam - LFO1ShapeSet) / LFOParamsNum;
-				int LFOShape = roundf(params[whichParam].realVal[0] * (NUM_LFO_SHAPES-1));
-				setLFOShapes(LFOShape, whichLFO);
-				int rateParamNum = LFO1Rate + (whichLFO * LFOParamsNum);
-				int shapeParamNum = LFO1Shape + (whichLFO * LFOParamsNum);
-				int phaseParamNum = LFO1Phase + (whichLFO * LFOParamsNum);
-				params[rateParamNum].setParam = lfoSetters[whichLFO].setRate;
-				params[shapeParamNum].setParam = lfoSetters[whichLFO].setShape;
-				params[phaseParamNum].setParam = lfoSetters[whichLFO].setPhase;
-
-				//set the lfo params for that particular new lfo shape
-				for (int v = 0; v < NUM_STRINGS_PER_BOARD; v++)
-				{
-					params[rateParamNum].setParam(params[rateParamNum].realVal[v], params[rateParamNum].objectNumber, v);
-					params[shapeParamNum].setParam(params[shapeParamNum].realVal[v], params[shapeParamNum].objectNumber, v);
-					params[phaseParamNum].setParam(params[phaseParamNum].realVal[v], params[phaseParamNum].objectNumber, v);
-				}
-			}
-			if ((whichParam == MIDIKeyMax) || (whichParam == MIDIKeyMin))
-			{
-				midiKeyDivisor = 1.0f / ((params[MIDIKeyMax].realVal[0]*127.0f) - (params[MIDIKeyMin].realVal[0]*127.0f));
-				midiKeySubtractor = (params[MIDIKeyMin].realVal[0] * 127.0f);
+				brainFirmwareEndSignal = 1;
 			}
 		}
+		else
+		{
+			SPI_LEVERS_TX[offset] = 252; //special byte that says I'm gonna send you new firmware so reboot into bootloader;
+			brainFirmwareSendInProgress = 1;
+			for (uint8_t i = 0; i<100; i++)
+			{
+				if (brainFirmwareBuffer[i] ==  0x3a)
+				{
+					brainFirmwareBufferIndex = i+1; // start after the header, so it's the first real byte after the ":"
+				}
+			}
+			positionInRowLine = 0;
+		}
 	}
-
-	else if (SPI_LEVERS[offset] == ReceivingMappingChange)
+	else
 	{
-		if (presetReady)
+		// if the first number is a 1 then it's a midi note/ctrl/bend message
+		if (SPI_LEVERS[offset] == ReceivingPitches)
+		{
+			 uint8_t currentByte = offset+1;
+			 for (int i = 0; i < numStringsThisBoard; i++)
+			 {
+				float myPitch = (float)(SPI_LEVERS[((i+firstString) * 2) + currentByte] << 8) + SPI_LEVERS[((i+firstString) * 2) + 1 + currentByte];
+				myPitch = myPitch * 0.001953154802777f; //(128 / 65535) scale the 16 bit integer into midinotes.
+				if ((myPitch > 0.0f) && (myPitch < 140.0f))
+				{
+					stringMIDIPitches[i] = myPitch;
+				}
+			 }
+			 HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_SET);
+			 whichBar = 0;
+			 updateStateFromSPIMessage(offset);
+			 HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_RESET);
+			 //HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
+		}
+		// if the first number is a 2 then it's a preset write
+		else if (SPI_LEVERS[offset] == ReceivingPreset)
+		{
+			//got a new preset to write to memory
+			 //HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
+
+			 //if you aren't already writing a preset to memory, start the process
+			 if (writingState != ReceivingPreset)
+			 {
+				 writingState = ReceivingPreset; // set the flag to let the mcu know that a preset write is in progress
+					for (int i = 0; i < AUDIO_BUFFER_SIZE; i+=2)
+					{
+						audioOutBuffer[i] = 0;
+						audioOutBuffer[i + 1] = 0;
+					}
+				 diskBusy = 1;
+				 audioMasterLevel = 0.0f;
+				 //write the raw data as a preset number on the SD card
+				 bufferPos = 0;
+			 }
+			 presetNumberToSave = SPI_LEVERS[offset + 1];
+			 uint8_t currentByte = offset+2; // first number says what it is 2nd number says which number it is
+
+			 for (int i = 0; i < 28; i++)
+			 {
+				 buffer[bufferPos++] = SPI_LEVERS[currentByte + i];
+
+			 }
+			 //HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
+		}
+		else if (SPI_LEVERS[offset] == ReceivingKnobs)
+		{
+			 uint8_t currentByte = offset+1;
+
+				for (int i = 0; i < 12; i++)
+				{
+					uint8_t newByte = SPI_LEVERS[i + currentByte];
+					if (knobFrozen[i])
+					{
+						if ((newByte > (prevKnobByte[i] + 2)) || (newByte < (prevKnobByte[i] + 2)))
+						{
+							knobFrozen[i] = 0;
+						}
+
+					}
+					else
+					{
+						tExpSmooth_setDest(&knobSmoothers[i], (SPI_LEVERS[i + currentByte] * 0.003921568627451f)); //scaled 0.0 to 1.0
+					}
+					prevKnobByte[i] = newByte;
+				}
+				currentByte += 12;
+				for (int i = 0; i < 10; i++)
+				{
+					tExpSmooth_setDest(&pedalSmoothers[i], (SPI_LEVERS[i + currentByte ] * 0.003921568627451f)); //scaled 0.0 to 1.0
+				}
+				HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_SET);
+				whichBar = 1;
+				updateStateFromSPIMessage(offset);
+				HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_RESET);
+
+		}
+		else if (SPI_LEVERS[offset] == ReceivingEnd)
+		{
+			if(writingState == ReceivingPreset)
+			{
+				 writingState = 0;
+				 presetNumberToLoad = presetNumberToSave;
+				 /* Parse into Audio Params */
+				 presetWaitingToParse = bufferPos;
+				 presetWaitingToWrite = bufferPos;
+			}
+		}
+
+		else if (SPI_LEVERS[offset] == ReceivingSingleParamChange)
 		{
 
-			uint8_t currentByte = offset+1;
-
-			uint16_t destNumber = ((SPI_LEVERS[currentByte]<< 8) + SPI_LEVERS[currentByte+1]);
-			uint8_t whichSlot = (SPI_LEVERS[currentByte+2]);
-			uint8_t mappingChangeType = (SPI_LEVERS[currentByte+3]);
-			int16_t mappingChangeValue = ((SPI_LEVERS[currentByte+4]<< 8) + SPI_LEVERS[currentByte+5]);
-			uint8_t whichMapping = 0;
-			uint8_t foundOne = 0;
-
-			// TODO: replace this search with explicit mapping slots instead
-				// we need to add sending of mapping slots
-
-			uint8_t lowestEmptyMapping = MAX_NUM_MAPPINGS;
-			//search to see if this destination already has other mappings
-			for (int j = 0; j < MAX_NUM_MAPPINGS; j++)
+			if (presetReady)
 			{
-				if (mappings[j].destNumber == destNumber)
+
+				uint8_t currentByte = offset+1;
+
+				uint16_t whichParam = ((SPI_LEVERS[currentByte]<< 8) + SPI_LEVERS[currentByte+1]);
+				currentByte = currentByte + 2;
+
+
+				for (int v = 0; v < NUM_STRINGS_PER_BOARD; v++)
 				{
-					//found one, use this mapping
-					whichMapping = j;
-					foundOne = 1;
+					//get the zero-to-one-value
+					params[whichParam].zeroToOneVal[v] = INV_TWO_TO_16 * ((SPI_LEVERS[currentByte] << 8) + SPI_LEVERS[currentByte+1]);
 				}
-				if ((mappings[j].destNumber == 255) && (j < lowestEmptyMapping))
+
+				if ((whichParam == Effect1FXType) || (whichParam == Effect2FXType) || (whichParam == Effect3FXType) || (whichParam == Effect4FXType))
 				{
-					lowestEmptyMapping = j;
-				}
-			}
-			if (foundOne == 0)
-			{
-				//didn't find another mapping with this destination, start a new mapping
-				whichMapping = lowestEmptyMapping;
-				numMappings++;
-				mappings[whichMapping].destNumber = destNumber;
-				mappings[whichMapping].dest = &params[destNumber];
-			}
+					uint8_t whichEffect = (whichParam - Effect1FXType) / EffectParamsNum;
+					FXType effectType = roundf(params[whichParam].zeroToOneVal[0] * (NUM_EFFECT_TYPES-1));
+					param *FXAlias = &params[whichParam + 1];
 
-
-	//		//if the source is bipolar (oscillators, noise, and LFOs) then double the amount because it comes in as only half the range
-	//		if ((source < 4) || ((source >= LFO_SOURCE_OFFSET) && (source < (LFO_SOURCE_OFFSET + NUM_LFOS))))
-	//		{
-	//			amountFloat *= 2.0f;
-	//		}
-
-
-			if (mappingChangeType == SourceID)
-			{
-				mappings[whichMapping].sourceSmoothed[whichSlot] = 1;
-				int source = mappingChangeValue;
-
-				if (source == 255)
-				{
-					//delete this hook
-					mappings[whichMapping].hookActive[whichSlot] = 0;
-					// if all hooks for this destination have source 255, delete this mapping
-					int countHooks = 0;
-					for (int i = 0; i < 3; i++)
+					if (effectType > FXLowpass)
 					{
-						if (mappings[whichMapping].hookActive[whichSlot] != 0)
+						FXAlias[2].scaleFunc = &scaleFilterResonance;
+					}
+					setEffectsFunctions(effectType, whichEffect);
+					FXAlias[0].setParam = effectSetters[whichEffect].setParam1;
+					FXAlias[1].setParam = effectSetters[whichEffect].setParam2;
+					FXAlias[2].setParam = effectSetters[whichEffect].setParam3;
+					FXAlias[3].setParam = effectSetters[whichEffect].setParam4;
+					FXAlias[4].setParam = effectSetters[whichEffect].setParam5;
+				}
+
+				for (int v = 0; v < NUM_STRINGS_PER_BOARD; v++)
+				{
+					//set the real value based on the scale function
+					params[whichParam].realVal[v] = params[whichParam].scaleFunc(params[whichParam].zeroToOneVal[v]);
+					//set the actual parameter
+					params[whichParam].setParam(params[whichParam].realVal[v], params[whichParam].objectNumber, v);
+				}
+				if ((whichParam == Osc1ShapeSet) || (whichParam == Osc2ShapeSet) || (whichParam == Osc3ShapeSet))
+				{
+					int whichOsc =(whichParam - Osc1ShapeSet) / OscParamsNum;
+					int oscshape = roundf(params[whichParam].realVal[0] * (NUM_OSC_SHAPES-1));
+					setOscilllatorShapes(oscshape, whichOsc);
+				}
+				if ((whichParam == Osc1) || (whichParam == Osc2) ||(whichParam == Osc3))
+				{
+					int whichOsc = (whichParam - Osc1) / OscParamsNum;
+					if (params[whichParam].realVal[0]  > 0.5f)
+					{
+						oscsEnabled[whichOsc] = 1;
+					}
+					else
+					{
+						oscsEnabled[whichOsc] = 0;
+					}
+					int enabledCount = 0;
+
+					for (int j = 0; j < 3; j++)
+					{
+						enabledCount += oscsEnabled[j];
+					}
+					oscAmpMult = oscAmpMultArray[enabledCount];
+				}
+				if ((whichParam == Filter1Type) || (whichParam == Filter1Type))
+				{
+					int whichFilter = (whichParam - Filter1Type) / FilterParamsNum;
+					int filterType = roundf(params[whichParam].realVal[0] * (NUM_FILTER_TYPES-1));
+					setFilterTypes(filterType, whichFilter);
+					int filterResParamNum = Filter1Resonance + (whichFilter * FilterParamsNum);
+					int filterGainParamNum = Filter1Gain + (whichFilter * FilterParamsNum);
+					params[filterResParamNum].setParam = filterSetters[whichFilter].setQ;
+					params[filterGainParamNum].setParam = filterSetters[whichFilter].setGain;
+
+					//set the resonance and gain params of that filter
+					for (int v = 0; v < NUM_STRINGS_PER_BOARD; v++)
+					{
+						params[filterResParamNum].setParam(params[filterResParamNum].realVal[v], params[filterResParamNum].objectNumber, v);
+						params[filterGainParamNum].setParam(params[filterGainParamNum].realVal[v], params[filterGainParamNum].objectNumber, v);
+					}
+				}
+				if ((whichParam == LFO1ShapeSet) || (whichParam == LFO2ShapeSet) || (whichParam == LFO3ShapeSet) || (whichParam == LFO4ShapeSet))
+				{
+					int whichLFO = (whichParam - LFO1ShapeSet) / LFOParamsNum;
+					int LFOShape = roundf(params[whichParam].realVal[0] * (NUM_LFO_SHAPES-1));
+					setLFOShapes(LFOShape, whichLFO);
+					int rateParamNum = LFO1Rate + (whichLFO * LFOParamsNum);
+					int shapeParamNum = LFO1Shape + (whichLFO * LFOParamsNum);
+					int phaseParamNum = LFO1Phase + (whichLFO * LFOParamsNum);
+					params[rateParamNum].setParam = lfoSetters[whichLFO].setRate;
+					params[shapeParamNum].setParam = lfoSetters[whichLFO].setShape;
+					params[phaseParamNum].setParam = lfoSetters[whichLFO].setPhase;
+
+					//set the lfo params for that particular new lfo shape
+					for (int v = 0; v < NUM_STRINGS_PER_BOARD; v++)
+					{
+						params[rateParamNum].setParam(params[rateParamNum].realVal[v], params[rateParamNum].objectNumber, v);
+						params[shapeParamNum].setParam(params[shapeParamNum].realVal[v], params[shapeParamNum].objectNumber, v);
+						params[phaseParamNum].setParam(params[phaseParamNum].realVal[v], params[phaseParamNum].objectNumber, v);
+					}
+				}
+				if ((whichParam == MIDIKeyMax) || (whichParam == MIDIKeyMin))
+				{
+					midiKeyDivisor = 1.0f / ((params[MIDIKeyMax].realVal[0]*127.0f) - (params[MIDIKeyMin].realVal[0]*127.0f));
+					midiKeySubtractor = (params[MIDIKeyMin].realVal[0] * 127.0f);
+				}
+				if (whichParam == FXOrder)
+				{
+					fxPre = params[FXOrder].realVal[0] > 0.5f;
+				}
+				if (whichParam == PedalControlsMaster)
+				{
+					pedalControlsMaster = params[PedalControlsMaster].realVal[0] > 0.5f;
+				}
+			}
+		}
+
+		else if (SPI_LEVERS[offset] == ReceivingMappingChange)
+		{
+			if (presetReady)
+			{
+
+				uint8_t currentByte = offset+1;
+
+				uint16_t destNumber = ((SPI_LEVERS[currentByte]<< 8) + SPI_LEVERS[currentByte+1]);
+				uint8_t whichSlot = (SPI_LEVERS[currentByte+2]);
+				uint8_t mappingChangeType = (SPI_LEVERS[currentByte+3]);
+				int16_t mappingChangeValue = ((SPI_LEVERS[currentByte+4]<< 8) + SPI_LEVERS[currentByte+5]);
+				uint8_t whichMapping = 0;
+				uint8_t foundOne = 0;
+
+				// TODO: replace this search with explicit mapping slots instead
+					// we need to add sending of mapping slots
+
+				uint8_t lowestEmptyMapping = MAX_NUM_MAPPINGS;
+				//search to see if this destination already has other mappings
+				for (int j = 0; j < MAX_NUM_MAPPINGS; j++)
+				{
+					if (mappings[j].destNumber == destNumber)
+					{
+						//found one, use this mapping
+						whichMapping = j;
+						foundOne = 1;
+					}
+					if ((mappings[j].destNumber == 255) && (j < lowestEmptyMapping))
+					{
+						lowestEmptyMapping = j;
+					}
+				}
+				if (foundOne == 0)
+				{
+					//didn't find another mapping with this destination, start a new mapping
+					whichMapping = lowestEmptyMapping;
+					numMappings++;
+					mappings[whichMapping].destNumber = destNumber;
+					mappings[whichMapping].dest = &params[destNumber];
+				}
+
+
+		//		//if the source is bipolar (oscillators, noise, and LFOs) then double the amount because it comes in as only half the range
+		//		if ((source < 4) || ((source >= LFO_SOURCE_OFFSET) && (source < (LFO_SOURCE_OFFSET + NUM_LFOS))))
+		//		{
+		//			amountFloat *= 2.0f;
+		//		}
+
+
+				if (mappingChangeType == SourceID)
+				{
+					mappings[whichMapping].sourceSmoothed[whichSlot] = 1;
+					int source = mappingChangeValue;
+
+					if (source == 255)
+					{
+						//delete this hook
+						mappings[whichMapping].hookActive[whichSlot] = 0;
+						// if all hooks for this destination have source 255, delete this mapping
+						int countHooks = 0;
+						for (int i = 0; i < 3; i++)
 						{
-							countHooks++;
+							if (mappings[whichMapping].hookActive[whichSlot] != 0)
+							{
+								countHooks++;
+							}
 						}
 						//if you just removed the only hook from a mapping, mark the mapping invalid and remove it from the list
 						//TODO: I think we are going to have to store a stack that represents which mappings are active and need to be ticked, otherwise it has to iterate all 32, now that we can remove one in the middle of the list.
@@ -1586,132 +1776,181 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 						if (countHooks == 0)
 						{
 							mappings[whichMapping].destNumber = 255;
+
+							//since the mapping tick will no longer update it, it would stick on the last value, so reset it to the unmapped initial value
+							for (int v = 0; v < NUM_STRINGS_PER_BOARD; v++)
+							{
+								//sources are now summed - let's add the initial value
+								float finalVal = mappings[whichMapping].dest->zeroToOneVal[v];
+
+
+								//now scale the value with the correct scaling function
+								mappings[whichMapping].dest->realVal[v] = mappings[whichMapping].dest->scaleFunc(finalVal);
+
+								//and pop that value where it belongs by setting the actual parameter
+								mappings[whichMapping].dest->setParam(mappings[whichMapping].dest->realVal[v], mappings[whichMapping].dest->objectNumber, v);
+							}
 						}
-					}
-				}
-				else
-				{
-					mappings[whichMapping].hookActive[whichSlot] = 1;
-
-					for (int v = 0; v < NUM_STRINGS_PER_BOARD; v++)
-					{
-						mappings[whichMapping].sourceValPtr[whichSlot][v] = &sourceValues[source][v];
-						mappings[whichMapping].scalarSourceValPtr[whichSlot][v] = &defaultScaling; //blank out the scalar source, because otherwise it will point to some random function or a null pointer
-					}
-					if (source < 4) //if it's oscillators or noise (the first 4 elements of the source array), don't smooth to allow FM
-					{
-						mappings[whichMapping].sourceSmoothed[whichSlot] = 0;
-					}
-					if ((source >= LFO_SOURCE_OFFSET) && (source < (LFO_SOURCE_OFFSET + NUM_LFOS)))
-					{
-						lfoOn[source - LFO_SOURCE_OFFSET] = 1;
-					}
-					mappings[whichMapping].amount[whichSlot] = 0.0f;
-				}
-
-
-			}
-			else if (mappingChangeType == Amount)
-			{
-				mappings[whichMapping].amount[whichSlot] = (float)mappingChangeValue * INV_TWO_TO_15;
-			}
-			else if (mappingChangeType == ScalarID)
-			{
-				int scalar = mappingChangeValue;
-				for (int v = 0; v < NUM_STRINGS_PER_BOARD; v++)
-				{
-					if (scalar == 0xff)
-					{
-						mappings[whichMapping].scalarSourceValPtr[whichSlot][v] = &defaultScaling;
 					}
 					else
 					{
-						mappings[whichMapping].scalarSourceValPtr[whichSlot][v] = &sourceValues[scalar][v];
-						if ((scalar >= LFO_SOURCE_OFFSET) && (scalar < (LFO_SOURCE_OFFSET + NUM_LFOS)))
+						mappings[whichMapping].hookActive[whichSlot] = 1;
+
+						for (int v = 0; v < NUM_STRINGS_PER_BOARD; v++)
 						{
-							lfoOn[scalar - LFO_SOURCE_OFFSET] = 1;
+							mappings[whichMapping].sourceValPtr[whichSlot][v] = &sourceValues[source][v];
+							mappings[whichMapping].scalarSourceValPtr[whichSlot][v] = &defaultScaling; //blank out the scalar source, because otherwise it will point to some random function or a null pointer
 						}
-						//TODO: doesn't cleanly remove lfoOn settings during streaming data - after deleting an LFO used as a scalar it will keep computing the LFO. How should we remember what the source of the scalar was when removing it? -JS
+						if (source < 4) //if it's oscillators or noise (the first 4 elements of the source array), don't smooth to allow FM
+						{
+							mappings[whichMapping].sourceSmoothed[whichSlot] = 0;
+						}
+						if ((source >= LFO_SOURCE_OFFSET) && (source < (LFO_SOURCE_OFFSET + NUM_LFOS)))
+						{
+							lfoOn[source - LFO_SOURCE_OFFSET] = 1;
+						}
+						if ((source >= ENV_SOURCE_OFFSET) && (source < (ENV_SOURCE_OFFSET + NUM_ENV)))
+						{
+							envOn[source - ENV_SOURCE_OFFSET] = 1;
+						}
+						mappings[whichMapping].amount[whichSlot] = 0.0f;
+					}
+
+
+				}
+				else if (mappingChangeType == Amount)
+				{
+					mappings[whichMapping].amount[whichSlot] = (float)mappingChangeValue * INV_TWO_TO_15;
+				}
+				else if (mappingChangeType == ScalarID)
+				{
+					int scalar = mappingChangeValue;
+					for (int v = 0; v < NUM_STRINGS_PER_BOARD; v++)
+					{
+						if (scalar == 0xff)
+						{
+							mappings[whichMapping].scalarSourceValPtr[whichSlot][v] = &defaultScaling;
+						}
+						else
+						{
+							mappings[whichMapping].scalarSourceValPtr[whichSlot][v] = &sourceValues[scalar][v];
+							if ((scalar >= LFO_SOURCE_OFFSET) && (scalar < (LFO_SOURCE_OFFSET + NUM_LFOS)))
+							{
+								lfoOn[scalar - LFO_SOURCE_OFFSET] = 1;
+							}
+							if ((scalar >= ENV_SOURCE_OFFSET) && (scalar < (ENV_SOURCE_OFFSET + NUM_ENV)))
+							{
+								envOn[scalar - ENV_SOURCE_OFFSET] = 1;
+							}
+							//TODO: doesn't cleanly remove lfoOn settings during streaming data - after deleting an LFO used as a scalar it will keep computing the LFO. How should we remember what the source of the scalar was when removing it? -JS
+						}
 					}
 				}
 			}
+
+		}
+		else if (SPI_LEVERS[offset] == ReceivingPresetRequestCommand)
+		{
+			//send the current synth preset back to the PSOC5LP master microcontroller
+			if (boardNumber == 0)
+			{
+
+			}
 		}
 
-	}
-/*
-	else if (SPI_LEVERS[offset] == LoadingPreset)
-	{
-		uint8_t loadNumber = SPI_LEVERS[offset+1];
-		if (loadNumber < MAX_NUM_PRESETS)
+
+
+	/*
+		else if (SPI_LEVERS[offset] == LoadingPreset)
 		{
-			presetNumberToLoad = loadNumber;
-			whichPresetToSendName = loadNumber;
-			presetWaitingToLoad = 1;
-		}
-	}
-	if (SPI_LEVERS[offset] == WaitingForLoadAck)
-	{
-		SPI_LEVERS[offset] = 252;
-		if(!loadFailed)
-		{
-			SPI_LEVERS[offset+1] = currentActivePreset;//this will change to the loaded preset number when parsing is finished
-		}
-		else
-		{
-			SPI_LEVERS[offset+1] = 254; //load failed
-			SPI_LEVERS[offset+2] = currentActivePreset; //tell the PSOC that it needs to show the old currently active preset, since the new load failed.
-		}
-	}
-	*/
-	//else
-	{
-		if (boardNumber == 0)
-		{
-			SPI_LEVERS_TX[offset] = 253; //special byte that says this is a preset name;
-			SPI_LEVERS_TX[offset+1] = whichPresetToSendName;
-			SPI_LEVERS_TX[offset+2] = presetNamesArray[whichPresetToSendName][0];
-			SPI_LEVERS_TX[offset+3] = presetNamesArray[whichPresetToSendName][1];
-			SPI_LEVERS_TX[offset+4] = presetNamesArray[whichPresetToSendName][2];
-			SPI_LEVERS_TX[offset+5] = presetNamesArray[whichPresetToSendName][3];
-			SPI_LEVERS_TX[offset+6] = presetNamesArray[whichPresetToSendName][4];
-			SPI_LEVERS_TX[offset+7] = presetNamesArray[whichPresetToSendName][5];
-			SPI_LEVERS_TX[offset+8] = presetNamesArray[whichPresetToSendName][6];
-			SPI_LEVERS_TX[offset+9] = presetNamesArray[whichPresetToSendName][7];
-			SPI_LEVERS_TX[offset+10] = presetNamesArray[whichPresetToSendName][8];
-			SPI_LEVERS_TX[offset+11] = presetNamesArray[whichPresetToSendName][9];
-			SPI_LEVERS_TX[offset+12] = presetNamesArray[whichPresetToSendName][10];
-			SPI_LEVERS_TX[offset+13] = presetNamesArray[whichPresetToSendName][11];
-			SPI_LEVERS_TX[offset+14] = presetNamesArray[whichPresetToSendName][12];
-			SPI_LEVERS_TX[offset+15] = presetNamesArray[whichPresetToSendName][13];
-			SPI_LEVERS_TX[offset+16] = whichMacroToSendName;
-			SPI_LEVERS_TX[offset+17] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][0];
-			SPI_LEVERS_TX[offset+18] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][1];
-			SPI_LEVERS_TX[offset+19] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][2];
-			SPI_LEVERS_TX[offset+20] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][3];
-			SPI_LEVERS_TX[offset+21] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][4];
-			SPI_LEVERS_TX[offset+22] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][5];
-			SPI_LEVERS_TX[offset+23] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][6];
-			SPI_LEVERS_TX[offset+24] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][7];
-			SPI_LEVERS_TX[offset+25] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][8];
-			SPI_LEVERS_TX[offset+26] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][9];
-			SPI_LEVERS_TX[offset+27] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][10];
-			SPI_LEVERS_TX[offset+28] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][11];
-			SPI_LEVERS_TX[offset+29] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][12];
-			SPI_LEVERS_TX[offset+30] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][13];
-			SPI_LEVERS_TX[offset+31] = 254;
-			whichMacroToSendName = (whichMacroToSendName + 1);
-			if (whichMacroToSendName >= 8)
+			uint8_t loadNumber = SPI_LEVERS[offset+1];
+			if (loadNumber < MAX_NUM_PRESETS)
 			{
-				whichMacroToSendName = 0;
-				whichPresetToSendName = (whichPresetToSendName + 1) % MAX_NUM_PRESETS;
+				presetNumberToLoad = loadNumber;
+				whichPresetToSendName = loadNumber;
+				presetWaitingToLoad = 1;
+			}
+		}
+		if (SPI_LEVERS[offset] == WaitingForLoadAck)
+		{
+			SPI_LEVERS[offset] = 252;
+			if(!loadFailed)
+			{
+				SPI_LEVERS[offset+1] = currentActivePreset;//this will change to the loaded preset number when parsing is finished
+			}
+			else
+			{
+				SPI_LEVERS[offset+1] = 254; //load failed
+				SPI_LEVERS[offset+2] = currentActivePreset; //tell the PSOC that it needs to show the old currently active preset, since the new load failed.
+			}
+		}
+		*/
+		//else
+		{
+			if (boardNumber == 0)
+			{
+				SPI_LEVERS_TX[offset] = 253; //special byte that says this is a preset name;
+				SPI_LEVERS_TX[offset+1] = whichPresetToSendName;
+				SPI_LEVERS_TX[offset+2] = presetNamesArray[whichPresetToSendName][0];
+				SPI_LEVERS_TX[offset+3] = presetNamesArray[whichPresetToSendName][1];
+				SPI_LEVERS_TX[offset+4] = presetNamesArray[whichPresetToSendName][2];
+				SPI_LEVERS_TX[offset+5] = presetNamesArray[whichPresetToSendName][3];
+				SPI_LEVERS_TX[offset+6] = presetNamesArray[whichPresetToSendName][4];
+				SPI_LEVERS_TX[offset+7] = presetNamesArray[whichPresetToSendName][5];
+				SPI_LEVERS_TX[offset+8] = presetNamesArray[whichPresetToSendName][6];
+				SPI_LEVERS_TX[offset+9] = presetNamesArray[whichPresetToSendName][7];
+				SPI_LEVERS_TX[offset+10] = presetNamesArray[whichPresetToSendName][8];
+				SPI_LEVERS_TX[offset+11] = presetNamesArray[whichPresetToSendName][9];
+				SPI_LEVERS_TX[offset+12] = presetNamesArray[whichPresetToSendName][10];
+				SPI_LEVERS_TX[offset+13] = presetNamesArray[whichPresetToSendName][11];
+				SPI_LEVERS_TX[offset+14] = presetNamesArray[whichPresetToSendName][12];
+				SPI_LEVERS_TX[offset+15] = presetNamesArray[whichPresetToSendName][13];
+				SPI_LEVERS_TX[offset+16] = whichMacroToSendName;
+				SPI_LEVERS_TX[offset+17] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][0];
+				SPI_LEVERS_TX[offset+18] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][1];
+				SPI_LEVERS_TX[offset+19] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][2];
+				SPI_LEVERS_TX[offset+20] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][3];
+				SPI_LEVERS_TX[offset+21] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][4];
+				SPI_LEVERS_TX[offset+22] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][5];
+				SPI_LEVERS_TX[offset+23] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][6];
+				SPI_LEVERS_TX[offset+24] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][7];
+				SPI_LEVERS_TX[offset+25] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][8];
+				SPI_LEVERS_TX[offset+26] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][9];
+				SPI_LEVERS_TX[offset+27] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][10];
+				SPI_LEVERS_TX[offset+28] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][11];
+				SPI_LEVERS_TX[offset+29] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][12];
+				SPI_LEVERS_TX[offset+30] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][13];
+				SPI_LEVERS_TX[offset+31] = 254;
+				whichMacroToSendName = (whichMacroToSendName + 1);
+				if (whichMacroToSendName >= 8)
+				{
+					whichMacroToSendName = 0;
+					whichPresetToSendName = (whichPresetToSendName + 1) % MAX_NUM_PRESETS;
+				}
 			}
 		}
 	}
-
 	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_RESET);
 }
 
 
+/*
+ * 				if (foundPluckFirmware)
+				{
+					SPI_LEVERS_TX[offset] = 252; //special byte that says this is a preset name;
+					for (int i = 0; i < 30; i++)
+					{
+
+						SPI_LEVERS_TX[offset+i+1] = pluckFirmwareBuffer[pluckFirmwareBufferIndex + i];
+
+					}
+					SPI_LEVERS_TX[offset+31] = 254;
+					pluckFirmwareBufferIndex += 30;
+				}
+
+			}
+		}
+		*/
 
 void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 {
@@ -1776,7 +2015,7 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 		//error in transmission - give up and don't parse!
 		audioMasterLevel = 1.0f;
 		presetWaitingToParse = 0;
-		 presetReady = 1;
+		 presetReady = 0;
 
 		__enable_irq();
 		return;
@@ -1790,7 +2029,7 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 		//error in transmission - give up and don't parse!
 		audioMasterLevel = 1.0f;
 		presetWaitingToParse = 0;
-		 presetReady = 1;
+		 presetReady = 0;
 		__enable_irq();
 
 		return;
@@ -1815,7 +2054,7 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 		//error in transmission - give up and don't parse!
 		audioMasterLevel = 1.0f;
 		presetWaitingToParse = 0;
-		 presetReady = 1;
+		 presetReady = 0;
 		__enable_irq();
 
 		return;
@@ -1827,7 +2066,7 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 		//error in transmission - give up and don't parse!
 		audioMasterLevel = 1.0f;
 		presetWaitingToParse = 0;
-		 presetReady = 1;
+		 presetReady = 0;
 		__enable_irq();
 
 		return;
@@ -2139,6 +2378,15 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 	}
 	midiKeyDivisor = 1.0f / ((params[MIDIKeyMax].realVal[0]*127.0f) - (params[MIDIKeyMin].realVal[0]*127.0f));
 	midiKeySubtractor = (params[MIDIKeyMin].realVal[0] * 127.0f);
+	fxPre = params[FXOrder].realVal[0] > 0.5f;
+	if (presetVersionNumber > 0)
+	{
+		pedalControlsMaster = params[PedalControlsMaster].realVal[0] > 0.5f;
+	}
+	else
+	{
+		pedalControlsMaster = 1;
+	}
 	//mappings parsing
 
 	//move past the countcheck elements (already checked earlier)
@@ -2152,7 +2400,14 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 	{
 		lfoOn[i] = 0;
 	}
-
+	for (int i = 0; i < NUM_ENV; i++)
+	{
+		envOn[i] = 0;
+	}
+	for (int i = 0; i < 12; i++)
+	{
+		knobFrozen[i] = 0;
+	}
 	//blank out all current mappings
 	for (int i = 0; i < MAX_NUM_MAPPINGS; i++)
 	{
@@ -2186,7 +2441,6 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 			{
 				//found one, use this mapping and add another hook to it
 				whichMapping = j;
-				//TODO: this should actually be sent with the preset
 				if (presetVersionNumber == 0)
 				{
 					whichHook = mappings[j].numHooks;
@@ -2226,6 +2480,23 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 		{
 			lfoOn[source - LFO_SOURCE_OFFSET] = 1;
 		}
+		if ((source >= ENV_SOURCE_OFFSET) && (source < (ENV_SOURCE_OFFSET + NUM_ENV)))
+		{
+			envOn[source - ENV_SOURCE_OFFSET] = 1;
+		}
+		if ((source >= MACRO_SOURCE_OFFSET) && (source < (MACRO_SOURCE_OFFSET + NUM_MACROS + NUM_CONTROL)))
+		{
+			//if it's a macro, also set its value and set the knob to frozen state so it'll hold until the knob is moved.
+
+			uint8_t whichMacro = source - MACRO_SOURCE_OFFSET;
+			for (int v = 0; v < numStringsThisBoard; v++)
+			{
+				sourceValues[source][v] = params[whichMacro + MACRO_PARAMS_OFFSET].realVal[v];
+			}
+			//set starting point for the knob smoothers to smooth from
+			tExpSmooth_setVal(&knobSmoothers[i], params[whichMacro + MACRO_PARAMS_OFFSET].realVal[0]);
+			knobFrozen[whichMacro] = 1;
+		}
 		int scalar = buffer[bufferIndex+2];
 		for (int v = 0; v < NUM_STRINGS_PER_BOARD; v++)
 		{
@@ -2239,6 +2510,23 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 				if ((scalar >= LFO_SOURCE_OFFSET) && (scalar < (LFO_SOURCE_OFFSET + NUM_LFOS)))
 				{
 					lfoOn[scalar - LFO_SOURCE_OFFSET] = 1;
+				}
+				if ((scalar >= ENV_SOURCE_OFFSET) && (scalar < (ENV_SOURCE_OFFSET + NUM_ENV)))
+				{
+					envOn[scalar - ENV_SOURCE_OFFSET] = 1;
+				}
+				if ((source >= MACRO_SOURCE_OFFSET) && (source < (MACRO_SOURCE_OFFSET + NUM_MACROS + NUM_CONTROL)))
+				{
+					//if it's a macro, also set its value and set the knob to frozen state so it'll hold until the knob is moved.
+
+					uint8_t whichMacro = source - MACRO_SOURCE_OFFSET;
+					for (int v = 0; v < numStringsThisBoard; v++)
+					{
+						sourceValues[source][v] = params[whichMacro + MACRO_PARAMS_OFFSET].realVal[v];
+					}
+					//set starting point for the knob smoothers to smooth from
+					tExpSmooth_setVal(&knobSmoothers[i], params[whichMacro + MACRO_PARAMS_OFFSET].realVal[0]);
+					knobFrozen[whichMacro] = 1;
 				}
 			}
 		}
@@ -2273,12 +2561,42 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 	{
 		totalFilters++;
 	}
+
+	//tick mappings once with no smoothing to set initial values
+	for (int i = 0; i < numMappings; i++)
+	{
+		if (mappings[i].destNumber != 255)
+		{
+			for (int v = 0; v < numStringsThisBoard; v++)
+			{
+				float unsmoothedValue = 0.0f;
+
+				for (int j = 0; j < 3; j++)
+				{
+					if (mappings[i].hookActive[j])
+					{
+						float sum = *mappings[i].sourceValPtr[j][v] * mappings[i].amount[j] * *mappings[i].scalarSourceValPtr[j][v];
+
+						unsmoothedValue += sum;
+
+					}
+				}
+				float finalVal = unsmoothedValue + mappings[i].dest->zeroToOneVal[v];
+
+				//now scale the value with the correct scaling function
+				mappings[i].dest->realVal[v] = mappings[i].dest->scaleFunc(finalVal);
+
+				//and pop that value where it belongs by setting the actual parameter
+				mappings[i].dest->setParam(mappings[i].dest->realVal[v], mappings[i].dest->objectNumber, v);
+			}
+		}
+	}
+
 	presetWaitingToParse = 0;
 	currentActivePreset = presetNumber;
 	audioMasterLevel = 1.0f;
 	oscToTick = NUM_OSC;
 	overSampled = 1;
-	filterToTick = totalFilters;
 	__enable_irq();
 	presetReady = 1;
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
@@ -2368,7 +2686,16 @@ void __ATTR_ITCMRAM HAL_I2C_ErrorCallback(I2C_HandleTypeDef *hi2c)
 	I2CErrors++;
 }
 
-
+/* USER CODE BEGIN 4 */
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+  if(GPIO_Pin == GPIO_PIN_6) {
+    if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_6) == 0)
+    {
+    	firmwareUpdateRequested = 1;
+    }
+  }
+}
 /* USER CODE END 4 */
 
 /* MPU Configuration */

@@ -182,7 +182,7 @@ int main(void)
      /*Enable BKPRAM clock*/
      __HAL_RCC_BKPRAM_CLK_ENABLE();
      HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_SET);
-     //HAL_Delay(100);
+     HAL_Delay(100);
  	int bit0 = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_15);
  	int bit1 = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_14);
  	int bit2 = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_2);
@@ -192,199 +192,186 @@ int main(void)
 		  //set up the master send control pin to signal other daisies to listen to I2C bus
 		  HAL_NVIC_DisableIRQ(EXTI15_10_IRQn);
 
- 		GPIO_InitTypeDef GPIO_InitStruct = {0};
+ 		  GPIO_InitTypeDef GPIO_InitStruct = {0};
 		  GPIO_InitStruct.Pin = GPIO_PIN_12;
 		  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 		  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
 		  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
 
 		  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
- 		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
+ 		  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
+
+
+ 		if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_6) == 0)
+ 		{
+ 			bootloader_button_pressed = 1;
+ 		}
+ 		else
+ 		{
+ 			bootloader_button_pressed = 0;
+ 		}
  	}
     //if (*(__IO uint32_t*)(0x38800000+36) != 12345678)
-	  qspi_initialize(INDIRECT_POLLING);
-	  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_RESET);
-	  HAL_Delay(100);
-     if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_6) == 0)
-     {
-    	 bootloader_button_pressed = 1;
-    	 {
-   		  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
 
-    		  MX_I2C1_Init();
-    		  MX_SDMMC1_SD_Init();
-    		  MX_FATFS_Init();
+	qspi_initialize(INDIRECT_POLLING);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_RESET);
 
 
+	if (bootloader_button_pressed == 1)
+	{
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET); // tell the other ICs
 
+		MX_I2C1_Init();
+		MX_SDMMC1_SD_Init();
+		MX_FATFS_Init();
 
-    		  int i = 6;
-    	   	  while(i--)
-    	   	  {
-    	   		  HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
-    	   		  HAL_Delay(200);
-    	   	  }
-
-    	   	  //MX_SDMMC1_SD_Init();
-    	   	  //MX_FATFS_Init();
-
-
-
-    	 	  if(BSP_SD_IsDetected())
-    	 	  {
-    	 		 // HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
-    	 		  FS_FileOperations();
-    	 	  }
-    	 	  else
-    	 	  {
-
-    	 		  //HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
-    	 	  }
-
-    	 	  if (!memory_already_mapped)
-    	 	  {
-    	 		  qspi_enable_memory_mapped();
-    	 	  }
-    	 	  //copy qspi flash code into SRAM location on every boot.
-    	 	  for (int i = 0; i < 262140; i++)
-    	 	  {
-    	 		  tempBinaryBuffer[i] = flash_mem[i];
-    	 	  }
-    	 	  //wait for button to go up
-    	 	  while(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_6) == 0)
-    	 	  {
-    	 		  ;
-    	 	  }
-    	 	 HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
-    	 	 HAL_Delay(1);
-
-			HAL_I2C_Master_Transmit(&hi2c1, 34<<1, tempBinaryBuffer, 65535,
-					10000);
-			HAL_Delay(100);
-			HAL_I2C_Master_Transmit(&hi2c1, 34<<1, tempBinaryBuffer+65535, 65535,
-					10000);
-			HAL_Delay(100);
-			HAL_I2C_Master_Transmit(&hi2c1, 34<<1, tempBinaryBuffer+131070, 65535,
-					10000);
-			HAL_Delay(100);
-			HAL_I2C_Master_Transmit(&hi2c1, 34<<1, tempBinaryBuffer+196605, 65535,
-					10000);
-
-
-			HAL_Delay(6000);
-    	 	  HAL_QSPI_MspDeInit(&hqspi);
-      	 	  HAL_I2C_DeInit(&hi2c1);
-    	 	  HAL_SD_MspDeInit(&hsd1);
-
-    	 	  HAL_RCC_DeInit();
-    	 	  HAL_DeInit();
-    	 	  SysTick->CTRL = 0;
-    	 	  SysTick->LOAD = 0;
-    	 	  SysTick->VAL  = 0;
-
-
-/*
-    	 	  for (int i = 0; i < 32; i++)
-    	 	  {
-    	 		  bootloaderFlag[i] = 232;
-    	 	  }
-    	 	  FlushECC(&bootloaderFlag,  32);
-    	 	  */
-
-    	 	  HAL_NVIC_SystemReset();
-    	 	  //JumpToApplication = (pFunction) (*(__IO uint32_t*) (APPLICATION_ADDRESS+4));
-    	 	  //__set_MSP(*(__IO uint32_t*) APPLICATION_ADDRESS);
-    	 	  //*(__IO uint32_t*)(0x38800000+36) = 0;
-    	 	  //__disable_irq();
-    	 	  //JumpToApplication();
-    	 }
-     }
-     else
-     {
-    	 bootloader_button_pressed = 0;
-    	 int i = 6;
-		  while(i--)
-		  {
-			  HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
-			  HAL_Delay(40);
-		  }
-		  HAL_Delay(2000);
-		  if (!memory_already_mapped)
-		  {
-			  qspi_enable_memory_mapped();
-
-		  }
-		  //copy qspi flash code into SRAM location on every boot.
-		  for (int i = 0; i < 262140; i++)
-		  {
-			  tempBinaryBuffer[i] = flash_mem[i];
-		  }
-
-
+		int i = 6;
+		while(i--)
+		{
 		  HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
-		  JumpToApplication = (pFunction) (*(__IO uint32_t*) (APPLICATION_ADDRESS+4));
-			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_SET);
-			HAL_Delay(1);
-		  if (((uint32_t)JumpToApplication > 0x30000000) ||  ((uint32_t)JumpToApplication < 0x24000000) )
-		  {
-			  //out of range, not a valid firmware
-			  while(1)
-			  {
-				  if (memory_already_mapped)
-				  {
-					  qspi_initialize(INDIRECT_POLLING);
-				  }
-				  HAL_Delay(2);
-				  HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_7);
+		  HAL_Delay(100);
+		}
 
-			  }
-		  }
-		  //boot_to(D1_AXISRAM_BASE);
-	 	  HAL_QSPI_MspDeInit(&hqspi);
+		FS_FileOperations();
 
-		  HAL_RCC_DeInit();
-		  HAL_DeInit();
-		  __disable_irq();
+		if (!memory_already_mapped)
+		{
+		  qspi_enable_memory_mapped();
+		}
 
-		   NVIC->ICER[0] = 0xFFFFFFFF;
-		    NVIC->ICER[1] = 0xFFFFFFFF;
-		    NVIC->ICER[2] = 0xFFFFFFFF;
-		    NVIC->ICER[3] = 0xFFFFFFFF;
-		    NVIC->ICER[4] = 0xFFFFFFFF;
-		    NVIC->ICER[5] = 0xFFFFFFFF;
-		    NVIC->ICER[6] = 0xFFFFFFFF;
-		    NVIC->ICER[7] = 0xFFFFFFFF;
+		//copy qspi flash code into SRAM location on every boot.
+		for (int i = 0; i < 262140; i++)
+		{
+		  tempBinaryBuffer[i] = flash_mem[i];
+		}
 
-		    NVIC->ICPR[0] = 0xFFFFFFFF;
-		    NVIC->ICPR[1] = 0xFFFFFFFF;
-		    NVIC->ICPR[2] = 0xFFFFFFFF;
-		    NVIC->ICPR[3] = 0xFFFFFFFF;
-		    NVIC->ICPR[4] = 0xFFFFFFFF;
-		    NVIC->ICPR[5] = 0xFFFFFFFF;
-		    NVIC->ICPR[6] = 0xFFFFFFFF;
-		    NVIC->ICPR[7] = 0xFFFFFFFF;
+		//wait for manual bootloader button to go up (lets us test things by holding the device in this state)
+		while(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_6) == 0)
+		{
+		  ;
+		}
+		//bring signal pin down to tell the other chips we're ready to send firmware over I2C
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
+		HAL_Delay(1); //wait for them to receive and get ready
 
-		    SysTick->CTRL = 0;
-		    SysTick->LOAD = 0; // Needed?
-		    SysTick->VAL = 0;  // Needed?
-		    SCB->ICSR |= SCB_ICSR_PENDSTCLR_Msk;
-
-		    SCB->SHCSR &= ~(SCB_SHCSR_USGFAULTENA_Msk | //
-		                    SCB_SHCSR_BUSFAULTENA_Msk | //
-		                    SCB_SHCSR_MEMFAULTENA_Msk);
-
-		  __set_MSP(*(__IO uint32_t*) APPLICATION_ADDRESS);
-		  __set_PSP(*(__IO uint32_t*) APPLICATION_ADDRESS);
-		  SCB->VTOR = APPLICATION_ADDRESS;
-		    __set_CONTROL(0);
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
+		HAL_I2C_Master_Transmit(&hi2c1, 34<<1, tempBinaryBuffer, 65535,
+			10000);
+		HAL_Delay(200);
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
+		HAL_I2C_Master_Transmit(&hi2c1, 34<<1, tempBinaryBuffer+65535, 65535,
+			10000);
+		HAL_Delay(200);
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
+		HAL_I2C_Master_Transmit(&hi2c1, 34<<1, tempBinaryBuffer+131070, 65535,
+			10000);
+		HAL_Delay(200);
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
+		HAL_I2C_Master_Transmit(&hi2c1, 34<<1, tempBinaryBuffer+196605, 65535,
+			10000);
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
 
 
-		  SysTick->CTRL = 0;
-		  SysTick->LOAD = 0;
-		  SysTick->VAL  = 0;
+		HAL_Delay(6000);
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
+		HAL_QSPI_MspDeInit(&hqspi);
+		HAL_I2C_DeInit(&hi2c1);
+		HAL_SD_MspDeInit(&hsd1);
 
-		  JumpToApplication();
-     }
+		HAL_RCC_DeInit();
+		HAL_DeInit();
+		SysTick->CTRL = 0;
+		SysTick->LOAD = 0;
+		SysTick->VAL  = 0;
+
+		HAL_NVIC_SystemReset();
+
+	}
+
+    else
+    {
+		int i = 6;
+		while(i--)
+		{
+			HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
+			HAL_Delay(40);
+		}
+		HAL_Delay(1000);
+		if (!memory_already_mapped)
+		{
+		 	qspi_enable_memory_mapped();
+
+		}
+		//copy qspi flash code into SRAM location on every boot.
+		for (int i = 0; i < 262140; i++)
+		{
+			tempBinaryBuffer[i] = flash_mem[i];
+		}
+
+
+		HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
+		JumpToApplication = (pFunction) (*(__IO uint32_t*) (APPLICATION_ADDRESS+4));
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_SET);
+		HAL_Delay(1);
+		if (((uint32_t)JumpToApplication > 0x30000000) ||  ((uint32_t)JumpToApplication < 0x24000000) )
+		{
+			//out of range, not a valid firmware
+			while(1)
+			{
+				if (memory_already_mapped)
+				{
+					qspi_initialize(INDIRECT_POLLING);
+				}
+				HAL_Delay(2);
+				HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_7);
+			}
+		}
+		//otherwise, boot it up!
+		HAL_QSPI_MspDeInit(&hqspi);
+
+		HAL_RCC_DeInit();
+		HAL_DeInit();
+		__disable_irq();
+
+		NVIC->ICER[0] = 0xFFFFFFFF;
+		NVIC->ICER[1] = 0xFFFFFFFF;
+		NVIC->ICER[2] = 0xFFFFFFFF;
+		NVIC->ICER[3] = 0xFFFFFFFF;
+		NVIC->ICER[4] = 0xFFFFFFFF;
+		NVIC->ICER[5] = 0xFFFFFFFF;
+		NVIC->ICER[6] = 0xFFFFFFFF;
+		NVIC->ICER[7] = 0xFFFFFFFF;
+
+		NVIC->ICPR[0] = 0xFFFFFFFF;
+		NVIC->ICPR[1] = 0xFFFFFFFF;
+		NVIC->ICPR[2] = 0xFFFFFFFF;
+		NVIC->ICPR[3] = 0xFFFFFFFF;
+		NVIC->ICPR[4] = 0xFFFFFFFF;
+		NVIC->ICPR[5] = 0xFFFFFFFF;
+		NVIC->ICPR[6] = 0xFFFFFFFF;
+		NVIC->ICPR[7] = 0xFFFFFFFF;
+
+		SysTick->CTRL = 0;
+		SysTick->LOAD = 0; // Needed?
+		SysTick->VAL = 0;  // Needed?
+		SCB->ICSR |= SCB_ICSR_PENDSTCLR_Msk;
+
+		SCB->SHCSR &= ~(SCB_SHCSR_USGFAULTENA_Msk | //
+						SCB_SHCSR_BUSFAULTENA_Msk | //
+						SCB_SHCSR_MEMFAULTENA_Msk);
+
+		__set_MSP(*(__IO uint32_t*) APPLICATION_ADDRESS);
+		__set_PSP(*(__IO uint32_t*) APPLICATION_ADDRESS);
+		SCB->VTOR = APPLICATION_ADDRESS;
+		__set_CONTROL(0);
+
+
+		SysTick->CTRL = 0;
+		SysTick->LOAD = 0;
+		SysTick->VAL  = 0;
+
+		JumpToApplication();
+	}
 
 
 
@@ -393,17 +380,17 @@ int main(void)
 
 
 
-  /* USER CODE END 2 */
+	/* USER CODE END 2 */
 
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
-  while (1)
-  {
-    /* USER CODE END WHILE */
+	/* Infinite loop */
+	/* USER CODE BEGIN WHILE */
+	while (1)
+	{
+		/* USER CODE END WHILE */
 
-    /* USER CODE BEGIN 3 */
-  }
-  /* USER CODE END 3 */
+		/* USER CODE BEGIN 3 */
+	}
+	/* USER CODE END 3 */
 }
 
 /**
@@ -1002,9 +989,8 @@ void qspi_Write(uint32_t address, uint32_t size, uint8_t* buffer)
 
 static void FS_FileOperations(void)
 {
-	HAL_Delay(300);
+	HAL_Delay(500);
 	disk_initialize(0);
-
     disk_status(0);
     //if (statusH != RES_OK)
     //{
@@ -1019,7 +1005,7 @@ static void FS_FileOperations(void)
 
 
 		//search for .bin firmware files
-		res = f_findfirst(&dir, &fno, SDPath, "*.bin");
+		res = f_findfirst(&dir, &fno, SDPath, "Electrosteel_Daisy_Audio.bin");
 
 		/* Repeat while an item is found */
 		if (fno.fname[0])
@@ -1032,10 +1018,12 @@ static void FS_FileOperations(void)
 					//write to local SRAM, then copy that to QSPI flash for more permanent storage
 					f_read(&SDFile, &tempBinaryBuffer, f_size(&SDFile), &bytesRead);
 
+
+
 					if (bytesRead < 262140)
 					{
-						qspi_Erase(QSPI_START, QSPI_START+bytesRead);
-						qspi_Write(QSPI_START, bytesRead,(uint8_t*)tempBinaryBuffer);
+						qspi_Erase(QSPI_START, QSPI_START+262140);
+						qspi_Write(QSPI_START, 262140,(uint8_t*)tempBinaryBuffer);
 						HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
 					}
 
@@ -1065,25 +1053,29 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 			MX_I2C1_Init();
 			while(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_12) ==  1)
 			{
-				//wait for pin to go back low
+				;//wait for pin to go back low
 			}
-
+			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
 			HAL_I2C_Slave_Receive(&hi2c1, tempBinaryBuffer, 65535,
 					10000);
-			HAL_Delay(98);
+			HAL_Delay(180);
+			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
 			HAL_I2C_Slave_Receive(&hi2c1, tempBinaryBuffer+65535, 65535,
 					10000);
-			HAL_Delay(98);
+			HAL_Delay(180);
+			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
 			HAL_I2C_Slave_Receive(&hi2c1, tempBinaryBuffer+131070, 65535,
 					10000);
-			HAL_Delay(98);
+			HAL_Delay(180);
+			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
 			HAL_I2C_Slave_Receive(&hi2c1, tempBinaryBuffer+196605, 65535,
 					10000);
+			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
 
 
 			qspi_Erase(QSPI_START, QSPI_START+262140);
 			qspi_Write(QSPI_START, 262140,(uint8_t*)tempBinaryBuffer);
-			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
+			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
 			  if (!memory_already_mapped)
 			  {
 				  qspi_enable_memory_mapped();
@@ -1098,15 +1090,6 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   	 	  SysTick->CTRL = 0;
   	 	  SysTick->LOAD = 0;
   	 	  SysTick->VAL  = 0;
-
-
-/*
-  	 	  for (int i = 0; i < 32; i++)
-  	 	  {
-  	 		  bootloaderFlag[i] = 232;
-  	 	  }
-  	 	  FlushECC(&bootloaderFlag,  32);
-*/
   	 	  HAL_NVIC_SystemReset();
 
 		}

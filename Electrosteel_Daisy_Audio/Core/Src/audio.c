@@ -40,8 +40,8 @@ uint32_t codecReady = 0;
 
 uint32_t frameCounter = 0;
 
-volatile int stringPositions[4];// __ATTR_RAM_D2_DMA;
-volatile int stringPositionsPrev[4];// __ATTR_RAM_D2_DMA;
+volatile int stringPositions[2];
+volatile int stringPositionsPrev[2];
 
 volatile int newPluck = 0 ;
 volatile int newBar = 0 ;
@@ -69,14 +69,13 @@ volatile int lastStringPlusOne = 0;
 
 
 float mtofTable[MTOF_TABLE_SIZE]__ATTR_RAM_D2;
-float mappingToMIDITable[MAPPING_TABLE_SIZE]__ATTR_RAM_D2;
 
 float atoDbTable[ATODB_TABLE_SIZE]__ATTR_RAM_D2;
 float dbtoATable[DBTOA_TABLE_SIZE]__ATTR_RAM_D2;
 
-float midiTableMappingScalar = 1.0f;
-float barInMIDI[NUM_STRINGS_PER_BOARD] ;
-float invMapping[NUM_STRINGS_PER_BOARD] ;
+
+float barInMIDI[2] ;
+
 
 
 uint8_t numStringsThisBoard = NUM_STRINGS_PER_BOARD;
@@ -108,8 +107,8 @@ tCycle sine[NUM_OSC][NUM_STRINGS_PER_BOARD];
 tPBTriangle tri[NUM_OSC][NUM_STRINGS_PER_BOARD];
 
 // Using seperate objects for pairs to easily maintain phase relation
-tPBSaw sawPaired[NUM_OSC][NUM_STRINGS_PER_BOARD];
-tMBSineTri sinePaired[NUM_OSC][NUM_STRINGS_PER_BOARD];
+tPBSawSquare sawPaired[NUM_OSC][NUM_STRINGS_PER_BOARD];
+tPBSineTriangle sinePaired[NUM_OSC][NUM_STRINGS_PER_BOARD];
 
 //noise
 float noiseOuts[2][NUM_STRINGS_PER_BOARD];
@@ -121,6 +120,7 @@ tTriLFO lfoTri[NUM_LFOS][NUM_STRINGS_PER_BOARD];
 tSawSquareLFO lfoSawSquare[NUM_LFOS][NUM_STRINGS_PER_BOARD];
 tSineTriLFO lfoSineTri[NUM_LFOS][NUM_STRINGS_PER_BOARD];
 uint8_t lfoOn[NUM_LFOS];
+
 
 //oscillator outputs
 float outSamples[2][NUM_OSC][NUM_STRINGS_PER_BOARD];
@@ -134,6 +134,7 @@ tExpSmooth filterCutoffSmoother[NUM_FILT][NUM_STRINGS_PER_BOARD];
 
 
 float freqMult[NUM_OSC][NUM_STRINGS_PER_BOARD];
+float midiAdd[NUM_OSC][NUM_STRINGS_PER_BOARD];
 float bendRangeMultiplier = 0.002929866324849f; //default to divide by 48
 
 
@@ -152,6 +153,7 @@ float filterGain[NUM_FILT][NUM_STRINGS_PER_BOARD];
 
 //envelopes
 tADSRT envs[NUM_ENV][NUM_STRINGS_PER_BOARD];
+uint8_t envOn[NUM_ENV];
 
 //envelope tables
 float decayExpBuffer[DECAY_EXP_BUFFER_SIZE];
@@ -191,7 +193,6 @@ tNoise noise[NUM_STRINGS_PER_BOARD];
 #define OVERSAMPLE 2
 float inv_oversample = 1.0f / OVERSAMPLE;
 
-tOversampler os[NUM_STRINGS_PER_BOARD];
 float oversamplerArray[OVERSAMPLE];
 
 arm_fir_interpolate_instance_f32 osI[NUM_STRINGS_PER_BOARD];
@@ -308,6 +309,7 @@ float stringFrequencies[NUM_STRINGS] ;
 
 float volumePedal  = 0.0f ;
 float knobScaled[29];
+uint8_t knobFrozen[12];
 float pedalScaled[29];
 volatile float stringMIDIPitches[NUM_STRINGS_PER_BOARD] ;
 //TODO:
@@ -325,7 +327,7 @@ float fretScaling[5] = {1.0f, 0.840918367346939f, 0.66744958289463f, 0.5f, 0.25f
 
 float stringOctave[NUM_STRINGS_PER_BOARD];
 volatile int voice = 0 ;
-volatile int prevVoice = 0;
+volatile int prevVoice = 127;
 int dualSlider = 0;
 int neck = 0;
 
@@ -433,24 +435,12 @@ void audioInit()
 
 		for (int i = 0; i < 256; i++)
 		{
-			randomFactors[i] = randomNumber() + 0.5f;
+			randomFactors[i] = (randomNumber() * 0.5f) + 0.5f;
 		}
 	LEAF_generate_atodb(atoDbTable, ATODB_TABLE_SIZE, 0.00001f, 1.0f);
 	LEAF_generate_dbtoa(dbtoATable, DBTOA_TABLE_SIZE, -90.0f, 30.0f);
 
 	LEAF_generate_mtof(mtofTable, -163.8375f, 163.8375f,  MTOF_TABLE_SIZE); //mtof table for fast calc
-
-	//a table that maps bar mapping values (frequency ratios from 1 to 8) to midinote offsets caused by the bar (for the filter computation, which stays in midi world)
-    float increment = 1.0f / (float)(MAPPING_TABLE_SIZE - 1);
-    float x = 0.0f;
-    float scalar = 7.0f;
-    midiTableMappingScalar = (MAPPING_TABLE_SIZE - 1) / scalar;
-    for (int i = 0; i < MAPPING_TABLE_SIZE; i++)
-    {
-        float mappingVal = (((x * scalar) + 1.0f) * 220.0f);
-        mappingToMIDITable[i] = (ftom(mappingVal)) - 57.0f;
-        x += increment;
-    }
 
 
 
@@ -499,7 +489,9 @@ void audioInit()
 			tADSRT_init(&additiveEnv[i][j], 5.0f, partialDecays[j] * 1000.0f, 0.0f, 150.0f, decayExpBuffer, DECAY_EXP_BUFFER_SIZE, &leaf);
 		}
 		//tExpSmooth_init(&stringFreqSmoothers[i],1.0f, 0.05f, &leaf);
+
 	}
+
 
 
 	tExpSmooth_init(&volumeSmoother,0.0f, 0.0005f, &leaf);
@@ -518,7 +510,7 @@ void audioInit()
 
 		for(int i = 0; i < NUM_OSC; i++)
 		{
-			tPBSaw_init(&saw[i][v],  &leaf);
+			tPBSaw_init(&saw[i][v], &leaf);
 
 			tPBPulse_init(&pulse[i][v], &leaf);
 
@@ -526,11 +518,14 @@ void audioInit()
 
 			tPBTriangle_init(&tri[i][v],  &leaf);
 
-			tPBSaw_init(&sawPaired[i][v], &leaf);
+			tPBSawSquare_init(&sawPaired[i][v], &leaf);
 
-			tMBSineTri_init(&sinePaired[i][v],&leaf);
+			tPBSineTriangle_init(&sinePaired[i][v],&leaf);
 
 			tExpSmooth_init(&pitchSmoother[i][v], 64.0f, 0.02f, &leaf);
+
+			freqMult[i][v] = 1.0f;
+			midiAdd[i][v] = 0.0f;
 
 		}
 		tSimpleLivingString3_initToPool(&livStr[v], 4, 220.0f, 17000.0f,
@@ -628,8 +623,6 @@ void audioInit()
 		arm_fir_interpolate_init_f32(&osI[v],2,32,__leaf_table_fir2XLow, intState[v],1);
 		arm_fir_decimate_init_f32(&osD[v],32, 2,__leaf_table_fir2XLow, decState[v],2);
 
-		tOversampler_init(&os[v], OVERSAMPLE, 0, &leaf);
-
 		tSVF_init(&finalLowpass[v], SVFTypeLowpass, 19000.f, 0.3f, &leaf);
 	}
 
@@ -656,12 +649,13 @@ int stringOctaveIndex[4];
 const int syncMap[3] = {2, 0, 1};
 float pluckPos = 0.5f;
 volatile int switchStrings = 0;
+volatile uint8_t octaveAction = 0;
 
 void __ATTR_ITCMRAM updateStateFromSPIMessage(uint8_t offset)
 {
 	int modeBit = SPI_LEVERS[24 + offset];
 
-	neck = (modeBit >> 6) & 1;
+	octaveAction = (modeBit >> 6) & 1;
 	dualSlider = (modeBit >> 5) & 1;
 
 	edit = (modeBit >> 4) & 1;
@@ -684,6 +678,8 @@ void __ATTR_ITCMRAM updateStateFromSPIMessage(uint8_t offset)
 			else
 			{
 				currentActivePreset = voice;
+				presetReady = 1;
+				diskBusy = 0;
 			}
 		}
 
@@ -696,18 +692,27 @@ void __ATTR_ITCMRAM updateStateFromSPIMessage(uint8_t offset)
 	prevVoice = voice;
 
 	octave = (((int32_t) (modeBit & 15) - 5 ) * 12.0f);
-	//octaveIndex = (modeBit & 15);
-	//octave = powf(2.0f,((int32_t) (modeBit & 3) - 1 ));
+	//if "octave action" is set to 1, then immediately change octave instead of waiting for new note
+	if (octaveAction)
+	{
+		for (int i = 0; i < numStringsThisBoard; i++)
+		{
+			stringOctave[i] = octave;
+		}
+	}
 
 	volumePedalInt = ((uint16_t)SPI_LEVERS[26 + offset] << 8) + ((uint16_t)SPI_LEVERS[27 + offset] & 0xff);
 	volumePedal = volumePedalInt * 0.0002442002442f;
 	stringPositions[whichBar] = ((uint16_t)SPI_LEVERS[28 + offset] << 8) + ((uint16_t)SPI_LEVERS[29 + offset] & 0xff);
 	if (stringPositions[whichBar] != stringPositionsPrev[whichBar])
 	{
-		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_SET);
-		newBar = 1;
+		//HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_SET);
+		stringPositionsPrev[whichBar] = stringPositions[whichBar];
+		barInMIDI[0] = stringPositions[0] * 0.001953125f;
+		barInMIDI[1] = stringPositions[1] * 0.001953125f;
 	}
-	stringPositionsPrev[0] = stringPositions[0];
+
+
 	tExpSmooth_setDest(&volumeSmoother,volumePedal);
 }
 
@@ -719,7 +724,7 @@ float frameLoadMultiplier = 1.0f / (10000.0f * AUDIO_FRAME_SIZE);
 
 void __ATTR_ITCMRAM switchStringModel(int which)
 {
-
+	presetReady = 0;
 	if (which == 1)
 	{
 
@@ -752,6 +757,8 @@ void __ATTR_ITCMRAM switchStringModel(int which)
 													 0.01f, 0, &mediumPool);
 		}
 	}
+	presetReady = 1;
+	diskBusy = 0;
 	currentActivePreset = voice;
 }
 
@@ -759,7 +766,6 @@ void __ATTR_ITCMRAM audioFrame(uint16_t buffer_offset)
 {
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_SET);
 	uint32_t tempCountFrame = DWT->CYCCNT;
-
 	int32_t current_sample = 0;
 
 
@@ -770,74 +776,6 @@ void __ATTR_ITCMRAM audioFrame(uint16_t buffer_offset)
 		switchStringModel(switchStrings);
 	}
 	switchStrings = 0;
-	if (newBar)
-	{
-		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_SET);
-		for (int j = 0; j < 2; j++)
-		{
-
-			if ((stringPositions[j] == 65535) || (stringPositions[j] > fretMeasurements[0][j]))
-			{
-				stringMappedPositions[j] = 1.0f;
-			}
-			else if ((stringPositions[j] >= fretMeasurements[1][j]) && (stringPositions[j] <= fretMeasurements[0][j]))
-			{
-				stringMappedPositions[j] = map((float)stringPositions[j], fretMeasurements[0][j], fretMeasurements[1][j], fretScaling[0], fretScaling[1]);
-			}
-			else if ((stringPositions[j] >= fretMeasurements[2][j]) && (stringPositions[j] < fretMeasurements[1][j]))
-			{
-				stringMappedPositions[j] = map((float)stringPositions[j], fretMeasurements[1][j], fretMeasurements[2][j], fretScaling[1], fretScaling[2]);
-			}
-			else if ((stringPositions[j] >= fretMeasurements[3][j]) && (stringPositions[j] <= fretMeasurements[2][j]))
-			{
-				stringMappedPositions[j] = map((float)stringPositions[j], fretMeasurements[2][j], fretMeasurements[3][j], fretScaling[2], fretScaling[3]);
-			}
-			else
-			{
-				stringMappedPositions[j] = map((float)stringPositions[j], fretMeasurements[3][j], fretMeasurements[4][j], fretScaling[3], fretScaling[4]);
-			}
-		}
-		float myMappedPos = 0.0f;
-		for (int i = 0; i < numStringsThisBoard; i++)
-		{
-
-			if (dualSlider)
-			{
-				if ((stringMappedPositions[0] == 1.0f) && (stringMappedPositions[1] < 1.0f))
-				{
-					stringMappedPositions[0] = stringMappedPositions[1];
-				}
-				else if ((stringMappedPositions[1] == 1.0f) && (stringMappedPositions[0] < 1.0f))
-				{
-					stringMappedPositions[1] = stringMappedPositions[0];
-				}
-				myMappedPos = LEAF_interpolation_linear(stringMappedPositions[0], stringMappedPositions[1], ((float)(i+firstString)) * .1f);// * 0.090909090909091f);
-			}
-			else
-			{
-				myMappedPos =  stringMappedPositions[0];
-			}
-
-			//myMappedPos = tSlide_tick(&freqSlider[i], myMappedPos);
-			invMapping[i] = (1.0f / myMappedPos);
-
-			int barTableIndex = (int)(((invMapping[i] - 1.0f) * midiTableMappingScalar) + 0.5f);
-			barInMIDI[i] = mappingToMIDITable[barTableIndex];
-			/*
-			float tempMIDI = stringMIDIPitches[i];
-			int tempIndex = (int)((tempMIDI * 100.0f) + 16384.5f);
-			tempIndex = LEAF_clip(0, tempIndex, 32767);
-			float tempFreq = mtofTable[tempIndex];
-			invMapping[i] = (1.0f / myMappedPos);
-			tempFreq = invMapping[i] * tempFreq;
-			stringFrequencies[i] = tSlide_tick(&freqSlider[i], tempFreq);
-			*/
-			//tempFreq = tSlide_tick(&freqSlider[i], tempFreq);
-			//tExpSmooth_setDest(&stringFreqSmoothers[i], tempFreq);
-		}
-		newBar = 0;
-		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_RESET);
-	}
 
 
 	if (newPluck)
@@ -846,13 +784,8 @@ void __ATTR_ITCMRAM audioFrame(uint16_t buffer_offset)
 		{
 			if ((previousStringInputs[i] == 0) && (stringInputs[i] > 0))
 			{
-
 				float amplitz = stringInputs[i] * 0.000015259021897f;
 				amplitz = LEAF_clip(0.0, amplitz, 1.0f);
-				//float amplitz = stringInputs[i] * 0.000015259021897f;
-				//tExpSmooth_setVal(&smoother[i], amplitz);
-				//tExpSmooth_setDest(&smoother[i], 0.0f);
-				//stringOctaveIndex[i] = octaveIndex;
 				stringOctave[i] = octave;
 				//HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_SET);
 				if (currentActivePreset < 60)
@@ -947,28 +880,41 @@ void __ATTR_ITCMRAM audioFrame(uint16_t buffer_offset)
 				else if (currentActivePreset == 61)
 				{
 					tADSRT_on(&fenvelopes[i], amplitz);
-					stringFrequencies[i] = mtof(stringMIDIPitches[i]+ stringOctave[i]) * invMapping[i];
+					stringFrequencies[i] = mtof(stringMIDIPitches[i]+ stringOctave[i]);
+					//float thisDecay = 1.0f / ((decayAfParts[j] * stringFrequencies[i]) + decayBs[j]);
+					float thisDecay;
+					//float thisGain = map(LEAF_clip(132.0f, stringFrequencies[i], 370.0f), 123.0f, 370.0f, partials[j], partialsHigh[j]);
+					float d1;
+					float d2;
+					float thisGain;
+					int thisString = i + firstString;
+					float stringFade;
+					float fakedFreq = stringFrequencies[i] * ((knobScaled[2] * 3.5f) + 0.5f);
+					float height2 = 0.0f;
+					float height1 = 0.0f;
+					if (thisString < 6)
+					{
+						stringFade = (float)thisString * 0.2f;
+						height2 = LEAF_clip(0.0f, map(fakedFreq, stringFundamentals[2][0], stringFundamentals[2][2], 0.0f, 2.0f), 1.99f);
+						height1 = LEAF_clip(0.0f, map(fakedFreq, stringFundamentals[1][0], stringFundamentals[1][2], 0.0f, 2.0f), 1.99f);
+					}
+					else
+					{
+						stringFade = (float)(thisString - 6.0f) * 0.2f;
+						height2 = LEAF_clip(0.0f, map(fakedFreq, stringFundamentals[1][0], stringFundamentals[1][2], 0.0f, 2.0f), 1.99f);
+						height1 = LEAF_clip(0.0f, map(fakedFreq, stringFundamentals[0][0], stringFundamentals[0][2], 0.0f, 2.0f), 1.99f);
+					}
+					//float fakedFreq = stringFrequencies[i];
+					//float height2 = LEAF_clip(0.0f,(barInMIDI[0] *  0.083333333333333f) + stringOctave[i] + (knobScaled[2] * 2.0f), 1.99f);
+					//float height1 = height2;
+					int height1Int = floor(height1);
+					float height1Float = height1 - height1Int;
+					int height2Int = floor(height2);
+					float height2Float = height2 - height2Int;
 					for (int j = 0; j < NUM_OVERTONES; j++)
 					{
-						//float thisDecay = 1.0f / ((decayAfParts[j] * stringFrequencies[i]) + decayBs[j]);
-						float thisDecay;
-						//float thisGain = map(LEAF_clip(132.0f, stringFrequencies[i], 370.0f), 123.0f, 370.0f, partials[j], partialsHigh[j]);
-						float d1;
-						float d2;
-						float thisGain;
-						int thisString = i + firstString;
-						float stringFade;
-						float fakedFreq = stringFrequencies[i] * (knobScaled[2] * 4.0f);
 						if (thisString < 6)
 						{
-							stringFade = (float)thisString * 0.2f;
-							float height2 = LEAF_clip(0.0f, map(fakedFreq, stringFundamentals[2][0], stringFundamentals[2][2], 0.0f, 2.0f), 1.99f);
-							float height1 = LEAF_clip(0.0f, map(fakedFreq, stringFundamentals[1][0], stringFundamentals[1][2], 0.0f, 2.0f), 1.99f);
-							int height1Int = floor(height1);
-							float height1Float = height1 - height1Int;
-							int height2Int = floor(height2);
-							float height2Float = height2 - height2Int;
-
 							float x1 =  (stringPartialGains[1][height1Int][j] * (1.0f - height1Float)) + (stringPartialGains[1][height1Int + 1][j] * height1Float);
 							float x2 =  (stringPartialGains[2][height2Int][j] * (1.0f - height2Float)) + (stringPartialGains[2][height2Int + 1][j] * height2Float);
 							thisGain = (x1 * stringFade) + (x2 * (1.0f - stringFade));
@@ -996,13 +942,7 @@ void __ATTR_ITCMRAM audioFrame(uint16_t buffer_offset)
 						}
 						else
 						{
-							stringFade = (float)(thisString - 6.0f) * 0.2f;
-							float height2 = LEAF_clip(0.0f, map(fakedFreq, stringFundamentals[1][0], stringFundamentals[1][2], 0.0f, 2.0f), 1.99f);
-							float height1 = LEAF_clip(0.0f, map(fakedFreq, stringFundamentals[0][0], stringFundamentals[0][2], 0.0f, 2.0f), 1.99f);
-							int height1Int = floor(height1);
-							float height1Float = height1 - height1Int;
-							int height2Int = floor(height2);
-							float height2Float = height2 - height2Int;
+
 
 							float x1 =  stringPartialGains[0][height1Int][j] + (stringPartialGains[1][height1Int + 1][j] * height1Float);
 							float x2 =  stringPartialGains[1][height2Int][j] + (stringPartialGains[2][height2Int + 1][j] * height2Float);
@@ -1029,8 +969,9 @@ void __ATTR_ITCMRAM audioFrame(uint16_t buffer_offset)
 							thisDecay = (d1 * stringFade) + (d2 * (1.0f - stringFade));
 						}
 						thisDecay *= 2000.0f * knobScaled[3];
-						tADSRT_setDecay(&additiveEnv[i][j], thisDecay + (randomFactors[currentRandom] * knobScaled[5]));// * randomFactors[currentRandom]);
-						tADSRT_on(&additiveEnv[i][j], amplitz * (thisGain + (randomFactors[currentRandom] * knobScaled[6])));
+						tADSRT_setDecay(&additiveEnv[i][j], thisDecay + (randomFactors[currentRandom] * knobScaled[5] * 0.1f));// * randomFactors[currentRandom]);
+						currentRandom++;
+						tADSRT_on(&additiveEnv[i][j], amplitz * (thisGain + (randomFactors[currentRandom] * knobScaled[6] * 0.1f)));
 						currentRandom++;
 					}
 
@@ -1079,140 +1020,149 @@ void __ATTR_ITCMRAM audioFrame(uint16_t buffer_offset)
 
 		newPluck = 0;
 	}
-	if (presetReady)
+
+
+	if (currentActivePreset == 63)
+	{
+		//mono operation, no need to compute right channel. Also for loop iterating by 2 instead of 1 to avoid if statement.
+		for (int i = 0; i < HALF_BUFFER_SIZE; i+=2)
+		{
+			current_sample = (int32_t)(audioTickString() * TWO_TO_23);
+			audioOutBuffer[buffer_offset + i] = current_sample;
+			audioOutBuffer[buffer_offset + i + 1] = current_sample;
+			//audioOutBuffer[buffer_offset + i + 1] = current_sample;
+		}
+	}
+	else if (currentActivePreset == 62)
+	{
+		//mono operation, no need to compute right channel. Also for loop iterating by 2 instead of 1 to avoid if statement.
+		for (int i = 0; i < HALF_BUFFER_SIZE; i+=2)
+		{
+			current_sample = (int32_t)(audioTickString2() * TWO_TO_23);
+			audioOutBuffer[buffer_offset + i] = current_sample;
+			audioOutBuffer[buffer_offset + i + 1] = current_sample;
+			//audioOutBuffer[buffer_offset + i + 1] = current_sample;
+		}
+	}
+
+	else if (currentActivePreset == 61)
 	{
 
-		if (currentActivePreset == 63)
+
+		//mono operation, no need to compute right channel. Also for loop iterating by 2 instead of 1 to avoid if statement.
+		for (int i = 0; i < HALF_BUFFER_SIZE; i+=2)
 		{
-			//mono operation, no need to compute right channel. Also for loop iterating by 2 instead of 1 to avoid if statement.
-			for (int i = 0; i < HALF_BUFFER_SIZE; i+=2)
+			float tempSamp = 0.0f;
+
+
+
+			for (int i = 0; i < 12; i++)
 			{
-				current_sample = (int32_t)(audioTickString() * TWO_TO_23);
-				audioOutBuffer[buffer_offset + i] = current_sample;
-				audioOutBuffer[buffer_offset + i + 1] = current_sample;
-				//audioOutBuffer[buffer_offset + i + 1] = current_sample;
-			}
-		}
-		else if (currentActivePreset == 62)
-		{
-			//mono operation, no need to compute right channel. Also for loop iterating by 2 instead of 1 to avoid if statement.
-			for (int i = 0; i < HALF_BUFFER_SIZE; i+=2)
-			{
-				current_sample = (int32_t)(audioTickString2() * TWO_TO_23);
-				audioOutBuffer[buffer_offset + i] = current_sample;
-				audioOutBuffer[buffer_offset + i + 1] = current_sample;
-				//audioOutBuffer[buffer_offset + i + 1] = current_sample;
-			}
-		}
-
-		else if (currentActivePreset == 61)
-		{
-
-
-			//mono operation, no need to compute right channel. Also for loop iterating by 2 instead of 1 to avoid if statement.
-			for (int i = 0; i < HALF_BUFFER_SIZE; i+=2)
-			{
-				float tempSamp = 0.0f;
-
-
-
-				for (int i = 0; i < 12; i++)
+				knobScaled[i] = tExpSmooth_tick(&knobSmoothers[i]);
+				for (int v = 0; v < numStringsThisBoard; v++)
 				{
-					knobScaled[i] = tExpSmooth_tick(&knobSmoothers[i]);
-					for (int v = 0; v < numStringsThisBoard; v++)
+					sourceValues[MACRO_SOURCE_OFFSET + i][v] = knobScaled[i];
+				}
+			}
+
+			float filtNoise = tVZFilter_tickEfficient(&noiseFilt, tNoise_tick(&myNoise));
+			filtNoise += tVZFilter_tickEfficient(&noiseFilt2, tNoise_tick(&myNoise));
+			tVZFilter_setFreq(&noiseFilt, faster_mtof(knobScaled[0] * 128.0f));
+			tVZFilter_setFreq(&noiseFilt2,faster_mtof(knobScaled[1] * 128.0f));
+
+			float volumeSmoothed = tExpSmooth_tick(&volumeSmoother);
+			//float Env2 = 0.0f;
+			for (int i = 0; i < NUM_STRINGS_PER_BOARD; i++)
+			{
+				float noiseEnv = tADSRT_tick(&fenvelopes[i]); //noise envelope
+				tempSamp += filtNoise * noiseEnv * knobScaled[7];
+				stringFrequencies[i] = mtof(stringMIDIPitches[i]+ stringOctave[i]);
+				for (int j = 0; j < NUM_OVERTONES; j++)
+				{
+
+					float thisEnv = tADSRT_tickNoInterp(&additiveEnv[i][j]);
+					float tempFreq = stringFrequencies[i] * (j+1) * ((knobScaled[4]* 0.003f * j) + 1.0f);// * ((Env2 * knobScaled[5])+ 1.0f);
+					//float tempFreq = 0.0f;
+					if (tempFreq < 18000.0f)
 					{
-						sourceValues[MACRO_SOURCE_OFFSET + i][v] = knobScaled[i];
+						tCycle_setFreq(&additive[i][j], tempFreq);
+						//float upRamp = (j * invNumOvertones);
+						//float downRamp = 1.0f - (j * invNumOvertones);
+
+						//float freqWeight = (upRamp * knobScaled[0]) + (downRamp * (1.0f - knobScaled[0]));
+						tempSamp += tCycle_tick(&additive[i][j]) * thisEnv;// * freqWeight;
 					}
 				}
 
-				float filtNoise = tVZFilter_tickEfficient(&noiseFilt, tNoise_tick(&myNoise));
-				filtNoise += tVZFilter_tickEfficient(&noiseFilt2, tNoise_tick(&myNoise));
-				tVZFilter_setFreq(&noiseFilt, faster_mtof(knobScaled[0] * 128.0f));
-				tVZFilter_setFreq(&noiseFilt2,faster_mtof(knobScaled[1] * 128.0f));
 
-				float volumeSmoothed = tExpSmooth_tick(&volumeSmoother);
-				//float Env2 = 0.0f;
-				for (int i = 0; i < NUM_STRINGS_PER_BOARD; i++)
-				{
-					float noiseEnv = tADSRT_tick(&fenvelopes[i]); //noise envelope
-					tempSamp += filtNoise * noiseEnv * knobScaled[7];
-					stringFrequencies[i] = mtof(stringMIDIPitches[i]+ stringOctave[i]) * invMapping[i];
-					for (int j = 0; j < NUM_OVERTONES; j++)
-					{
-
-						float thisEnv = tADSRT_tickNoInterp(&additiveEnv[i][j]);
-						float tempFreq = stringFrequencies[i] * (j+1) * ((knobScaled[4]* 0.003f * j) + 1.0f);// * ((Env2 * knobScaled[5])+ 1.0f);
-						//float tempFreq = 0.0f;
-						if (tempFreq < 18000.0f)
-						{
-							tCycle_setFreq(&additive[i][j], tempFreq);
-							//float upRamp = (j * invNumOvertones);
-							//float downRamp = 1.0f - (j * invNumOvertones);
-
-							//float freqWeight = (upRamp * knobScaled[0]) + (downRamp * (1.0f - knobScaled[0]));
-							tempSamp += tCycle_tick(&additive[i][j]) * thisEnv;// * freqWeight;
-						}
-					}
-
-
-				}
-
-				float volIdx = LEAF_clip(47.0f, ((volumeSmoothed * 80.0f) + 47.0f), 127.0f);
-				int volIdxInt = (int) volIdx;
-				float alpha = volIdx-volIdxInt;
-				int volIdxIntPlus = (volIdxInt + 1) & 127;
-				float omAlpha = 1.0f - alpha;
-				float outVol = volumeAmps128[volIdxInt] * omAlpha;
-				outVol += volumeAmps128[volIdxIntPlus] * alpha;
-
-
-				tempSamp *= outVol;
-				tempSamp *= 0.4f;
-				current_sample = (int32_t)(tempSamp * TWO_TO_23);
-				audioOutBuffer[buffer_offset + i] = current_sample;
-				audioOutBuffer[buffer_offset + i + 1] = current_sample;
 			}
+
+			float volIdx = LEAF_clip(47.0f, ((volumeSmoothed * 80.0f) + 47.0f), 127.0f);
+			int volIdxInt = (int) volIdx;
+			float alpha = volIdx-volIdxInt;
+			int volIdxIntPlus = (volIdxInt + 1) & 127;
+			float omAlpha = 1.0f - alpha;
+			float outVol = volumeAmps128[volIdxInt] * omAlpha;
+			outVol += volumeAmps128[volIdxIntPlus] * alpha;
+
+
+			tempSamp *= outVol;
+			tempSamp *= 0.4f;
+			current_sample = (int32_t)(tempSamp * TWO_TO_23);
+			audioOutBuffer[buffer_offset + i] = current_sample;
+			audioOutBuffer[buffer_offset + i + 1] = current_sample;
 		}
-		else
+	}
+	else
+	{
+		//mono operation, no need to compute right channel. Also for loop iterating by 2 instead of 1 to avoid if statement.
+		for (int i = 0; i < HALF_BUFFER_SIZE; i+=2)
 		{
-			//mono operation, no need to compute right channel. Also for loop iterating by 2 instead of 1 to avoid if statement.
-			for (int i = 0; i < HALF_BUFFER_SIZE; i+=2)
-			{
-				current_sample = (int32_t)(audioTickL() * TWO_TO_23);
-				audioOutBuffer[buffer_offset + i] = current_sample;
-				audioOutBuffer[buffer_offset + i + 1] = current_sample;
-				//audioOutBuffer[buffer_offset + i + 1] = current_sample;
-			}
+			current_sample = (int32_t)(audioTickL() * TWO_TO_23);
+			audioOutBuffer[buffer_offset + i] = current_sample;
+			audioOutBuffer[buffer_offset + i + 1] = current_sample;
+			//audioOutBuffer[buffer_offset + i + 1] = current_sample;
+		}
+	}
+
+
+
+	timeFrame = DWT->CYCCNT - tempCountFrame;
+
+
+	frameLoadPercentage = (float)timeFrame * frameLoadMultiplier;
+
+	if (frameLoadPercentage > .99f)
+	{
+		if (overSampled == 1)
+		{
+			overSampled = 0;
+		}
+		else if (oscToTick > 0)
+		{
+			oscToTick--;
 		}
 
 	}
 
-	timeFrame = DWT->CYCCNT - tempCountFrame;
-
-	frameLoadPercentage = (float)timeFrame * frameLoadMultiplier;
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_RESET);
+
 }
 
 
 float oscOuts[2][NUM_OSC][NUM_STRINGS_PER_BOARD];
 float oscAmpMult = 1.0f;
 float oscAmpMultArray[4] = {0.0f, 1.0f, 0.5f, 0.333333f};
-uint32_t timeOsc = 0;
-uint32_t timeApprox = 0;
-uint32_t timeTrue = 0;
+
 volatile float MIDIerror = 0.0f;
 
 void __ATTR_ITCMRAM oscillator_tick(float note, int string)
 {
-    //if (loadingTables || !enabled) return;
-	interruptChecker = 0;
-	uint32_t tempCount1 = DWT->CYCCNT;
 	for (int i = 0; i < NUM_OSC; i++)
 	{
 		oscOuts[0][i][string] = 0.0f;
 		oscOuts[1][i][string] = 0.0f;
 	}
-	//for (int osc = 0; osc < 1; osc++)
 	for (int osc = 0; osc < oscToTick; osc++)
 	{
 		param* oscParams = &params[OSC_PARAMS_OFFSET + osc * OscParamsNum];
@@ -1226,8 +1176,7 @@ void __ATTR_ITCMRAM oscillator_tick(float note, int string)
 		float freqToSmooth = (note + (fine*0.01f));
 		tExpSmooth_setDest(&pitchSmoother[osc][string], freqToSmooth);
 
-		uint32_t tempCountappr = DWT->CYCCNT;
-		float tempMIDI = tExpSmooth_tick(&pitchSmoother[osc][string]);
+		float tempMIDI = tExpSmooth_tick(&pitchSmoother[osc][string]) + midiAdd[osc][string];
 
 
 		float tempIndexF =((LEAF_clip(-163.8375f, tempMIDI, 163.8375f) * 100.0f) + MTOF_TABLE_SIZE_DIV_TWO);
@@ -1238,64 +1187,57 @@ void __ATTR_ITCMRAM oscillator_tick(float note, int string)
 		float freqToSmooth2 = mtofTable[(tempIndexI + 1) & MTOF_TABLE_SIZE_MINUS_ONE];
 		freqToSmooth = (freqToSmooth1 * (1.0f - tempIndexF)) + (freqToSmooth2 * tempIndexF);
 
-		//freqToSmooth = mtof(tempMIDI);
-		timeApprox = DWT->CYCCNT - tempCountappr;
-
-		float finalFreq = (freqToSmooth * invMapping[string] * freqMult[osc][string]) + freqOffset;
+		float finalFreq = (freqToSmooth * freqMult[osc][string]) + freqOffset;
 
 		float sample = 0.0f;
 
 
 		shapeTick[osc](&sample, osc, finalFreq, shape, sync, string);
-		//tSawtooth_setFreq(&sawT[osc][string], finalFreq);
-		//sample = tSawtooth_tick(&sawT[osc][string]);
 
 		sample *= amp;
 
 		//sourceValues[OSC_SOURCE_OFFSET + osc] = sample; // the define of zero may be wasteful
 		sourceValues[osc][string] = sample;
 
-		//sample *= oscAmpMult; // divide down gain if more than one oscillator is sounding (computed at preset load)
+		sample *= oscAmpMult; // divide down gain if more than one oscillator is sounding (computed at preset load)
 
 		oscOuts[0][osc][string] = sample * (filterSend) * oscParams[OscEnabled].realVal[string];
 		oscOuts[1][osc][string] = sample * (1.0f - filterSend) * oscParams[OscEnabled].realVal[string];
 	}
-
-	timeOsc = DWT->CYCCNT - tempCount1;
 }
 
 
 void __ATTR_ITCMRAM  sawSquareTick(float* sample, int v, float freq, float shape, int sync, int string)
 {
-	tPBSaw_setFreq(&sawPaired[v][string], freq);
+	tPBSawSquare_setFreq(&sawPaired[v][string], freq);
     //tSawtooth_setShape(&sawPaired[v][string], shape);
     //if (sync)
     {
     	//tMBSawPulse_sync(&sawPaired[v][string], sourceValues[syncMap[OSC_SOURCE_OFFSET + v]][string]);
 
     }
-    *sample += tPBSaw_tick(&sawPaired[v][string]) * 2.f;
+    *sample += tPBSawSquare_tick(&sawPaired[v][string]);
 }
 
 void __ATTR_ITCMRAM  sineTriTick(float* sample, int v, float freq, float shape, int sync, int string)
 {
-    tMBSineTri_setFreq(&sinePaired[v][string], freq);
-    tMBSineTri_setShape(&sinePaired[v][string],shape);
-    if (sync)
-    {
-    	tMBSineTri_sync(&sinePaired[v][string], sourceValues[syncMap[OSC_SOURCE_OFFSET + v]][string]);
-    }
-    *sample += tMBSineTri_tick(&sinePaired[v][string]) * 2.0f;
+    tPBSineTriangle_setFreq(&sinePaired[v][string], freq);
+    tPBSineTriangle_setShape(&sinePaired[v][string],shape);
+   // if (sync)
+   // {
+   // 	tPBSineTriangle_sync(&sinePaired[v][string], sourceValues[syncMap[OSC_SOURCE_OFFSET + v]][string]);
+   // }
+    *sample += tPBSineTriangle_tick(&sinePaired[v][string]);
 }
 
 void __ATTR_ITCMRAM  sawTick(float* sample, int v, float freq, float shape, int sync, int string)
 {
-    tPBSaw_setFreq(&saw[v][string], freq);
+	tPBSaw_setFreq(&saw[v][string], freq);
     //if (sync)
 	//{
 	//	tPBSaw_sync(&saw[v][string], sourceValues[syncMap[OSC_SOURCE_OFFSET + v]][string]);
 	//}
-    *sample += tPBSaw_tick(&saw[v][string]) * 2.f;;
+    *sample += tPBSaw_tick(&saw[v][string]);
 }
 
 void __ATTR_ITCMRAM  pulseTick(float* sample, int v, float freq, float shape, int sync, int string)
@@ -1306,7 +1248,7 @@ void __ATTR_ITCMRAM  pulseTick(float* sample, int v, float freq, float shape, in
 	//{
 	//	tPBPulse_sync(&pulse[v][string], sourceValues[syncMap[OSC_SOURCE_OFFSET + v]][string]);
 	//}
-    *sample += tPBPulse_tick(&pulse[v][string]) * 2.f;;
+    *sample += tPBPulse_tick(&pulse[v][string]);
 }
 
 void __ATTR_ITCMRAM  sineTick(float* sample, int v, float freq, float shape, int sync, int string)
@@ -1323,7 +1265,7 @@ void __ATTR_ITCMRAM  triTick(float* sample, int v, float freq, float shape, int 
 	//{
 	//	tMBTriangle_sync(&tri[v][string], sourceValues[syncMap[OSC_SOURCE_OFFSET + v]][string]);
 	//}
-    *sample += tPBTriangle_tick(&tri[v][string]) * 2.0f;;
+    *sample += tPBTriangle_tick(&tri[v][string]);
 }
 
 void __ATTR_ITCMRAM  userTick(float* sample, int v, float freq, float shape, int sync, int string)
@@ -1337,11 +1279,9 @@ uint32_t timeFilt = 0;
 
 float __ATTR_ITCMRAM filter_tick(float* samples, float note, int string)
 {
-	interruptChecker = 0;
-	uint32_t tempCount1 = DWT->CYCCNT;
 	float cutoff[2];
 	uint8_t enabledFilt[2] = {0,0};
-	for (int f = 0; f < filterToTick; f++)
+	for (int f = 0; f < NUM_FILT; f++)
 	{
 		param* filtParams = &params[FILTER_PARAMS_OFFSET + f * FilterParamsNum];
 		float enabled = filtParams[FilterEnabled].realVal[string];
@@ -1355,12 +1295,13 @@ float __ATTR_ITCMRAM filter_tick(float* samples, float note, int string)
 			note = 0.0f; //is this necessary?
 		}
 
-		cutoff[f] = MIDIcutoff + ((note + barInMIDI[string]) * keyFollow);
+		cutoff[f] = MIDIcutoff + (note  * keyFollow);
 
 		cutoff[f] = LEAF_clip(0.0f, (cutoff[f]-16.0f) * 35.929824561403509f, 4095.0f);
+
 		//smoothing may not be necessary
-		tExpSmooth_setDest(&filterCutoffSmoother[f][string], cutoff[f]);
-		cutoff[f] = tExpSmooth_tick(&filterCutoffSmoother[f][string]);
+		//tExpSmooth_setDest(&filterCutoffSmoother[f][string], cutoff[f]);
+		//cutoff[f] = tExpSmooth_tick(&filterCutoffSmoother[f][string]);
 	}
 
 	float  sp = params[FilterSeriesParallelMix].realVal[string];
@@ -1376,8 +1317,6 @@ float __ATTR_ITCMRAM filter_tick(float* samples, float note, int string)
 	{
 		filterTick[1](&samples[1], 1, cutoff[1], string);
 	}
-
-	timeFilt = DWT->CYCCNT - tempCount1;
 	return samples[1] + (samples[0] * sp);
 }
 
@@ -1441,21 +1380,22 @@ void __ATTR_ITCMRAM  LadderLowpassTick(float* sample, int v, float cutoff, int s
 }
 
 
-
+float midiAdd[NUM_OSC][NUM_STRINGS_PER_BOARD];
 
 void __ATTR_ITCMRAM setFreqMultPitch(float pitch, int osc, int string)
 {
+	pitch *= 24.0f;
 	if (params[OSC_PARAMS_OFFSET + osc * OscParamsNum + OscisStepped].realVal[string] > 0.5f) ///check for value of 1 since this is a float
 	{
 		pitch = roundf(pitch);
 	}
-
-	freqMult[osc][string] = powf(1.059463094359295f, pitch);
-
+	midiAdd[osc][string] = pitch;
+	freqMult[osc][string] = 1.0f;
 }
 
 void __ATTR_ITCMRAM setFreqMultHarm(float harm, int osc, int string)
 {
+	harm *= 15.0f;
 	if (params[OSC_PARAMS_OFFSET + osc * OscParamsNum + OscisStepped].realVal[string] > 0.5f) ///check for value of 1 since this is a float
 	{
 		harm = roundf(harm);
@@ -1469,7 +1409,7 @@ void __ATTR_ITCMRAM setFreqMultHarm(float harm, int osc, int string)
 	{
 		freqMult[osc][string] = (1.0f / fabsf((harm - 1)));
 	}
-
+	midiAdd[osc][string] = 0.0f;
 }
 
 
@@ -1565,47 +1505,42 @@ void  __ATTR_ITCMRAM  LadderLowpassSetGain(float gain, int v, int string)
 	filterGain[v][string] = fasterdbtoa((gain * 24.0f) - 12.0f);
 }
 
-uint32_t timeEnv = 0;
+
 void __ATTR_ITCMRAM envelope_tick(int string)
 {
-	interruptChecker = 0;
-	uint32_t tempCount1 = DWT->CYCCNT;
-
 	for (int v = 0; v < NUM_ENV; v++)
 	{
-		float value = tADSRT_tickNoInterp(&envs[v][string]); //used to be noInterp but wanted to check if this sounds better and isn't too slow
-		sourceValues[ENV_SOURCE_OFFSET + v][string] = value;
+		if (envOn[v])
+		{
+			sourceValues[ENV_SOURCE_OFFSET + v][string] = tADSRT_tickNoInterp(&envs[v][string]);
+		}
 	}
-	timeEnv = DWT->CYCCNT - tempCount1;
 }
 
-uint32_t timeLFO = 0;
+
 void __ATTR_ITCMRAM lfo_tick(int string)
 {
-	interruptChecker = 0;
-	uint32_t tempCount1 = DWT->CYCCNT;
 	for (int i = 0; i < NUM_LFOS; i++)
 	{
-		float sample = 0.0f;
 		if (lfoOn[i])
 		{
+			float sample = 0.0f;
 			lfoShapeTick[i](&sample,i, string);
+			sourceValues[LFO_SOURCE_OFFSET + i][string] = sample;
 		}
-		sourceValues[LFO_SOURCE_OFFSET + i][string] = sample;
 	}
-	timeLFO = DWT->CYCCNT - tempCount1;
 }
 
 
 void  __ATTR_ITCMRAM  setEnvelopeAttack(float a, int v, int string)
 {
-	a = a + 0.01f;
+	a = a + 0.001f;
 	tADSRT_setAttack(&envs[v][string], a);
 }
 
 void  __ATTR_ITCMRAM  setEnvelopeDecay(float d, int v, int string)
 {
-	d = d + 0.01f;
+	d = d + 0.001f;
 	tADSRT_setDecay(&envs[v][string], d);
 }
 
@@ -1616,7 +1551,7 @@ void  __ATTR_ITCMRAM  setEnvelopeSustain(float s, int v, int string)
 
 void  __ATTR_ITCMRAM  setEnvelopeRelease(float r, int v, int string)
 {
-	r = r + 0.01f;
+	r = r + 0.001f;
 	tADSRT_setRelease(&envs[v][string], r);
 }
 
@@ -1650,66 +1585,76 @@ void  __ATTR_ITCMRAM  setFinalLowpass(float in, int v, int string)
 	tSVF_setFreqFast(&finalLowpass[string], LEAF_clip(0.0f, (in-16.0f) * 35.929824561403509f, 4095.0f));
 }
 
-uint32_t timeMap = 0;
+
 void __ATTR_ITCMRAM tickMappings(void)
 {
 	interruptChecker = 0;
-	uint32_t tempCount1 = DWT->CYCCNT;
 	for (int i = 0; i < numMappings; i++)
 	{
-		for (int v = 0; v < numStringsThisBoard; v++)
+		if (mappings[i].destNumber != 255)
 		{
-			float unsmoothedValue = 0.0f;
-			float smoothedValue = 0.0f;
-			for (int j = 0; j < 3; j++)
+			for (int v = 0; v < numStringsThisBoard; v++)
 			{
-				if (mappings[i].hookActive[j])
+				float unsmoothedValue = 0.0f;
+				float smoothedValue = 0.0f;
+				for (int j = 0; j < 3; j++)
 				{
-					float sum = *mappings[i].sourceValPtr[j][v] * mappings[i].amount[j] * *mappings[i].scalarSourceValPtr[j][v];
-					if (mappings[i].sourceSmoothed[j])
+					if (mappings[i].hookActive[j])
 					{
-						smoothedValue += sum;
-					}
-					else
-					{
-						unsmoothedValue += sum;
+						float sum = *mappings[i].sourceValPtr[j][v] * mappings[i].amount[j] * *mappings[i].scalarSourceValPtr[j][v];
+						if (mappings[i].sourceSmoothed[j])
+						{
+							smoothedValue += sum;
+						}
+						else
+						{
+							unsmoothedValue += sum;
+						}
 					}
 				}
+				//sources are now summed - let's add the initial value
+				smoothedValue += mappings[i].dest->zeroToOneVal[v];
+
+				tExpSmooth_setDest(&mapSmoothers[i][v], smoothedValue);
+				smoothedValue = tExpSmooth_tick(&mapSmoothers[i][v]);
+				float finalVal = unsmoothedValue + smoothedValue;
+
+				//now scale the value with the correct scaling function
+				mappings[i].dest->realVal[v] = mappings[i].dest->scaleFunc(finalVal);
+
+				//and pop that value where it belongs by setting the actual parameter
+				mappings[i].dest->setParam(mappings[i].dest->realVal[v], mappings[i].dest->objectNumber, v);
 			}
-			//sources are now summed - let's add the initial value
-			smoothedValue += mappings[i].dest->zeroToOneVal[v];
-
-			tExpSmooth_setDest(&mapSmoothers[i][v], smoothedValue);
-			smoothedValue = tExpSmooth_tick(&mapSmoothers[i][v]);
-			float finalVal = unsmoothedValue + smoothedValue;
-
-			//now scale the value with the correct scaling function
-			mappings[i].dest->realVal[v] = mappings[i].dest->scaleFunc(finalVal);
-
-			//and pop that value where it belongs by setting the actual parameter
-			mappings[i].dest->setParam(mappings[i].dest->realVal[v], mappings[i].dest->objectNumber, v);
 		}
 	}
-	timeMap = DWT->CYCCNT - tempCount1;
+
 
 }
 uint32_t timeTick = 0;
-uint32_t oversampleCount = 0;
+uint32_t timeMap = 0;
+uint32_t timeOS = 0;
+uint32_t timeSmoothing = 0;
+uint32_t timeGettingNote = 0;
+uint32_t timeNoise = 0;
+uint32_t timePerStringTick = 0;
+uint32_t timeLFO = 0;
+uint32_t timeEnv = 0;
+uint32_t timeOsc = 0;
 uint32_t oscCountdown = 0;
 uint8_t interrupted = 0;
 
 float __ATTR_ITCMRAM audioTickL(void)
 {
 	interrupted = 0;
-	uint32_t tempCount5 = DWT->CYCCNT;
+	uint32_t tempCountTick = DWT->CYCCNT;
 	float masterSample = 0.0f;
 
-	uint8_t fxPre = (params[FXPREPOST_PARAMS_OFFSET].realVal[0] > 0.5f); // ok to use [0] because it's not changeable by mapping so not per voice
 	//run mapping ticks for all strings
+	uint32_t tempCountMap = DWT->CYCCNT;
 	tickMappings();
+	timeMap = DWT->CYCCNT - tempCountMap;
 
-	//samples[0]= 0.0f;
-
+	uint32_t tempSmoothing = DWT->CYCCNT;
 	float volumeSmoothed = tExpSmooth_tick(&volumeSmoother);
 
 	for (int i = 0; i < 12; i++)
@@ -1728,17 +1673,17 @@ float __ATTR_ITCMRAM audioTickL(void)
 			sourceValues[PEDAL_SOURCE_OFFSET + i][v] = pedalScaled[i];
 		}
 	}
+	timeSmoothing = DWT->CYCCNT - tempSmoothing;
 
 	float note[numStringsThisBoard];
 
+
+	uint32_t tempPerStringTick = DWT->CYCCNT;
 	for (int v = 0; v < numStringsThisBoard; v++)
 	{
 		float sample = 0.0f;
 
-		//get midi from frequency
-		//float tempFreq = stringFrequencies[v]* octaveRatios[stringOctaveIndex[v]];
-		//tempIndex = (tempFreq * )
-		//note[v] = ftom(stringFrequencies[v] * octaveRatios[stringOctaveIndex[v]]);
+		uint32_t tempCountGettingNote = DWT->CYCCNT;
 		note[v] = stringMIDIPitches[v] + stringOctave[v];
 		sourceValues[MIDI_KEY_SOURCE_OFFSET][v] = (note[v] - midiKeySubtractor) * midiKeyDivisor;
 
@@ -1746,11 +1691,32 @@ float __ATTR_ITCMRAM audioTickL(void)
 		{
 			note[v] = 0.0f;
 		}
-		envelope_tick(v);
-		lfo_tick(v);
-		oscillator_tick(note[v], v);
+		if (note[v] > 127.0f)
+		{
+			note[v] = 127.0f;
+		}
+		if (isnan(note[v]))
+		{
+			note[v] = 64.0f;
+		}
+		timeGettingNote = DWT->CYCCNT - tempCountGettingNote;
 
+		uint32_t tempCountEnv = DWT->CYCCNT;
+		envelope_tick(v);
+		timeEnv = DWT->CYCCNT - tempCountEnv;
+
+		uint32_t tempCountLFO = DWT->CYCCNT;
+		lfo_tick(v);
+		timeLFO = DWT->CYCCNT - tempCountLFO;
+
+		uint32_t tempCountOsc = DWT->CYCCNT;
+		oscillator_tick(note[v], v);
+		timeOsc = DWT->CYCCNT - tempCountOsc;
+
+		uint32_t tempCountNoise = DWT->CYCCNT;
 		noise_tick(v);
+		timeNoise = DWT->CYCCNT - tempCountNoise;
+
 		float filterSamps[2] = {0.0f, 0.0f};
 		for (int i = 0; i < oscToTick; i++)
 		{
@@ -1759,28 +1725,28 @@ float __ATTR_ITCMRAM audioTickL(void)
 		}
 		filterSamps[0] += noiseOuts[0][v];
 		filterSamps[1] += noiseOuts[1][v];
-		//sample = filterSamps[0];
 
+		uint32_t tempCountFilt = DWT->CYCCNT;
 		sample = filter_tick(&filterSamps[0], note[v], v);
+		timeFilt = DWT->CYCCNT - tempCountFilt;
 
 		if (fxPre)
 		{
 			sample *= amplitude[v];
 		}
-		uint32_t tempCount1 = DWT->CYCCNT;
+		uint32_t tempCountOS = DWT->CYCCNT;
 
 		if (overSampled)
 		{
 
 			//oversample for non-linear effects (distortion, etc)
-			//tOversampler_upsample(&os[v], sample, oversamplerArray);
 			//using the arm interpolation and decimation cuts 100 cycles off of the processing
 			arm_fir_interpolate_f32(&osI[v], &sample, (float*)&oversamplerArray, 1);
 
 
 			for (int i = 0; i < 4; i++)
 			{
-				if (effectsActive[i] == 1)
+				if (effectsActive[i])
 				{
 					for (int j = 0; j < OVERSAMPLE; j++)
 					{
@@ -1795,26 +1761,33 @@ float __ATTR_ITCMRAM audioTickL(void)
 			//hard clip before downsampling to get a little more antialiasing from clipped signal.
 			for (int i = 0; i < (OVERSAMPLE); i++)
 			{
-				oversamplerArray[i] = LEAF_clip(-1.0f, oversamplerArray[i], 1.0f);
+				if (oversamplerArray[i] > .999999f)
+				{
+					oversamplerArray[i] = .999999f;
+				}
+				else if (oversamplerArray[i]< -.999999f)
+				{
+					oversamplerArray[i] = -.999999f;
+				}
 			}
 			//downsample to get back to normal sample rate
 			arm_fir_decimate_f32(&osD[v], (float*)&oversamplerArray, &sample, 2);
-			//sample = tOversampler_downsample(&os[v], oversamplerArray);
 		}
 		else
 		{
-			for (int i = 0; i < numEffectToTick; i++)
+			for (int i = 0; i < NUM_EFFECT; i++)
 			{
-				float dry = sample;
-				sample = effectTick[i](sample, i, v); //run the effect
-				sample =((1.0f - fxMix[i][v]) * dry) + (fxMix[i][v] * sample);
-				sample *= fxPostGain[i][v];
+				if (effectsActive[i])
+				{
+					float dry = sample;
+					sample = effectTick[i](sample, i, v); //run the effect
+					sample =((1.0f - fxMix[i][v]) * dry) + (fxMix[i][v] * sample);
+					sample *= fxPostGain[i][v];
+				}
 			}
 		}
 
-		uint32_t tempCount2 = DWT->CYCCNT;
-
-		oversampleCount = tempCount2-tempCount1;
+		timeOS = DWT->CYCCNT - tempCountOS;
 
 		if (!fxPre)
 		{
@@ -1823,125 +1796,37 @@ float __ATTR_ITCMRAM audioTickL(void)
 
 
 		sample = tSVF_tick(&finalLowpass[v], sample) * 0.25f;
-		masterSample += sample;
+		masterSample += sample * finalMaster[v];
 
-		float volIdx = LEAF_clip(47.0f, ((volumeSmoothed * 80.0f) + 47.0f), 127.0f);
-		int volIdxInt = (int) volIdx;
-		float alpha = volIdx-volIdxInt;
-		int volIdxIntPlus = (volIdxInt + 1) & 127;
-		float omAlpha = 1.0f - alpha;
-		float outVol = volumeAmps128[volIdxInt] * omAlpha;
-		outVol += volumeAmps128[volIdxIntPlus] * alpha;
 
-		masterSample *= outVol;
-
-		masterSample *= finalMaster[v] ;
-
-		masterSample = LEAF_clip(-1.0f, masterSample, 1.0f);
 	}
+	timePerStringTick = DWT->CYCCNT - tempPerStringTick;
 
+	float volIdx = LEAF_clip(47.0f, ((volumeSmoothed * 80.0f) + 47.0f), 127.0f);
+	int volIdxInt = (int) volIdx;
+	float alpha = volIdx-volIdxInt;
+	int volIdxIntPlus = (volIdxInt + 1) & 127;
+	float omAlpha = 1.0f - alpha;
+	float outVol = volumeAmps128[volIdxInt] * omAlpha;
+	outVol += volumeAmps128[volIdxIntPlus] * alpha;
 
-	masterSample = LEAF_clip(-1.0f, masterSample, 1.0f);
-
-
-	uint32_t tempCount6 = DWT->CYCCNT;
-	timeTick = tempCount6-tempCount5;
-	if ((timeTick > 10000) && (!interrupted))
+	if (pedalControlsMaster)
 	{
-		if (overSampled)
-		{
-			overSampled = 0;
-		}
-
-		else if (oscToTick > 1)
-		{
-			oscToTick--;
-		}
+		masterSample *= outVol;
+	}
+	if (masterSample  > .999999f)
+	{
+		masterSample  = .999999f;
+	}
+	else if (masterSample < -.999999f)
+	{
+		masterSample = -.9999999f;
 	}
 
-#if 0
-	return tCycle_tick(&testSine) * 0.8f;
-#endif
+	timeTick = DWT->CYCCNT - tempCountTick;
+
 	return masterSample * audioMasterLevel * 0.98f;
 }
-#if 0
-void __ATTR_ITCMRAM sendNoteOn(uint8_t note, uint8_t velocity)
-{
-	;
-}
-void __ATTR_ITCMRAM sendCtrl(uint8_t ctrl, uint8_t value)
-{
-	;
-}
-void __ATTR_ITCMRAM sendPitchBend(uint8_t value, uint8_t ctrl)
-{
-	;
-}
-
-void __ATTR_ITCMRAM sendNoteOn(uint8_t note, uint8_t velocity)
-{
-	if (velocity > 0)
-	{
-		tSimplePoly_noteOn(&myPoly, note, velocity);
-		float fvelocity = (float)velocity;
-		fvelocity = ((0.007685533519034f*fvelocity) + 0.0239372430f);
-		fvelocity = fvelocity * fvelocity;
-		for (int v = 0; v < NUM_ENV; v++)
-		{
-			param* envParams = &params[ENVELOPE_PARAMS_OFFSET + v * EnvelopeParamsNum];
-			float useVelocity = envParams[EnvelopeVelocity].realVal;
-			float envVel = fvelocity;
-			if (useVelocity == 0) envVel = 1.f;
-		    tADSRT_on(&envs[v], envVel);
-		    voiceSounding = 1;
-		}
-		for (int v = 0; v < NUM_LFOS; v++)
-		{
-			param* lfoParams = &params[LFO_PARAMS_OFFSET + v * LFOParamsNum];
-			float noteOnSync = lfoParams[LFOSync].realVal;
-			if (noteOnSync > 0.5f)
-			{
-				lfoParams[LFOPhase].setParam(lfoParams[LFOPhase].realVal, v);
-			}
-		}
-	}
-	else
-	{
-		tSimplePoly_noteOff(&myPoly, note);
-		for (int v = 0; v < NUM_ENV; v++)
-		{
-			tADSRT_off(&envs[v]);
-		}
-	}
-	//store random number as source
-	//store velocity as source
-	// store scaled pitch as source
-}
-
-
-void __ATTR_ITCMRAM sendCtrl(uint8_t ctrl, uint8_t value)
-{
-	//HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
-
-	sourceValues[CTRL_SOURCE_OFFSET + (ctrl - CTRL_MIDI_START)] = (float)value * INV_TWO_TO_7;
-}
-
-
-void __ATTR_ITCMRAM sendPitchBend(uint8_t value, uint8_t ctrl)
-{
-	int bendInt = value + (ctrl << 7);
-	bendInt = bendInt - 8192;
-	bend = bendInt * bendRangeMultiplier; //by default, divide by (16383 / 96 semitones)
-
-}
-
-#endif
-
-
-
-
-
-
 
 float __ATTR_ITCMRAM audioTickString(void)
 {
@@ -1966,7 +1851,7 @@ float __ATTR_ITCMRAM audioTickString(void)
 			note[i] = 0.0f;
 		}
 
-		float finalFreq = mtof(note[i]) * invMapping[i] ;
+		float finalFreq = mtof(note[i]);
 		float dampFreq = faster_mtof((knobScaled[11] * 140.0f)+60.0f);
 		float decay = 0.1f;
 		if (lsDecay[i])
@@ -2067,8 +1952,7 @@ float  __ATTR_ITCMRAM audioTickString2(void)
 
 		float freqToSmooth1 = mtofTable[tempIndexI & 32767];
 		float freqToSmooth2 = mtofTable[(tempIndexI + 1) & 32767];
-		float freqToSmooth = (freqToSmooth1 * (1.0f - tempIndexF)) + (freqToSmooth2 * tempIndexF);
-		float finalFreq = freqToSmooth * invMapping[i] ;
+		float finalFreq = (freqToSmooth1 * (1.0f - tempIndexF)) + (freqToSmooth2 * tempIndexF);
 
 		tLivingString2_setFreq(&strings[i], finalFreq);
 
@@ -2082,34 +1966,8 @@ float  __ATTR_ITCMRAM audioTickString2(void)
 			tLivingString2_setPrepIndex(&strings[i], knobScaled[10]);
 		}
 
+		temp = (tLivingString2_tick(&strings[i],(filtNoise * env)));// + (prevSamp[i] * (0.001f * knobScaled[5]))));//filtNoise * theEnv) * env);
 
-		//tCycle_setFreq(&sines[i], stringFrequencies[i]);
-		//tTriangle_setFreq(&tris[i], stringFrequencies[i]);
-		//tADSRT_setDecay(&fenvelopes[i], knobScaled[2] * 22000.0f);
-
-
-		//float tempSamp = (tCycle_tick(&sines[i])) * 0.5f;
-		/*
-		for (int j = 0; j< NUM_OSCS; j++)
-		{
-			tSawtooth_setFreq(&Ssaws[i][j], stringFrequencies[i] * detunes[j]);
-			tempSamp += (tSawtooth_tick(&Ssaws[i][j]) * 0.5f);//filtNoise * theEnv) * env);
-		}
-		*/
-		//tempSamp = tEfficientSVF_tick(&filts2[i], tempSamp * env);
-		//tLivingString2_udpateDelays(&strings[i]);
-		float tempSamp = (tLivingString2_tick(&strings[i],(filtNoise * env)));// + (prevSamp[i] * (0.001f * knobScaled[5]))));//filtNoise * theEnv) * env);
-		prevSamp[i] = 0.0f;
-		for (int j = 0; j < NUM_STRINGS_PER_BOARD; j++)
-		{
-			if (j != i) //put sympathetic resonance in all strings but yourself
-			{
-				prevSamp[j]+=tempSamp * volumeSmoothed;
-			}
-		}
-
-
-		temp += tempSamp;
 	}
 
 	float volIdx = LEAF_clip(47.0f, ((volumeSmoothed * 80.0f) + 47.0f), 127.0f);
@@ -2753,13 +2611,9 @@ void __ATTR_ITCMRAM noiseSetFreq(float value, int v, int string)
 	tVZFilter_setFreqFast(&noiseBell1[string], value);
 }
 
-uint32_t timeNoise = 0;
-uint32_t timeRandom = 0;
-
 
 void __ATTR_ITCMRAM noise_tick(int string)
 {
-	uint32_t tempCount9 = DWT->CYCCNT;
 	float enabled = params[Noise].realVal[string];
 	float amp = params[NoiseAmp].realVal[string];
 	float filterSend = params[NoiseFilterSend].realVal[string];
@@ -2773,9 +2627,6 @@ void __ATTR_ITCMRAM noise_tick(int string)
 	sourceValues[NOISE_SOURCE_OFFSET][string] = normSample;
 	noiseOuts[0][string] = sample * filterSend *  enabled;
 	noiseOuts[1][string] = sample * (1.f-filterSend) * enabled ;
-
-	uint32_t tempCount10 = DWT->CYCCNT;
-	timeRandom = tempCount10-tempCount9;
 }
 
 
@@ -2789,7 +2640,6 @@ void __ATTR_ITCMRAM HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
 	{
 		for (int i = 0; i < numStringsThisBoard; i++)
 		{
-
 			stringInputs[i] = (SPI_PLUCK_RX[((i+firstString)*2)+ 27] << 8) + SPI_PLUCK_RX[((i+firstString)*2)+ 28];
 		}
 	}
@@ -2804,10 +2654,8 @@ void __ATTR_ITCMRAM HAL_SPI_RxHalfCpltCallback(SPI_HandleTypeDef *hspi)
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_SET);
 	if ((SPI_PLUCK_RX[0] == 254) && (SPI_PLUCK_RX[25] == 253))
 	{
-
 		for (int i = 0; i < numStringsThisBoard; i++)
 		{
-
 			stringInputs[i] = (SPI_PLUCK_RX[((i+firstString)*2)+ 1] << 8) + SPI_PLUCK_RX[((i+firstString)*2)+ 2];
 		}
 	}
@@ -2844,18 +2692,20 @@ void __ATTR_ITCMRAM HAL_SPI_TxRxHalfCpltCallback(SPI_HandleTypeDef *hspi)
 
 void __ATTR_ITCMRAM HAL_SAI_TxCpltCallback(SAI_HandleTypeDef *hsai)
 {
-	if (!diskBusy)
-		//SCB_InvalidateDCache();
-	audioFrame(HALF_BUFFER_SIZE);
-	SCB_CleanDCache_by_Addr((uint32_t*)(((uint32_t)audioOutBuffer) & ~(uint32_t)0x1F), AUDIO_BUFFER_SIZE+32);
+	if ((!diskBusy)&& (presetReady))
+	{
+		audioFrame(HALF_BUFFER_SIZE);
+		SCB_CleanDCache_by_Addr((uint32_t*)(((uint32_t)audioOutBuffer) & ~(uint32_t)0x1F), AUDIO_BUFFER_SIZE+32);
+	}
 }
 
 void __ATTR_ITCMRAM HAL_SAI_TxHalfCpltCallback(SAI_HandleTypeDef *hsai)
 {
-	if (!diskBusy)
-		//SCB_InvalidateDCache();
-	audioFrame(0);
-	SCB_CleanDCache_by_Addr((uint32_t*)(((uint32_t)audioOutBuffer) & ~(uint32_t)0x1F), AUDIO_BUFFER_SIZE+32);
+	if ((!diskBusy)&& (presetReady))
+	{
+		audioFrame(0);
+		SCB_CleanDCache_by_Addr((uint32_t*)(((uint32_t)audioOutBuffer) & ~(uint32_t)0x1F), AUDIO_BUFFER_SIZE+32);
+	}
 }
 
 void __ATTR_ITCMRAM HAL_SAI_ErrorCallback(SAI_HandleTypeDef *hsai)

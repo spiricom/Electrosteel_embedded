@@ -39,11 +39,10 @@
 #define AUDIO_BUFFER_SIZE     AUDIO_FRAME_SIZE * 4 //number of samples in the whole data structure (four times the audio frame size because of stereo and also double-buffering/ping-ponging)
 #define SMALL_MEM_SIZE 60000
 #define MED_MEM_SIZE 260000//180000
-#define LARGE_MEM_SIZE 67108864 //64 MBytes - size of SDRAM IC
+#define LARGE_MEM_SIZE 62914560//67108864 would be 64 MBytes - size of SDRAM IC, but we are using 2MB each for firmware buffers = 2097152*2 =   4194304, so 67108864-4194304=62914560
 #define MTOF_TABLE_SIZE	32768
 #define MTOF_TABLE_SIZE_MINUS_ONE 32767
 #define MTOF_TABLE_SIZE_DIV_TWO	16384
-#define MAPPING_TABLE_SIZE 8192//8196 //is that right? or should be 8192?
 #define ATODB_TABLE_SIZE 8192
 #define DBTOA_TABLE_SIZE 8192
 
@@ -275,6 +274,7 @@ void setMaster(float amp, int v, int string);
 
 extern float sourceValues[NUM_SOURCES][NUM_STRINGS_PER_BOARD];
 extern uint8_t lfoOn[NUM_LFOS];
+extern uint8_t envOn[NUM_ENV];
 extern float oscAmpMult;
 extern float oscAmpMultArray[4];
 
@@ -296,7 +296,7 @@ extern volatile float stringMIDIPitches[NUM_STRINGS_PER_BOARD];
 extern tExpSmooth knobSmoothers[12];
 extern tExpSmooth pedalSmoothers[10];
 extern uint stringInputs[NUM_STRINGS] ;
-
+extern uint8_t knobFrozen[12];
 extern volatile uint8_t whichBar;
 
 
