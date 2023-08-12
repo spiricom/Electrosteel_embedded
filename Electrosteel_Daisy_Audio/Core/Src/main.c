@@ -146,6 +146,8 @@ int oscsEnabled[3] = {0,0,0};
 float midiKeyDivisor;
 float midiKeySubtractor;
 
+uint8_t prevKnobByte[12];
+
 uint8_t volatile interruptChecker = 0;
 
 uint8_t volatile memoryTest[700];
@@ -1004,7 +1006,7 @@ float __ATTR_ITCMRAM scaleTwo(float input)
 float __ATTR_ITCMRAM scaleOscPitch(float input)
 {
 	//input = LEAF_clip(0.0f, input, 1.0f);
-	return (input * 48.0f) - 24.0f;
+	return ((input * 2.0f) - 1.0f);
 }
 
 float __ATTR_ITCMRAM scaleOscFine(float input)
@@ -1541,7 +1543,20 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 
 				for (int i = 0; i < 12; i++)
 				{
-					tExpSmooth_setDest(&knobSmoothers[i], (SPI_LEVERS[i + currentByte] * 0.003921568627451f)); //scaled 0.0 to 1.0
+					uint8_t newByte = SPI_LEVERS[i + currentByte];
+					if (knobFrozen[i])
+					{
+						if ((newByte > (prevKnobByte[i] + 2)) || (newByte < (prevKnobByte[i] + 2)))
+						{
+							knobFrozen[i] = 0;
+						}
+
+					}
+					else
+					{
+						tExpSmooth_setDest(&knobSmoothers[i], (SPI_LEVERS[i + currentByte] * 0.003921568627451f)); //scaled 0.0 to 1.0
+					}
+					prevKnobByte[i] = newByte;
 				}
 				currentByte += 12;
 				for (int i = 0; i < 10; i++)
@@ -2389,7 +2404,10 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 	{
 		envOn[i] = 0;
 	}
-
+	for (int i = 0; i < 12; i++)
+	{
+		knobFrozen[i] = 0;
+	}
 	//blank out all current mappings
 	for (int i = 0; i < MAX_NUM_MAPPINGS; i++)
 	{
@@ -2423,7 +2441,6 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 			{
 				//found one, use this mapping and add another hook to it
 				whichMapping = j;
-				//TODO: this should actually be sent with the preset
 				if (presetVersionNumber == 0)
 				{
 					whichHook = mappings[j].numHooks;
@@ -2467,6 +2484,19 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 		{
 			envOn[source - ENV_SOURCE_OFFSET] = 1;
 		}
+		if ((source >= MACRO_SOURCE_OFFSET) && (source < (MACRO_SOURCE_OFFSET + NUM_MACROS + NUM_CONTROL)))
+		{
+			//if it's a macro, also set its value and set the knob to frozen state so it'll hold until the knob is moved.
+
+			uint8_t whichMacro = source - MACRO_SOURCE_OFFSET;
+			for (int v = 0; v < numStringsThisBoard; v++)
+			{
+				sourceValues[source][v] = params[whichMacro + MACRO_PARAMS_OFFSET].realVal[v];
+			}
+			//set starting point for the knob smoothers to smooth from
+			tExpSmooth_setVal(&knobSmoothers[i], params[whichMacro + MACRO_PARAMS_OFFSET].realVal[0]);
+			knobFrozen[whichMacro] = 1;
+		}
 		int scalar = buffer[bufferIndex+2];
 		for (int v = 0; v < NUM_STRINGS_PER_BOARD; v++)
 		{
@@ -2484,6 +2514,19 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 				if ((scalar >= ENV_SOURCE_OFFSET) && (scalar < (ENV_SOURCE_OFFSET + NUM_ENV)))
 				{
 					envOn[scalar - ENV_SOURCE_OFFSET] = 1;
+				}
+				if ((source >= MACRO_SOURCE_OFFSET) && (source < (MACRO_SOURCE_OFFSET + NUM_MACROS + NUM_CONTROL)))
+				{
+					//if it's a macro, also set its value and set the knob to frozen state so it'll hold until the knob is moved.
+
+					uint8_t whichMacro = source - MACRO_SOURCE_OFFSET;
+					for (int v = 0; v < numStringsThisBoard; v++)
+					{
+						sourceValues[source][v] = params[whichMacro + MACRO_PARAMS_OFFSET].realVal[v];
+					}
+					//set starting point for the knob smoothers to smooth from
+					tExpSmooth_setVal(&knobSmoothers[i], params[whichMacro + MACRO_PARAMS_OFFSET].realVal[0]);
+					knobFrozen[whichMacro] = 1;
 				}
 			}
 		}
@@ -2518,6 +2561,37 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 	{
 		totalFilters++;
 	}
+
+	//tick mappings once with no smoothing to set initial values
+	for (int i = 0; i < numMappings; i++)
+	{
+		if (mappings[i].destNumber != 255)
+		{
+			for (int v = 0; v < numStringsThisBoard; v++)
+			{
+				float unsmoothedValue = 0.0f;
+
+				for (int j = 0; j < 3; j++)
+				{
+					if (mappings[i].hookActive[j])
+					{
+						float sum = *mappings[i].sourceValPtr[j][v] * mappings[i].amount[j] * *mappings[i].scalarSourceValPtr[j][v];
+
+						unsmoothedValue += sum;
+
+					}
+				}
+				float finalVal = unsmoothedValue + mappings[i].dest->zeroToOneVal[v];
+
+				//now scale the value with the correct scaling function
+				mappings[i].dest->realVal[v] = mappings[i].dest->scaleFunc(finalVal);
+
+				//and pop that value where it belongs by setting the actual parameter
+				mappings[i].dest->setParam(mappings[i].dest->realVal[v], mappings[i].dest->objectNumber, v);
+			}
+		}
+	}
+
 	presetWaitingToParse = 0;
 	currentActivePreset = presetNumber;
 	audioMasterLevel = 1.0f;

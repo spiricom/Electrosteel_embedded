@@ -49,6 +49,7 @@ enum MappingChangeTypes
 #define ENVELOPE_PARAMS_OFFSET 108
 #define LFO_PARAMS_OFFSET 132
 #define FXPREPOST_PARAMS_OFFSET 154
+#define MACRO_PARAMS_OFFSET 3
 
 //number of modules
 #define NUM_OSC 3
@@ -57,6 +58,8 @@ enum MappingChangeTypes
 #define NUM_ENV 4
 #define NUM_LFOS 4
 #define NUM_EFFECT 4
+#define NUM_MACROS 8
+#define NUM_CONTROL 4
 
 #define NUM_STRINGS 12
 #define NUM_STRINGS_PER_BOARD 2
@@ -64,6 +67,8 @@ enum MappingChangeTypes
 //mapping array defines
 #define NUM_POSSIBLE_HOOKS 3
 #define NUM_SOURCES 38
+
+
 
 #define OSC_SOURCE_OFFSET 0
 #define NOISE_SOURCE_OFFSET 3
