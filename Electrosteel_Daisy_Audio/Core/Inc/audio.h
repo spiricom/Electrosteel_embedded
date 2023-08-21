@@ -34,7 +34,7 @@
 #include "main.h"
 
 
-#define AUDIO_FRAME_SIZE      8
+#define AUDIO_FRAME_SIZE      64
 #define HALF_BUFFER_SIZE      AUDIO_FRAME_SIZE * 2 //number of samples per half of the "double-buffer" (twice the audio frame size because there are interleaved samples for both left and right channels)
 #define AUDIO_BUFFER_SIZE     AUDIO_FRAME_SIZE * 4 //number of samples in the whole data structure (four times the audio frame size because of stereo and also double-buffering/ping-ponging)
 #define SMALL_MEM_SIZE 60000
@@ -53,6 +53,12 @@ typedef enum
   BUFFER_OFFSET_HALF,
   BUFFER_OFFSET_FULL,
 }BUFFER_StateTypeDef;
+
+typedef enum
+{
+  String1Loaded = 0,
+  String2Loaded,
+}StringModelLoadedTypeDef;
 
 #ifdef SAMPLERATE96K
 #define SAMPLE_RATE 96000.f
@@ -85,8 +91,29 @@ void audioStart(SAI_HandleTypeDef* hsaiOut, SAI_HandleTypeDef* hsaiIn);
 
 void initFunctionPointers(void);
 
+
+
+typedef void (*audioFrame_t)(uint16_t);
+extern audioFrame_t audioFrameFunction;
+
+void audioFrameSynth(uint16_t buffer_offset);
+void audioFrameString1(uint16_t buffer_offset);
+void audioFrameString2(uint16_t buffer_offset);
+void audioFrameAdditive(uint16_t buffer_offset);
+
+typedef float (*audioTick_t)(void);
+extern audioTick_t audioTickFunction;
+float audioTickSynth(void);
+float audioTickString1(void);
+float audioTickString2(void);
+float audioTickAdditive(void);
+
+void audioFrameSynth(uint16_t buffer_offset);
+void audioFrameString1(uint16_t buffer_offset);
+void audioFrameString2(uint16_t buffer_offset);
+void audioFrameAdditive(uint16_t buffer_offset);
+
 void audioFrame(uint16_t buffer_offset);
-float audioTickL(void);
 void DMA1_TransferCpltCallback(DMA_HandleTypeDef *hdma);
 void DMA1_HalfTransferCpltCallback(DMA_HandleTypeDef *hdma);
 void updateStateFromSPIMessage(uint8_t currentByte);
@@ -266,6 +293,10 @@ float FXVZhighshelfTick(float sample, int v, int string);
 float FXVZpeakTick(float sample, int v, int string);
 float FXVZbandrejectTick(float sample, int v, int string);
 
+void tickMappings(void);
+void envelope_tick(int string);
+void lfo_tick(int string);
+
 
 //master functions
 void setAmp(float amp, int v, int string);
@@ -275,6 +306,8 @@ void setMaster(float amp, int v, int string);
 extern float sourceValues[NUM_SOURCES][NUM_STRINGS_PER_BOARD];
 extern uint8_t lfoOn[NUM_LFOS];
 extern uint8_t envOn[NUM_ENV];
+extern uint8_t oscOn[NUM_OSC];
+extern uint8_t noiseOn;
 extern float oscAmpMult;
 extern float oscAmpMultArray[4];
 
@@ -295,9 +328,10 @@ extern volatile int firstString;
 extern volatile float stringMIDIPitches[NUM_STRINGS_PER_BOARD];
 extern tExpSmooth knobSmoothers[12];
 extern tExpSmooth pedalSmoothers[10];
-extern uint stringInputs[NUM_STRINGS] ;
-extern uint8_t knobFrozen[12];
+extern volatile uint16_t stringInputs[NUM_STRINGS];
+extern volatile uint8_t knobFrozen[12];
 extern volatile uint8_t whichBar;
+extern volatile uint16_t sampleClippedCountdown;
 
 
 #endif /* __AUDIOSTREAM_H */

@@ -123,7 +123,7 @@ volatile uint32_t presetWaitingToParse = 0;
 volatile uint32_t presetWaitingToWrite = 0;
 volatile uint32_t presetWaitingToLoad = 0;
 
-volatile uint8_t macroNamesArray[MAX_NUM_PRESETS][8][14]__ATTR_RAM_D2;
+volatile uint8_t macroNamesArray[MAX_NUM_PRESETS][12][10]__ATTR_RAM_D2;
 uint8_t whichMacroToSendName = 0;
 
 param params[NUM_PARAMS];
@@ -160,12 +160,13 @@ uint8_t boardNumber = 0;
 uint8_t volatile i2cSending = 0;
 
 const char* specialModeNames[3];
-const char* specialModeMacroNames[3][8];
+const char* specialModeMacroNames[3][12];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 void PeriphCommonClock_Config(void);
+static void MPU_Initialize(void);
 static void MPU_Config(void);
 /* USER CODE BEGIN PFP */
 void MPU_Conf(void);
@@ -209,9 +210,6 @@ int main(void)
 	//SCB_InvalidateICache();
   /* USER CODE END 1 */
 
-  /* MPU Configuration--------------------------------------------------------*/
-  MPU_Config();
-
   /* Enable I-Cache---------------------------------------------------------*/
   SCB_EnableICache();
 
@@ -222,6 +220,9 @@ int main(void)
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
+
+  /* MPU Configuration--------------------------------------------------------*/
+  MPU_Config();
 
   /* USER CODE BEGIN Init */
   __enable_irq();
@@ -355,34 +356,46 @@ int main(void)
 
 
   specialModeNames[0] = "PHYS STR1     ";
-  specialModeMacroNames[0][0] = "TargetLev     ";
-  specialModeMacroNames[0][1] = "LevSmooth     ";
-  specialModeMacroNames[0][2] = "LevStrengt    ";
-  specialModeMacroNames[0][3] = "LevMode       ";
-  specialModeMacroNames[0][4] = "              ";
-  specialModeMacroNames[0][5] = "              ";
-  specialModeMacroNames[0][6] = "              ";
-  specialModeMacroNames[0][7] = "              ";
+  specialModeMacroNames[0][0] = "Feedback  ";
+  specialModeMacroNames[0][1] = "SlideNois ";
+  specialModeMacroNames[0][2] = "PluckWidt ";
+  specialModeMacroNames[0][3] = "PickNoise ";
+  specialModeMacroNames[0][4] = "PickupSim";
+  specialModeMacroNames[0][5] = "          ";
+  specialModeMacroNames[0][6] = "          ";
+  specialModeMacroNames[0][7] = "          ";
+  specialModeMacroNames[0][8] = "          ";
+  specialModeMacroNames[0][9] = "          ";
+  specialModeMacroNames[0][10] = "         ";
+  specialModeMacroNames[0][11] = "         ";
 
   specialModeNames[1] = "PHYS STR2     ";
-  specialModeMacroNames[1][0] = "FBLev On      ";
-  specialModeMacroNames[1][1] = "TargetLev     ";
-  specialModeMacroNames[1][2] = "PickPos       ";
-  specialModeMacroNames[1][3] = "Decay         ";
-  specialModeMacroNames[1][4] = "Touch         ";
-  specialModeMacroNames[1][5] = "Noise1        ";
-  specialModeMacroNames[1][6] = "Noise2        ";
-  specialModeMacroNames[1][7] = "LevSmooth     ";
+  specialModeMacroNames[1][0] = "FBLev On  ";
+  specialModeMacroNames[1][1] = "TargetLev ";
+  specialModeMacroNames[1][2] = "PickPos   ";
+  specialModeMacroNames[1][3] = "Decay     ";
+  specialModeMacroNames[1][4] = "Touch     ";
+  specialModeMacroNames[1][5] = "Noise1    ";
+  specialModeMacroNames[1][6] = "Noise2    ";
+  specialModeMacroNames[1][7] = "LevSmooth ";
+  specialModeMacroNames[1][8] = "          ";
+  specialModeMacroNames[1][9] = "          ";
+  specialModeMacroNames[1][10] = "         ";
+  specialModeMacroNames[1][11] = "         ";
 
   specialModeNames[2] = "ADDITIVE      ";
-  specialModeMacroNames[2][0] = "Noise1        ";
-  specialModeMacroNames[2][1] = "Noise2        ";
-  specialModeMacroNames[2][2] = "Tone          ";
-  specialModeMacroNames[2][3] = "Decay         ";
-  specialModeMacroNames[2][4] = "Stretch       ";
-  specialModeMacroNames[2][5] = "RandDecy      ";
-  specialModeMacroNames[2][6] = "RandGain      ";
-  specialModeMacroNames[2][7] = "NoiseVol      ";
+  specialModeMacroNames[2][0] = "Noise1    ";
+  specialModeMacroNames[2][1] = "Noise2    ";
+  specialModeMacroNames[2][2] = "Tone      ";
+  specialModeMacroNames[2][3] = "Decay     ";
+  specialModeMacroNames[2][4] = "Stretch   ";
+  specialModeMacroNames[2][5] = "RandDecy  ";
+  specialModeMacroNames[2][6] = "RandGain  ";
+  specialModeMacroNames[2][7] = "NoiseVol  ";
+  specialModeMacroNames[2][8] = "          ";
+  specialModeMacroNames[2][9] = "          ";
+  specialModeMacroNames[2][10] = "         ";
+  specialModeMacroNames[2][11] = "         ";
 
 
   for (int i = 0; i < 3; i++)
@@ -391,9 +404,9 @@ int main(void)
 	  {
 		  presetNamesArray[63-i][j] = specialModeNames[i][j];
 	  }
-	  for (int k = 0; k < 8; k++)
+	  for (int k = 0; k < 12; k++)
 	  {
-		  for (int j = 0; j < 14; j++)
+		  for (int j = 0; j < 10; j++)
 		  {
 			  macroNamesArray[63-i][k][j] = specialModeMacroNames[i][k][j];
 		  }
@@ -661,7 +674,7 @@ void getPresetNamesFromSDCard(void)
 
 
 				res = f_findfirst(&dir, &fno, SDPath, finalString);
-				uint bytesRead;
+				uint32_t bytesRead;
 				if(res == FR_OK)
 				{
 					if(f_open(&SDFile, fno.fname, FA_OPEN_ALWAYS | FA_READ) == FR_OK)
@@ -669,16 +682,32 @@ void getPresetNamesFromSDCard(void)
 						f_read(&SDFile, &buffer, f_size(&SDFile), &bytesRead);
 						f_close(&SDFile);
 						uint16_t bufferIndex = 0;
+						//skip the first 4 bytes if there is a version number stored in the preset
+						if (buffer[bufferIndex] == 17)
+						{
+							bufferIndex = 4;
+						}
+						//14-byte name
 						for (int j = 0; j < 14; j++)
 						{
 							presetNamesArray[i][j] = buffer[bufferIndex];
 							bufferIndex++;
 						}
+						//9-byte macros
 						for (int j = 0; j < 8; j++)
 						{
-							for (int k = 0; k < 14; k++)
+							for (int k = 0; k < 9; k++)
 							{
 								macroNamesArray[i][j][k] = buffer[bufferIndex];
+								bufferIndex++;
+							}
+						}
+						//10-byte macros
+						for (int j = 0; j < 4; j++)
+						{
+							for (int k = 0; k < 10; k++)
+							{
+								macroNamesArray[i][j+8][k] = buffer[bufferIndex];
 								bufferIndex++;
 							}
 						}
@@ -741,7 +770,7 @@ static int checkForSDCardPreset(uint8_t numberToLoad)
 			}
 
 			res = f_findfirst(&dir, &fno, SDPath, finalString);
-			uint bytesRead;
+			uint32_t bytesRead;
 			if(res == FR_OK)
 			{
 				if(f_open(&SDFile, fno.fname, FA_OPEN_ALWAYS | FA_READ) == FR_OK)
@@ -799,7 +828,7 @@ static void checkForBootloadableFiles(void)
 		disk_initialize(0);
 
 	    disk_status(0);
-		uint bytesRead;
+		uint32_t bytesRead;
 		if(f_mount(&SDFatFS,  SDPath, 1) == FR_OK)
 		{
 
@@ -904,7 +933,7 @@ static void writePresetToSDCard(int fileSize)
 
 				if(f_open(&SDFile, finalString, FA_CREATE_ALWAYS | FA_WRITE) == FR_OK)
 				{
-					uint bytesRead;
+					uint32_t bytesRead;
 					f_write(&SDFile, &buffer, fileSize, &bytesRead);
 					f_close(&SDFile);
 				}
@@ -1042,7 +1071,7 @@ float __ATTR_ITCMRAM scaleFilterCutoff(float input)
 float __ATTR_ITCMRAM scaleFilterResonance(float input)
 {
 	//lookup table for filter res
-	input = LEAF_clip(0.1f, input, 1.0f);
+	//input = LEAF_clip(0.1f, input, 1.0f);
 	//scale to lookup range
 	input *= 2047.0f;
 	int inputInt = (int)input;
@@ -1055,7 +1084,7 @@ float __ATTR_ITCMRAM scaleFilterResonance(float input)
 float __ATTR_ITCMRAM scaleEnvTimes(float input)
 {
 	//lookup table for env times
-	input = LEAF_clip(0.0f, input, 1.0f);
+	//input = LEAF_clip(0.0f, input, 1.0f);
 	//scale to lookup range
 	input *= 2047.0f;
 	int inputInt = (int)input;
@@ -1069,7 +1098,7 @@ float __ATTR_ITCMRAM scaleEnvTimes(float input)
 float __ATTR_ITCMRAM scaleLFORates(float input)
 {
 	//lookup table for LFO rates
-	input = LEAF_clip(0.0f, input, 1.0f);
+	//input = LEAF_clip(0.0f, input, 1.0f);
 	//scale to lookup range
 	input *= 2047.0f;
 	int inputInt = (int)input;
@@ -1541,32 +1570,34 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 		{
 			 uint8_t currentByte = offset+1;
 
-				for (int i = 0; i < 12; i++)
+			for (int i = 0; i < 12; i++)
+			{
+				uint8_t newByte = SPI_LEVERS[i + currentByte];
+				if (knobFrozen[i])
 				{
-					uint8_t newByte = SPI_LEVERS[i + currentByte];
-					if (knobFrozen[i])
+					if ((newByte > (prevKnobByte[i] + 2)) || (newByte < (prevKnobByte[i] - 2)))
 					{
-						if ((newByte > (prevKnobByte[i] + 2)) || (newByte < (prevKnobByte[i] + 2)))
-						{
-							knobFrozen[i] = 0;
-						}
+						knobFrozen[i] = 0;
+						prevKnobByte[i] = newByte;
+					}
 
-					}
-					else
-					{
-						tExpSmooth_setDest(&knobSmoothers[i], (SPI_LEVERS[i + currentByte] * 0.003921568627451f)); //scaled 0.0 to 1.0
-					}
+				}
+				else
+				{
+					tExpSmooth_setDest(&knobSmoothers[i], (SPI_LEVERS[i + currentByte] * 0.003921568627451f)); //scaled 0.0 to 1.0
 					prevKnobByte[i] = newByte;
 				}
-				currentByte += 12;
-				for (int i = 0; i < 10; i++)
-				{
-					tExpSmooth_setDest(&pedalSmoothers[i], (SPI_LEVERS[i + currentByte ] * 0.003921568627451f)); //scaled 0.0 to 1.0
-				}
-				HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_SET);
-				whichBar = 1;
-				updateStateFromSPIMessage(offset);
-				HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_RESET);
+
+			}
+			currentByte += 12;
+			for (int i = 0; i < 10; i++)
+			{
+				tExpSmooth_setDest(&pedalSmoothers[i], (SPI_LEVERS[i + currentByte ] * 0.003921568627451f)); //scaled 0.0 to 1.0
+			}
+			HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_SET);
+			whichBar = 1;
+			updateStateFromSPIMessage(offset);
+			HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_RESET);
 
 		}
 		else if (SPI_LEVERS[offset] == ReceivingEnd)
@@ -1636,6 +1667,7 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 					if (params[whichParam].realVal[0]  > 0.5f)
 					{
 						oscsEnabled[whichOsc] = 1;
+						oscOn[whichOsc] = 1;
 					}
 					else
 					{
@@ -1649,7 +1681,14 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 					}
 					oscAmpMult = oscAmpMultArray[enabledCount];
 				}
-				if ((whichParam == Filter1Type) || (whichParam == Filter1Type))
+				if ((whichParam == Noise))
+				{
+					if (params[whichParam].realVal[0]  > 0.5f)
+					{
+						noiseOn = 1;
+					}
+				}
+				if ((whichParam == Filter1Type) || (whichParam == Filter2Type))
 				{
 					int whichFilter = (whichParam - Filter1Type) / FilterParamsNum;
 					int filterType = roundf(params[whichParam].realVal[0] * (NUM_FILTER_TYPES-1));
@@ -1813,6 +1852,14 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 						{
 							envOn[source - ENV_SOURCE_OFFSET] = 1;
 						}
+						if ((source >= OSC_SOURCE_OFFSET) && (source < (OSC_SOURCE_OFFSET+NUM_OSC)))
+						{
+							oscOn[source - OSC_SOURCE_OFFSET] = 1;
+						}
+						if ((source >= NOISE_SOURCE_OFFSET) && (source < (NOISE_SOURCE_OFFSET+1)))
+						{
+							noiseOn = 1;
+						}
 						mappings[whichMapping].amount[whichSlot] = 0.0f;
 					}
 
@@ -1841,6 +1888,14 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 							if ((scalar >= ENV_SOURCE_OFFSET) && (scalar < (ENV_SOURCE_OFFSET + NUM_ENV)))
 							{
 								envOn[scalar - ENV_SOURCE_OFFSET] = 1;
+							}
+							if ((scalar >= OSC_SOURCE_OFFSET) && (scalar < (OSC_SOURCE_OFFSET + NUM_OSC)))
+							{
+								oscOn[scalar - OSC_SOURCE_OFFSET] = 1;
+							}
+							if ((scalar >= NOISE_SOURCE_OFFSET) && (scalar < (NOISE_SOURCE_OFFSET + 1)))
+							{
+								noiseOn = 1;
 							}
 							//TODO: doesn't cleanly remove lfoOn settings during streaming data - after deleting an LFO used as a scalar it will keep computing the LFO. How should we remember what the source of the scalar was when removing it? -JS
 						}
@@ -1916,13 +1971,13 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 				SPI_LEVERS_TX[offset+24] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][7];
 				SPI_LEVERS_TX[offset+25] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][8];
 				SPI_LEVERS_TX[offset+26] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][9];
-				SPI_LEVERS_TX[offset+27] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][10];
-				SPI_LEVERS_TX[offset+28] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][11];
-				SPI_LEVERS_TX[offset+29] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][12];
-				SPI_LEVERS_TX[offset+30] = macroNamesArray[whichPresetToSendName][whichMacroToSendName][13];
+				SPI_LEVERS_TX[offset+27] = 13;
+				SPI_LEVERS_TX[offset+28] = 13;
+				SPI_LEVERS_TX[offset+29] = 13;
+				SPI_LEVERS_TX[offset+30] = (sampleClippedCountdown > 0); //report whether there was a clip on the first board in the last 65535 samples
 				SPI_LEVERS_TX[offset+31] = 254;
 				whichMacroToSendName = (whichMacroToSendName + 1);
-				if (whichMacroToSendName >= 8)
+				if (whichMacroToSendName >= 12)
 				{
 					whichMacroToSendName = 0;
 					whichPresetToSendName = (whichPresetToSendName + 1) % MAX_NUM_PRESETS;
@@ -1995,18 +2050,24 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 		presetNamesArray[presetNumber][i] = buffer[bufferIndex];
 		bufferIndex++;
 	}
-
-	//read now ready the 8 14-letter macro names
+	//9-byte macros
 	for (int j = 0; j < 8; j++)
 	{
-		for (int k = 0; k < 14; k++)
+		for (int k = 0; k < 9; k++)
 		{
-
 			macroNamesArray[presetNumber][j][k] = buffer[bufferIndex];
 			bufferIndex++;
 		}
 	}
-
+	//10-byte macros
+	for (int j = 0; j < 4; j++)
+	{
+		for (int k = 0; k < 10; k++)
+		{
+			macroNamesArray[presetNumber][j+8][k] = buffer[bufferIndex];
+			bufferIndex++;
+		}
+	}
 
 	//read first element in buffer (after the 14 character name) as a count of how many parameters
 	uint16_t paramCount = (buffer[bufferIndex] << 8) + buffer[bufferIndex+1];
@@ -2174,6 +2235,7 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 	}
 	uint8_t enabledCount = 0;
 
+
 	for (int i = 0; i < NUM_OSC; i++)
 	{
 		int oscshape = roundf(params[Osc1ShapeSet + (OscParamsNum * i)].realVal[0] * (NUM_OSC_SHAPES-1));
@@ -2182,14 +2244,25 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 		{
 			enabledCount++;
 			oscsEnabled[i] = 1;
+			oscOn[i] = 1;
 		}
 		else
 		{
 			oscsEnabled[i] = 0;
+			oscOn[i] = 0;
 		}
 	}
 	//set amplitude of oscillators based on how many are enabled
 	oscAmpMult = oscAmpMultArray[enabledCount];
+
+	if (params[Noise].realVal[0]  > 0.5f)
+	{
+		noiseOn = 1;
+	}
+	else
+	{
+		noiseOn = 0;
+	}
 
 	for (int i = 0; i < NUM_FILT; i++)
 	{
@@ -2404,6 +2477,7 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 	{
 		envOn[i] = 0;
 	}
+
 	for (int i = 0; i < 12; i++)
 	{
 		knobFrozen[i] = 0;
@@ -2484,6 +2558,14 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 		{
 			envOn[source - ENV_SOURCE_OFFSET] = 1;
 		}
+		if ((source >= OSC_SOURCE_OFFSET) && (source < (OSC_SOURCE_OFFSET+NUM_OSC)))
+		{
+			oscOn[source - OSC_SOURCE_OFFSET] = 1;
+		}
+		if ((source >= NOISE_SOURCE_OFFSET) && (source < (NOISE_SOURCE_OFFSET+1)))
+		{
+			noiseOn = 1;
+		}
 		if ((source >= MACRO_SOURCE_OFFSET) && (source < (MACRO_SOURCE_OFFSET + NUM_MACROS + NUM_CONTROL)))
 		{
 			//if it's a macro, also set its value and set the knob to frozen state so it'll hold until the knob is moved.
@@ -2494,7 +2576,7 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 				sourceValues[source][v] = params[whichMacro + MACRO_PARAMS_OFFSET].realVal[v];
 			}
 			//set starting point for the knob smoothers to smooth from
-			tExpSmooth_setVal(&knobSmoothers[i], params[whichMacro + MACRO_PARAMS_OFFSET].realVal[0]);
+			tExpSmooth_setValAndDest(&knobSmoothers[whichMacro], params[whichMacro + MACRO_PARAMS_OFFSET].realVal[0]);
 			knobFrozen[whichMacro] = 1;
 		}
 		int scalar = buffer[bufferIndex+2];
@@ -2515,6 +2597,14 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 				{
 					envOn[scalar - ENV_SOURCE_OFFSET] = 1;
 				}
+				if ((scalar >= OSC_SOURCE_OFFSET) && (scalar < (OSC_SOURCE_OFFSET + NUM_OSC)))
+				{
+					oscOn[scalar - OSC_SOURCE_OFFSET] = 1;
+				}
+				if ((scalar >= NOISE_SOURCE_OFFSET) && (scalar < (NOISE_SOURCE_OFFSET + 1)))
+				{
+					noiseOn = 1;
+				}
 				if ((source >= MACRO_SOURCE_OFFSET) && (source < (MACRO_SOURCE_OFFSET + NUM_MACROS + NUM_CONTROL)))
 				{
 					//if it's a macro, also set its value and set the knob to frozen state so it'll hold until the knob is moved.
@@ -2525,7 +2615,7 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 						sourceValues[source][v] = params[whichMacro + MACRO_PARAMS_OFFSET].realVal[v];
 					}
 					//set starting point for the knob smoothers to smooth from
-					tExpSmooth_setVal(&knobSmoothers[i], params[whichMacro + MACRO_PARAMS_OFFSET].realVal[0]);
+					tExpSmooth_setValAndDest(&knobSmoothers[whichMacro], params[whichMacro + MACRO_PARAMS_OFFSET].realVal[0]);
 					knobFrozen[whichMacro] = 1;
 				}
 			}

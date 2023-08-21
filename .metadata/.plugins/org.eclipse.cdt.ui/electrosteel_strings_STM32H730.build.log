@@ -1,17 +1,10 @@
-11:59:01 **** Build of configuration Debug for project electrosteel_strings_STM32H730 ****
+15:39:42 **** Incremental Build of configuration Debug for project electrosteel_strings_STM32H730 ****
 make -j7 all 
-arm-none-eabi-gcc "../leaf/Src/leaf-filters.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32H730xx -c -I../Core/Inc -I"/Users/jeffsnyder/dev/Electrosteel_embedded/electrosteel_strings_STM32H730/leaf" -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Drivers/CMSIS/Include -Ofast -ffunction-sections -fdata-sections -fno-strict-aliasing -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"leaf/Src/leaf-filters.d" -MT"leaf/Src/leaf-filters.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "leaf/Src/leaf-filters.o"
-arm-none-eabi-gcc -o "electrosteel_strings_STM32H730.elf" @"objects.list"   -mcpu=cortex-m7 -T"/Users/jeffsnyder/dev/Electrosteel_embedded/electrosteel_strings_STM32H730/STM32H730ZBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="electrosteel_strings_STM32H730.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
-Finished building target: electrosteel_strings_STM32H730.elf
- 
 arm-none-eabi-size   electrosteel_strings_STM32H730.elf 
-arm-none-eabi-objdump -h -S  electrosteel_strings_STM32H730.elf  > "electrosteel_strings_STM32H730.list"
    text	   data	    bss	    dec	    hex	filename
-  36328	    128	 313952	 350408	  558c8	electrosteel_strings_STM32H730.elf
+  36296	    128	 313952	 350376	  558a8	electrosteel_strings_STM32H730.elf
 Finished building: default.size.stdout
  
-Finished building: electrosteel_strings_STM32H730.list
- 
 
-11:59:03 Build Finished. 0 errors, 0 warnings. (took 2s.177ms)
+15:39:42 Build Finished. 0 errors, 0 warnings. (took 266ms)
 
