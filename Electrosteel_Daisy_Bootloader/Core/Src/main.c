@@ -252,20 +252,20 @@ int main(void)
 		}
 		//bring signal pin down to tell the other chips we're ready to send firmware over I2C
 		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
-		HAL_Delay(1); //wait for them to receive and get ready
+		HAL_Delay(100); //wait for them to receive and get ready
 
 		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
 		HAL_I2C_Master_Transmit(&hi2c1, 34<<1, tempBinaryBuffer, 65535,
 			10000);
-		HAL_Delay(200);
+		HAL_Delay(500);
 		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
 		HAL_I2C_Master_Transmit(&hi2c1, 34<<1, tempBinaryBuffer+65535, 65535,
 			10000);
-		HAL_Delay(200);
+		HAL_Delay(500);
 		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
 		HAL_I2C_Master_Transmit(&hi2c1, 34<<1, tempBinaryBuffer+131070, 65535,
 			10000);
-		HAL_Delay(200);
+		HAL_Delay(500);
 		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
 		HAL_I2C_Master_Transmit(&hi2c1, 34<<1, tempBinaryBuffer+196605, 65535,
 			10000);
@@ -291,10 +291,11 @@ int main(void)
     else
     {
 		int i = 6;
+		HAL_Delay(10);
 		while(i--)
 		{
 			HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
-			HAL_Delay(40);
+			HAL_Delay(60);
 		}
 		HAL_Delay(1000);
 		if (!memory_already_mapped)
@@ -322,8 +323,8 @@ int main(void)
 				{
 					qspi_initialize(INDIRECT_POLLING);
 				}
-				HAL_Delay(2);
-				HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_7);
+				HAL_Delay(1);
+				HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
 			}
 		}
 		//otherwise, boot it up!
@@ -1053,25 +1054,48 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 			MX_I2C1_Init();
 			while(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_12) ==  1)
 			{
-				;//wait for pin to go back low
+				HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
+				HAL_Delay(1);//wait for pin to go back low
 			}
 			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
 			HAL_I2C_Slave_Receive(&hi2c1, tempBinaryBuffer, 65535,
 					10000);
-			HAL_Delay(180);
+			int i = 6;
+			while(i--)
+			{
+				HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
+				HAL_Delay(30);
+			}
 			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
 			HAL_I2C_Slave_Receive(&hi2c1, tempBinaryBuffer+65535, 65535,
 					10000);
-			HAL_Delay(180);
+			i = 6;
+			while(i--)
+			{
+				HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
+				HAL_Delay(30);
+			}
+
 			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
 			HAL_I2C_Slave_Receive(&hi2c1, tempBinaryBuffer+131070, 65535,
 					10000);
-			HAL_Delay(180);
+			i = 6;
+			while(i--)
+			{
+				HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
+				HAL_Delay(70);
+			}
+
 			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
 			HAL_I2C_Slave_Receive(&hi2c1, tempBinaryBuffer+196605, 65535,
 					10000);
 			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
-
+			i = 6;
+			while(i--)
+			{
+				HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
+				HAL_Delay(30);
+			}
 
 			qspi_Erase(QSPI_START, QSPI_START+262140);
 			qspi_Write(QSPI_START, 262140,(uint8_t*)tempBinaryBuffer);
@@ -1081,6 +1105,12 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 				  qspi_enable_memory_mapped();
 
 			  }
+			  i = 6;
+				while(i--)
+				{
+					HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
+					HAL_Delay(30);
+				}
 			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_SET);
 
     	  HAL_I2C_DeInit(&hi2c1);

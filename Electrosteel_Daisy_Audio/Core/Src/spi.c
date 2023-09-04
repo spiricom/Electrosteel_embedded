@@ -84,7 +84,7 @@ void MX_SPI6_Init(void)
   /* USER CODE END SPI6_Init 1 */
   hspi6.Instance = SPI6;
   hspi6.Init.Mode = SPI_MODE_SLAVE;
-  hspi6.Init.Direction = SPI_DIRECTION_2LINES_RXONLY;
+  hspi6.Init.Direction = SPI_DIRECTION_2LINES;
   hspi6.Init.DataSize = SPI_DATASIZE_8BIT;
   hspi6.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi6.Init.CLKPhase = SPI_PHASE_1EDGE;
@@ -229,10 +229,11 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* spiHandle)
     __HAL_RCC_GPIOA_CLK_ENABLE();
     /**SPI6 GPIO Configuration
     PA4     ------> SPI6_NSS
+    PA6     ------> SPI6_MISO
     PA5     ------> SPI6_SCK
     PA7     ------> SPI6_MOSI
     */
-    GPIO_InitStruct.Pin = GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_7;
+    GPIO_InitStruct.Pin = GPIO_PIN_4|GPIO_PIN_6|GPIO_PIN_5|GPIO_PIN_7;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
@@ -307,10 +308,11 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef* spiHandle)
 
     /**SPI6 GPIO Configuration
     PA4     ------> SPI6_NSS
+    PA6     ------> SPI6_MISO
     PA5     ------> SPI6_SCK
     PA7     ------> SPI6_MOSI
     */
-    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_7);
+    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_4|GPIO_PIN_6|GPIO_PIN_5|GPIO_PIN_7);
 
     /* SPI6 DMA DeInit */
     HAL_DMA_DeInit(spiHandle->hdmarx);

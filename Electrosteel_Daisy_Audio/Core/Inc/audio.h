@@ -332,7 +332,8 @@ extern volatile uint16_t stringInputs[NUM_STRINGS];
 extern volatile uint8_t knobFrozen[12];
 extern volatile uint8_t whichBar;
 extern volatile uint16_t sampleClippedCountdown;
-
+extern float masterVolFromBrain;
+extern float masterVolFromBrainForSynth;
 
 #endif /* __AUDIOSTREAM_H */
 

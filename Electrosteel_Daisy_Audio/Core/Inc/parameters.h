@@ -27,6 +27,7 @@ enum SPIMessage
 	ReceivingMappingChange,
 	ReceivingPresetRequestCommand,
 	ReceivingBootloadCommand,
+	ReceivingVolume,
 	ReceivingEnd =  253
 };
 

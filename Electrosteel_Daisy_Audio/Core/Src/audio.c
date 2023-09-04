@@ -57,6 +57,8 @@ BOOL bufferCleared = TRUE;
 int numBuffersToClearOnLoad = 2;
 int numBuffersCleared = 0;
 
+float masterVolFromBrain = 0.5f;
+float masterVolFromBrainForSynth = 0.25f;
 
 volatile int firstString = 0;
 volatile int lastString = 0;
@@ -385,17 +387,28 @@ float wfState[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
 float invCurFB[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
 /**********************************************/
 
-float map(float value, float istart, float istop, float ostart, float ostop)
+float __ATTR_ITCMRAM map(float value, float istart, float istop, float ostart, float ostop)
 {
     return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
 }
 
-float pickupNonLinearity(float x)
+float __ATTR_ITCMRAM pickupNonLinearity(float x)
 {
 	x = x * 2.0f; //initial scaling to match mm of displacement
 	float out = (0.075f * x) + (0.00675f * x * x) +( 0.00211f * x * x * x) + (0.000475f * x * x * x * x) + (0.000831f * x * x * x * x *x);
 	return out * 4.366812227074236f; //output scaling to bring +/-0.229 to +/-1.0
 }
+
+float __ATTR_ITCMRAM mtofTableLookup(float tempMIDI)
+{
+	float tempIndexF = ((LEAF_clip(-163.0f, tempMIDI, 163.0f) * 100.0f) + 16384.0f);
+	int tempIndexI = (int)tempIndexF;
+	tempIndexF = tempIndexF -tempIndexI;
+	float freqToSmooth1 = mtofTable[tempIndexI & 32767];
+	float freqToSmooth2 = mtofTable[(tempIndexI + 1) & 32767];
+	return ((freqToSmooth1 * (1.0f - tempIndexF)) + (freqToSmooth2 * tempIndexF));
+}
+
 
 void audioInit()
 {
@@ -886,7 +899,7 @@ void __ATTR_ITCMRAM audioFrameSynth(uint16_t buffer_offset)
 	{
 		current_sample = (int32_t)(audioTickSynth() * TWO_TO_23);
 		audioOutBuffer[buffer_offset + i] = current_sample;
-		audioOutBuffer[buffer_offset + i + 1] = current_sample;
+		//audioOutBuffer[buffer_offset + i + 1] = current_sample;
 	}
 
 
@@ -964,7 +977,7 @@ void __ATTR_ITCMRAM audioFrameString1(uint16_t buffer_offset)
 	{
 		current_sample = (int32_t)(audioTickString1() * TWO_TO_23);
 		audioOutBuffer[buffer_offset + i] = current_sample;
-		audioOutBuffer[buffer_offset + i + 1] = current_sample;
+		//audioOutBuffer[buffer_offset + i + 1] = current_sample;
 	}
 
 	if (switchStrings)
@@ -1077,7 +1090,7 @@ void __ATTR_ITCMRAM audioFrameString2(uint16_t buffer_offset)
 	{
 		current_sample = (int32_t)(audioTickString2() * TWO_TO_23);
 		audioOutBuffer[buffer_offset + i] = current_sample;
-		audioOutBuffer[buffer_offset + i + 1] = current_sample;
+		//audioOutBuffer[buffer_offset + i + 1] = current_sample;
 
 	}
 
@@ -1226,7 +1239,6 @@ void __ATTR_ITCMRAM audioFrameAdditive(uint16_t buffer_offset)
 	{
 		current_sample = (int32_t)(audioTickAdditive() * TWO_TO_23);
 		audioOutBuffer[buffer_offset + i] = current_sample;
-		audioOutBuffer[buffer_offset + i + 1] = current_sample;
 		//audioOutBuffer[buffer_offset + i + 1] = current_sample;
 	}
 
@@ -1393,7 +1405,7 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 		}
 
 
-		sample = tSVF_tick(&finalLowpass[v], sample) * 0.25f;
+		sample = tSVF_tick(&finalLowpass[v], sample) * masterVolFromBrainForSynth;
 		masterSample += sample * finalMaster[v];
 
 
@@ -1498,7 +1510,8 @@ float __ATTR_ITCMRAM audioTickString1(void)
 		temp += pickupNonLinearity(tSimpleLivingString3_tick(&livStr[i], slideNoise));
 	}
 
-	float volIdx = LEAF_clip(47.0f, ((volumeSmoothed * 80.0f) + 47.0f), 127.0f);
+	//float volIdx = LEAF_clip(47.0f, ((volumeSmoothed * 80.0f) + 47.0f), 127.0f);
+	float volIdx = LEAF_clip(0.0f, ((volumeSmoothed * 80.0f)), 127.0f);
 	int volIdxInt = (int) volIdx;
 	float alpha = volIdx-volIdxInt;
 	int volIdxIntPlus = (volIdxInt + 1) & 127;
@@ -1506,7 +1519,7 @@ float __ATTR_ITCMRAM audioTickString1(void)
 	float outVol = volumeAmps128[volIdxInt] * omAlpha;
 	outVol += volumeAmps128[volIdxIntPlus] * alpha;
 
-	temp *= outVol * 0.5f;
+	temp *= outVol * masterVolFromBrain;
 
 	return temp;
 }
@@ -1578,14 +1591,9 @@ float  __ATTR_ITCMRAM audioTickString2(void)
 		tLivingString2_setPrepPos(&strings[i], (knobScaled[11] * 0.8f) + 0.1f);
 
 
-		float tempMIDI = note[i];
-		float tempIndexF =((LEAF_clip(-200.0f, tempMIDI, 200.0f) * 100.0f) + 16384.0f);
-		int tempIndexI = (int)tempIndexF;
-		tempIndexF = tempIndexF -tempIndexI;
 
-		float freqToSmooth1 = mtofTable[tempIndexI & 32767];
-		float freqToSmooth2 = mtofTable[(tempIndexI + 1) & 32767];
-		float finalFreq = (freqToSmooth1 * (1.0f - tempIndexF)) + (freqToSmooth2 * tempIndexF);
+
+		float finalFreq = mtofTableLookup(note[i]);
 
 		tLivingString2_setFreq(&strings[i], finalFreq);
 
@@ -1603,7 +1611,8 @@ float  __ATTR_ITCMRAM audioTickString2(void)
 
 	}
 
-	float volIdx = LEAF_clip(47.0f, ((volumeSmoothed * 80.0f) + 47.0f), 127.0f);
+	//float volIdx = LEAF_clip(47.0f, ((volumeSmoothed * 80.0f) + 47.0f), 127.0f);
+	float volIdx = LEAF_clip(0.0f, ((volumeSmoothed * 80.0f)), 127.0f);
 	int volIdxInt = (int) volIdx;
 	float alpha = volIdx-volIdxInt;
 	int volIdxIntPlus = (volIdxInt + 1) & 127;
@@ -1612,7 +1621,7 @@ float  __ATTR_ITCMRAM audioTickString2(void)
 	outVol += volumeAmps128[volIdxIntPlus] * alpha;
 
 	//temp *= outVol;
-	temp *= outVol * 0.5f;
+	temp *= outVol * masterVolFromBrain;
 
 	return LEAF_clip(-1.0f, temp * 0.98f, 1.0f);
 }
@@ -1658,7 +1667,8 @@ float __ATTR_ITCMRAM audioTickAdditive(void)
 
 	}
 
-	float volIdx = LEAF_clip(47.0f, ((volumeSmoothed * 80.0f) + 47.0f), 127.0f);
+	//float volIdx = LEAF_clip(47.0f, ((volumeSmoothed * 80.0f) + 47.0f), 127.0f);
+	float volIdx = LEAF_clip(0.0f, ((volumeSmoothed * 80.0f)), 127.0f);
 	int volIdxInt = (int) volIdx;
 	float alpha = volIdx-volIdxInt;
 	int volIdxIntPlus = (volIdxInt + 1) & 127;
@@ -1666,7 +1676,7 @@ float __ATTR_ITCMRAM audioTickAdditive(void)
 	float outVol = volumeAmps128[volIdxInt] * omAlpha;
 	outVol += volumeAmps128[volIdxIntPlus] * alpha;
 	tempSamp *= outVol;
-	tempSamp *= 0.4f;
+	tempSamp *= masterVolFromBrain;
 	return tempSamp;
 }
 
@@ -1697,15 +1707,7 @@ void __ATTR_ITCMRAM oscillator_tick(float note, int string)
 			float tempMIDI = tExpSmooth_tick(&pitchSmoother[osc][string]) + midiAdd[osc][string];
 
 
-			float tempIndexF =((LEAF_clip(-163.8375f, tempMIDI, 163.8375f) * 100.0f) + MTOF_TABLE_SIZE_DIV_TWO);
-			int tempIndexI = (int)tempIndexF;
-			tempIndexF = tempIndexF -tempIndexI;
-
-			float freqToSmooth1 = mtofTable[tempIndexI & MTOF_TABLE_SIZE_MINUS_ONE];
-			float freqToSmooth2 = mtofTable[(tempIndexI + 1) & MTOF_TABLE_SIZE_MINUS_ONE];
-			freqToSmooth = (freqToSmooth1 * (1.0f - tempIndexF)) + (freqToSmooth2 * tempIndexF);
-
-			float finalFreq = (freqToSmooth * freqMult[osc][string]) + freqOffset;
+			float finalFreq = mtofTableLookup(tempMIDI) + freqOffset;
 
 			float sample = 0.0f;
 

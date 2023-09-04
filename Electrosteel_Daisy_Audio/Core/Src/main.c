@@ -166,7 +166,6 @@ const char* specialModeMacroNames[3][12];
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 void PeriphCommonClock_Config(void);
-static void MPU_Initialize(void);
 static void MPU_Config(void);
 /* USER CODE BEGIN PFP */
 void MPU_Conf(void);
@@ -1566,6 +1565,7 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 			 }
 			 //HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
 		}
+
 		else if (SPI_LEVERS[offset] == ReceivingKnobs)
 		{
 			 uint8_t currentByte = offset+1;
@@ -1909,10 +1909,17 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 			//send the current synth preset back to the PSOC5LP master microcontroller
 			if (boardNumber == 0)
 			{
-
+				;
 			}
 		}
+		else if (SPI_LEVERS[offset] == ReceivingVolume)
+		{
 
+					uint8_t currentByte = offset+1;
+
+					masterVolFromBrain =  ((SPI_LEVERS[currentByte]<< 8) * 0.01f);
+					masterVolFromBrainForSynth = masterVolFromBrain * 0.5f;
+		}
 
 
 	/*
@@ -2752,7 +2759,6 @@ void FlushECC(void *ptr, int bytes)
 uint8_t volatile I2CErrors = 0;
 void __ATTR_ITCMRAM HAL_I2C_SlaveRxCpltCallback(I2C_HandleTypeDef *hi2c)
 {
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET);
 	  //HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
 	  //HAL_Delay(2);
 	  //HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
