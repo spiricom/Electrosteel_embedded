@@ -13386,3 +13386,86 @@ Command-line arguments:  -os macosx -ws cocoa -arch x86_64 -keyring /Users/jeffs
 
 !ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2023-09-02 14:25:51.315
 !MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY com.st.stm32cube.ide.mcu.buildanalyzer.ui 1 0 2023-09-06 15:42:53.815
+!MESSAGE Failed to parse map file
+!STACK 0
+java.lang.NumberFormatException: For input string: "ffffffffffffffff" under radix 16
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
+	at java.base/java.lang.Long.parseLong(Long.java:711)
+	at java.base/java.lang.Long.valueOf(Long.java:1136)
+	at java.base/java.lang.Long.decode(Long.java:1299)
+	at elf_analyzer.datamodel.BuildDataProviderMap.parseMemConfigs(BuildDataProviderMap.java:119)
+	at elf_analyzer.datamodel.BuildDataProviderMap.compute(BuildDataProviderMap.java:385)
+	at elf_analyzer.datamodel.BuildDataProviderMap.computeMemConfig(BuildDataProviderMap.java:402)
+	at elf_analyzer.datamodel.BuildData.compute(BuildData.java:81)
+	at elf_analyzer.ElfAnalyzerView.inputChanged(ElfAnalyzerView.java:265)
+	at elf_analyzer.ElfAnalyzerView.lambda$6(ElfAnalyzerView.java:494)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+
+!ENTRY org.eclipse.cdt.dsf.gdb 4 5012 2023-09-06 16:18:15.995
+!MESSAGE Error in final launch sequence:
+
+Failed to execute MI command:
+load /Users/jeffsnyder/dev/Electrosteel_embedded/electrosteel_strings_STM32H730/Debug/electrosteel_strings_STM32H730.elf 
+
+Error message from debugger back end:
+Error finishing flash operation
+!STACK 1
+org.eclipse.core.runtime.CoreException: Failed to execute MI command:
+load /Users/jeffsnyder/dev/Electrosteel_embedded/electrosteel_strings_STM32H730/Debug/electrosteel_strings_STM32H730.elf 
+
+Error message from debugger back end:
+Error finishing flash operation
+	at org.eclipse.cdt.dsf.concurrent.Query.get(Query.java:112)
+	at org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate.launchDebugSession(GdbLaunchDelegate.java:252)
+	at org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate.launchDebugger(GdbLaunchDelegate.java:109)
+	at org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate.launch(GdbLaunchDelegate.java:97)
+	at com.st.stm32cube.ide.mcu.debug.launch.DSFDelegate.launch(DSFDelegate.java:336)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:806)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:717)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin.buildAndLaunch(DebugUIPlugin.java:1040)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin$1.run(DebugUIPlugin.java:1243)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+Contains: Failed to execute MI command:
+load /Users/jeffsnyder/dev/Electrosteel_embedded/electrosteel_strings_STM32H730/Debug/electrosteel_strings_STM32H730.elf 
+
+Error message from debugger back end:
+Error finishing flash operation
+java.lang.Exception: Error finishing flash operation
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.processMIOutput(AbstractMIControl.java:1024)
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.run(AbstractMIControl.java:853)
+!SUBENTRY 1 org.eclipse.cdt.dsf 4 10004 2023-09-06 16:18:15.996
+!MESSAGE Failed to execute MI command:
+load /Users/jeffsnyder/dev/Electrosteel_embedded/electrosteel_strings_STM32H730/Debug/electrosteel_strings_STM32H730.elf 
+
+Error message from debugger back end:
+Error finishing flash operation
+!SUBENTRY 2 org.eclipse.cdt.dsf.gdb 4 10004 2023-09-06 16:18:15.996
+!MESSAGE Failed to execute MI command:
+load /Users/jeffsnyder/dev/Electrosteel_embedded/electrosteel_strings_STM32H730/Debug/electrosteel_strings_STM32H730.elf 
+
+Error message from debugger back end:
+Error finishing flash operation
+!STACK 0
+java.lang.Exception: Error finishing flash operation
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.processMIOutput(AbstractMIControl.java:1024)
+	at org.eclipse.cdt.dsf.mi.service.command.AbstractMIControl$RxThread.run(AbstractMIControl.java:853)
+
+!ENTRY org.eclipse.cdt.dsf 4 10005 2023-09-06 16:19:53.549
+!MESSAGE Request for monitor: 'RequestMonitor (org.eclipse.cdt.dsf.mi.service.MIRunControl$9@3a625f5e): Status ERROR: org.eclipse.cdt.dsf.gdb code=10004 Interrupt failed.' resulted in an error.
+!SUBENTRY 1 org.eclipse.cdt.dsf.gdb 4 10004 2023-09-06 16:19:53.549
+!MESSAGE Interrupt failed.
+!SESSION 2023-09-09 16:17:01.498 -----------------------------------------------
+eclipse.buildId=Version 1.13.1
+java.version=17.0.6
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=macosx, ARCH=x86_64, WS=cocoa, NL=en_US
+Framework arguments:  -keyring /Users/jeffsnyder/.eclipse_keyring
+Command-line arguments:  -os macosx -ws cocoa -arch x86_64 -keyring /Users/jeffsnyder/.eclipse_keyring
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2023-09-09 16:17:20.855
+!MESSAGE Log4j2 initialized with config file /Users/jeffsnyder/dev/Electrosteel_embedded/.metadata/.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2023-09-09 16:17:37.986
+!MESSAGE Started RMI Server, listening on port 41337

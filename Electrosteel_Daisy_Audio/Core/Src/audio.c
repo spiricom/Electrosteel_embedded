@@ -2756,14 +2756,14 @@ void __ATTR_ITCMRAM FXLadderParam3(float value, int v, int string)
 
 void __ATTR_ITCMRAM noiseSetTilt(float value, int v, int string)
 {
-	tVZFilter_setGain(&noiseShelf1[string], fastdbtoa(-1.0f * ((value * 30.0f) - 15.0f)));
-	tVZFilter_setGain(&noiseShelf2[string], fastdbtoa((value * 30.0f) - 15.0f));
+	tVZFilter_setGain(&noiseShelf1[string], fasterdbtoa(-1.0f * ((value * 30.0f) - 15.0f)));
+	tVZFilter_setGain(&noiseShelf2[string], fasterdbtoa((value * 30.0f) - 15.0f));
 }
 
 
 void __ATTR_ITCMRAM noiseSetGain(float value, int v, int string)
 {
-	tVZFilter_setGain(&noiseBell1[string], fastdbtoa((value* 34.0f) - 17.0f));
+	tVZFilter_setGain(&noiseBell1[string], fasterdbtoa((value* 34.0f) - 17.0f));
 }
 
 void __ATTR_ITCMRAM noiseSetFreq(float value, int v, int string)

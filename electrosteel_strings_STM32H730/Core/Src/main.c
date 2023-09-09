@@ -64,11 +64,10 @@ uint16_t ADC_values1[NUM_ADC_CHANNELS * ADC_BUFFER_SIZE]__ATTR_RAM_D2;
 #define ATODB_TABLE_SIZE_MINUS_ONE 24999
 
 
-#define MEDIUM_MEM_SIZE 210000
-char mediumMemory[MEDIUM_MEM_SIZE] __ATTR_RAM_D1;
+#define SMALL_MEM_SIZE 120000
+char smallMemory[SMALL_MEM_SIZE];
 
 LEAF leaf;
-tMempool mediumPool;
 
 
 float atodbTable[ATODB_TABLE_SIZE] __ATTR_RAM_D1;
@@ -170,7 +169,7 @@ int main(void)
    //HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO_PIN_SET);
    HAL_Delay(10);
 
-   LEAF_init(&leaf, SAMPLE_RATE, mediumMemory, MEDIUM_MEM_SIZE, &randomNumber);
+   LEAF_init(&leaf, SAMPLE_RATE, smallMemory, SMALL_MEM_SIZE, &randomNumber);
 
    for (int i = 0; i < NUM_STRINGS; i++)
    {
@@ -298,7 +297,7 @@ static void MX_ADC1_Init(void)
   hadc1.Init.EOCSelection = ADC_EOC_SEQ_CONV;
   hadc1.Init.LowPowerAutoWait = DISABLE;
   hadc1.Init.ContinuousConvMode = ENABLE;
-  hadc1.Init.NbrOfConversion = 12;
+  hadc1.Init.NbrOfConversion = 10;
   hadc1.Init.DiscontinuousConvMode = DISABLE;
   hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
   hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
@@ -359,7 +358,6 @@ static void MX_ADC1_Init(void)
   */
   sConfig.Channel = ADC_CHANNEL_15;
   sConfig.Rank = ADC_REGULAR_RANK_4;
-  sConfig.SamplingTime = ADC_SAMPLETIME_64CYCLES_5;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
     Error_Handler();
@@ -369,7 +367,6 @@ static void MX_ADC1_Init(void)
   */
   sConfig.Channel = ADC_CHANNEL_18;
   sConfig.Rank = ADC_REGULAR_RANK_5;
-  sConfig.SamplingTime = ADC_SAMPLETIME_32CYCLES_5;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
     Error_Handler();
@@ -415,24 +412,6 @@ static void MX_ADC1_Init(void)
   */
   sConfig.Channel = ADC_CHANNEL_8;
   sConfig.Rank = ADC_REGULAR_RANK_10;
-  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
-
-  /** Configure Regular Channel
-  */
-  sConfig.Channel = ADC_CHANNEL_9;
-  sConfig.Rank = ADC_REGULAR_RANK_11;
-  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
-
-  /** Configure Regular Channel
-  */
-  sConfig.Channel = ADC_CHANNEL_5;
-  sConfig.Rank = ADC_REGULAR_RANK_12;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
     Error_Handler();
@@ -745,17 +724,17 @@ float Dsmoothed;
 float Dsmoothed2;
 float dbSmoothed2;
 float dbSmoothedStorage;
-int armed[NUM_STRINGS] = {0,0,0,0,0,0,0,0,0,0, 0, 0};
+int armed[NUM_STRINGS] = {0,0,0,0,0,0,0,0,0,0};
 float prevdbSmoothed2[NUM_STRINGS];
 int threshOut = 0;
-int stringMaxes[NUM_STRINGS] = {0,0,0,0,0,0,0,0,0,0, 0, 0};
+int stringMaxes[NUM_STRINGS] = {0,0,0,0,0,0,0,0,0,0};
 int downCounter[NUM_STRINGS];
 int armedCounter[NUM_STRINGS];
 float slopeStorage[NUM_STRINGS];
 float integerVersions[NUM_STRINGS];
 int attackDetectPeak2 (int whichString, int tempInt)
 {
-	float output = -1;
+	float output = -1.0f;
 	float tempSamp = (((float)tempInt - TWO_TO_15) * INV_TWO_TO_15);
 	for (int k = 0; k < FILTER_ORDER; k++)
 	{
@@ -800,10 +779,10 @@ int attackDetectPeak2 (int whichString, int tempInt)
 		{
 			downCounter[whichString]++;
 		}
-		if (downCounter[whichString] > 256)
+		if (downCounter[whichString] > 100)//was 256
 		{
 			//found a peak?
-			output = stringMaxes[whichString];
+			output = stringMaxes[whichString] * 1.75f;
 			output = LEAF_clip(0.0f, output, 65535.0f);
 			armed[whichString] = 0;
 			armedCounter[whichString] = 0;
@@ -827,12 +806,14 @@ int brokedIt = 0;
 int didPlucked2[NUM_STRINGS];
 int pluckDelay[NUM_STRINGS];
 int pluckValues[NUM_STRINGS];
-uint32_t string_values[12];
+uint32_t stringStates[NUM_STRINGS];
+uint32_t string_values[NUM_STRINGS];
+int changeHappened = 0;
 void ADC_Frame(int offset)
 {
 	//HAL_GPIO_TogglePin(GPIOG, GPIO_PIN_11);
 	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_0, GPIO_PIN_SET);
-	int changeHappened = 0;
+
 	//sampRecords[currentSamp] = frameCount;
 	//currentSamp++;
 
@@ -846,12 +827,12 @@ void ADC_Frame(int offset)
 
 
 
-		for (int k = 0; k < 12; k++)
+		for (int k = 0; k < NUM_STRINGS; k++)
 		{
 			string_values[k] = ADC_values1[(i*NUM_ADC_CHANNELS) + k];
 		}
 
-		for (int j = 0; j < 12; j++)
+		for (int j = 0; j < NUM_STRINGS; j++)
 		{
 			int tempInt = string_values[j];
 
@@ -869,8 +850,7 @@ void ADC_Frame(int offset)
 			{
 				if ((didPlucked[j] > 0) && (!stringSounding[j]))
 				{
-					SPI_PLUCK_TX[(j * 2) + 1] = (didPlucked[j] >> 8);
-					SPI_PLUCK_TX[(j * 2) + 2] = (didPlucked[j] & 0xff);
+					stringStates[j] = (uint16_t)didPlucked[j];
 					pluckValues[j] = didPlucked[j];
 					changeHappened = 1;
 					stringSounding[j] = 1;
@@ -879,8 +859,7 @@ void ADC_Frame(int offset)
 				if ((stringTouchRH[j]) && (stringSounding[j]))
 				{
 
-					SPI_PLUCK_TX[(j * 2) + 1] = 0;
-					SPI_PLUCK_TX[(j * 2) + 2] = 0;
+					stringStates[j] = 0;
 					pluckValues[j] = 0;
 					changeHappened = 1;
 					stringSounding[j] = 0;
@@ -893,12 +872,21 @@ void ADC_Frame(int offset)
 	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_0, GPIO_PIN_RESET);
 	if (changeHappened)
 	{
-		SPI_PLUCK_TX[0] = 254;
-		SPI_PLUCK_TX[25] = 253;
-		SCB_CleanDCache_by_Addr((uint32_t*)(((uint32_t)SPI_PLUCK_TX) & ~(uint32_t)0x1F), 26+32);
-		HAL_SPI_Transmit_DMA(&hspi1, SPI_PLUCK_TX, 26);
-	}
+		if (HAL_SPI_GetState(&hspi1) == HAL_SPI_STATE_READY)
+		{
+			for (int j = 0; j < NUM_STRINGS; ++j)
+			{
+				SPI_PLUCK_TX[(j * 2) + 1] = (stringStates[j] >> 8);
+				SPI_PLUCK_TX[(j * 2) + 2] = (stringStates[j] & 0xff);
+			}
+			SPI_PLUCK_TX[0] = 254;
+			SPI_PLUCK_TX[25] = 253;
 
+			SCB_CleanDCache_by_Addr((uint32_t*)(((uint32_t)SPI_PLUCK_TX) & ~(uint32_t)0x1F), 26+32);
+			HAL_SPI_Transmit_DMA(&hspi1, SPI_PLUCK_TX, 26);
+			changeHappened = 0;
+		}
+	}
 }
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
 {
@@ -910,11 +898,7 @@ void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef *hadc)
 }
 void HAL_ADC_Error(ADC_HandleTypeDef *hadc)
 {
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_RESET);
-	HAL_Delay(100);
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_SET);
+	;
 }
 
 void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)

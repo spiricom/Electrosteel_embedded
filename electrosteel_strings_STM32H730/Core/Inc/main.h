@@ -41,11 +41,11 @@ extern "C" {
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
-#define __ATTR_RAM_D1	__attribute__ ((section(".RAM_D1"))) __attribute__ ((aligned (32)))
+#define __ATTR_RAM_D1	__attribute__ ((section(".sram1_bss"))) __attribute__ ((aligned (32)))
 #define __ATTR_RAM_D2	__attribute__ ((section(".RAM_D2"))) __attribute__ ((aligned (32)))
 #define __ATTR_RAM_D3	__attribute__ ((section(".RAM_D3"))) __attribute__ ((aligned (32)))
 
-#define NUM_ADC_CHANNELS 12
+#define NUM_ADC_CHANNELS 10
 #define NUM_STRINGS NUM_ADC_CHANNELS
 #define LHMUTE_COUNTLIM 100
 #define RHMUTE_COUNTLIM 1

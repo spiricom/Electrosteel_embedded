@@ -133,7 +133,7 @@ SECTIONS
 
     . = ALIGN(4);
     _edata = .;        /* define a global symbol at data end */
-  } >RAM_D1 AT> FLASH
+  } >DTCMRAM AT> FLASH
 
   /* Uninitialized data section */
   . = ALIGN(4);
@@ -149,7 +149,7 @@ SECTIONS
     . = ALIGN(4);
     _ebss = .;         /* define a global symbol at bss end */
     __bss_end__ = _ebss;
-  } >RAM_D1
+  } >DTCMRAM
 
   /* User_heap_stack section, used to check that there is enough RAM left */
   ._user_heap_stack :
@@ -160,11 +160,29 @@ SECTIONS
     . = . + _Min_Heap_Size;
     . = . + _Min_Stack_Size;
     . = ALIGN(8);
-  } >RAM_D1
-	  .RAM_D1 (NOLOAD) :
+  } >DTCMRAM
+	  .DTCMRAM (NOLOAD) :
   {
         KEEP(*(.RAM_D1)) 
-  } >RAM_D1
+  } >DTCMRAM
+  
+  
+  /*from https://community.st.com/message/171291-re-stm32h7stm32h743-adc-with-dma?commentID=171291#comment-171291*/
+
+  
+  	.sram1_bss (NOLOAD) :
+	{
+		. = ALIGN(4);
+		_ssram1_bss = .;
+
+		PROVIDE(__sram1_bss_start__ = _sram1_bss);
+		*(.sram1_bss)
+		*(.sram1_bss*)
+		. = ALIGN(4);
+		_esram1_bss = .;
+
+		PROVIDE(__sram1_bss_end__ = _esram1_bss);
+	} > RAM_D1
   
 /*from https://community.st.com/message/171291-re-stm32h7stm32h743-adc-with-dma?commentID=171291#comment-171291*/
 	  .RAM_D2 (NOLOAD) :
