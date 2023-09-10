@@ -1,0 +1,341 @@
+/**
+  ******************************************************************************
+  * @file    Audio_playback_and_record/inc/waveplayer.h
+  * @author  MCD Application Team
+  * @version V1.1.0
+  * @date    26-June-2014
+  * @brief   Header for waveplayer.c module.
+  ******************************************************************************
+  * @attention
+  *
+  * <h2><center>&copy; COPYRIGHT(c) 2014 STMicroelectronics</center></h2>
+  *
+  * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
+  * You may not use this file except in compliance with the License.
+  * You may obtain a copy of the License at:
+  *
+  *        http://www.st.com/software_license_agreement_liberty_v2
+  *
+  * Unless required by applicable law or agreed to in writing, software
+  * distributed under the License is distributed on an "AS IS" BASIS,
+  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  * See the License for the specific language governing permissions and
+  * limitations under the License.
+  *
+  ******************************************************************************
+  */
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef __AUDIOSTREAM_H
+#define __AUDIOSTREAM_H
+
+/* Includes ------------------------------------------------------------------*/
+#include "parameters.h"
+#include "leaf.h"
+#include "main.h"
+
+
+#define AUDIO_FRAME_SIZE      64
+#define HALF_BUFFER_SIZE      AUDIO_FRAME_SIZE * 2 //number of samples per half of the "double-buffer" (twice the audio frame size because there are interleaved samples for both left and right channels)
+#define AUDIO_BUFFER_SIZE     AUDIO_FRAME_SIZE * 4 //number of samples in the whole data structure (four times the audio frame size because of stereo and also double-buffering/ping-ponging)
+#define SMALL_MEM_SIZE 60000
+#define MED_MEM_SIZE 260000//180000
+#define LARGE_MEM_SIZE 62914560//67108864 would be 64 MBytes - size of SDRAM IC, but we are using 2MB each for firmware buffers = 2097152*2 =   4194304, so 67108864-4194304=62914560
+#define MTOF_TABLE_SIZE	32768
+#define MTOF_TABLE_SIZE_MINUS_ONE 32767
+#define MTOF_TABLE_SIZE_DIV_TWO	16384
+#define ATODB_TABLE_SIZE 8192
+#define DBTOA_TABLE_SIZE 8192
+
+/* Exported types ------------------------------------------------------------*/
+typedef enum
+{
+  BUFFER_OFFSET_NONE = 0,
+  BUFFER_OFFSET_HALF,
+  BUFFER_OFFSET_FULL,
+}BUFFER_StateTypeDef;
+
+typedef enum
+{
+  String1Loaded = 0,
+  String2Loaded,
+}StringModelLoadedTypeDef;
+
+#ifdef SAMPLERATE96K
+#define SAMPLE_RATE 96000.f
+#else
+#define SAMPLE_RATE 48000.f
+#endif
+
+#define INV_SAMPLE_RATE 1.f/SAMPLE_RATE
+#define SAMPLE_RATE_MS (SAMPLE_RATE / 1000.f)
+#define INV_SR_MS 1.f/SAMPLE_RATE_MS
+#define SAMPLE_RATE_DIV_PARAMS SAMPLE_RATE / 3
+#define SAMPLE_RATE_DIV_PARAMS_MS (SAMPLE_RATE_DIV_PARAMS / 1000.f)
+#define INV_SR_DIV_PARAMS_MS 1.f/SAMPLE_RATE_DIV_PARAMS_MS
+
+
+#define EXP_BUFFER_SIZE 2048
+#define DECAY_EXP_BUFFER_SIZE 4096
+
+#define CTRL_MIDI_START 9
+
+typedef enum BOOL {
+	FALSE = 0,
+	TRUE
+} BOOL;
+
+
+
+void audioInit(void);
+void audioStart(SAI_HandleTypeDef* hsaiOut, SAI_HandleTypeDef* hsaiIn);
+
+void initFunctionPointers(void);
+
+
+
+typedef void (*audioFrame_t)(uint_fast16_t);
+extern audioFrame_t audioFrameFunction;
+
+void audioFrameSynth(uint_fast16_t buffer_offset);
+void audioFrameString1(uint_fast16_t buffer_offset);
+void audioFrameString2(uint_fast16_t buffer_offset);
+void audioFrameAdditive(uint_fast16_t buffer_offset);
+
+typedef float (*audioTick_t)(void);
+extern audioTick_t audioTickFunction;
+float audioTickSynth(void);
+float audioTickString1(void);
+float audioTickString2(void);
+float audioTickAdditive(void);
+
+void audioFrameSynth(uint_fast16_t buffer_offset);
+void audioFrameString1(uint_fast16_t buffer_offset);
+void audioFrameString2(uint_fast16_t buffer_offset);
+void audioFrameAdditive(uint_fast16_t buffer_offset);
+
+void audioFrame(uint_fast16_t buffer_offset);
+void DMA1_TransferCpltCallback(DMA_HandleTypeDef *hdma);
+void DMA1_HalfTransferCpltCallback(DMA_HandleTypeDef *hdma);
+void updateStateFromSPIMessage(uint_fast8_t currentByte);
+
+void setTranspose(float in, uint_fast8_t v, uint_fast8_t string);
+void setPitchBendRange(float in, uint_fast8_t v, uint_fast8_t string);
+void setNoiseAmp(float in, uint_fast8_t v, uint_fast8_t string);
+
+void oscillator_tick(float note, uint_fast8_t string);
+
+typedef void (*shapeTick_t)(float*, int, float, float, int, uint_fast8_t string);
+typedef void (*lfoShapeTick_t)(float*, int, uint_fast8_t string);
+void sawSquareTick(float* sample, uint_fast8_t v, float freq, float shape, uint_fast8_t sync, uint_fast8_t string);
+void sineTriTick(float* sample, uint_fast8_t v, float freq, float shape, uint_fast8_t sync, uint_fast8_t string);
+void sawTick(float* sample, uint_fast8_t v, float freq, float shape, uint_fast8_t sync, uint_fast8_t string);
+void pulseTick(float* sample, uint_fast8_t v, float freq, float shape, uint_fast8_t sync, uint_fast8_t string);
+void sineTick(float* sample, uint_fast8_t v, float freq, float shape, uint_fast8_t sync, uint_fast8_t string);
+void triTick(float* sample, uint_fast8_t v, float freq, float shape, uint_fast8_t sync, uint_fast8_t string);
+void userTick(float* sample, uint_fast8_t v, float freq, float shape, uint_fast8_t sync, uint_fast8_t string);
+
+void lfoSawSquareTick(float* sample, uint_fast8_t v, uint_fast8_t string);
+void lfoSineTriTick(float* sample, uint_fast8_t v, uint_fast8_t string);
+void lfoSineTick(float* sample, uint_fast8_t v, uint_fast8_t string);
+void lfoTriTick(float* sample, uint_fast8_t v, uint_fast8_t string);
+void lfoSawTick(float* sample, uint_fast8_t v, uint_fast8_t string);
+void lfoPulseTick(float* sample, uint_fast8_t v, uint_fast8_t string);
+
+void lfoSawSquareSetRate(float r, uint_fast8_t v, uint_fast8_t string);
+void lfoSineTriSetRate(float r, uint_fast8_t v, uint_fast8_t string);
+void lfoSineSetRate(float r, uint_fast8_t v, uint_fast8_t string);
+void lfoTriSetRate(float r, uint_fast8_t v, uint_fast8_t string);
+void lfoSawSetRate(float r, uint_fast8_t v, uint_fast8_t string);
+void lfoPulseSetRate(float r, uint_fast8_t v, uint_fast8_t string);
+
+
+void lfoSawSquareSetPhase(float p, uint_fast8_t v, uint_fast8_t string);
+void lfoSineTriSetPhase(float p, uint_fast8_t v, uint_fast8_t string);
+void lfoSineSetPhase(float p, uint_fast8_t v, uint_fast8_t string);
+void lfoTriSetPhase(float p, uint_fast8_t v, uint_fast8_t string);
+void lfoSawSetPhase(float p, uint_fast8_t v, uint_fast8_t string);
+void lfoPulseSetPhase(float p, uint_fast8_t v, uint_fast8_t string);
+
+
+void lfoSawSquareSetShape(float s, uint_fast8_t v, uint_fast8_t string);
+void lfoSineTriSetShape(float s, uint_fast8_t v, uint_fast8_t string);
+void lfoSineSetShape(float s, uint_fast8_t v, uint_fast8_t string);
+void lfoTriSetShape(float s, uint_fast8_t v, uint_fast8_t string);
+void lfoSawSetShape(float s, uint_fast8_t v, uint_fast8_t string);
+void lfoPulseSetShape(float s, uint_fast8_t v, uint_fast8_t string);
+
+extern shapeTick_t shapeTick[NUM_OSC];
+extern lfoShapeTick_t lfoShapeTick[NUM_LFOS];
+
+void noise_tick(uint_fast8_t string);
+void noiseSetFreq(float value, uint_fast8_t v, uint_fast8_t string);
+void noiseSetGain(float value, uint_fast8_t v, uint_fast8_t string);
+void noiseSetTilt(float value, uint_fast8_t v, uint_fast8_t string);
+
+float filter_tick(float* samples, float note, uint_fast8_t string);
+
+typedef void (*filterTick_t)(float*, int, float, int);
+void setFreqMultPitch(float pitch, uint_fast8_t osc, uint_fast8_t string);
+void setFreqMultHarm(float harm, uint_fast8_t osc, uint_fast8_t string);
+void lowpassTick(float* sample, uint_fast8_t v, float cutoff, uint_fast8_t string);
+void highpassTick(float* sample, uint_fast8_t v, float cutoff, uint_fast8_t string);
+void bandpassTick(float* sample, uint_fast8_t v, float cutoff, uint_fast8_t string);
+void diodeLowpassTick(float* sample, uint_fast8_t v, float cutoff, uint_fast8_t string);
+void LadderLowpassTick(float* sample, uint_fast8_t v, float cutoff, uint_fast8_t string);
+void VZlowshelfTick(float* sample, uint_fast8_t v, float cutoff, uint_fast8_t string);
+void VZhighshelfTick(float* sample, uint_fast8_t v, float cutoff, uint_fast8_t string);
+void VZpeakTick(float* sample, uint_fast8_t v, float cutoff, uint_fast8_t string);
+void VZbandrejectTick(float* sample, uint_fast8_t v, float cutoff, uint_fast8_t string);
+
+void filterSetCutoff(float cutoff, uint_fast8_t v, uint_fast8_t string);
+void filterSetKeyfollow(float keyfollow, uint_fast8_t v, uint_fast8_t string);
+void lowpassSetQ(float q, uint_fast8_t v, uint_fast8_t string);
+void highpassSetQ(float q, uint_fast8_t v, uint_fast8_t string);
+void bandpassSetQ(float q, uint_fast8_t v, uint_fast8_t string);
+void diodeLowpassSetQ(float q, uint_fast8_t v, uint_fast8_t string);
+void VZpeakSetQ(float bw, uint_fast8_t v, uint_fast8_t string);
+void VZlowshelfSetQ(float bw, uint_fast8_t v, uint_fast8_t string);
+void VZhighshelfSetQ(float bw, uint_fast8_t v, uint_fast8_t string);
+void VZbandrejectSetQ(float bw, uint_fast8_t v, uint_fast8_t string);
+void LadderLowpassSetQ(float q, uint_fast8_t v, uint_fast8_t string);
+void lowpassSetGain(float gain, uint_fast8_t v, uint_fast8_t string);
+void highpassSetGain(float gain, uint_fast8_t v, uint_fast8_t string);
+void bandpassSetGain(float gain, uint_fast8_t v, uint_fast8_t string);
+void diodeLowpassSetGain(float gain, uint_fast8_t v, uint_fast8_t string);
+void VZpeakSetGain(float gain, uint_fast8_t v, uint_fast8_t string);
+void VZlowshelfSetGain(float gain, uint_fast8_t v, uint_fast8_t string);
+void VZhighshelfSetGain(float gain, uint_fast8_t v, uint_fast8_t string);
+void VZbandrejectSetGain(float gain, uint_fast8_t v, uint_fast8_t string);
+void LadderLowpassSetGain(float gain, uint_fast8_t v, uint_fast8_t string);
+extern filterTick_t filterTick[NUM_FILT];
+
+//envelope functions
+void setEnvelopeAttack(float a, uint_fast8_t v, uint_fast8_t string);
+void setEnvelopeDecay(float d, uint_fast8_t v, uint_fast8_t string);
+void setEnvelopeSustain(float s, uint_fast8_t v, uint_fast8_t string);
+void setEnvelopeRelease(float r, uint_fast8_t v, uint_fast8_t string);
+void setEnvelopeLeak(float leak, uint_fast8_t v, uint_fast8_t string);
+
+//effects
+
+
+typedef float (*effectTick_t)(float sample,uint_fast8_t v, uint_fast8_t string);
+extern effectTick_t effectTick[NUM_EFFECT];
+float blankTick(float sample, uint_fast8_t v, uint_fast8_t string);
+float tiltFilterTick(float sample,uint_fast8_t v, uint_fast8_t string);
+float hardClipTick(float sample, uint_fast8_t v, uint_fast8_t string);
+float tanhTick(float sample, uint_fast8_t v, uint_fast8_t string);
+float softClipTick(float sample, uint_fast8_t v, uint_fast8_t string);
+float satTick(float sample, uint_fast8_t v, uint_fast8_t string);
+float bcTick(float sample, uint_fast8_t v, uint_fast8_t string);
+float compressorTick(float sample, uint_fast8_t v, uint_fast8_t string);
+float shaperTick(float sample, uint_fast8_t v, uint_fast8_t string);
+float wavefolderTick(float sample, uint_fast8_t v, uint_fast8_t string);
+float chorusTick(float sample, uint_fast8_t v, uint_fast8_t string);
+
+void clipperGainSet(float value, uint_fast8_t v, uint_fast8_t string);
+void wavefolderParam1(float value, uint_fast8_t v, uint_fast8_t string);
+void wavefolderParam3(float value, uint_fast8_t v, uint_fast8_t string);
+void tiltParam1(float value, uint_fast8_t v, uint_fast8_t string);
+void tiltParam2(float value, uint_fast8_t v, uint_fast8_t string);
+void tiltParam3(float value, uint_fast8_t v, uint_fast8_t string);
+void tiltParam4(float value, uint_fast8_t v, uint_fast8_t string);
+void compressorParam1(float value, uint_fast8_t v, uint_fast8_t string);
+void compressorParam2(float value, uint_fast8_t v, uint_fast8_t string);
+void compressorParam3(float value, uint_fast8_t v, uint_fast8_t string);
+void compressorParam4(float value, uint_fast8_t v, uint_fast8_t string);
+void compressorParam5(float value, uint_fast8_t v, uint_fast8_t string);
+void offsetParam2(float value, uint_fast8_t v, uint_fast8_t string);
+void param2Linear(float value, uint_fast8_t v, uint_fast8_t string);
+void param3Linear(float value, uint_fast8_t v, uint_fast8_t string);
+void param3Soft(float value, uint_fast8_t v, uint_fast8_t string);
+void param3Hard(float value, uint_fast8_t v, uint_fast8_t string);
+void param3BC(float value, uint_fast8_t v, uint_fast8_t string);
+void param4Linear(float value, uint_fast8_t v, uint_fast8_t string);
+void param5Linear(float value, uint_fast8_t v, uint_fast8_t string);
+void fxMixSet(float value, uint_fast8_t v, uint_fast8_t string);
+void fxPostGainSet(float value, uint_fast8_t v, uint_fast8_t string);
+float wavefolderTick(float sample, uint_fast8_t v, uint_fast8_t string);
+void chorusParam1(float value, uint_fast8_t v, uint_fast8_t string);
+void chorusParam2(float value, uint_fast8_t v, uint_fast8_t string);
+void chorusParam3(float value, uint_fast8_t v, uint_fast8_t string);
+void chorusParam4(float value, uint_fast8_t v, uint_fast8_t string);
+
+void FXLowpassParam1(float value, uint_fast8_t v, uint_fast8_t string);
+void FXLowpassParam3(float value, uint_fast8_t v, uint_fast8_t string);
+void FXHighpassParam1(float value, uint_fast8_t v, uint_fast8_t string);
+void FXHighpassParam3(float value, uint_fast8_t v, uint_fast8_t string);
+void FXBandpassParam1(float value, uint_fast8_t v, uint_fast8_t string);
+void FXBandpassParam3(float value, uint_fast8_t v, uint_fast8_t string);
+void FXDiodeParam1(float value, uint_fast8_t v, uint_fast8_t string);
+void FXDiodeParam3(float value, uint_fast8_t v, uint_fast8_t string);
+void FXPeakParam1(float value, uint_fast8_t v, uint_fast8_t string);
+void FXPeakParam2(float value, uint_fast8_t v, uint_fast8_t string);
+void FXPeakParam3(float value, uint_fast8_t v, uint_fast8_t string);
+void FXLowShelfParam1(float value, uint_fast8_t v, uint_fast8_t string);
+void FXLowShelfParam2(float value, uint_fast8_t v, uint_fast8_t string);
+void FXLowShelfParam3(float value, uint_fast8_t v, uint_fast8_t string);
+void FXHighShelfParam1(float value, uint_fast8_t v, uint_fast8_t string);
+void FXHighShelfParam2(float value, uint_fast8_t v, uint_fast8_t string);
+void FXHighShelfParam3(float vlaue, uint_fast8_t v, uint_fast8_t string);
+void FXNotchParam1(float value, uint_fast8_t v, uint_fast8_t string);
+void FXNotchParam2(float value, uint_fast8_t v, uint_fast8_t string);
+void FXNotchParam3(float value, uint_fast8_t v, uint_fast8_t string);
+void FXLadderParam1(float value, uint_fast8_t v, uint_fast8_t string);
+void FXLadderParam3(float value, uint_fast8_t v, uint_fast8_t string);
+float FXlowpassTick(float sample, uint_fast8_t v, uint_fast8_t string);
+float FXhighpassTick(float sample, uint_fast8_t v, uint_fast8_t string);
+float FXbandpassTick(float sample, uint_fast8_t v, uint_fast8_t string);
+float FXdiodeLowpassTick(float sample, uint_fast8_t v, uint_fast8_t string);
+float FXLadderLowpassTick(float sample, uint_fast8_t v, uint_fast8_t string);
+float FXVZlowshelfTick(float sample, uint_fast8_t v, uint_fast8_t string);
+float FXVZhighshelfTick(float sample, uint_fast8_t v, uint_fast8_t string);
+float FXVZpeakTick(float sample, uint_fast8_t v, uint_fast8_t string);
+float FXVZbandrejectTick(float sample, uint_fast8_t v, uint_fast8_t string);
+
+void tickMappings(void);
+void envelope_tick(uint_fast8_t string);
+void lfo_tick(uint_fast8_t string);
+
+
+//master functions
+void setAmp(float amp, uint_fast8_t v, uint_fast8_t string);
+void setFinalLowpass(float in, uint_fast8_t v, uint_fast8_t string);
+void setMaster(float amp, uint_fast8_t v, uint_fast8_t string);
+
+extern float sourceValues[NUM_SOURCES][NUM_STRINGS_PER_BOARD];
+extern uint_fast8_t lfoOn[NUM_LFOS];
+extern uint_fast8_t envOn[NUM_ENV];
+extern uint_fast8_t oscOn[NUM_OSC];
+extern uint_fast8_t noiseOn;
+extern float oscAmpMult;
+extern float oscAmpMultArray[4];
+
+extern int_fast32_t audioOutBuffer[AUDIO_BUFFER_SIZE];
+extern int_fast32_t audioInBuffer[AUDIO_BUFFER_SIZE];
+extern uint_fast32_t codecReady;
+extern uint_fast8_t presetReady;
+extern volatile uint_fast8_t voice;
+extern volatile uint_fast8_t prevVoice;
+extern uint_fast8_t oscToTick;
+extern uint_fast8_t filterToTick;
+extern uint_fast8_t overSampled;
+extern uint_fast8_t numEffectToTick;
+//extern float audioDisplayBuffer[128];
+extern uint_fast32_t displayBufferIndex;
+extern uint_fast8_t numStringsThisBoard;
+extern volatile uint_fast8_t firstString;
+extern volatile float stringMIDIPitches[NUM_STRINGS_PER_BOARD];
+extern tExpSmooth knobSmoothers[12];
+extern tExpSmooth pedalSmoothers[10];
+extern volatile uint_fast16_t stringInputs[NUM_STRINGS];
+extern volatile uint_fast8_t knobFrozen[12];
+extern volatile uint_fast8_t whichBar;
+extern volatile uint_fast16_t sampleClippedCountdown;
+extern float masterVolFromBrain;
+extern float masterVolFromBrainForSynth;
+extern uint_fast8_t interrupted;
+extern volatile uint_fast8_t newPluck;
+#endif /* __AUDIOSTREAM_H */
+
+/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

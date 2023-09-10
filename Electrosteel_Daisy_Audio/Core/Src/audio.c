@@ -31,38 +31,38 @@ tMempool largePool;
 HAL_StatusTypeDef transmit_status;
 HAL_StatusTypeDef receive_status;
 
-uint32_t codecReady = 0;
+uint_fast32_t codecReady = 0;
 
-uint32_t frameCounter = 0;
+uint_fast32_t frameCounter = 0;
 
-volatile int stringPositions[2];
-volatile int stringPositionsPrev[2];
+volatile uint_fast16_t stringPositions[2];
+volatile uint_fast16_t stringPositionsPrev[2];
 
-volatile int newPluck = 0 ;
-volatile int newBar = 0 ;
+volatile uint_fast8_t newPluck = 0 ;
+volatile uint_fast8_t newBar = 0 ;
 
-uint8_t oscToTick = NUM_OSC;
-uint8_t filterToTick = NUM_FILT;
-uint8_t overSampled = 1;
-uint8_t numEffectToTick = NUM_EFFECT;
+uint_fast8_t oscToTick = NUM_OSC;
+uint_fast8_t filterToTick = NUM_FILT;
+uint_fast8_t overSampled = 1;
+uint_fast8_t numEffectToTick = NUM_EFFECT;
 
-uint8_t numStrings = 10;
+uint_fast8_t numStrings = 10;
 
-volatile uint16_t previousStringInputs[12];
+volatile uint_fast16_t previousStringInputs[12];
 
 float volumeAmps128[128] = {0.000562, 0.000569, 0.000577, 0.000580, 0.000587, 0.000601, 0.000622, 0.000650, 0.000676, 0.000699, 0.000720, 0.000739, 0.000753, 0.000766, 0.000791, 0.000826, 0.000872, 0.000912, 0.000953, 0.001012, 0.001091, 0.001188, 0.001270, 0.001360, 0.001465, 0.001586, 0.001717, 0.001829, 0.001963, 0.002118, 0.002295, 0.002469, 0.002636, 0.002834, 0.003063, 0.003322, 0.003496, 0.003750, 0.004143, 0.004675, 0.005342, 0.005880, 0.006473, 0.007122, 0.007827, 0.008516, 0.009167, 0.009968, 0.010916, 0.012014, 0.012944, 0.013977, 0.015352, 0.017070, 0.019130, 0.020965, 0.022847, 0.024823, 0.026891, 0.028835, 0.030496, 0.033044, 0.036478, 0.040799, 0.045093, 0.049150, 0.053819, 0.059097, 0.064986, 0.070712, 0.076315, 0.081930, 0.087560, 0.093117, 0.098283, 0.104249, 0.111012, 0.118575, 0.124879, 0.131163, 0.141721, 0.156554, 0.175663, 0.195870, 0.213414, 0.228730, 0.241817, 0.252675, 0.264038, 0.276776, 0.290871, 0.306323, 0.322794, 0.338528, 0.353711, 0.368343, 0.382424, 0.393015, 0.406556, 0.426763, 0.453639, 0.487182, 0.522242, 0.550876, 0.573000, 0.588613, 0.598943, 0.613145, 0.628104, 0.643820, 0.660293, 0.676658, 0.692845, 0.709881, 0.727766, 0.746500, 0.764505, 0.782949, 0.802346, 0.822696, 0.844189, 0.867268, 0.886360, 0.901464, 0.912581, 0.921606, 0.932834, 0.944061};
 
 BOOL bufferCleared = TRUE;
 
-int numBuffersToClearOnLoad = 2;
-int numBuffersCleared = 0;
+uint_fast8_t numBuffersToClearOnLoad = 2;
+uint_fast8_t numBuffersCleared = 0;
 
 float masterVolFromBrain = 0.5f;
 float masterVolFromBrainForSynth = 0.25f;
 
-volatile int firstString = 0;
-volatile int lastString = 0;
-volatile int lastStringPlusOne = 0;
+volatile uint_fast8_t firstString = 0;
+volatile uint_fast8_t lastString = 0;
+volatile uint_fast8_t lastStringPlusOne = 0;
 
 
 float mtofTable[MTOF_TABLE_SIZE]__ATTR_RAM_D2;
@@ -75,7 +75,7 @@ float barInMIDI[2] ;
 float prevBarInMIDI[2] ;
 
 
-uint8_t numStringsThisBoard = NUM_STRINGS_PER_BOARD;
+uint_fast8_t numStringsThisBoard = NUM_STRINGS_PER_BOARD;
 
 tExpSmooth stringFreqSmoothers[NUM_STRINGS_PER_BOARD];
 
@@ -86,10 +86,10 @@ tExpSmooth pedalSmoothers[10];
 tExpSmooth barNoiseSmoother;
 
 
-uint8_t randomValPointer = 0;
+uint_fast8_t randomValPointer = 0;
 
 
-uint8_t lsDecay[NUM_STRINGS_PER_BOARD];
+uint_fast8_t lsDecay[NUM_STRINGS_PER_BOARD];
 
 //function pointers
 shapeTick_t shapeTick[NUM_OSC];
@@ -108,8 +108,8 @@ tPBTriangle tri[NUM_OSC][NUM_STRINGS_PER_BOARD];
 // Using seperate objects for pairs to easily maintain phase relation
 tPBSawSquare sawPaired[NUM_OSC][NUM_STRINGS_PER_BOARD];
 tPBSineTriangle sinePaired[NUM_OSC][NUM_STRINGS_PER_BOARD];
-uint8_t oscOn[NUM_OSC];
-uint8_t noiseOn;
+uint_fast8_t oscOn[NUM_OSC];
+uint_fast8_t noiseOn;
 
 //noise
 float noiseOuts[2][NUM_STRINGS_PER_BOARD];
@@ -121,7 +121,7 @@ tCycle lfoSine[NUM_LFOS][NUM_STRINGS_PER_BOARD];
 tTriLFO lfoTri[NUM_LFOS][NUM_STRINGS_PER_BOARD];
 tSawSquareLFO lfoSawSquare[NUM_LFOS][NUM_STRINGS_PER_BOARD];
 tSineTriLFO lfoSineTri[NUM_LFOS][NUM_STRINGS_PER_BOARD];
-uint8_t lfoOn[NUM_LFOS];
+uint_fast8_t lfoOn[NUM_LFOS];
 
 
 //oscillator outputs
@@ -155,7 +155,7 @@ float filterGain[NUM_FILT][NUM_STRINGS_PER_BOARD];
 
 //envelopes
 tADSRT envs[NUM_ENV][NUM_STRINGS_PER_BOARD];
-uint8_t envOn[NUM_ENV];
+uint_fast8_t envOn[NUM_ENV];
 
 //envelope tables
 float decayExpBuffer[DECAY_EXP_BUFFER_SIZE];
@@ -205,7 +205,7 @@ float decState[NUM_STRINGS_PER_BOARD][33];
 
 tSVF finalLowpass[NUM_STRINGS_PER_BOARD];
 
-uint8_t voiceSounding = 0;
+uint_fast8_t voiceSounding = 0;
 
 LEAF leaf;
 
@@ -228,7 +228,7 @@ tVZFilter noiseFilt2;
 
 tNoise myNoise;
 
-volatile uint8_t whichBar = 0;
+volatile uint_fast8_t whichBar = 0;
 
 float partials[18] = {0.073f, 0.164f, 0.19f, 0.181f, 0.151f, 0.103f, 0.0684f, 0.053f, 0.046f, 0.032f, 0.024f, 0.021f, 0.0198f, 0.011f, 0.0114f, 0.0137f, 0.0139f, 0.0101f};
 float partialsHigh[18] = {0.092f, 0.312f, 0.311f, 0.299f, 0.3125f, 0.13f, 0.054f, 0.028f, 0.012f, 0.0077f, 0.0018f, 0.003f, 0.0024f, 0.002415f, 0.00145f, 0.00103f, 0.0001f, 0.0014f};
@@ -301,8 +301,8 @@ float totalGain[2] = {0.0f, 0.0f};
 float gainNormalizers[2] = {0.0f, 0.0f};
 
 
-volatile uint16_t stringInputs[NUM_STRINGS];
-volatile uint8_t resetStringInputs = 0;
+volatile uint_fast16_t stringInputs[NUM_STRINGS];
+volatile uint_fast8_t resetStringInputs = 0;
 
 float octave;
 
@@ -312,23 +312,23 @@ float stringFrequencies[NUM_STRINGS] ;
 
 float volumePedal  = 0.0f;
 float knobScaled[12];
-volatile uint8_t knobFrozen[12];
+volatile uint_fast8_t knobFrozen[12];
 float pedalScaled[10];
 volatile float stringMIDIPitches[NUM_STRINGS_PER_BOARD] ;
 
 float stringOctave[NUM_STRINGS_PER_BOARD];
-volatile int voice = 0 ;
-volatile int prevVoice = 127;
-int dualSlider = 0;
-int neck = 0;
+volatile uint_fast8_t voice = 0 ;
+volatile uint_fast8_t  prevVoice = 127;
+uint_fast8_t dualSlider = 0;
+uint_fast8_t neck = 0;
 
-int currentBarBuffer = 0;
-int currentPluckBuffer = 0;
+uint_fast8_t currentBarBuffer = 0;
+uint_fast8_t currentPluckBuffer = 0;
 
-int edit = 0;
-int whichTable = 0;
-int presetReady = 0;
-uint8_t whichStringModelLoaded;
+uint_fast8_t edit = 0;
+uint_fast8_t whichTable = 0;
+uint_fast8_t presetReady = 0;
+uint_fast8_t whichStringModelLoaded;
 
 tCycle testSine;
 
@@ -344,36 +344,36 @@ float string1Defaults[12] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.3
 float string2Defaults[12] = {0.588158f, 0.15292f, 0.0f, .952854f, 0.34506f, 0.94892f, 0.0f, 0.0f, 0.3019f, 0.1764f, 0.7764f, 0.8155f};
 
 volatile float MIDIerror = 0.0f;
-uint32_t timeFilt = 0;
-uint32_t timeTick = 0;
-uint32_t timeMap = 0;
-uint32_t timeOS = 0;
-uint32_t timeSmoothing = 0;
-uint32_t timeGettingNote = 0;
-uint32_t timeNoise = 0;
-uint32_t timePerStringTick = 0;
-uint32_t timeLFO = 0;
-uint32_t timeEnv = 0;
-uint32_t timeOsc = 0;
-uint32_t oscCountdown = 0;
-uint8_t interrupted = 0;
-uint32_t timeMIDI = 0;
-uint32_t timeFrame = 0;
+uint_fast32_t timeFilt = 0;
+uint_fast32_t timeTick = 0;
+uint_fast32_t timeMap = 0;
+uint_fast32_t timeOS = 0;
+uint_fast32_t timeSmoothing = 0;
+uint_fast32_t timeGettingNote = 0;
+uint_fast32_t timeNoise = 0;
+uint_fast32_t timePerStringTick = 0;
+uint_fast32_t timeLFO = 0;
+uint_fast32_t timeEnv = 0;
+uint_fast32_t timeOsc = 0;
+uint_fast32_t oscCountdown = 0;
+uint_fast8_t interrupted = 0;
+uint_fast32_t timeMIDI = 0;
+uint_fast32_t timeFrame = 0;
 float frameLoadPercentage = 0.0f;
 float frameLoadMultiplier = 1.0f / (10000.0f * AUDIO_FRAME_SIZE);
-uint32_t frameLoadOverCount = 0;
+uint_fast32_t frameLoadOverCount = 0;
 
-volatile uint16_t sampleClippedCountdown = 0;
+volatile uint_fast16_t sampleClippedCountdown = 0;
 
-volatile uint16_t volumePedalInt;
+volatile uint_fast16_t volumePedalInt;
 float octaveRatios[4] = {0.5f, 1.0f, 2.0f, 4.0f};
 
-int octaveIndex = 1;
-int stringOctaveIndex[4];
-const int syncMap[3] = {2, 0, 1};
+int_fast8_t octaveIndex = 1;
+int_fast8_t stringOctaveIndex[4];
+const uint_fast8_t syncMap[3] = {2, 0, 1};
 float pluckPos = 0.5f;
-volatile int switchStrings = 0;
-volatile uint8_t octaveAction = 0;
+volatile uint_fast8_t switchStrings = 0;
+volatile uint_fast8_t octaveAction = 0;
 
 
 float param1[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
@@ -402,7 +402,7 @@ float __ATTR_ITCMRAM pickupNonLinearity(float x)
 float __ATTR_ITCMRAM mtofTableLookup(float tempMIDI)
 {
 	float tempIndexF = ((LEAF_clip(-163.0f, tempMIDI, 163.0f) * 100.0f) + 16384.0f);
-	int tempIndexI = (int)tempIndexF;
+	int_fast16_t tempIndexI = (int)tempIndexF;
 	tempIndexF = tempIndexF -tempIndexI;
 	float freqToSmooth1 = mtofTable[tempIndexI & 32767];
 	float freqToSmooth2 = mtofTable[(tempIndexI + 1) & 32767];
@@ -423,47 +423,47 @@ void audioInit()
 	LEAF_generate_exp(decayExpBuffer, 0.001f, 0.0f, 1.0f, -0.0008f, DECAY_EXP_BUFFER_SIZE); // exponential decay buffer falling from 1 to 0
 	decayExpBufferSizeMinusOne = DECAY_EXP_BUFFER_SIZE - 1;
 	invNumOvertones = 1.0f / NUM_OVERTONES;
-	for (int i = 0; i < 12; i++)
+	for (uint_fast8_t i = 0; i < 12; ++i)
 	{
 		previousStringInputs[i]	= 0;
 	}
 	tCycle_init(&testSine, &leaf);
 	tCycle_setFreq(&testSine, 440.0f);
 
-	for (int i = 0; i < NUM_OVERTONES; i++)
+	for (uint_fast8_t i = 0; i < NUM_OVERTONES; i++)
 	{
 		totalGain[0] += partials[i];
 		totalGain[1] += partialsHigh[i];
 
-		for (int j = 0; j < 3; j++)
+		for (uint_fast8_t j = 0; j < 3; j++)
 
 		{
-			for (int k = 0; k < 3; k++)
+			for (uint_fast8_t k = 0; k < 3; k++)
 			{
 				totalGain_s[j][k] += stringPartialGains[j][k][i];
 			}
 		}
 
 	}
-	for (int i = 0; i < 3; i++)
+	for (uint_fast8_t i = 0; i < 3; i++)
 	{
-		for (int j = 0; j < 3; j++)
+		for (uint_fast8_t j = 0; j < 3; j++)
 		{
 			gainNormalizers_s[i][j] = 1.0f / totalGain_s[i][j];
 		}
 	}
 	gainNormalizers[0] = 1.0f / totalGain[0];
 	gainNormalizers[1] = 1.0f / totalGain[1];
-	for (int i = 0; i < NUM_OVERTONES; i++)
+	for (uint_fast8_t i = 0; i < NUM_OVERTONES; i++)
 	{
 		partials[i] = partials[i] * gainNormalizers[0];
 		partialsHigh[i] = partialsHigh[i] * gainNormalizers[1];
 
 
-		for (int j = 0; j < 3; j++)
+		for (uint_fast8_t j = 0; j < 3; j++)
 
 		{
-			for (int k = 0; k < 3; k++)
+			for (uint_fast8_t k = 0; k < 3; k++)
 			{
 				stringPartialGains[j][k][i] *= gainNormalizers_s[j][k];
 			}
@@ -471,7 +471,7 @@ void audioInit()
 
 	}
 
-	for (int i = 0; i < NUM_OVERTONES; i++)
+	for (uint_fast8_t i = 0; i < NUM_OVERTONES; i++)
 	{
 		  decayAfParts[i] = (((1.0f/partialDecaysHigh[i])-(1.0f/partialDecays[i])) * 0.004048582995951f);  // divided by 370-123 = 247. value is 1/247
 
@@ -479,10 +479,10 @@ void audioInit()
 
 		  decayBs[i] = (1.0f/partialDecays[i]) - decayAf1[i];
 
-		  for (int j = 0; j < 3; j++)
+		  for (uint_fast8_t j = 0; j < 3; j++)
 		  {
 
-			  for (int k = 0; k < 2; k++)
+			  for (uint_fast8_t k = 0; k < 2; k++)
 			  {
 				  float tempDivisor = (stringFundamentals[j][k+1] -  stringFundamentals[j][k]);
 				  dAp[j][k][i] = ((1.0f / stringDecays[j][k+1][i]) - (1.0f / stringDecays[j][k][i])) / tempDivisor;
@@ -495,7 +495,7 @@ void audioInit()
 
 	}
 
-	for (int i = 0; i < 256; i++)
+	for (uint_fast16_t i = 0; i < 256; i++)
 	{
 		randomFactors[i] = (randomNumber() * 0.4f) + 0.8f;
 	}
@@ -504,8 +504,10 @@ void audioInit()
 
 	LEAF_generate_mtof(mtofTable, -163.8375f, 163.8375f,  MTOF_TABLE_SIZE); //mtof table for fast calc
 
-
-
+	for (uint_fast16_t i = 0; i < 256; ++i)
+	{
+		random_values[i] = 0.0f;
+	}
 
 
 	if (numStrings == 6)
@@ -542,10 +544,10 @@ void audioInit()
 
 	}
 
-	for (int i = 0; i < NUM_STRINGS_PER_BOARD; i++)
+	for (uint_fast8_t i = 0; i < NUM_STRINGS_PER_BOARD; i++)
 	{
 
-		for (int j = 0; j < NUM_OVERTONES; j++)
+		for (uint_fast8_t j = 0; j < NUM_OVERTONES; j++)
 		{
 			tCycle_init(&additive[i][j], &leaf);
 			tADSRT_init(&additiveEnv[i][j], 5.0f, partialDecays[j] * 1000.0f, 0.0f, 150.0f, decayExpBuffer, DECAY_EXP_BUFFER_SIZE, &leaf);
@@ -557,20 +559,20 @@ void audioInit()
 
 
 	tExpSmooth_init(&volumeSmoother,0.0f, 0.0005f, &leaf);
-	for (int i = 0; i < 12; i++)
+	for (uint_fast8_t i = 0; i < 12; i++)
 	{
 		tExpSmooth_init(&knobSmoothers[i],0.0f, 0.0005f, &leaf);
 	}
-	for (int i = 0; i < 10; i++)
+	for (uint_fast8_t i = 0; i < 10; i++)
 	{
 		tExpSmooth_init(&pedalSmoothers[i],0.0f, 0.0005f, &leaf);
 	}
 	tExpSmooth_init(&barNoiseSmoother,0.0f, 0.002f, &leaf);
 
-	for (int v = 0; v < NUM_STRINGS_PER_BOARD; v++)
+	for (uint_fast8_t v = 0; v < NUM_STRINGS_PER_BOARD; v++)
 	{
 
-		for(int i = 0; i < NUM_OSC; i++)
+		for(uint_fast8_t i = 0; i < NUM_OSC; i++)
 		{
 			tPBSaw_init(&saw[i][v], &leaf);
 
@@ -615,7 +617,7 @@ void audioInit()
 		tVZFilter_init(&noiseFilt2, Lowpass, 800.0f, 0.9f, &leaf);
 		tVZFilter_setFreq(&noiseFilt2, 3332.0f); //based on testing with knob values
 		tNoise_init(&myNoise, WhiteNoise, &leaf);
-		for (int i = 0; i < NUM_FILT; i++)
+		for (uint_fast8_t i = 0; i < NUM_FILT; i++)
 		{
 			tSVF_init(&lowpass[i][v], SVFTypeLowpass, 2000.f, 0.7f, &leaf);
 			tSVF_init(&highpass[i][v], SVFTypeHighpass, 2000.f, 0.7f, &leaf);
@@ -629,7 +631,7 @@ void audioInit()
 			tExpSmooth_init(&filterCutoffSmoother[i][v], 64.0f, 0.01f, &leaf);
 		}
 
-		for (int i = 0; i < NUM_LFOS; i++)
+		for (uint_fast8_t i = 0; i < NUM_LFOS; i++)
 		{
 			tIntPhasor_init(&lfoSaw[i][v], &leaf);
 			tSquareLFO_init(&lfoPulse[i][v], &leaf);
@@ -645,14 +647,14 @@ void audioInit()
 		tVZFilter_init(&noiseBell1[v], Bell, 1000.0f, 1.9f, &leaf);
 
 
-		for (int i = 0; i < NUM_ENV; i++)
+		for (uint_fast8_t i = 0; i < NUM_ENV; i++)
 		{
 			tADSRT_init(&envs[i][v], 0.1f,1000.f,0.5f,1.0f,decayExpBuffer, DECAY_EXP_BUFFER_SIZE, &leaf);
 			tADSRT_setLeakFactor(&envs[i][v], ((1.0f - 0.1f) * 0.00005f) + 0.99995f);
 		}
 
 
-		for (int i = 0; i < NUM_EFFECT; i++)
+		for (uint_fast8_t i = 0; i < NUM_EFFECT; i++)
 		{
 			tCrusher_init(&bc[i][v],&leaf);
 			tHighpass_init(&dcBlock1[i][v], 5.0f,&leaf);
@@ -684,7 +686,7 @@ void audioInit()
 			tLadderFilter_init(&FXLadderfilter[i][v], 2000.f, 1.0f, &leaf);
 		}
 
-		for (int i = 0; i < MAX_NUM_MAPPINGS; i++)
+		for (uint_fast8_t i = 0; i < MAX_NUM_MAPPINGS; i++)
 		{
 			tExpSmooth_init(&mapSmoothers[i][v], 0.0f, 0.05f, &leaf);
 		}
@@ -696,10 +698,10 @@ void audioInit()
 		tSVF_init(&finalLowpass[v], SVFTypeLowpass, 19000.f, 0.3f, &leaf);
 	}
 
-	for (int i = 0; i < AUDIO_BUFFER_SIZE; i++)
+	for (uint_fast16_t i = 0; i < AUDIO_BUFFER_SIZE; i++)
 	{
 
-			audioOutBuffer[ i] = (int32_t)(0.0f * TWO_TO_23);
+			audioOutBuffer[ i] = (int_fast32_t)(0.0f * TWO_TO_23);
 	}
 
 	audioFrameFunction = audioFrameSynth;
@@ -715,9 +717,9 @@ void audioStart(SAI_HandleTypeDef* hsaiOut, SAI_HandleTypeDef* hsaiIn)
 }
 
 
-void __ATTR_ITCMRAM updateStateFromSPIMessage(uint8_t offset)
+void __ATTR_ITCMRAM updateStateFromSPIMessage(uint_fast8_t offset)
 {
-	int modeBit = SPI_LEVERS[24 + offset];
+	uint_fast8_t modeBit = SPI_LEVERS[24 + offset];
 
 	octaveAction = (modeBit >> 6) & 1;
 	dualSlider = (modeBit >> 5) & 1;
@@ -727,19 +729,19 @@ void __ATTR_ITCMRAM updateStateFromSPIMessage(uint8_t offset)
 
 
 
-	octave = (((int32_t) (modeBit & 15) - 5 ) * 12.0f);
+	octave = (((int_fast32_t) (modeBit & 15) - 5 ) * 12.0f);
 	//if "octave action" is set to 1, then immediately change octave instead of waiting for new note
 	if (octaveAction)
 	{
-		for (int i = 0; i < numStringsThisBoard; i++)
+		for (uint_fast8_t i = 0; i < numStringsThisBoard; i++)
 		{
 			stringOctave[i] = octave;
 		}
 	}
 
-	volumePedalInt = ((uint16_t)SPI_LEVERS[26 + offset] << 8) + ((uint16_t)SPI_LEVERS[27 + offset] & 0xff);
+	volumePedalInt = ((uint_fast16_t)SPI_LEVERS[26 + offset] << 8) + ((uint_fast16_t)SPI_LEVERS[27 + offset] & 0xff);
 	volumePedal = volumePedalInt * 0.0002442002442f;
-	stringPositions[whichBar] = ((uint16_t)SPI_LEVERS[28 + offset] << 8) + ((uint16_t)SPI_LEVERS[29 + offset] & 0xff);
+	stringPositions[whichBar] = ((uint_fast16_t)SPI_LEVERS[28 + offset] << 8) + ((uint_fast16_t)SPI_LEVERS[29 + offset] & 0xff);
 	if (stringPositions[whichBar] != stringPositionsPrev[whichBar])
 	{
 		//HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_SET);
@@ -753,17 +755,17 @@ void __ATTR_ITCMRAM updateStateFromSPIMessage(uint8_t offset)
 
 
 
-void __ATTR_ITCMRAM switchStringModel(int which)
+void __ATTR_ITCMRAM switchStringModel(uint_fast8_t which)
 {
 	if (which == 1)
 	{
 		if (whichStringModelLoaded != String1Loaded)
 		{
-			for (int v = 0; v < numStringsThisBoard; v++)
+			for (uint_fast8_t v = 0; v < numStringsThisBoard; v++)
 			{
 				tLivingString2_free(&strings[v]);
 			}
-			for (int v = 0; v < numStringsThisBoard; v++)
+			for (uint_fast8_t v = 0; v < numStringsThisBoard; v++)
 			{
 				tSimpleLivingString3_initToPool(&livStr[v], 4, 220.0f, 17000.0f,
 															 0.99999f, 0.0f, 0.01f,
@@ -776,7 +778,7 @@ void __ATTR_ITCMRAM switchStringModel(int which)
 			}
 		}
 		//load string1 default params:
-		for (int i = 0; i < 12; i++)
+		for (uint_fast8_t i = 0; i < 12; i++)
 		{
 			tExpSmooth_setValAndDest(&knobSmoothers[i], string1Defaults[i]);
 			knobFrozen[i] = 1;
@@ -791,11 +793,11 @@ void __ATTR_ITCMRAM switchStringModel(int which)
 	{
 		if (whichStringModelLoaded != String2Loaded)
 		{
-			for (int v = 0; v < numStringsThisBoard; v++)
+			for (uint_fast8_t v = 0; v < numStringsThisBoard; v++)
 			{
 				tSimpleLivingString3_free(&livStr[v]);
 			}
-			for (int v = 0; v < numStringsThisBoard; v++)
+			for (uint_fast8_t v = 0; v < numStringsThisBoard; v++)
 			{
 				tLivingString2_initToPool(&strings[v], 100.0f, 0.6f, 0.3f, .9f, 0.0f, .9999f, .9999f, 0.0f, 0.05f, 0.05f, 1, &mediumPool);
 
@@ -807,7 +809,7 @@ void __ATTR_ITCMRAM switchStringModel(int which)
 			}
 		}
 		//load string2 default params:
-		for (int i = 0; i < 12; i++)
+		for (uint_fast8_t i = 0; i < 12; i++)
 		{
 			tExpSmooth_setValAndDest(&knobSmoothers[i], string2Defaults[i]);
 			knobFrozen[i] = 1;
@@ -821,18 +823,18 @@ void __ATTR_ITCMRAM switchStringModel(int which)
 
 }
 
-void __ATTR_ITCMRAM audioFrameSynth(uint16_t buffer_offset)
+void __ATTR_ITCMRAM audioFrameSynth(uint_fast16_t buffer_offset)
 {
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_SET);
-	uint32_t tempCountFrame = DWT->CYCCNT;
-	int32_t current_sample = 0;
+	uint_fast32_t tempCountFrame = DWT->CYCCNT;
+	int_fast32_t current_sample = 0;
 
 	if (resetStringInputs)
 	{
-		for (int i = 0; i < numStringsThisBoard; i++)
+		for (uint_fast8_t i = 0; i < numStringsThisBoard; i++)
 		{
 			//note off
-			for (int v = 0; v < NUM_ENV; v++)
+			for (uint_fast8_t v = 0; v < NUM_ENV; v++)
 			{
 				tADSRT_clear(&envs[v][i]);
 				previousStringInputs[i] = 0;
@@ -842,7 +844,7 @@ void __ATTR_ITCMRAM audioFrameSynth(uint16_t buffer_offset)
 	}
 	if (newPluck)
 	{
-		for (int i = 0; i < numStringsThisBoard; i++)
+		for (uint_fast8_t i = 0; i < numStringsThisBoard; i++)
 		{
 			if ((previousStringInputs[i] == 0) && (stringInputs[i] > 0))
 			{
@@ -850,7 +852,7 @@ void __ATTR_ITCMRAM audioFrameSynth(uint16_t buffer_offset)
 				stringOctave[i] = octave;
 				//HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_SET);
 
-				for (int v = 0; v < NUM_ENV; v++)
+				for (uint_fast8_t v = 0; v < NUM_ENV; v++)
 				{
 					if (envOn[v])
 					{
@@ -862,7 +864,7 @@ void __ATTR_ITCMRAM audioFrameSynth(uint16_t buffer_offset)
 						voiceSounding = 1;
 					}
 				}
-				for (int v = 0; v < NUM_LFOS; v++)
+				for (uint_fast8_t v = 0; v < NUM_LFOS; v++)
 				{
 					if (lfoOn[v])
 					{
@@ -882,7 +884,7 @@ void __ATTR_ITCMRAM audioFrameSynth(uint16_t buffer_offset)
 			else if ((previousStringInputs[i] > 0) && (stringInputs[i] == 0))
 			{
 				//note off
-				for (int v = 0; v < NUM_ENV; v++)
+				for (uint_fast8_t v = 0; v < NUM_ENV; v++)
 				{
 					if (envOn[v])
 					{
@@ -895,7 +897,7 @@ void __ATTR_ITCMRAM audioFrameSynth(uint16_t buffer_offset)
 		newPluck = 0;
 	}
 	//mono operation, no need to compute right channel. Also for loop iterating by 2 instead of 1 to avoid if statement.
-	for (int i = 0; i < HALF_BUFFER_SIZE; i+=2)
+	for (uint_fast16_t i = 0; i < HALF_BUFFER_SIZE; i+=2)
 	{
 		current_sample = (int32_t)(audioTickSynth() * TWO_TO_23);
 		audioOutBuffer[buffer_offset + i] = current_sample;
@@ -931,15 +933,15 @@ void __ATTR_ITCMRAM audioFrameSynth(uint16_t buffer_offset)
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_RESET);
 }
 
-void __ATTR_ITCMRAM audioFrameString1(uint16_t buffer_offset)
+void __ATTR_ITCMRAM audioFrameString1(uint_fast16_t buffer_offset)
 {
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_SET);
-	uint32_t tempCountFrame = DWT->CYCCNT;
-	int32_t current_sample = 0;
+	uint_fast32_t tempCountFrame = DWT->CYCCNT;
+	int_fast32_t current_sample = 0;
 
 	if (resetStringInputs)
 	{
-		for (int i = 0; i < numStringsThisBoard; i++)
+		for (uint_fast8_t i = 0; i < numStringsThisBoard; i++)
 		{
 			//note off
 			lsDecay[i] = 0;
@@ -949,7 +951,7 @@ void __ATTR_ITCMRAM audioFrameString1(uint16_t buffer_offset)
 	}
 	if (newPluck)
 	{
-		for (int i = 0; i < numStringsThisBoard; i++)
+		for (uint_fast8_t i = 0; i < numStringsThisBoard; i++)
 		{
 			if ((previousStringInputs[i] == 0) && (stringInputs[i] > 0))
 			{
@@ -973,7 +975,7 @@ void __ATTR_ITCMRAM audioFrameString1(uint16_t buffer_offset)
 		newPluck = 0;
 	}
 	//mono operation, no need to compute right channel. Also for loop iterating by 2 instead of 1 to avoid if statement.
-	for (int i = 0; i < HALF_BUFFER_SIZE; i+=2)
+	for (uint_fast16_t i = 0; i < HALF_BUFFER_SIZE; i+=2)
 	{
 		current_sample = (int32_t)(audioTickString1() * TWO_TO_23);
 		audioOutBuffer[buffer_offset + i] = current_sample;
@@ -991,15 +993,15 @@ void __ATTR_ITCMRAM audioFrameString1(uint16_t buffer_offset)
 
 }
 
-void __ATTR_ITCMRAM audioFrameString2(uint16_t buffer_offset)
+void __ATTR_ITCMRAM audioFrameString2(uint_fast16_t buffer_offset)
 {
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_SET);
-	uint32_t tempCountFrame = DWT->CYCCNT;
-	int32_t current_sample = 0;
+	uint_fast32_t tempCountFrame = DWT->CYCCNT;
+	int_fast32_t current_sample = 0;
 
 	if (resetStringInputs)
 	{
-		for (int i = 0; i < numStringsThisBoard; i++)
+		for (uint_fast8_t i = 0; i < numStringsThisBoard; i++)
 		{
 			//note off
 			tLivingString2_setTargetLev(&strings[i], 0.0f);
@@ -1013,7 +1015,7 @@ void __ATTR_ITCMRAM audioFrameString2(uint16_t buffer_offset)
 
 	if (newPluck)
 	{
-		for (int i = 0; i < numStringsThisBoard; i++)
+		for (uint_fast8_t i = 0; i < numStringsThisBoard; i++)
 		{
 			if ((previousStringInputs[i] == 0) && (stringInputs[i] > 0))
 			{
@@ -1025,9 +1027,9 @@ void __ATTR_ITCMRAM audioFrameString2(uint16_t buffer_offset)
 				tLivingString2_setLevMode(&strings[i], (knobScaled[0] > 0.5f));
 
 				tLivingString2_setTargetLev(&strings[i], knobScaled[1]);
-				int delayLength = (int)strings[i]->waveLengthInSamples;
-				int beforeLength = (delayLength * knobScaled[2]);
-				int afterLength = (delayLength * (1.0f - knobScaled[2]));
+				uint_fast32_t delayLength = (int)strings[i]->waveLengthInSamples;
+				uint_fast32_t beforeLength = (delayLength * knobScaled[2]);
+				uint_fast32_t afterLength = (delayLength * (1.0f - knobScaled[2]));
 				float beforePickIncrement;
 				float afterPickIncrement;
 				float pluckAmp = amplitz * 2.0f; //was 4
@@ -1051,7 +1053,7 @@ void __ATTR_ITCMRAM audioFrameString2(uint16_t buffer_offset)
 
 
 				float value = 0.0f;
-				for (int j = 0; j < delayLength; j++)
+				for (uint_fast32_t j = 0; j < delayLength; j++)
 				{
 					if (j < beforeLength)
 					{
@@ -1086,7 +1088,7 @@ void __ATTR_ITCMRAM audioFrameString2(uint16_t buffer_offset)
 	}
 
 	//mono operation, no need to compute right channel. Also for loop iterating by 2 instead of 1 to avoid if statement.
-	for (int i = 0; i < HALF_BUFFER_SIZE; i+=2)
+	for (uint_fast16_t i = 0; i < HALF_BUFFER_SIZE; i+=2)
 	{
 		current_sample = (int32_t)(audioTickString2() * TWO_TO_23);
 		audioOutBuffer[buffer_offset + i] = current_sample;
@@ -1106,14 +1108,14 @@ void __ATTR_ITCMRAM audioFrameString2(uint16_t buffer_offset)
 
 }
 
-void __ATTR_ITCMRAM audioFrameAdditive(uint16_t buffer_offset)
+void __ATTR_ITCMRAM audioFrameAdditive(uint_fast16_t buffer_offset)
 {
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_SET);
-	uint32_t tempCountFrame = DWT->CYCCNT;
-	int32_t current_sample = 0;
+	uint_fast32_t tempCountFrame = DWT->CYCCNT;
+	int_fast32_t current_sample = 0;
 	if (newPluck)
 	{
-		for (int i = 0; i < numStringsThisBoard; i++)
+		for (uint_fast8_t i = 0; i < numStringsThisBoard; i++)
 		{
 			if ((previousStringInputs[i] == 0) && (stringInputs[i] > 0))
 			{
@@ -1130,7 +1132,7 @@ void __ATTR_ITCMRAM audioFrameAdditive(uint16_t buffer_offset)
 				float d1;
 				float d2;
 				float thisGain;
-				int thisString = i + firstString;
+				uint_fast8_t thisString = i + firstString;
 				float stringFade;
 				float fakedFreq = stringFrequencies[i] * ((knobScaled[2] * 3.5f) + 0.5f);
 				float height2 = 0.0f;
@@ -1150,11 +1152,11 @@ void __ATTR_ITCMRAM audioFrameAdditive(uint16_t buffer_offset)
 				//float fakedFreq = stringFrequencies[i];
 				//float height2 = LEAF_clip(0.0f,(barInMIDI[0] *  0.083333333333333f) + stringOctave[i] + (knobScaled[2] * 2.0f), 1.99f);
 				//float height1 = height2;
-				int height1Int = floor(height1);
+				uint_fast8_t height1Int = floor(height1);
 				float height1Float = height1 - height1Int;
-				int height2Int = floor(height2);
+				uint_fast8_t height2Int = floor(height2);
 				float height2Float = height2 - height2Int;
-				for (int j = 0; j < NUM_OVERTONES; j++)
+				for (uint_fast8_t j = 0; j < NUM_OVERTONES; j++)
 				{
 					if (thisString < 6)
 					{
@@ -1222,7 +1224,7 @@ void __ATTR_ITCMRAM audioFrameAdditive(uint16_t buffer_offset)
 			{
 				//note off
 				//HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_RESET);
-				for (int j = 0; j < NUM_OVERTONES; j++)
+				for (uint_fast8_t j = 0; j < NUM_OVERTONES; j++)
 				{
 					tADSRT_off(&additiveEnv[i][j]);
 				}
@@ -1235,7 +1237,7 @@ void __ATTR_ITCMRAM audioFrameAdditive(uint16_t buffer_offset)
 
 
 		//mono operation, no need to compute right channel. Also for loop iterating by 2 instead of 1 to avoid if statement.
-	for (int i = 0; i < HALF_BUFFER_SIZE; i+=2)
+	for (uint_fast16_t i = 0; i < HALF_BUFFER_SIZE; i+=2)
 	{
 		current_sample = (int32_t)(audioTickAdditive() * TWO_TO_23);
 		audioOutBuffer[buffer_offset + i] = current_sample;
@@ -1254,29 +1256,29 @@ void __ATTR_ITCMRAM audioFrameAdditive(uint16_t buffer_offset)
 
 float __ATTR_ITCMRAM audioTickSynth(void)
 {
-	uint32_t tempCountTick = DWT->CYCCNT;
+	uint_fast32_t tempCountTick = DWT->CYCCNT;
 	float masterSample = 0.0f;
 
 	//run mapping ticks for all strings
-	uint32_t tempCountMap = DWT->CYCCNT;
+	uint_fast32_t tempCountMap = DWT->CYCCNT;
 	tickMappings();
 	timeMap = DWT->CYCCNT - tempCountMap;
 
-	uint32_t tempSmoothing = DWT->CYCCNT;
+	uint_fast32_t tempSmoothing = DWT->CYCCNT;
 	float volumeSmoothed = tExpSmooth_tick(&volumeSmoother);
 
-	for (int i = 0; i < 12; i++)
+	for (uint_fast8_t i = 0; i < 12; i++)
 	{
 		knobScaled[i] = tExpSmooth_tick(&knobSmoothers[i]);
-		for (int v = 0; v < numStringsThisBoard; v++)
+		for (uint_fast8_t v = 0; v < numStringsThisBoard; v++)
 		{
 			sourceValues[MACRO_SOURCE_OFFSET + i][v] = knobScaled[i];
 		}
 	}
-	for (int i = 0; i < 10; i++)
+	for (uint_fast8_t i = 0; i < 10; i++)
 	{
 		pedalScaled[i] = tExpSmooth_tick(&pedalSmoothers[i]);
-		for (int v = 0; v < numStringsThisBoard; v++)
+		for (uint_fast8_t v = 0; v < numStringsThisBoard; v++)
 		{
 			sourceValues[PEDAL_SOURCE_OFFSET + i][v] = pedalScaled[i];
 		}
@@ -1284,12 +1286,12 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 	timeSmoothing = DWT->CYCCNT - tempSmoothing;
 
 	float note[numStringsThisBoard];
-	uint32_t tempPerStringTick = DWT->CYCCNT;
-	for (int v = 0; v < numStringsThisBoard; v++)
+	uint_fast32_t tempPerStringTick = DWT->CYCCNT;
+	for (uint_fast8_t v = 0; v < numStringsThisBoard; v++)
 	{
 		float sample = 0.0f;
 
-		uint32_t tempCountGettingNote = DWT->CYCCNT;
+		uint_fast32_t tempCountGettingNote = DWT->CYCCNT;
 		note[v] = stringMIDIPitches[v] + stringOctave[v];
 		sourceValues[MIDI_KEY_SOURCE_OFFSET][v] = (note[v] - midiKeySubtractor) * midiKeyDivisor;
 
@@ -1307,19 +1309,19 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 		}
 		timeGettingNote = DWT->CYCCNT - tempCountGettingNote;
 
-		uint32_t tempCountEnv = DWT->CYCCNT;
+		uint_fast32_t tempCountEnv = DWT->CYCCNT;
 		envelope_tick(v);
 		timeEnv = DWT->CYCCNT - tempCountEnv;
 
-		uint32_t tempCountLFO = DWT->CYCCNT;
+		uint_fast32_t tempCountLFO = DWT->CYCCNT;
 		lfo_tick(v);
 		timeLFO = DWT->CYCCNT - tempCountLFO;
 
-		uint32_t tempCountOsc = DWT->CYCCNT;
+		uint_fast32_t tempCountOsc = DWT->CYCCNT;
 		oscillator_tick(note[v], v);
 		timeOsc = DWT->CYCCNT - tempCountOsc;
 
-		uint32_t tempCountNoise = DWT->CYCCNT;
+		uint_fast32_t tempCountNoise = DWT->CYCCNT;
 		if (noiseOn)
 		{
 			noise_tick(v);
@@ -1327,7 +1329,7 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 		timeNoise = DWT->CYCCNT - tempCountNoise;
 
 		float filterSamps[2] = {0.0f, 0.0f};
-		for (int i = 0; i < oscToTick; i++)
+		for (uint_fast8_t i = 0; i < oscToTick; i++)
 		{
 			filterSamps[0] += oscOuts[0][i][v];
 			filterSamps[1] += oscOuts[1][i][v];
@@ -1335,7 +1337,7 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 		filterSamps[0] += noiseOuts[0][v];
 		filterSamps[1] += noiseOuts[1][v];
 
-		uint32_t tempCountFilt = DWT->CYCCNT;
+		uint_fast32_t tempCountFilt = DWT->CYCCNT;
 		sample = filter_tick(&filterSamps[0], note[v], v);
 		timeFilt = DWT->CYCCNT - tempCountFilt;
 
@@ -1343,7 +1345,7 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 		{
 			sample *= amplitude[v];
 		}
-		uint32_t tempCountOS = DWT->CYCCNT;
+		uint_fast32_t tempCountOS = DWT->CYCCNT;
 
 		if (overSampled)
 		{
@@ -1353,11 +1355,11 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 			arm_fir_interpolate_f32(&osI[v], &sample, (float*)&oversamplerArray, 1);
 
 
-			for (int i = 0; i < 4; i++)
+			for (uint_fast8_t i = 0; i < NUM_EFFECT; i++)
 			{
 				if (effectsActive[i])
 				{
-					for (int j = 0; j < OVERSAMPLE; j++)
+					for (uint_fast8_t j = 0; j < OVERSAMPLE; j++)
 					{
 						float dry = oversamplerArray[j]; //store the dry value to mix later
 						oversamplerArray[j] = effectTick[i](oversamplerArray[j], i, v); //run the effect
@@ -1368,7 +1370,7 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 			}
 			/*
 			//hard clip before downsampling to get a little more antialiasing from clipped signal.
-			for (int i = 0; i < (OVERSAMPLE); i++)
+			for (uint_fast8_t i = 0; i < (OVERSAMPLE); i++)
 			{
 				if (oversamplerArray[i] > .999999f)
 				{
@@ -1385,7 +1387,7 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 		}
 		else
 		{
-			for (int i = 0; i < NUM_EFFECT; i++)
+			for (uint_fast8_t i = 0; i < NUM_EFFECT; i++)
 			{
 				if (effectsActive[i])
 				{
@@ -1413,9 +1415,9 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 	timePerStringTick = DWT->CYCCNT - tempPerStringTick;
 
 	float volIdx = LEAF_clip(47.0f, ((volumeSmoothed * 80.0f) + 47.0f), 127.0f);
-	int volIdxInt = (int) volIdx;
+	uint_fast8_t volIdxInt = (uint_fast8_t) volIdx;
 	float alpha = volIdx-volIdxInt;
-	int volIdxIntPlus = (volIdxInt + 1) & 127;
+	uint_fast8_t volIdxIntPlus = (volIdxInt + 1) & 127;
 	float omAlpha = 1.0f - alpha;
 	float outVol = volumeAmps128[volIdxInt] * omAlpha;
 	outVol += volumeAmps128[volIdxIntPlus] * alpha;
@@ -1453,13 +1455,13 @@ float __ATTR_ITCMRAM audioTickString1(void)
 
 	float volumeSmoothed = tExpSmooth_tick(&volumeSmoother);
 
-	for (int i = 0; i < 12; i++)
+	for (uint_fast8_t i = 0; i < 12; i++)
 	{
 		knobScaled[i] = tExpSmooth_tick(&knobSmoothers[i]);
 	}
 	pluckPos = knobScaled[9];
 
-	for (int i = 0; i < numStringsThisBoard; i++)
+	for (uint_fast8_t i = 0; i < numStringsThisBoard; i++)
 	{
 		note[i] = stringMIDIPitches[i] + stringOctave[i];
 		//sourceValues[MIDI_KEY_SOURCE_OFFSET][v] = (note[v] - midiKeySubtractor) * midiKeyDivisor;
@@ -1512,9 +1514,9 @@ float __ATTR_ITCMRAM audioTickString1(void)
 
 	//float volIdx = LEAF_clip(47.0f, ((volumeSmoothed * 80.0f) + 47.0f), 127.0f);
 	float volIdx = LEAF_clip(0.0f, ((volumeSmoothed * 80.0f)), 127.0f);
-	int volIdxInt = (int) volIdx;
+	uint_fast8_t volIdxInt = (uint_fast8_t) volIdx;
 	float alpha = volIdx-volIdxInt;
-	int volIdxIntPlus = (volIdxInt + 1) & 127;
+	uint_fast8_t volIdxIntPlus = (volIdxInt + 1) & 127;
 	float omAlpha = 1.0f - alpha;
 	float outVol = volumeAmps128[volIdxInt] * omAlpha;
 	outVol += volumeAmps128[volIdxIntPlus] * alpha;
@@ -1533,12 +1535,12 @@ float  __ATTR_ITCMRAM audioTickString2(void)
 
 	float volumeSmoothed = tExpSmooth_tick(&volumeSmoother);
 
-	for (int i = 0; i < 12; i++)
+	for (uint_fast8_t i = 0; i < 12; i++)
 	{
 		knobScaled[i] = tExpSmooth_tick(&knobSmoothers[i]);
 	}
 
-	for (int i = 0; i < numStringsThisBoard; i++)
+	for (uint_fast8_t i = 0; i < numStringsThisBoard; i++)
 	{
 		note[i] = stringMIDIPitches[i] + stringOctave[i];
 
@@ -1613,9 +1615,9 @@ float  __ATTR_ITCMRAM audioTickString2(void)
 
 	//float volIdx = LEAF_clip(47.0f, ((volumeSmoothed * 80.0f) + 47.0f), 127.0f);
 	float volIdx = LEAF_clip(0.0f, ((volumeSmoothed * 80.0f)), 127.0f);
-	int volIdxInt = (int) volIdx;
+	uint_fast8_t volIdxInt = (uint_fast8_t) volIdx;
 	float alpha = volIdx-volIdxInt;
-	int volIdxIntPlus = (volIdxInt + 1) & 127;
+	uint_fast8_t volIdxIntPlus = (volIdxInt + 1) & 127;
 	float omAlpha = 1.0f - alpha;
 	float outVol = volumeAmps128[volIdxInt] * omAlpha;
 	outVol += volumeAmps128[volIdxIntPlus] * alpha;
@@ -1630,7 +1632,7 @@ float  __ATTR_ITCMRAM audioTickString2(void)
 float __ATTR_ITCMRAM audioTickAdditive(void)
 {
 	float tempSamp = 0.0f;
-	for (int i = 0; i < 12; i++)
+	for (uint_fast8_t i = 0; i < 12; i++)
 	{
 		knobScaled[i] = tExpSmooth_tick(&knobSmoothers[i]);
 	}
@@ -1642,12 +1644,12 @@ float __ATTR_ITCMRAM audioTickAdditive(void)
 
 	float volumeSmoothed = tExpSmooth_tick(&volumeSmoother);
 	//float Env2 = 0.0f;
-	for (int i = 0; i < NUM_STRINGS_PER_BOARD; i++)
+	for (uint_fast8_t i = 0; i < NUM_STRINGS_PER_BOARD; i++)
 	{
 		float noiseEnv = tADSRT_tick(&fenvelopes[i]); //noise envelope
 		tempSamp += filtNoise * noiseEnv * knobScaled[7];
 		stringFrequencies[i] = mtof(stringMIDIPitches[i]+ stringOctave[i]);
-		for (int j = 0; j < NUM_OVERTONES; j++)
+		for (uint_fast8_t j = 0; j < NUM_OVERTONES; j++)
 		{
 
 			float thisEnv = tADSRT_tickNoInterp(&additiveEnv[i][j]);
@@ -1669,9 +1671,9 @@ float __ATTR_ITCMRAM audioTickAdditive(void)
 
 	//float volIdx = LEAF_clip(47.0f, ((volumeSmoothed * 80.0f) + 47.0f), 127.0f);
 	float volIdx = LEAF_clip(0.0f, ((volumeSmoothed * 80.0f)), 127.0f);
-	int volIdxInt = (int) volIdx;
+	uint_fast8_t volIdxInt = (uint_fast8_t) volIdx;
 	float alpha = volIdx-volIdxInt;
-	int volIdxIntPlus = (volIdxInt + 1) & 127;
+	uint_fast8_t volIdxIntPlus = (volIdxInt + 1) & 127;
 	float omAlpha = 1.0f - alpha;
 	float outVol = volumeAmps128[volIdxInt] * omAlpha;
 	outVol += volumeAmps128[volIdxIntPlus] * alpha;
@@ -1682,14 +1684,14 @@ float __ATTR_ITCMRAM audioTickAdditive(void)
 
 
 
-void __ATTR_ITCMRAM oscillator_tick(float note, int string)
+void __ATTR_ITCMRAM oscillator_tick(float note, uint_fast8_t string)
 {
-	for (int i = 0; i < NUM_OSC; i++)
+	for (uint_fast8_t i = 0; i < NUM_OSC; i++)
 	{
 		oscOuts[0][i][string] = 0.0f;
 		oscOuts[1][i][string] = 0.0f;
 	}
-	for (int osc = 0; osc < oscToTick; osc++)
+	for (uint_fast8_t osc = 0; osc < oscToTick; osc++)
 	{
 		if (oscOn[osc])
 		{
@@ -1700,7 +1702,7 @@ void __ATTR_ITCMRAM oscillator_tick(float note, int string)
 			float shape = oscParams[OscShape].realVal[string];
 			float amp = oscParams[OscAmp].realVal[string];
 			float filterSend = oscParams[OscFilterSend].realVal[string];
-			//int sync = oscParams[OscisSync].realVal[string] > 0.5f; // probably faster than previous roundf version but haven't tested
+			//uint_fast8_t sync = oscParams[OscisSync].realVal[string] > 0.5f; // probably faster than previous roundf version but haven't tested
 			float freqToSmooth = (note + (fine*0.01f));
 			tExpSmooth_setDest(&pitchSmoother[osc][string], freqToSmooth);
 
@@ -1729,81 +1731,63 @@ void __ATTR_ITCMRAM oscillator_tick(float note, int string)
 }
 
 
-void __ATTR_ITCMRAM  sawSquareTick(float* sample, int v, float freq, float shape, int sync, int string)
+void __ATTR_ITCMRAM  sawSquareTick(float* sample, uint_fast8_t v, float freq, float shape, uint_fast8_t sync, uint_fast8_t string)
 {
 	tPBSawSquare_setFreq(&sawPaired[v][string], freq);
 	tPBSawSquare_setShape(&sawPaired[v][string], shape);
-    //if (sync)
-    {
-    	//tMBSawPulse_sync(&sawPaired[v][string], sourceValues[syncMap[OSC_SOURCE_OFFSET + v]][string]);
 
-    }
     *sample += tPBSawSquare_tick(&sawPaired[v][string]);
 }
 
-void __ATTR_ITCMRAM  sineTriTick(float* sample, int v, float freq, float shape, int sync, int string)
+void __ATTR_ITCMRAM  sineTriTick(float* sample, uint_fast8_t v, float freq, float shape, uint_fast8_t sync, uint_fast8_t string)
 {
     tPBSineTriangle_setFreq(&sinePaired[v][string], freq);
     tPBSineTriangle_setShape(&sinePaired[v][string],shape);
-   // if (sync)
-   // {
-   // 	tPBSineTriangle_sync(&sinePaired[v][string], sourceValues[syncMap[OSC_SOURCE_OFFSET + v]][string]);
-   // }
+
     *sample += tPBSineTriangle_tick(&sinePaired[v][string]);
 }
 
-void __ATTR_ITCMRAM  sawTick(float* sample, int v, float freq, float shape, int sync, int string)
+void __ATTR_ITCMRAM  sawTick(float* sample, uint_fast8_t v, float freq, float shape, uint_fast8_t sync, uint_fast8_t string)
 {
 	tPBSaw_setFreq(&saw[v][string], freq);
-    //if (sync)
-	//{
-	//	tPBSaw_sync(&saw[v][string], sourceValues[syncMap[OSC_SOURCE_OFFSET + v]][string]);
-	//}
+
     *sample += tPBSaw_tick(&saw[v][string]);
 }
 
-void __ATTR_ITCMRAM  pulseTick(float* sample, int v, float freq, float shape, int sync, int string)
+void __ATTR_ITCMRAM  pulseTick(float* sample, uint_fast8_t v, float freq, float shape, uint_fast8_t sync, uint_fast8_t string)
 {
     tPBPulse_setFreq(&pulse[v][string], freq);
     tPBPulse_setWidth(&pulse[v][string], shape);
-    //if (sync)
-	//{
-	//	tPBPulse_sync(&pulse[v][string], sourceValues[syncMap[OSC_SOURCE_OFFSET + v]][string]);
-	//}
+
     *sample += tPBPulse_tick(&pulse[v][string]);
 }
 
-void __ATTR_ITCMRAM  sineTick(float* sample, int v, float freq, float shape, int sync, int string)
+void __ATTR_ITCMRAM  sineTick(float* sample, uint_fast8_t v, float freq, float shape, uint_fast8_t sync, uint_fast8_t string)
 {
     tCycle_setFreq(&sine[v][string], freq);
     *sample += tCycle_tick(&sine[v][string]);
 }
 
-void __ATTR_ITCMRAM  triTick(float* sample, int v, float freq, float shape, int sync, int string)
+void __ATTR_ITCMRAM  triTick(float* sample, uint_fast8_t v, float freq, float shape, uint_fast8_t sync, uint_fast8_t string)
 {
     tPBTriangle_setFreq(&tri[v][string], freq);
     tPBTriangle_setSkew(&tri[v][string], shape);
-    //if (sync)
-	//{
-	//	tMBTriangle_sync(&tri[v][string], sourceValues[syncMap[OSC_SOURCE_OFFSET + v]][string]);
-	//}
+
     *sample += tPBTriangle_tick(&tri[v][string]);
 }
 
-void __ATTR_ITCMRAM  userTick(float* sample, int v, float freq, float shape, int sync, int string)
+void __ATTR_ITCMRAM  userTick(float* sample, uint_fast8_t v, float freq, float shape, uint_fast8_t sync, uint_fast8_t string)
 {
-    //tWaveOscS_setFreq(&wave[v], freq);
-    //tWaveOscS_setIndex(&wave[v], shape);
-    //*sample += tWaveOscS_tick(&wave[v]);
+
 }
 
 
 
-float __ATTR_ITCMRAM filter_tick(float* samples, float note, int string)
+float __ATTR_ITCMRAM filter_tick(float* samples, float note, uint_fast8_t string)
 {
 	float cutoff[2];
-	uint8_t enabledFilt[2] = {0,0};
-	for (int f = 0; f < NUM_FILT; f++)
+	uint_fast8_t enabledFilt[2] = {0,0};
+	for (uint_fast8_t f = 0; f < NUM_FILT; f++)
 	{
 		param* filtParams = &params[FILTER_PARAMS_OFFSET + f * FilterParamsNum];
 		float enabled = filtParams[FilterEnabled].realVal[string];
@@ -1843,58 +1827,58 @@ float __ATTR_ITCMRAM filter_tick(float* samples, float note, int string)
 }
 
 
-void __ATTR_ITCMRAM  lowpassTick(float* sample, int v, float cutoff, int string)
+void __ATTR_ITCMRAM  lowpassTick(float* sample, uint_fast8_t v, float cutoff, uint_fast8_t string)
 {
 	tSVF_setFreqFast(&lowpass[v][string], cutoff);
 	*sample = tSVF_tick(&lowpass[v][string], *sample);
     *sample *= filterGain[v][string];
 }
 
-void __ATTR_ITCMRAM  highpassTick(float* sample, int v, float cutoff, int string)
+void __ATTR_ITCMRAM  highpassTick(float* sample, uint_fast8_t v, float cutoff, uint_fast8_t string)
 {
 	tSVF_setFreqFast(&highpass[v][string], cutoff);
 	*sample = tSVF_tick(&highpass[v][string], *sample);
     *sample *= filterGain[v][string];
 }
 
-void __ATTR_ITCMRAM  bandpassTick(float* sample, int v, float cutoff, int string)
+void __ATTR_ITCMRAM  bandpassTick(float* sample, uint_fast8_t v, float cutoff, uint_fast8_t string)
 {
 	tSVF_setFreqFast(&bandpass[v][string], cutoff);
 	*sample = tSVF_tick(&bandpass[v][string], *sample);
     *sample *= filterGain[v][string];
 }
 
-void __ATTR_ITCMRAM  diodeLowpassTick(float* sample, int v, float cutoff, int string)
+void __ATTR_ITCMRAM  diodeLowpassTick(float* sample, uint_fast8_t v, float cutoff, uint_fast8_t string)
 {
 	tDiodeFilter_setFreqFast(&diodeFilters[v][string], cutoff);
 	*sample = tDiodeFilter_tickEfficient(&diodeFilters[v][string], *sample);
     *sample *= filterGain[v][string];
 }
 
-void __ATTR_ITCMRAM  VZpeakTick(float* sample, int v, float cutoff, int string)
+void __ATTR_ITCMRAM  VZpeakTick(float* sample, uint_fast8_t v, float cutoff, uint_fast8_t string)
 {
 	tVZFilter_setFreqFast(&VZfilterPeak[v][string], cutoff);
 	*sample = tVZFilter_tickEfficient(&VZfilterPeak[v][string], *sample);
 }
 
-void __ATTR_ITCMRAM  VZlowshelfTick(float* sample, int v, float cutoff, int string)
+void __ATTR_ITCMRAM  VZlowshelfTick(float* sample, uint_fast8_t v, float cutoff, uint_fast8_t string)
 {
 	tVZFilter_setFreqFast(&VZfilterLS[v][string], cutoff);
 	*sample = tVZFilter_tickEfficient(&VZfilterLS[v][string], *sample);
 }
-void __ATTR_ITCMRAM  VZhighshelfTick(float* sample, int v, float cutoff, int string)
+void __ATTR_ITCMRAM  VZhighshelfTick(float* sample, uint_fast8_t v, float cutoff, uint_fast8_t string)
 {
 	tVZFilter_setFreqFast(&VZfilterHS[v][string], cutoff);
 	*sample = tVZFilter_tickEfficient(&VZfilterHS[v][string], *sample);
 }
-void __ATTR_ITCMRAM  VZbandrejectTick(float* sample, int v, float cutoff, int string)
+void __ATTR_ITCMRAM  VZbandrejectTick(float* sample, uint_fast8_t v, float cutoff, uint_fast8_t string)
 {
 	tVZFilter_setFreqFast(&VZfilterBR[v][string], cutoff);
 	*sample = tVZFilter_tickEfficient(&VZfilterBR[v][string], *sample);
     *sample *= filterGain[v][string];
 }
 
-void __ATTR_ITCMRAM  LadderLowpassTick(float* sample, int v, float cutoff, int string)
+void __ATTR_ITCMRAM  LadderLowpassTick(float* sample, uint_fast8_t v, float cutoff, uint_fast8_t string)
 {
 	tLadderFilter_setFreqFast(&Ladderfilter[v][string], cutoff);
 	*sample = tLadderFilter_tick(&Ladderfilter[v][string], *sample);
@@ -1904,7 +1888,7 @@ void __ATTR_ITCMRAM  LadderLowpassTick(float* sample, int v, float cutoff, int s
 
 float midiAdd[NUM_OSC][NUM_STRINGS_PER_BOARD];
 
-void __ATTR_ITCMRAM setFreqMultPitch(float pitch, int osc, int string)
+void __ATTR_ITCMRAM setFreqMultPitch(float pitch, uint_fast8_t osc, uint_fast8_t string)
 {
 	pitch *= 24.0f;
 	if (params[OSC_PARAMS_OFFSET + osc * OscParamsNum + OscisStepped].realVal[string] > 0.5f) ///check for value of 1 since this is a float
@@ -1915,7 +1899,7 @@ void __ATTR_ITCMRAM setFreqMultPitch(float pitch, int osc, int string)
 	freqMult[osc][string] = 1.0f;
 }
 
-void __ATTR_ITCMRAM setFreqMultHarm(float harm, int osc, int string)
+void __ATTR_ITCMRAM setFreqMultHarm(float harm, uint_fast8_t osc, uint_fast8_t string)
 {
 	harm *= 15.0f;
 	if (params[OSC_PARAMS_OFFSET + osc * OscParamsNum + OscisStepped].realVal[string] > 0.5f) ///check for value of 1 since this is a float
@@ -1937,100 +1921,100 @@ void __ATTR_ITCMRAM setFreqMultHarm(float harm, int osc, int string)
 
 
 
-void __ATTR_ITCMRAM  lowpassSetQ(float q, int v, int string)
+void __ATTR_ITCMRAM  lowpassSetQ(float q, uint_fast8_t v, uint_fast8_t string)
 {
     tSVF_setQ(&lowpass[v][string], q);
 }
 
-void __ATTR_ITCMRAM  highpassSetQ(float q, int v, int string)
+void __ATTR_ITCMRAM  highpassSetQ(float q, uint_fast8_t v, uint_fast8_t string)
 {
     tSVF_setQ(&highpass[v][string], q);
 }
 
-void __ATTR_ITCMRAM  bandpassSetQ(float q, int v, int string)
+void __ATTR_ITCMRAM  bandpassSetQ(float q, uint_fast8_t v, uint_fast8_t string)
 {
     tSVF_setQ(&bandpass[v][string], q);
 }
 
-void __ATTR_ITCMRAM  diodeLowpassSetQ(float q, int v, int string)
+void __ATTR_ITCMRAM  diodeLowpassSetQ(float q, uint_fast8_t v, uint_fast8_t string)
 {
 	tDiodeFilter_setQ(&diodeFilters[v][string], q);
 }
 
-void __ATTR_ITCMRAM  VZpeakSetQ(float q, int v, int string)
+void __ATTR_ITCMRAM  VZpeakSetQ(float q, uint_fast8_t v, uint_fast8_t string)
 {
 	tVZFilter_setResonance(&VZfilterPeak[v][string], q);
 }
 
-void __ATTR_ITCMRAM  VZlowshelfSetQ(float q, int v, int string)
+void __ATTR_ITCMRAM  VZlowshelfSetQ(float q, uint_fast8_t v, uint_fast8_t string)
 {
 	tVZFilter_setResonance(&VZfilterLS[v][string], q);
 }
 
-void __ATTR_ITCMRAM  VZhighshelfSetQ(float q, int v, int string)
+void __ATTR_ITCMRAM  VZhighshelfSetQ(float q, uint_fast8_t v, uint_fast8_t string)
 {
 	tVZFilter_setResonance(&VZfilterHS[v][string], q);
 }
 
-void __ATTR_ITCMRAM  VZbandrejectSetQ(float q, int v, int string)
+void __ATTR_ITCMRAM  VZbandrejectSetQ(float q, uint_fast8_t v, uint_fast8_t string)
 {
 	tVZFilter_setResonance(&VZfilterBR[v][string], q);
 }
 
-void __ATTR_ITCMRAM  LadderLowpassSetQ(float q, int v, int string)
+void __ATTR_ITCMRAM  LadderLowpassSetQ(float q, uint_fast8_t v, uint_fast8_t string)
 {
 	tLadderFilter_setQ(&Ladderfilter[v][string], q);
 }
 
-void __ATTR_ITCMRAM  lowpassSetGain(float gain, int v, int string)
+void __ATTR_ITCMRAM  lowpassSetGain(float gain, uint_fast8_t v, uint_fast8_t string)
 {
     filterGain[v][string] = fasterdbtoa((gain * 24.0f) - 12.0f);
 }
 
-void __ATTR_ITCMRAM  highpassSetGain(float gain, int v, int string)
+void __ATTR_ITCMRAM  highpassSetGain(float gain, uint_fast8_t v, uint_fast8_t string)
 {
 	filterGain[v][string] = fasterdbtoa((gain * 24.0f) - 12.0f);
 }
 
-void __ATTR_ITCMRAM  bandpassSetGain(float gain, int v, int string)
+void __ATTR_ITCMRAM  bandpassSetGain(float gain, uint_fast8_t v, uint_fast8_t string)
 {
 	filterGain[v][string] = fasterdbtoa((gain * 24.0f) - 12.0f);
 }
 
-void __ATTR_ITCMRAM  diodeLowpassSetGain(float gain, int v, int string)
+void __ATTR_ITCMRAM  diodeLowpassSetGain(float gain, uint_fast8_t v, uint_fast8_t string)
 {
 	filterGain[v][string] = fasterdbtoa((gain * 24.0f) - 12.0f);
 }
 
-void __ATTR_ITCMRAM  VZpeakSetGain(float gain, int v, int string)
+void __ATTR_ITCMRAM  VZpeakSetGain(float gain, uint_fast8_t v, uint_fast8_t string)
 {
 	 tVZFilter_setGain(&VZfilterPeak[v][string], fasterdbtoa((gain * 50.f) - 25.f));
 }
 
-void __ATTR_ITCMRAM  VZlowshelfSetGain(float gain, int v, int string)
+void __ATTR_ITCMRAM  VZlowshelfSetGain(float gain, uint_fast8_t v, uint_fast8_t string)
 {
 	tVZFilter_setGain(&VZfilterLS[v][string], fasterdbtoa((gain * 50.f) - 25.f));
 }
 
-void __ATTR_ITCMRAM  VZhighshelfSetGain(float gain, int v, int string)
+void __ATTR_ITCMRAM  VZhighshelfSetGain(float gain, uint_fast8_t v, uint_fast8_t string)
 {
 	tVZFilter_setGain(&VZfilterLS[v][string], fasterdbtoa((gain * 50.f) - 25.f));
 }
 
-void  __ATTR_ITCMRAM VZbandrejectSetGain(float gain, int v, int string)
+void  __ATTR_ITCMRAM VZbandrejectSetGain(float gain, uint_fast8_t v, uint_fast8_t string)
 {
 	filterGain[v][string] = fasterdbtoa((gain * 24.0f) - 12.0f);
 }
 
-void  __ATTR_ITCMRAM  LadderLowpassSetGain(float gain, int v, int string)
+void  __ATTR_ITCMRAM  LadderLowpassSetGain(float gain, uint_fast8_t v, uint_fast8_t string)
 {
 	filterGain[v][string] = fasterdbtoa((gain * 24.0f) - 12.0f);
 }
 
 
-void __ATTR_ITCMRAM envelope_tick(int string)
+void __ATTR_ITCMRAM envelope_tick(uint_fast8_t string)
 {
-	for (int v = 0; v < NUM_ENV; v++)
+	for (uint_fast8_t v = 0; v < NUM_ENV; v++)
 	{
 		if (envOn[v])
 		{
@@ -2040,9 +2024,9 @@ void __ATTR_ITCMRAM envelope_tick(int string)
 }
 
 
-void __ATTR_ITCMRAM lfo_tick(int string)
+void __ATTR_ITCMRAM lfo_tick(uint_fast8_t string)
 {
-	for (int i = 0; i < NUM_LFOS; i++)
+	for (uint_fast8_t i = 0; i < NUM_LFOS; i++)
 	{
 		if (lfoOn[i])
 		{
@@ -2054,55 +2038,55 @@ void __ATTR_ITCMRAM lfo_tick(int string)
 }
 
 
-void  __ATTR_ITCMRAM  setEnvelopeAttack(float a, int v, int string)
+void  __ATTR_ITCMRAM  setEnvelopeAttack(float a, uint_fast8_t v, uint_fast8_t string)
 {
 	a = a + 0.001f;
 	tADSRT_setAttack(&envs[v][string], a);
 }
 
-void  __ATTR_ITCMRAM  setEnvelopeDecay(float d, int v, int string)
+void  __ATTR_ITCMRAM  setEnvelopeDecay(float d, uint_fast8_t v, uint_fast8_t string)
 {
 	d = d + 0.001f;
 	tADSRT_setDecay(&envs[v][string], d);
 }
 
-void  __ATTR_ITCMRAM  setEnvelopeSustain(float s, int v, int string)
+void  __ATTR_ITCMRAM  setEnvelopeSustain(float s, uint_fast8_t v, uint_fast8_t string)
 {
 	tADSRT_setSustain(&envs[v][string], s);
 }
 
-void  __ATTR_ITCMRAM  setEnvelopeRelease(float r, int v, int string)
+void  __ATTR_ITCMRAM  setEnvelopeRelease(float r, uint_fast8_t v, uint_fast8_t string)
 {
 	r = r + 0.001f;
 	tADSRT_setRelease(&envs[v][string], r);
 }
 
-void  __ATTR_ITCMRAM  setEnvelopeLeak(float leak, int v, int string)
+void  __ATTR_ITCMRAM  setEnvelopeLeak(float leak, uint_fast8_t v, uint_fast8_t string)
 {
 	tADSRT_setLeakFactor(&envs[v][string], 0.99995f + 0.00005f*(1.f-leak));
 }
 
-void  __ATTR_ITCMRAM  setAmp(float amp, int v, int string)
+void  __ATTR_ITCMRAM  setAmp(float amp, uint_fast8_t v, uint_fast8_t string)
 {
 	amplitude[string] = amp;
 }
 
-void  __ATTR_ITCMRAM  setMaster(float amp,  int v, int string)
+void  __ATTR_ITCMRAM  setMaster(float amp,  uint_fast8_t v, uint_fast8_t string)
 {
 	finalMaster[string] = amp;
 }
 
-void  __ATTR_ITCMRAM  setTranspose(float in, int v, int string)
+void  __ATTR_ITCMRAM  setTranspose(float in, uint_fast8_t v, uint_fast8_t string)
 {
 	transpose = in;
 }
 
-void  __ATTR_ITCMRAM  setPitchBendRange(float in, int v, int string)
+void  __ATTR_ITCMRAM  setPitchBendRange(float in, uint_fast8_t v, uint_fast8_t string)
 {
 	bendRangeMultiplier = 1.0f / (16383.0f / (in * 2.0f));
 }
 
-void  __ATTR_ITCMRAM  setFinalLowpass(float in, int v, int string)
+void  __ATTR_ITCMRAM  setFinalLowpass(float in, uint_fast8_t v, uint_fast8_t string)
 {
 	tSVF_setFreqFast(&finalLowpass[string], LEAF_clip(0.0f, (in-16.0f) * 35.929824561403509f, 4095.0f));
 }
@@ -2111,15 +2095,15 @@ void  __ATTR_ITCMRAM  setFinalLowpass(float in, int v, int string)
 void __ATTR_ITCMRAM tickMappings(void)
 {
 	interruptChecker = 0;
-	for (int i = 0; i < numMappings; i++)
+	for (uint_fast8_t i = 0; i < numMappings; i++)
 	{
 		if (mappings[i].destNumber != 255)
 		{
-			for (int v = 0; v < numStringsThisBoard; v++)
+			for (uint_fast8_t v = 0; v < numStringsThisBoard; v++)
 			{
 				float unsmoothedValue = 0.0f;
 				//float smoothedValue = 0.0f;
-				for (int j = 0; j < 3; j++)
+				for (uint_fast8_t j = 0; j < 3; j++)
 				{
 					if (mappings[i].hookActive[j])
 					{
@@ -2156,109 +2140,109 @@ void __ATTR_ITCMRAM tickMappings(void)
 
 
 
-void __ATTR_ITCMRAM lfoSawSquareTick(float* sample, int v, int string)
+void __ATTR_ITCMRAM lfoSawSquareTick(float* sample, uint_fast8_t v, uint_fast8_t string)
 {
 	*sample = tSawSquareLFO_tick(&lfoSawSquare[v][string]);
 }
 
-void __ATTR_ITCMRAM lfoSineTriTick(float* sample, int v, int string)
+void __ATTR_ITCMRAM lfoSineTriTick(float* sample, uint_fast8_t v, uint_fast8_t string)
 {
 	*sample = tSineTriLFO_tick(&lfoSineTri[v][string]);
 }
 
-void __ATTR_ITCMRAM lfoSineTick(float* sample, int v, int string)
+void __ATTR_ITCMRAM lfoSineTick(float* sample, uint_fast8_t v, uint_fast8_t string)
 {
     *sample = tCycle_tick(&lfoSine[v][string]);
 }
 
-void __ATTR_ITCMRAM lfoTriTick(float* sample, int v, int string)
+void __ATTR_ITCMRAM lfoTriTick(float* sample, uint_fast8_t v, uint_fast8_t string)
 {
     *sample = tTriLFO_tick(&lfoTri[v][string]);
 }
-void __ATTR_ITCMRAM lfoSawTick(float* sample, int v, int string)
+void __ATTR_ITCMRAM lfoSawTick(float* sample, uint_fast8_t v, uint_fast8_t string)
 {
     *sample = (tIntPhasor_tick(&lfoSaw[v][string]) * 2.0f) - 1.0f;
 }
 
-void __ATTR_ITCMRAM lfoPulseTick(float* sample, int v, int string)
+void __ATTR_ITCMRAM lfoPulseTick(float* sample, uint_fast8_t v, uint_fast8_t string)
 {
     *sample = tSquareLFO_tick(&lfoPulse[v][string]);
 }
 
-void __ATTR_ITCMRAM lfoSawSquareSetRate(float r, int v, int string)
+void __ATTR_ITCMRAM lfoSawSquareSetRate(float r, uint_fast8_t v, uint_fast8_t string)
 {
 	tSawSquareLFO_setFreq(&lfoSawSquare[v][string],r);
 }
 
-void __ATTR_ITCMRAM lfoSineTriSetRate(float r, int v, int string)
+void __ATTR_ITCMRAM lfoSineTriSetRate(float r, uint_fast8_t v, uint_fast8_t string)
 {
 	tSineTriLFO_setFreq(&lfoSineTri[v][string],r);
 }
-void __ATTR_ITCMRAM lfoSineSetRate(float r, int v, int string)
+void __ATTR_ITCMRAM lfoSineSetRate(float r, uint_fast8_t v, uint_fast8_t string)
 {
 	tCycle_setFreq(&lfoSine[v][string], r);
 }
-void __ATTR_ITCMRAM lfoTriSetRate(float r, int v, int string)
+void __ATTR_ITCMRAM lfoTriSetRate(float r, uint_fast8_t v, uint_fast8_t string)
 {
 	tTriLFO_setFreq(&lfoTri[v][string], r);
 }
-void __ATTR_ITCMRAM lfoSawSetRate(float r, int v, int string)
+void __ATTR_ITCMRAM lfoSawSetRate(float r, uint_fast8_t v, uint_fast8_t string)
 {
 	tIntPhasor_setFreq(&lfoSaw[v][string], r);
 }
-void __ATTR_ITCMRAM lfoPulseSetRate(float r, int v, int string)
+void __ATTR_ITCMRAM lfoPulseSetRate(float r, uint_fast8_t v, uint_fast8_t string)
 {
 	 tSquareLFO_setFreq(&lfoPulse[v][string], r);
 }
 
 
-void __ATTR_ITCMRAM lfoSawSquareSetPhase(float p, int v, int string)
+void __ATTR_ITCMRAM lfoSawSquareSetPhase(float p, uint_fast8_t v, uint_fast8_t string)
 {
 	tSawSquareLFO_setPhase(&lfoSawSquare[v][string],p);
 }
-void __ATTR_ITCMRAM lfoSineTriSetPhase(float p, int v, int string)
+void __ATTR_ITCMRAM lfoSineTriSetPhase(float p, uint_fast8_t v, uint_fast8_t string)
 {
 	tSineTriLFO_setPhase(&lfoSineTri[v][string], p);
 }
-void __ATTR_ITCMRAM lfoSineSetPhase(float p, int v, int string)
+void __ATTR_ITCMRAM lfoSineSetPhase(float p, uint_fast8_t v, uint_fast8_t string)
 {
 	tCycle_setPhase(&lfoSine[v][string],p);
 }
-void __ATTR_ITCMRAM lfoTriSetPhase(float p, int v, int string)
+void __ATTR_ITCMRAM lfoTriSetPhase(float p, uint_fast8_t v, uint_fast8_t string)
 {
 	tTriLFO_setPhase(&lfoTri[v][string],p);
 }
-void __ATTR_ITCMRAM lfoSawSetPhase(float p, int v, int string)
+void __ATTR_ITCMRAM lfoSawSetPhase(float p, uint_fast8_t v, uint_fast8_t string)
 {
 	tIntPhasor_setPhase(&lfoSaw[v][string], p);
 }
-void __ATTR_ITCMRAM lfoPulseSetPhase(float p, int v, int string)
+void __ATTR_ITCMRAM lfoPulseSetPhase(float p, uint_fast8_t v, uint_fast8_t string)
 {
 	tSquareLFO_setPhase(&lfoPulse[v][string], p);
 }
 
 
-void __ATTR_ITCMRAM lfoSawSquareSetShape(float s, int v, int string)
+void __ATTR_ITCMRAM lfoSawSquareSetShape(float s, uint_fast8_t v, uint_fast8_t string)
 {
 	tSawSquareLFO_setShape(&lfoSawSquare[v][string],s);
 }
-void __ATTR_ITCMRAM lfoSineTriSetShape(float s, int v, int string)
+void __ATTR_ITCMRAM lfoSineTriSetShape(float s, uint_fast8_t v, uint_fast8_t string)
 {
 	tSineTriLFO_setShape(&lfoSineTri[v][string],s);
 }
-void __ATTR_ITCMRAM lfoSineSetShape(float s, int v, int string)
+void __ATTR_ITCMRAM lfoSineSetShape(float s, uint_fast8_t v, uint_fast8_t string)
 {
 	//none
 }
-void __ATTR_ITCMRAM lfoTriSetShape(float s, int v, int string)
+void __ATTR_ITCMRAM lfoTriSetShape(float s, uint_fast8_t v, uint_fast8_t string)
 {
 	//none
 }
-void __ATTR_ITCMRAM lfoSawSetShape(float s, int v, int string)
+void __ATTR_ITCMRAM lfoSawSetShape(float s, uint_fast8_t v, uint_fast8_t string)
 {
 	//none
 }
-void __ATTR_ITCMRAM lfoPulseSetShape(float s, int v, int string)
+void __ATTR_ITCMRAM lfoPulseSetShape(float s, uint_fast8_t v, uint_fast8_t string)
 {
 	tSquareLFO_setPulseWidth(&lfoPulse[v][string], s);
 }
@@ -2268,88 +2252,88 @@ void __ATTR_ITCMRAM lfoPulseSetShape(float s, int v, int string)
 
 
 
-void __ATTR_ITCMRAM  clipperGainSet(float value, int v, int string)
+void __ATTR_ITCMRAM  clipperGainSet(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	param1[v][string] = fasterdbtoa(value * 24.0f);
 }
-void __ATTR_ITCMRAM  wavefolderParam1(float value, int v, int string)
+void __ATTR_ITCMRAM  wavefolderParam1(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	param1[v][string] = fasterdbtoa(value * 12.0f);
 }
-void __ATTR_ITCMRAM  wavefolderParam3(float value, int v, int string)
+void __ATTR_ITCMRAM  wavefolderParam3(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	//value = (value * 0.99f) + 0.00f; //avoid zero
 	invCurFB[v][string] = (1.0f / (1.0f + value));
 	param3[v][string] = value;
 }
 
-void __ATTR_ITCMRAM  tiltParam1(float value, int v, int string)
+void __ATTR_ITCMRAM  tiltParam1(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	tVZFilter_setGain(&shelf1[v][string], fasterdbtoa(-1.0f * ((value * 30.0f) - 15.0f)));
 	tVZFilter_setGain(&shelf2[v][string], fasterdbtoa((value * 30.0f) - 15.0f));
 }
 
-void __ATTR_ITCMRAM  tiltParam2(float value, int v, int string)
+void __ATTR_ITCMRAM  tiltParam2(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	value = (value * 77.0f) + 42.0f;
 	value = LEAF_clip(0.0f, (value-16.0f) * 35.929824561403509f, 4095.0f);
 	tVZFilter_setFreqFast(&bell1[v][string], value);
 }
-void __ATTR_ITCMRAM  tiltParam3(float value, int v, int string)
+void __ATTR_ITCMRAM  tiltParam3(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	tVZFilter_setResonance(&bell1[v][string], (value +1.0f)*6.0f);//TODO: make this match plugin
 }
-void __ATTR_ITCMRAM  tiltParam4(float value, int v, int string)
+void __ATTR_ITCMRAM  tiltParam4(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	tVZFilter_setGain(&bell1[v][string], fastdbtoa((value * 34.0f) - 17.0f));
 }
 
-void __ATTR_ITCMRAM  compressorParam1(float value, int v, int string)
+void __ATTR_ITCMRAM  compressorParam1(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	comp[v][string]->T = value*-24.0f;
 }
-void __ATTR_ITCMRAM  compressorParam2(float value, int v, int string)
+void __ATTR_ITCMRAM  compressorParam2(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	comp[v][string]->R = ((value*10.0f)+1.0f);
 	comp[v][string]->invR  = 1.0f / comp[v][string]->R;
 }
 
-void __ATTR_ITCMRAM  compressorParam3(float value, int v, int string)
+void __ATTR_ITCMRAM  compressorParam3(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	comp[v][string]->M = value * 18.0f;
 }
 
-void __ATTR_ITCMRAM  compressorParam4(float value, int v, int string)
+void __ATTR_ITCMRAM  compressorParam4(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	value = (value +  0.001f);
 	comp[v][string]->tauAttack = fasterexpf(-1.0f/(value * comp[v][string]->sampleRate));
 }
 
-void __ATTR_ITCMRAM  compressorParam5(float value, int v, int string)
+void __ATTR_ITCMRAM  compressorParam5(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	value = (value + 0.001f);
 	comp[v][string]->tauRelease = fasterexpf(-1.0f/(value * comp[v][string]->sampleRate));
 }
 
-void __ATTR_ITCMRAM  offsetParam2(float value, int v, int string)
+void __ATTR_ITCMRAM  offsetParam2(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	param2[v][string] = (value * 2.0f) - 1.0f;
 }
-void __ATTR_ITCMRAM param2Linear(float value, int v, int string)
+void __ATTR_ITCMRAM param2Linear(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	param2[v][string] = value;
 }
-void __ATTR_ITCMRAM param3Linear(float value, int v, int string)
+void __ATTR_ITCMRAM param3Linear(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	param3[v][string] = value;
 }
-void __ATTR_ITCMRAM param3Soft(float value, int v, int string)
+void __ATTR_ITCMRAM param3Soft(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	param3[v][string] = (value * .99f) + 0.01f;
 	shapeDividerS[v][string] = 1.0f / (param3[v][string] - ((param3[v][string]*param3[v][string]*param3[v][string]) * 0.3333333f));
 }
 
-void __ATTR_ITCMRAM param3Hard(float value, int v, int string)
+void __ATTR_ITCMRAM param3Hard(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	param3[v][string] = ((value * .99f) + 0.01f) * HALF_PI;
 	float tempDiv = arm_sin_f32(param3[v][string]);
@@ -2359,41 +2343,41 @@ void __ATTR_ITCMRAM param3Hard(float value, int v, int string)
 	}
 	shapeDividerH[v][string] = 1.0f/tempDiv;
 }
-void __ATTR_ITCMRAM param4Linear(float value, int v, int string)
+void __ATTR_ITCMRAM param4Linear(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	param4[v][string] = value;
 }
 
-void __ATTR_ITCMRAM param5Linear(float value, int v, int string)
+void __ATTR_ITCMRAM param5Linear(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	param5[v][string] = value;
 }
-void __ATTR_ITCMRAM param2BC(float value, int v, int string)
+void __ATTR_ITCMRAM param2BC(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	tCrusher_setQuality (&bc[v][string],value);
 }
-void __ATTR_ITCMRAM param3BC(float value, int v, int string)
+void __ATTR_ITCMRAM param3BC(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	value = (value * inv_oversample) + 0.01f;
 	tCrusher_setSamplingRatio (&bc[v][string], value);
 }
-void __ATTR_ITCMRAM param4BC(float value, int v, int string)
+void __ATTR_ITCMRAM param4BC(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	tCrusher_setRound(&bc[v][string], value);
 }
-void __ATTR_ITCMRAM param5BC(float value, int v, int string)
+void __ATTR_ITCMRAM param5BC(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	tCrusher_setOperation(&bc[v][string], value);
 }
 
 
 
-void __ATTR_ITCMRAM fxMixSet(float value, int v, int string)
+void __ATTR_ITCMRAM fxMixSet(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	fxMix[v][string] = value;
 }
 
-void __ATTR_ITCMRAM fxPostGainSet(float value, int v, int string)
+void __ATTR_ITCMRAM fxPostGainSet(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	fxPostGain[v][string] = fasterdbtoa((value * 24.0f) - 12.0f);
 }
@@ -2401,7 +2385,7 @@ void __ATTR_ITCMRAM fxPostGainSet(float value, int v, int string)
 
 //got the idea from https://ccrma.stanford.edu/~jatin/ComplexNonlinearities/Wavefolder.html  -JS
 //much more efficient than the lockhart, and can be further optimized with lookups
-float __ATTR_ITCMRAM wavefolderTick(float sample, int v, int string)
+float __ATTR_ITCMRAM wavefolderTick(float sample, uint_fast8_t v, uint_fast8_t string)
 {
     sample = sample * param1[v][string] + ((param2[v][string] * param1[v][string]));
     float curFB = param3[v][string];
@@ -2439,27 +2423,27 @@ float __ATTR_ITCMRAM wavefolderTick(float sample, int v, int string)
     return sample;
 }
 
-void __ATTR_ITCMRAM chorusParam1(float value, int v, int string)
+void __ATTR_ITCMRAM chorusParam1(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	param1[v][string] = value * 5780.0f + 10.0f;
 }
-void __ATTR_ITCMRAM chorusParam2(float value, int v, int string)
+void __ATTR_ITCMRAM chorusParam2(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	param2[v][string] = value * 0.1f;
 }
 
-void __ATTR_ITCMRAM chorusParam3(float value, int v, int string)
+void __ATTR_ITCMRAM chorusParam3(float value, uint_fast8_t v, uint_fast8_t string)
 {
     tCycle_setFreq(&mod1[v][string], (value * 0.4f) + 0.01f);
 }
 
-void __ATTR_ITCMRAM chorusParam4(float value, int v, int string)
+void __ATTR_ITCMRAM chorusParam4(float value, uint_fast8_t v, uint_fast8_t string)
 {
     tCycle_setFreq(&mod2[v][string], (value * 0.4444444f) + 0.011f);
 }
 
 
-float __ATTR_ITCMRAM chorusTick(float sample, int v, int string)
+float __ATTR_ITCMRAM chorusTick(float sample, uint_fast8_t v, uint_fast8_t string)
 {
 	tLinearDelay_setDelay(&delay1[v][string], param1[v][string] * .707f * (1.0f + param2[v][string] * tCycle_tick(&mod1[v][string])));
     tLinearDelay_setDelay(&delay2[v][string], param1[v][string] * .5f * (1.0f - param2[v][string] * tCycle_tick(&mod2[v][string])));
@@ -2470,7 +2454,7 @@ float __ATTR_ITCMRAM chorusTick(float sample, int v, int string)
     return -temp;
 }
 
-float __ATTR_ITCMRAM shaperTick(float sample, int v, int string)
+float __ATTR_ITCMRAM shaperTick(float sample, uint_fast8_t v, uint_fast8_t string)
 {
     sample = sample * param1[v][string];
     float temp = LEAF_shaper(sample + (param2[v][string] * param1[v][string]),param3[v][string]);
@@ -2478,12 +2462,12 @@ float __ATTR_ITCMRAM shaperTick(float sample, int v, int string)
     return temp;
 }
 
-float __ATTR_ITCMRAM blankTick(float sample, int v, int string)
+float __ATTR_ITCMRAM blankTick(float sample, uint_fast8_t v, uint_fast8_t string)
 {
     return sample;
 }
 
-float __ATTR_ITCMRAM tiltFilterTick(float sample, int v, int string)
+float __ATTR_ITCMRAM tiltFilterTick(float sample, uint_fast8_t v, uint_fast8_t string)
 {
     sample = tVZFilter_tickEfficient(&shelf1[v][string], sample);
     sample = tVZFilter_tickEfficient(&shelf2[v][string], sample);
@@ -2491,7 +2475,7 @@ float __ATTR_ITCMRAM tiltFilterTick(float sample, int v, int string)
     return sample;
 }
 
-float __ATTR_ITCMRAM tanhTick(float sample, int v, int string)
+float __ATTR_ITCMRAM tanhTick(float sample, uint_fast8_t v, uint_fast8_t string)
 {
     float gain = param1[v][string];
 	sample = sample * gain;
@@ -2506,7 +2490,7 @@ float __ATTR_ITCMRAM tanhTick(float sample, int v, int string)
 }
 
 
-float __ATTR_ITCMRAM softClipTick(float sample, int v, int string)
+float __ATTR_ITCMRAM softClipTick(float sample, uint_fast8_t v, uint_fast8_t string)
 {
     sample = sample * param1[v][string];
     sample = sample + param2[v][string];
@@ -2528,7 +2512,7 @@ float __ATTR_ITCMRAM softClipTick(float sample, int v, int string)
 }
 
 
-float __ATTR_ITCMRAM hardClipTick(float sample, int v, int string)
+float __ATTR_ITCMRAM hardClipTick(float sample, uint_fast8_t v, uint_fast8_t string)
 {
 
     sample = sample * param1[v][string];
@@ -2550,7 +2534,7 @@ float __ATTR_ITCMRAM hardClipTick(float sample, int v, int string)
 }
 
 
-float __ATTR_ITCMRAM satTick(float sample, int v, int string)
+float __ATTR_ITCMRAM satTick(float sample, uint_fast8_t v, uint_fast8_t string)
 {;
     sample = sample * param1[v][string];
     float temp = (sample + (param2[v][string] * param1[v][string])) / (1.0f + fabs(sample + param2[v][string]));
@@ -2562,114 +2546,114 @@ float __ATTR_ITCMRAM satTick(float sample, int v, int string)
 
 
 
-float __ATTR_ITCMRAM bcTick(float sample, int v, int string)
+float __ATTR_ITCMRAM bcTick(float sample, uint_fast8_t v, uint_fast8_t string)
 {
     sample = sample * param1[v][string];
     return tCrusher_tick(&bc[v][string], sample);
 }
 
 
-float __ATTR_ITCMRAM compressorTick(float sample, int v, int string)
+float __ATTR_ITCMRAM compressorTick(float sample, uint_fast8_t v, uint_fast8_t string)
 {
     //return tCompressor_tickWithTableHardKnee(&comp[v][string], sample);
 	return tCompressor_tick(&comp[v][string], sample);
 }
 
-float __ATTR_ITCMRAM  FXlowpassTick(float sample, int v, int string)
+float __ATTR_ITCMRAM  FXlowpassTick(float sample, uint_fast8_t v, uint_fast8_t string)
 {
 	return tSVF_tick(&FXlowpass[v][string], sample);
 }
 
-float __ATTR_ITCMRAM  FXhighpassTick(float sample, int v, int string)
+float __ATTR_ITCMRAM  FXhighpassTick(float sample, uint_fast8_t v, uint_fast8_t string)
 {
 	return tSVF_tick(&FXhighpass[v][string], sample);
 }
 
-float __ATTR_ITCMRAM  FXbandpassTick(float sample, int v, int string)
+float __ATTR_ITCMRAM  FXbandpassTick(float sample, uint_fast8_t v, uint_fast8_t string)
 {
 	return tSVF_tick(&FXbandpass[v][string], sample);
 }
 
-float __ATTR_ITCMRAM  FXdiodeLowpassTick(float sample, int v, int string)
+float __ATTR_ITCMRAM  FXdiodeLowpassTick(float sample, uint_fast8_t v, uint_fast8_t string)
 {
 	return tDiodeFilter_tick(&FXdiodeFilters[v][string], sample);
 }
 
-float __ATTR_ITCMRAM  FXVZpeakTick(float sample, int v, int string)
+float __ATTR_ITCMRAM  FXVZpeakTick(float sample, uint_fast8_t v, uint_fast8_t string)
 {
 	return tVZFilter_tickEfficient(&FXVZfilterPeak[v][string], sample);
 }
 
-float __ATTR_ITCMRAM  FXVZlowshelfTick(float sample, int v, int string)
+float __ATTR_ITCMRAM  FXVZlowshelfTick(float sample, uint_fast8_t v, uint_fast8_t string)
 {
 	return tVZFilter_tickEfficient(&FXVZfilterLS[v][string], sample);
 }
-float __ATTR_ITCMRAM  FXVZhighshelfTick(float sample, int v, int string)
+float __ATTR_ITCMRAM  FXVZhighshelfTick(float sample, uint_fast8_t v, uint_fast8_t string)
 {
 	return tVZFilter_tickEfficient(&FXVZfilterHS[v][string], sample);
 }
-float __ATTR_ITCMRAM  FXVZbandrejectTick(float sample, int v, int string)
+float __ATTR_ITCMRAM  FXVZbandrejectTick(float sample, uint_fast8_t v, uint_fast8_t string)
 {
 	return  tVZFilter_tickEfficient(&FXVZfilterBR[v][string], sample);
 }
 
-float __ATTR_ITCMRAM  FXLadderLowpassTick(float sample, int v, int string)
+float __ATTR_ITCMRAM  FXLadderLowpassTick(float sample, uint_fast8_t v, uint_fast8_t string)
 {
 	return tLadderFilter_tick(&FXLadderfilter[v][string], sample);
 }
 //cutoffparams
 
-void  __ATTR_ITCMRAM FXLowpassParam1(float value, int v, int string)
+void  __ATTR_ITCMRAM FXLowpassParam1(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	value = (value * 77.0f) + 42.0f;
 	value = LEAF_clip(0.0f, (value-16.0f) * 35.929824561403509f, 4095.0f);
 	tSVF_setFreqFast(&FXlowpass[v][string], value);
 }
-void __ATTR_ITCMRAM FXHighpassParam1(float value, int v, int string)
+void __ATTR_ITCMRAM FXHighpassParam1(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	value = (value * 77.0f) + 42.0f;
 	value = LEAF_clip(0.0f, (value-16.0f) * 35.929824561403509f, 4095.0f);
 	tSVF_setFreqFast(&FXhighpass[v][string], value);
 }
 
-void __ATTR_ITCMRAM FXBandpassParam1(float value, int v, int string)
+void __ATTR_ITCMRAM FXBandpassParam1(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	value = (value * 77.0f) + 42.0f;
 	value = LEAF_clip(0.0f, (value-16.0f) * 35.929824561403509f, 4095.0f);
     tSVF_setFreqFast(&FXbandpass[v][string], value);
 }
 
-void __ATTR_ITCMRAM FXDiodeParam1(float value, int v, int string)
+void __ATTR_ITCMRAM FXDiodeParam1(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	value = (value * 77.0f) + 42.0f;
 	value = LEAF_clip(0.0f, (value-16.0f) * 35.929824561403509f, 4095.0f);
 	tDiodeFilter_setFreqFast(&FXdiodeFilters[v][string], value);
 }
-void __ATTR_ITCMRAM FXPeakParam1(float value, int v, int string)
+void __ATTR_ITCMRAM FXPeakParam1(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	value = (value * 77.0f) + 42.0f;
 	value = LEAF_clip(0.0f, (value-16.0f) * 35.929824561403509f, 4095.0f);
 	tVZFilter_setFreqFast(&FXVZfilterPeak[v][string], value);
 }
-void __ATTR_ITCMRAM FXLowShelfParam1(float value, int v, int string)
+void __ATTR_ITCMRAM FXLowShelfParam1(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	value = (value * 77.0f) + 42.0f;
     value = LEAF_clip(0.0f, (value-16.0f) * 35.929824561403509f, 4095.0f);
     tVZFilter_setFreqFast(&FXVZfilterLS[v][string], value);
 }
-void __ATTR_ITCMRAM FXHighShelfParam1(float value, int v, int string)
+void __ATTR_ITCMRAM FXHighShelfParam1(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	value = (value * 77.0f) + 42.0f;
 	value = LEAF_clip(0.0f, (value-16.0f) * 35.929824561403509f, 4095.0f);
 	tVZFilter_setFreqFast(&FXVZfilterHS[v][string], value);
 }
-void __ATTR_ITCMRAM FXNotchParam1(float value, int v, int string)
+void __ATTR_ITCMRAM FXNotchParam1(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	value = (value * 77.0f) + 42.0f;
 	value = LEAF_clip(0.0f, (value-16.0f) * 35.929824561403509f, 4095.0f);
 	tVZFilter_setFreqFast(&FXVZfilterBR[v][string], value);
 }
-void __ATTR_ITCMRAM FXLadderParam1(float value, int v, int string)
+void __ATTR_ITCMRAM FXLadderParam1(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	value = (value * 77.0f) + 42.0f;
 	value = LEAF_clip(0.0f, (value-16.0f) * 35.929824561403509f, 4095.0f);
@@ -2678,73 +2662,73 @@ void __ATTR_ITCMRAM FXLadderParam1(float value, int v, int string)
 
 //gain params
 
-void __ATTR_ITCMRAM FXPeakParam2(float value, int v, int string)
+void __ATTR_ITCMRAM FXPeakParam2(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	 tVZFilter_setGain(&FXVZfilterPeak[v][string], fasterdbtoa((value * 50.f) - 25.f));
 }
 
-void __ATTR_ITCMRAM FXLowShelfParam2(float value, int v, int string)
+void __ATTR_ITCMRAM FXLowShelfParam2(float value, uint_fast8_t v, uint_fast8_t string)
 {
-tVZFilter_setGain(&FXVZfilterLS[v][string], fasterdbtoa((value * 50.f) - 25.f));
+	tVZFilter_setGain(&FXVZfilterLS[v][string], fasterdbtoa((value * 50.f) - 25.f));
 }
 
-void __ATTR_ITCMRAM FXHighShelfParam2(float value, int v, int string)
+void __ATTR_ITCMRAM FXHighShelfParam2(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	tVZFilter_setGain(&FXVZfilterHS[v][string], fasterdbtoa((value * 50.f) - 25.f));
 }
 
-void __ATTR_ITCMRAM FXNotchParam2(float value, int v, int string)
+void __ATTR_ITCMRAM FXNotchParam2(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	tVZFilter_setGain(&FXVZfilterBR[v][string], fasterdbtoa((value * 50.f) - 25.f));
 
 }
 //resonance params
-void __ATTR_ITCMRAM FXLowpassParam3(float value, int v, int string)
+void __ATTR_ITCMRAM FXLowpassParam3(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	tSVF_setQ(&FXlowpass[v][string], value);
 }
 
-void __ATTR_ITCMRAM FXHighpassParam3(float value, int v, int string)
+void __ATTR_ITCMRAM FXHighpassParam3(float value, uint_fast8_t v, uint_fast8_t string)
 {
     tSVF_setQ(&FXhighpass[v][string], value);
 }
 
-void __ATTR_ITCMRAM FXBandpassParam3(float value, int v, int string)
+void __ATTR_ITCMRAM FXBandpassParam3(float value, uint_fast8_t v, uint_fast8_t string)
 {
     tSVF_setQ(&FXbandpass[v][string], value);
 }
 
-void __ATTR_ITCMRAM FXDiodeParam3(float value, int v, int string)
+void __ATTR_ITCMRAM FXDiodeParam3(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	tDiodeFilter_setQ(&FXdiodeFilters[v][string], value);
 }
 
 
-void __ATTR_ITCMRAM FXPeakParam3(float value, int v, int string)
+void __ATTR_ITCMRAM FXPeakParam3(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	tVZFilter_setResonance(&FXVZfilterPeak[v][string], value);
 }
 
 
-void __ATTR_ITCMRAM FXLowShelfParam3(float value, int v, int string)
+void __ATTR_ITCMRAM FXLowShelfParam3(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	tVZFilter_setResonance(&FXVZfilterLS[v][string], value);
 }
 
 
-void __ATTR_ITCMRAM FXHighShelfParam3(float value, int v, int string)
+void __ATTR_ITCMRAM FXHighShelfParam3(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	tVZFilter_setResonance(&FXVZfilterHS[v][string], value);
 }
 
 
-void __ATTR_ITCMRAM FXNotchParam3(float value, int v, int string)
+void __ATTR_ITCMRAM FXNotchParam3(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	tVZFilter_setResonance(&FXVZfilterBR[v][string], value);
 }
 
 
-void __ATTR_ITCMRAM FXLadderParam3(float value, int v, int string)
+void __ATTR_ITCMRAM FXLadderParam3(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	tLadderFilter_setQ(&FXLadderfilter[v][string], value);
 }
@@ -2754,19 +2738,19 @@ void __ATTR_ITCMRAM FXLadderParam3(float value, int v, int string)
 
 /////NOISE///
 
-void __ATTR_ITCMRAM noiseSetTilt(float value, int v, int string)
+void __ATTR_ITCMRAM noiseSetTilt(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	tVZFilter_setGain(&noiseShelf1[string], fasterdbtoa(-1.0f * ((value * 30.0f) - 15.0f)));
 	tVZFilter_setGain(&noiseShelf2[string], fasterdbtoa((value * 30.0f) - 15.0f));
 }
 
 
-void __ATTR_ITCMRAM noiseSetGain(float value, int v, int string)
+void __ATTR_ITCMRAM noiseSetGain(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	tVZFilter_setGain(&noiseBell1[string], fasterdbtoa((value* 34.0f) - 17.0f));
 }
 
-void __ATTR_ITCMRAM noiseSetFreq(float value, int v, int string)
+void __ATTR_ITCMRAM noiseSetFreq(float value, uint_fast8_t v, uint_fast8_t string)
 {
 	value = (value * 77.0f) + 42.0f;
 	value = LEAF_clip(0.0f, (value-16.0f) * 35.929824561403509f, 4095.0f);
@@ -2774,7 +2758,7 @@ void __ATTR_ITCMRAM noiseSetFreq(float value, int v, int string)
 }
 
 
-void __ATTR_ITCMRAM noise_tick(int string)
+void __ATTR_ITCMRAM noise_tick(uint_fast8_t string)
 {
 	float enabled = params[Noise].realVal[string];
 	float amp = params[NoiseAmp].realVal[string];
@@ -2793,75 +2777,16 @@ void __ATTR_ITCMRAM noise_tick(int string)
 
 
 
-void __ATTR_ITCMRAM HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
-{
-	interrupted = 1;
-	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_SET);
-	SCB_InvalidateDCache_by_Addr((uint32_t*)(((uint32_t)SPI_PLUCK_RX) & ~(uint32_t)0x1F), PLUCK_BUFFER_SIZE_TIMES_TWO+32);
-	if ((SPI_PLUCK_RX[26] == 254) && (SPI_PLUCK_RX[51] == 253))
-	{
-		for (int i = 0; i < numStringsThisBoard; i++)
-		{
-			stringInputs[i] = (SPI_PLUCK_RX[((i+firstString)*2)+ 27] << 8) + SPI_PLUCK_RX[((i+firstString)*2)+ 28];
-		}
-	}
-	newPluck = 1;
-	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_RESET);
-}
-
-void __ATTR_ITCMRAM HAL_SPI_RxHalfCpltCallback(SPI_HandleTypeDef *hspi)
-{
-	interrupted = 1;
-	SCB_InvalidateDCache_by_Addr((uint32_t*)(((uint32_t)SPI_PLUCK_RX) & ~(uint32_t)0x1F), PLUCK_BUFFER_SIZE_TIMES_TWO+32);
-	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_SET);
-	if ((SPI_PLUCK_RX[0] == 254) && (SPI_PLUCK_RX[25] == 253))
-	{
-		for (int i = 0; i < numStringsThisBoard; i++)
-		{
-			stringInputs[i] = (SPI_PLUCK_RX[((i+firstString)*2)+ 1] << 8) + SPI_PLUCK_RX[((i+firstString)*2)+ 2];
-		}
-	}
-	newPluck = 1;
-	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_RESET);
-}
-
-void __ATTR_ITCMRAM HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
-{
-	interrupted = 1;
-	SCB_InvalidateDCache_by_Addr((uint32_t*)(((uint32_t)SPI_LEVERS) & ~(uint32_t)0x1F), LEVER_BUFFER_SIZE_TIMES_TWO+32);
-	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_SET);
-	if ((SPI_LEVERS[62] == 254) && (SPI_LEVERS[63] == 253))
-	{
-		handleSPI(LEVER_BUFFER_SIZE);
-	}
-	SCB_CleanDCache_by_Addr((uint32_t*)(((uint32_t)SPI_LEVERS) & ~(uint32_t)0x1F), LEVER_BUFFER_SIZE_TIMES_TWO+32);
-	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_RESET);
-}
-
-void __ATTR_ITCMRAM HAL_SPI_TxRxHalfCpltCallback(SPI_HandleTypeDef *hspi)
-{
-	interrupted = 1;
-	//SCB_InvalidateDCache();
-	SCB_InvalidateDCache_by_Addr((uint32_t*)(((uint32_t)SPI_LEVERS) & ~(uint32_t)0x1F), LEVER_BUFFER_SIZE_TIMES_TWO+32);
-	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_SET);
-	if ((SPI_LEVERS[30] == 254) && (SPI_LEVERS[31] == 253))
-	{
-		handleSPI(0);
-	}
-	SCB_CleanDCache_by_Addr((uint32_t*)(((uint32_t)SPI_LEVERS) & ~(uint32_t)0x1F), LEVER_BUFFER_SIZE_TIMES_TWO+32);
-	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_RESET);
-}
 
 void __ATTR_ITCMRAM HAL_SAI_TxCpltCallback(SAI_HandleTypeDef *hsai)
 {
-	if ((!diskBusy)&& (presetReady))
+	if ((!diskBusy) && (presetReady))
 	{
 		audioFrameFunction(HALF_BUFFER_SIZE);
-
 	}
 	else
 	{
-		for (int i = 0; i < HALF_BUFFER_SIZE; i++)
+		for (uint_fast8_t i = 0; i < HALF_BUFFER_SIZE; i++)
 		{
 			audioOutBuffer[HALF_BUFFER_SIZE+i] = 0;
 		}
@@ -2877,7 +2802,6 @@ void __ATTR_ITCMRAM HAL_SAI_TxCpltCallback(SAI_HandleTypeDef *hsai)
 		}
 		else if (voice == 62)
 		{
-
 			switchStrings = 2;
 			diskBusy = 0;
 			resetStringInputs = 1;
@@ -2916,7 +2840,7 @@ void __ATTR_ITCMRAM HAL_SAI_TxHalfCpltCallback(SAI_HandleTypeDef *hsai)
 	}
 	else
 	{
-		for (int i = 0; i < HALF_BUFFER_SIZE; i++)
+		for (uint_fast16_t i = 0; i < HALF_BUFFER_SIZE; i++)
 		{
 			audioOutBuffer[i] = 0;
 		}
@@ -2925,14 +2849,12 @@ void __ATTR_ITCMRAM HAL_SAI_TxHalfCpltCallback(SAI_HandleTypeDef *hsai)
 	{
 		if (voice == 63)
 		{
-
 			switchStrings = 1;
 			diskBusy = 0;
 			resetStringInputs = 1;
 		}
 		else if (voice == 62)
 		{
-
 			switchStrings = 2;
 			diskBusy = 0;
 			resetStringInputs = 1;

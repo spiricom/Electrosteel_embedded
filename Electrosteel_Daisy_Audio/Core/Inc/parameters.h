@@ -10,7 +10,7 @@
 
 
 typedef float (*scaler_t)(float);
-typedef void (*setParam_t)(float, int, int);
+typedef void (*setParam_t)(float, uint_fast8_t, uint_fast8_t);
 #define SPI_MESSAGE_ENDING 253
 #define TUNING_MESSAGE_SIZE 266
 
@@ -28,6 +28,8 @@ enum SPIMessage
 	ReceivingPresetRequestCommand,
 	ReceivingBootloadCommand,
 	ReceivingVolume,
+	ReceivingBrainFirmwareUpdateRequest,
+	ReceivingPluckFirmwareUpdateRequest,
 	ReceivingEnd =  253
 };
 

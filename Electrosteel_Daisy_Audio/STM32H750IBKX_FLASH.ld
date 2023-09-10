@@ -301,22 +301,23 @@ SECTIONS
 		PROVIDE(__heap_end__ = .);
 	} > DTCMRAM
 
-	PROVIDE(end = .);
+
 
 	.reserved_for_stack (NOLOAD) :
 	{
-		. = ALIGN(4);
+		. = ALIGN(8);
 		PROVIDE(__reserved_for_stack_start__ = .);
 		KEEP(*(.reserved_for_stack))
-		. = ALIGN(4);
+		. = ALIGN(8);
 		PROVIDE(__reserved_for_stack_end__ = .);
 	} > DTCMRAM
-
+	PROVIDE(end = .);
     DISCARD :
     {
         libc.a ( * )
         libm.a ( * )
         libgcc.a ( * )
     }
+      .ARM.attributes 0 : { *(.ARM.attributes) }
 
 }

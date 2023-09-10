@@ -54,6 +54,9 @@ default.size.stdout \
 OBJDUMP_LIST += \
 electrosteel_strings_STM32H730.list \
 
+OBJCOPY_BIN += \
+electrosteel_strings_STM32H730.bin \
+
 
 # All Target
 all: main-build
@@ -77,12 +80,17 @@ electrosteel_strings_STM32H730.list: $(EXECUTABLES) makefile objects.list $(OPTI
 	@echo 'Finished building: $@'
 	@echo ' '
 
+electrosteel_strings_STM32H730.bin: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objcopy  -O binary $(EXECUTABLES) "electrosteel_strings_STM32H730.bin"
+	@echo 'Finished building: $@'
+	@echo ' '
+
 # Other Targets
 clean:
-	-$(RM) default.size.stdout electrosteel_strings_STM32H730.elf electrosteel_strings_STM32H730.list electrosteel_strings_STM32H730.map
+	-$(RM) default.size.stdout electrosteel_strings_STM32H730.bin electrosteel_strings_STM32H730.elf electrosteel_strings_STM32H730.list electrosteel_strings_STM32H730.map
 	-@echo ' '
 
-secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)
+secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST) $(OBJCOPY_BIN)
 
 fail-specified-linker-script-missing:
 	@echo 'Error: Cannot find the specified linker script. Check the linker settings in the build configuration.'

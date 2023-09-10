@@ -29,6 +29,7 @@ SPI_HandleTypeDef hspi6;
 DMA_HandleTypeDef hdma_spi1_rx;
 DMA_HandleTypeDef hdma_spi1_tx;
 DMA_HandleTypeDef hdma_spi6_rx;
+DMA_HandleTypeDef hdma_spi6_tx;
 
 /* SPI1 init function */
 void MX_SPI1_Init(void)
@@ -258,6 +259,23 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* spiHandle)
 
     __HAL_LINKDMA(spiHandle,hdmarx,hdma_spi6_rx);
 
+    /* SPI6_TX Init */
+    hdma_spi6_tx.Instance = BDMA_Channel1;
+    hdma_spi6_tx.Init.Request = BDMA_REQUEST_SPI6_TX;
+    hdma_spi6_tx.Init.Direction = DMA_MEMORY_TO_PERIPH;
+    hdma_spi6_tx.Init.PeriphInc = DMA_PINC_DISABLE;
+    hdma_spi6_tx.Init.MemInc = DMA_MINC_ENABLE;
+    hdma_spi6_tx.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
+    hdma_spi6_tx.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
+    hdma_spi6_tx.Init.Mode = DMA_CIRCULAR;
+    hdma_spi6_tx.Init.Priority = DMA_PRIORITY_VERY_HIGH;
+    if (HAL_DMA_Init(&hdma_spi6_tx) != HAL_OK)
+    {
+      Error_Handler();
+    }
+
+    __HAL_LINKDMA(spiHandle,hdmatx,hdma_spi6_tx);
+
     /* SPI6 interrupt Init */
     HAL_NVIC_SetPriority(SPI6_IRQn, 7, 0);
     HAL_NVIC_EnableIRQ(SPI6_IRQn);
@@ -316,6 +334,7 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef* spiHandle)
 
     /* SPI6 DMA DeInit */
     HAL_DMA_DeInit(spiHandle->hdmarx);
+    HAL_DMA_DeInit(spiHandle->hdmatx);
 
     /* SPI6 interrupt Deinit */
     HAL_NVIC_DisableIRQ(SPI6_IRQn);

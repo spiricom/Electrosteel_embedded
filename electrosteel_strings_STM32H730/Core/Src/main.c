@@ -46,8 +46,8 @@ RNG_HandleTypeDef hrng;
 
 SPI_HandleTypeDef hspi1;
 SPI_HandleTypeDef hspi2;
-SPI_HandleTypeDef hspi3;
 DMA_HandleTypeDef hdma_spi1_tx;
+DMA_HandleTypeDef hdma_spi1_rx;
 DMA_HandleTypeDef hdma_spi2_rx;
 
 /* USER CODE BEGIN PV */
@@ -55,6 +55,7 @@ uint8_t SPI_TX[8]__ATTR_RAM_D2;
 uint8_t SPI_RX[8]__ATTR_RAM_D2;
 
 uint8_t SPI_PLUCK_TX[26]__ATTR_RAM_D2;
+uint8_t SPI_PLUCK_RX[26]__ATTR_RAM_D2;
 
 uint8_t counter;
 uint16_t ADC_values1[NUM_ADC_CHANNELS * ADC_BUFFER_SIZE]__ATTR_RAM_D2;
@@ -78,10 +79,12 @@ tSlide fastSlide[NUM_STRINGS];
 tSlide slowSlide[NUM_STRINGS];
 tThreshold threshold[NUM_STRINGS];
 
+uint32_t currentFirmwarePointer = 0;
+uint8_t firmwareBuffer[65536] __ATTR_RAM_D1;
 
 
 
-
+volatile uint_fast8_t readyForPluckSend = 1;
 
 int RHbits[2] = {0,0};
 
@@ -92,7 +95,6 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_DMA_Init(void);
 static void MX_SPI1_Init(void);
-static void MX_SPI3_Init(void);
 static void MX_SPI2_Init(void);
 static void MX_ADC1_Init(void);
 static void MX_RNG_Init(void);
@@ -104,7 +106,7 @@ static void MX_RNG_Init(void);
 /* USER CODE BEGIN 0 */
 void MPU_Conf(void);
 float randomNumber(void);
-
+void programNewFirmware(void);
 /* USER CODE END 0 */
 
 /**
@@ -143,7 +145,6 @@ int main(void)
   MX_GPIO_Init();
   MX_DMA_Init();
   MX_SPI1_Init();
-  MX_SPI3_Init();
   MX_SPI2_Init();
   MX_ADC1_Init();
   MX_RNG_Init();
@@ -160,6 +161,7 @@ int main(void)
    for (int i = 0; i < 26; i++)
    {
  	  SPI_PLUCK_TX[i] = 0;
+ 	  SPI_PLUCK_RX[i] = 0;
    }
 
    HAL_SPI_Receive_DMA(&hspi2, SPI_RX, 8);
@@ -173,14 +175,14 @@ int main(void)
 
    for (int i = 0; i < NUM_STRINGS; i++)
    {
-   	tThreshold_init(&threshold[i],700.0f, 1300.0f, &leaf);
+   	tThreshold_init(&threshold[i],300.0f, 700.0f, &leaf);//700 1300
    	tSlide_init(&fastSlide[i],1.0f,400.0f, &leaf); //1110
    	tSlide_init(&slowSlide[i],1.0f,700.0f, &leaf); //1110
 
    	for (int j = 0; j < FILTER_ORDER; j++)
    	{
-   		tVZFilter_init(&opticalLowpass[i][j], Lowpass, 18000.0f, 0.8f, &leaf);//6000
-   		tHighpass_init(&opticalHighpass[i][j], 10.0f, &leaf);//100
+   		tVZFilter_init(&opticalLowpass[i][j], Lowpass, 15000.0f, 0.8f, &leaf);//6000
+   		tHighpass_init(&opticalHighpass[i][j], 20.0f, &leaf);//100
    	}
    }
 
@@ -545,53 +547,6 @@ static void MX_SPI2_Init(void)
 }
 
 /**
-  * @brief SPI3 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_SPI3_Init(void)
-{
-
-  /* USER CODE BEGIN SPI3_Init 0 */
-
-  /* USER CODE END SPI3_Init 0 */
-
-  /* USER CODE BEGIN SPI3_Init 1 */
-
-  /* USER CODE END SPI3_Init 1 */
-  /* SPI3 parameter configuration*/
-  hspi3.Instance = SPI3;
-  hspi3.Init.Mode = SPI_MODE_SLAVE;
-  hspi3.Init.Direction = SPI_DIRECTION_2LINES;
-  hspi3.Init.DataSize = SPI_DATASIZE_8BIT;
-  hspi3.Init.CLKPolarity = SPI_POLARITY_LOW;
-  hspi3.Init.CLKPhase = SPI_PHASE_1EDGE;
-  hspi3.Init.NSS = SPI_NSS_HARD_INPUT;
-  hspi3.Init.FirstBit = SPI_FIRSTBIT_MSB;
-  hspi3.Init.TIMode = SPI_TIMODE_DISABLE;
-  hspi3.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
-  hspi3.Init.CRCPolynomial = 0x0;
-  hspi3.Init.NSSPMode = SPI_NSS_PULSE_DISABLE;
-  hspi3.Init.NSSPolarity = SPI_NSS_POLARITY_LOW;
-  hspi3.Init.FifoThreshold = SPI_FIFO_THRESHOLD_01DATA;
-  hspi3.Init.TxCRCInitializationPattern = SPI_CRC_INITIALIZATION_ALL_ZERO_PATTERN;
-  hspi3.Init.RxCRCInitializationPattern = SPI_CRC_INITIALIZATION_ALL_ZERO_PATTERN;
-  hspi3.Init.MasterSSIdleness = SPI_MASTER_SS_IDLENESS_00CYCLE;
-  hspi3.Init.MasterInterDataIdleness = SPI_MASTER_INTERDATA_IDLENESS_00CYCLE;
-  hspi3.Init.MasterReceiverAutoSusp = SPI_MASTER_RX_AUTOSUSP_DISABLE;
-  hspi3.Init.MasterKeepIOState = SPI_MASTER_KEEP_IO_STATE_DISABLE;
-  hspi3.Init.IOSwap = SPI_IO_SWAP_DISABLE;
-  if (HAL_SPI_Init(&hspi3) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN SPI3_Init 2 */
-
-  /* USER CODE END SPI3_Init 2 */
-
-}
-
-/**
   * Enable DMA controller clock
   */
 static void MX_DMA_Init(void)
@@ -610,6 +565,9 @@ static void MX_DMA_Init(void)
   /* DMA1_Stream2_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Stream2_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA1_Stream2_IRQn);
+  /* DMA1_Stream3_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Stream3_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream3_IRQn);
 
 }
 
@@ -644,6 +602,22 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PA15 */
+  GPIO_InitStruct.Pin = GPIO_PIN_15;
+  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+  GPIO_InitStruct.Alternate = GPIO_AF6_SPI3;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PC12 */
+  GPIO_InitStruct.Pin = GPIO_PIN_12;
+  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+  GPIO_InitStruct.Alternate = GPIO_AF6_SPI3;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pin : PB4 */
   GPIO_InitStruct.Pin = GPIO_PIN_4;
@@ -740,7 +714,7 @@ int attackDetectPeak2 (int whichString, int tempInt)
 	{
 		// a highpass filter, remove any slow moving signal (effectively centers the signal around zero and gets rid of the signal that isn't high frequency vibration) cutoff of 100Hz, // applied 8 times to get rid of a lot of low frequency bumbling around
 		tempSamp = tHighpass_tick(&opticalHighpass[whichString][k], tempSamp);
-		//tempSamp = tVZFilter_tick(&opticalLowpass[whichString][k], tempSamp * 1.0f);
+		tempSamp = tVZFilter_tick(&opticalLowpass[whichString][k], tempSamp * 1.0f);
 	}
 
 	float tempAbs = fabsf(tempSamp);
@@ -779,7 +753,7 @@ int attackDetectPeak2 (int whichString, int tempInt)
 		{
 			downCounter[whichString]++;
 		}
-		if (downCounter[whichString] > 100)//was 256
+		if (downCounter[whichString] > 200)//was 256
 		{
 			//found a peak?
 			output = stringMaxes[whichString] * 1.75f;
@@ -874,20 +848,33 @@ void ADC_Frame(int offset)
 	{
 		if (HAL_SPI_GetState(&hspi1) == HAL_SPI_STATE_READY)
 		{
-			for (int j = 0; j < NUM_STRINGS; ++j)
+			if (readyForPluckSend)
 			{
-				SPI_PLUCK_TX[(j * 2) + 1] = (stringStates[j] >> 8);
-				SPI_PLUCK_TX[(j * 2) + 2] = (stringStates[j] & 0xff);
-			}
-			SPI_PLUCK_TX[0] = 254;
-			SPI_PLUCK_TX[25] = 253;
+				for (int j = 0; j < NUM_STRINGS; ++j)
+				{
+					SPI_PLUCK_TX[(j * 2) + 1] = (stringStates[j] >> 8);
+					SPI_PLUCK_TX[(j * 2) + 2] = (stringStates[j] & 0xff);
+				}
+				SPI_PLUCK_TX[0] = 254;
+				SPI_PLUCK_TX[25] = 253;
+				readyForPluckSend = 0;
+				SCB_CleanDCache_by_Addr((uint32_t*)(((uint32_t)SPI_PLUCK_TX) & ~(uint32_t)0x1F), 26+32);
+				HAL_SPI_TransmitReceive_DMA(&hspi1, SPI_PLUCK_TX, SPI_PLUCK_RX, 26);
 
-			SCB_CleanDCache_by_Addr((uint32_t*)(((uint32_t)SPI_PLUCK_TX) & ~(uint32_t)0x1F), 26+32);
-			HAL_SPI_Transmit_DMA(&hspi1, SPI_PLUCK_TX, 26);
-			changeHappened = 0;
+				changeHappened = 0;
+
+			}
 		}
 	}
 }
+
+
+void programNewFirmware(void)
+{
+	;
+}
+
+
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
 {
 	ADC_Frame(ADC_FRAME_SIZE);
@@ -924,7 +911,30 @@ void HAL_SPI_RxHalfCpltCallback(SPI_HandleTypeDef *hspi)
 		}
 	}
 }
-
+void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
+{
+	SCB_InvalidateDCache_by_Addr((uint32_t*)(((uint32_t)SPI_PLUCK_RX) & ~(uint32_t)0x1F), 26+32);
+	if ((SPI_PLUCK_RX[0] == 252) && (SPI_PLUCK_RX[1] == 251))
+	{
+		if (SPI_PLUCK_RX[2] == 60) //this means start a firmware update
+		{
+			currentFirmwarePointer = 0;
+		}
+		if (SPI_PLUCK_RX[2] == 61) //this means continue a firmware update
+		{
+			for (int i = 3; i < 26; ++i)
+			{
+				firmwareBuffer[currentFirmwarePointer] = SPI_PLUCK_RX[i];
+				currentFirmwarePointer++;
+			}
+		}
+		if (SPI_PLUCK_RX[2] == 62) //this means end a firmware update
+		{
+			programNewFirmware();
+		}
+	}
+	readyForPluckSend = 1;
+}
 /* USER CODE END 4 */
 
 /**
