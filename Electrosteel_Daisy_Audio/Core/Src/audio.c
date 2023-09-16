@@ -38,8 +38,8 @@ uint32_t frameCounter = 0;
 volatile int stringPositions[2];
 volatile int stringPositionsPrev[2];
 
-volatile int newPluck = 0 ;
-volatile int newBar = 0 ;
+volatile uint32_t newPluck = 0 ;
+volatile uint32_t newBar = 0 ;
 
 uint8_t oscToTick = NUM_OSC;
 uint8_t filterToTick = NUM_FILT;
@@ -717,13 +717,13 @@ void audioStart(SAI_HandleTypeDef* hsaiOut, SAI_HandleTypeDef* hsaiIn)
 
 void __ATTR_ITCMRAM updateStateFromSPIMessage(uint8_t offset)
 {
-	int modeBit = SPI_LEVERS[24 + offset];
+	int modeBit = SPI_LEVERS_RX[24 + offset];
 
 	octaveAction = (modeBit >> 6) & 1;
 	dualSlider = (modeBit >> 5) & 1;
 
 	edit = (modeBit >> 4) & 1;
-	voice = SPI_LEVERS[25 + offset];
+	voice = SPI_LEVERS_RX[25 + offset];
 
 
 
@@ -737,9 +737,9 @@ void __ATTR_ITCMRAM updateStateFromSPIMessage(uint8_t offset)
 		}
 	}
 
-	volumePedalInt = ((uint16_t)SPI_LEVERS[26 + offset] << 8) + ((uint16_t)SPI_LEVERS[27 + offset] & 0xff);
+	volumePedalInt = ((uint16_t)SPI_LEVERS_RX[26 + offset] << 8) + ((uint16_t)SPI_LEVERS_RX[27 + offset] & 0xff);
 	volumePedal = volumePedalInt * 0.0002442002442f;
-	stringPositions[whichBar] = ((uint16_t)SPI_LEVERS[28 + offset] << 8) + ((uint16_t)SPI_LEVERS[29 + offset] & 0xff);
+	stringPositions[whichBar] = ((uint16_t)SPI_LEVERS_RX[28 + offset] << 8) + ((uint16_t)SPI_LEVERS_RX[29 + offset] & 0xff);
 	if (stringPositions[whichBar] != stringPositionsPrev[whichBar])
 	{
 		//HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_SET);
@@ -1707,7 +1707,7 @@ void __ATTR_ITCMRAM oscillator_tick(float note, int string)
 			float tempMIDI = tExpSmooth_tick(&pitchSmoother[osc][string]) + midiAdd[osc][string];
 
 
-			float finalFreq = mtofTableLookup(tempMIDI) + freqOffset;
+			float finalFreq = (mtofTableLookup(tempMIDI) * freqMult[osc][string]) + freqOffset;
 
 			float sample = 0.0f;
 
@@ -2793,64 +2793,6 @@ void __ATTR_ITCMRAM noise_tick(int string)
 
 
 
-void __ATTR_ITCMRAM HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
-{
-	interrupted = 1;
-	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_SET);
-	SCB_InvalidateDCache_by_Addr((uint32_t*)(((uint32_t)SPI_PLUCK_RX) & ~(uint32_t)0x1F), PLUCK_BUFFER_SIZE_TIMES_TWO+32);
-	if ((SPI_PLUCK_RX[26] == 254) && (SPI_PLUCK_RX[51] == 253))
-	{
-		for (int i = 0; i < numStringsThisBoard; i++)
-		{
-			stringInputs[i] = (SPI_PLUCK_RX[((i+firstString)*2)+ 27] << 8) + SPI_PLUCK_RX[((i+firstString)*2)+ 28];
-		}
-	}
-	newPluck = 1;
-	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_RESET);
-}
-
-void __ATTR_ITCMRAM HAL_SPI_RxHalfCpltCallback(SPI_HandleTypeDef *hspi)
-{
-	interrupted = 1;
-	SCB_InvalidateDCache_by_Addr((uint32_t*)(((uint32_t)SPI_PLUCK_RX) & ~(uint32_t)0x1F), PLUCK_BUFFER_SIZE_TIMES_TWO+32);
-	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_SET);
-	if ((SPI_PLUCK_RX[0] == 254) && (SPI_PLUCK_RX[25] == 253))
-	{
-		for (int i = 0; i < numStringsThisBoard; i++)
-		{
-			stringInputs[i] = (SPI_PLUCK_RX[((i+firstString)*2)+ 1] << 8) + SPI_PLUCK_RX[((i+firstString)*2)+ 2];
-		}
-	}
-	newPluck = 1;
-	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_RESET);
-}
-
-void __ATTR_ITCMRAM HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
-{
-	interrupted = 1;
-	SCB_InvalidateDCache_by_Addr((uint32_t*)(((uint32_t)SPI_LEVERS) & ~(uint32_t)0x1F), LEVER_BUFFER_SIZE_TIMES_TWO+32);
-	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_SET);
-	if ((SPI_LEVERS[62] == 254) && (SPI_LEVERS[63] == 253))
-	{
-		handleSPI(LEVER_BUFFER_SIZE);
-	}
-	SCB_CleanDCache_by_Addr((uint32_t*)(((uint32_t)SPI_LEVERS) & ~(uint32_t)0x1F), LEVER_BUFFER_SIZE_TIMES_TWO+32);
-	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_RESET);
-}
-
-void __ATTR_ITCMRAM HAL_SPI_TxRxHalfCpltCallback(SPI_HandleTypeDef *hspi)
-{
-	interrupted = 1;
-	//SCB_InvalidateDCache();
-	SCB_InvalidateDCache_by_Addr((uint32_t*)(((uint32_t)SPI_LEVERS) & ~(uint32_t)0x1F), LEVER_BUFFER_SIZE_TIMES_TWO+32);
-	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_SET);
-	if ((SPI_LEVERS[30] == 254) && (SPI_LEVERS[31] == 253))
-	{
-		handleSPI(0);
-	}
-	SCB_CleanDCache_by_Addr((uint32_t*)(((uint32_t)SPI_LEVERS) & ~(uint32_t)0x1F), LEVER_BUFFER_SIZE_TIMES_TWO+32);
-	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_RESET);
-}
 
 void __ATTR_ITCMRAM HAL_SAI_TxCpltCallback(SAI_HandleTypeDef *hsai)
 {

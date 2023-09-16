@@ -52,12 +52,15 @@
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+static void MPU_Initialize(void);
 static void MPU_Config(void);
 /* USER CODE BEGIN PFP */
 static void FS_FileOperations(void);
 void qspi_initialize(uint8_t mode);
 __attribute__((noreturn)) static void boot_to(uint32_t addr);
 void qspi_enable_memory_mapped();
+void i2cError(void);
+void checkForNewFirmwareFromMainSynthBoard(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -146,13 +149,13 @@ int main(void)
 
   /* USER CODE END 1 */
 
-  /* MPU Configuration--------------------------------------------------------*/
-  MPU_Config();
-
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
+
+  /* MPU Configuration--------------------------------------------------------*/
+  MPU_Config();
 
   /* USER CODE BEGIN Init */
 
@@ -168,9 +171,9 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_QUADSPI_Init();
-  //MX_SDMMC1_SD_Init();
-  //MX_FATFS_Init();
-  //MX_I2C1_Init();
+  MX_SDMMC1_SD_Init();
+  MX_FATFS_Init();
+  MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
 
   /* Enable write access to Backup domain */
@@ -297,7 +300,7 @@ int main(void)
 			HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
 			HAL_Delay(60);
 		}
-		HAL_Delay(1000);
+		checkForNewFirmwareFromMainSynthBoard();
 		if (!memory_already_mapped)
 		{
 		 	qspi_enable_memory_mapped();
@@ -381,17 +384,17 @@ int main(void)
 
 
 
-	/* USER CODE END 2 */
+  /* USER CODE END 2 */
 
-	/* Infinite loop */
-	/* USER CODE BEGIN WHILE */
+  /* Infinite loop */
+  /* USER CODE BEGIN WHILE */
 	while (1)
 	{
-		/* USER CODE END WHILE */
+    /* USER CODE END WHILE */
 
-		/* USER CODE BEGIN 3 */
+    /* USER CODE BEGIN 3 */
 	}
-	/* USER CODE END 3 */
+  /* USER CODE END 3 */
 }
 
 /**
@@ -458,11 +461,27 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+void i2cError(void)
+{
+	while(1)
+	{
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
+		HAL_Delay(1000);
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
+		HAL_Delay(1000);
+	}
+}
 
 void qspi_error(void)
 {
-	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
+	while(1)
+	{
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
+		HAL_Delay(500);
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
+		HAL_Delay(500);
+	}
+
 }
 
 int AutopollingMemReady(int timeout)
@@ -1025,7 +1044,7 @@ static void FS_FileOperations(void)
 					{
 						qspi_Erase(QSPI_START, QSPI_START+262140);
 						qspi_Write(QSPI_START, 262140,(uint8_t*)tempBinaryBuffer);
-						HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
+						//HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
 					}
 
 					f_close(&SDFile);
@@ -1043,23 +1062,33 @@ static void FS_FileOperations(void)
 
 }
 
-
-// EXTI Line12 External Interrupt ISR Handler CallBackFun
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+void checkForNewFirmwareFromMainSynthBoard(void)
 {
 	if (boardNumber != 0)
 	{
-		if(GPIO_Pin == GPIO_PIN_12) // If The INT Source Is EXTI Line12
+		if(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_12) ==  1)
 		{
+			HAL_StatusTypeDef returnVal = 0;
+
 			MX_I2C1_Init();
+
 			while(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_12) ==  1)
 			{
-				HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
-				HAL_Delay(1);//wait for pin to go back low
+				uint8_t fader = 0;
+				HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
+				HAL_Delay(63-fader);//wait for pin to go back low
+				HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
+				HAL_Delay(fader);//wait for pin to go back low
+				fader = (fader+1) % 64;
+
 			}
 			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
-			HAL_I2C_Slave_Receive(&hi2c1, tempBinaryBuffer, 65535,
+			returnVal = HAL_I2C_Slave_Receive(&hi2c1, tempBinaryBuffer, 65535,
 					10000);
+			if (returnVal != HAL_OK)
+			{
+				i2cError();
+			}
 			int i = 6;
 			while(i--)
 			{
@@ -1067,8 +1096,12 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 				HAL_Delay(30);
 			}
 			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
-			HAL_I2C_Slave_Receive(&hi2c1, tempBinaryBuffer+65535, 65535,
+			returnVal = HAL_I2C_Slave_Receive(&hi2c1, tempBinaryBuffer+65535, 65535,
 					10000);
+			if (returnVal != HAL_OK)
+			{
+				i2cError();
+			}
 			i = 6;
 			while(i--)
 			{
@@ -1077,18 +1110,26 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 			}
 
 			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
-			HAL_I2C_Slave_Receive(&hi2c1, tempBinaryBuffer+131070, 65535,
+			returnVal = HAL_I2C_Slave_Receive(&hi2c1, tempBinaryBuffer+131070, 65535,
 					10000);
+			if (returnVal != HAL_OK)
+			{
+				i2cError();
+			}
 			i = 6;
 			while(i--)
 			{
 				HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
-				HAL_Delay(70);
+				HAL_Delay(30);
 			}
 
 			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
-			HAL_I2C_Slave_Receive(&hi2c1, tempBinaryBuffer+196605, 65535,
+			returnVal = HAL_I2C_Slave_Receive(&hi2c1, tempBinaryBuffer+196605, 65535,
 					10000);
+			if (returnVal != HAL_OK)
+			{
+				i2cError();
+			}
 			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
 			i = 6;
 			while(i--)
@@ -1111,7 +1152,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 					HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
 					HAL_Delay(30);
 				}
-			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_SET);
+			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
 
     	  HAL_I2C_DeInit(&hi2c1);
 	 	  HAL_QSPI_MspDeInit(&hqspi);
@@ -1124,8 +1165,14 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 
 		}
 	}
+
 }
 
+// EXTI Line12 External Interrupt ISR Handler CallBackFun
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+
+}
 
 
 __attribute__((noreturn)) static void boot_to(uint32_t addr)

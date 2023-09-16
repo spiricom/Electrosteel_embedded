@@ -334,7 +334,8 @@ extern volatile uint8_t whichBar;
 extern volatile uint16_t sampleClippedCountdown;
 extern float masterVolFromBrain;
 extern float masterVolFromBrainForSynth;
-
+extern uint8_t interrupted;
+extern volatile uint32_t newPluck;
 #endif /* __AUDIOSTREAM_H */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

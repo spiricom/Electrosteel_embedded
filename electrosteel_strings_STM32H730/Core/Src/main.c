@@ -46,22 +46,27 @@ RNG_HandleTypeDef hrng;
 
 SPI_HandleTypeDef hspi1;
 SPI_HandleTypeDef hspi2;
-SPI_HandleTypeDef hspi3;
 DMA_HandleTypeDef hdma_spi1_tx;
+DMA_HandleTypeDef hdma_spi1_rx;
 DMA_HandleTypeDef hdma_spi2_rx;
 
 /* USER CODE BEGIN PV */
 uint8_t SPI_TX[8]__ATTR_RAM_D2;
 uint8_t SPI_RX[8]__ATTR_RAM_D2;
 
-uint8_t SPI_PLUCK_TX[26]__ATTR_RAM_D2;
+uint8_t SPI_PLUCK_TX[32]__ATTR_RAM_D2;
+uint8_t SPI_PLUCK_RX[32]__ATTR_RAM_D2;
+
+//uint8_t newFirmwareBuffer[65536]__ATTR_RAM_D1;
+//uint32_t newFirmwareBufferPosition = 0;
+
 
 uint8_t counter;
 uint16_t ADC_values1[NUM_ADC_CHANNELS * ADC_BUFFER_SIZE]__ATTR_RAM_D2;
 //uint16_t ADC_values2[NUM_ADC_CHANNELS * ADC_BUFFER_SIZE]__ATTR_RAM_D2;
 #define FILTER_ORDER 2
-#define ATODB_TABLE_SIZE 25000
-#define ATODB_TABLE_SIZE_MINUS_ONE 24999
+#define ATODB_TABLE_SIZE 65536
+#define ATODB_TABLE_SIZE_MINUS_ONE 65535
 
 
 #define SMALL_MEM_SIZE 120000
@@ -78,7 +83,8 @@ tSlide fastSlide[NUM_STRINGS];
 tSlide slowSlide[NUM_STRINGS];
 tThreshold threshold[NUM_STRINGS];
 
-
+//volatile uint_fast8_t gettingNewFirmware = 0;
+volatile uint_fast8_t SPI_busy = 0;
 
 
 
@@ -92,7 +98,6 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_DMA_Init(void);
 static void MX_SPI1_Init(void);
-static void MX_SPI3_Init(void);
 static void MX_SPI2_Init(void);
 static void MX_ADC1_Init(void);
 static void MX_RNG_Init(void);
@@ -102,9 +107,10 @@ static void MX_RNG_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void MPU_Conf(void);
+//void MPU_Conf(void);
 float randomNumber(void);
-
+void CycleCounterInit(void);
+//void loadNewFirmware(uint32_t);
 /* USER CODE END 0 */
 
 /**
@@ -136,14 +142,13 @@ int main(void)
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
-
+  CycleCounterInit();
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_DMA_Init();
   MX_SPI1_Init();
-  MX_SPI3_Init();
   MX_SPI2_Init();
   MX_ADC1_Init();
   MX_RNG_Init();
@@ -157,9 +162,10 @@ int main(void)
  	  SPI_TX[i] = counter++;
    }
 
-   for (int i = 0; i < 26; i++)
+   for (int i = 0; i < 32; i++)
    {
  	  SPI_PLUCK_TX[i] = 0;
+ 	  SPI_PLUCK_RX[i] = 0;
    }
 
    HAL_SPI_Receive_DMA(&hspi2, SPI_RX, 8);
@@ -173,15 +179,15 @@ int main(void)
 
    for (int i = 0; i < NUM_STRINGS; i++)
    {
-   	tThreshold_init(&threshold[i],700.0f, 1300.0f, &leaf);
-   	tSlide_init(&fastSlide[i],1.0f,400.0f, &leaf); //1110
-   	tSlide_init(&slowSlide[i],1.0f,700.0f, &leaf); //1110
+		tThreshold_init(&threshold[i],700.0f, 1300.0f, &leaf);
+		tSlide_init(&fastSlide[i],1.0f,400.0f, &leaf); //1110
+		tSlide_init(&slowSlide[i],1.0f,700.0f, &leaf); //1110
 
-   	for (int j = 0; j < FILTER_ORDER; j++)
-   	{
-   		tVZFilter_init(&opticalLowpass[i][j], Lowpass, 18000.0f, 0.8f, &leaf);//6000
-   		tHighpass_init(&opticalHighpass[i][j], 10.0f, &leaf);//100
-   	}
+		for (int j = 0; j < FILTER_ORDER; j++)
+		{
+			tVZFilter_init(&opticalLowpass[i][j], Lowpass, 18000.0f, 0.8f, &leaf);//6000
+			tHighpass_init(&opticalHighpass[i][j], 10.0f, &leaf);//100
+		}
    }
 
 
@@ -545,53 +551,6 @@ static void MX_SPI2_Init(void)
 }
 
 /**
-  * @brief SPI3 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_SPI3_Init(void)
-{
-
-  /* USER CODE BEGIN SPI3_Init 0 */
-
-  /* USER CODE END SPI3_Init 0 */
-
-  /* USER CODE BEGIN SPI3_Init 1 */
-
-  /* USER CODE END SPI3_Init 1 */
-  /* SPI3 parameter configuration*/
-  hspi3.Instance = SPI3;
-  hspi3.Init.Mode = SPI_MODE_SLAVE;
-  hspi3.Init.Direction = SPI_DIRECTION_2LINES;
-  hspi3.Init.DataSize = SPI_DATASIZE_8BIT;
-  hspi3.Init.CLKPolarity = SPI_POLARITY_LOW;
-  hspi3.Init.CLKPhase = SPI_PHASE_1EDGE;
-  hspi3.Init.NSS = SPI_NSS_HARD_INPUT;
-  hspi3.Init.FirstBit = SPI_FIRSTBIT_MSB;
-  hspi3.Init.TIMode = SPI_TIMODE_DISABLE;
-  hspi3.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
-  hspi3.Init.CRCPolynomial = 0x0;
-  hspi3.Init.NSSPMode = SPI_NSS_PULSE_DISABLE;
-  hspi3.Init.NSSPolarity = SPI_NSS_POLARITY_LOW;
-  hspi3.Init.FifoThreshold = SPI_FIFO_THRESHOLD_01DATA;
-  hspi3.Init.TxCRCInitializationPattern = SPI_CRC_INITIALIZATION_ALL_ZERO_PATTERN;
-  hspi3.Init.RxCRCInitializationPattern = SPI_CRC_INITIALIZATION_ALL_ZERO_PATTERN;
-  hspi3.Init.MasterSSIdleness = SPI_MASTER_SS_IDLENESS_00CYCLE;
-  hspi3.Init.MasterInterDataIdleness = SPI_MASTER_INTERDATA_IDLENESS_00CYCLE;
-  hspi3.Init.MasterReceiverAutoSusp = SPI_MASTER_RX_AUTOSUSP_DISABLE;
-  hspi3.Init.MasterKeepIOState = SPI_MASTER_KEEP_IO_STATE_DISABLE;
-  hspi3.Init.IOSwap = SPI_IO_SWAP_DISABLE;
-  if (HAL_SPI_Init(&hspi3) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN SPI3_Init 2 */
-
-  /* USER CODE END SPI3_Init 2 */
-
-}
-
-/**
   * Enable DMA controller clock
   */
 static void MX_DMA_Init(void)
@@ -608,8 +567,11 @@ static void MX_DMA_Init(void)
   HAL_NVIC_SetPriority(DMA1_Stream1_IRQn, 1, 0);
   HAL_NVIC_EnableIRQ(DMA1_Stream1_IRQn);
   /* DMA1_Stream2_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Stream2_IRQn, 0, 0);
+  HAL_NVIC_SetPriority(DMA1_Stream2_IRQn, 2, 0);
   HAL_NVIC_EnableIRQ(DMA1_Stream2_IRQn);
+  /* DMA1_Stream3_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Stream3_IRQn, 2, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream3_IRQn);
 
 }
 
@@ -779,7 +741,7 @@ int attackDetectPeak2 (int whichString, int tempInt)
 		{
 			downCounter[whichString]++;
 		}
-		if (downCounter[whichString] > 100)//was 256
+		if (downCounter[whichString] > 150)//was 256
 		{
 			//found a peak?
 			output = stringMaxes[whichString] * 1.75f;
@@ -809,10 +771,18 @@ int pluckValues[NUM_STRINGS];
 uint32_t stringStates[NUM_STRINGS];
 uint32_t string_values[NUM_STRINGS];
 int changeHappened = 0;
+
+uint32_t timeFrame;
+uint32_t frameRate;
+uint32_t frameRateStart;
+
 void ADC_Frame(int offset)
 {
 	//HAL_GPIO_TogglePin(GPIOG, GPIO_PIN_11);
 	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_0, GPIO_PIN_SET);
+	uint32_t tempCountFrame = DWT->CYCCNT;
+	frameRate = DWT->CYCCNT - frameRateStart;
+	frameRateStart = DWT->CYCCNT;
 
 	//sampRecords[currentSamp] = frameCount;
 	//currentSamp++;
@@ -872,7 +842,7 @@ void ADC_Frame(int offset)
 	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_0, GPIO_PIN_RESET);
 	if (changeHappened)
 	{
-		if (HAL_SPI_GetState(&hspi1) == HAL_SPI_STATE_READY)
+		if (!SPI_busy)// && (!gettingNewFirmware))
 		{
 			for (int j = 0; j < NUM_STRINGS; ++j)
 			{
@@ -880,13 +850,16 @@ void ADC_Frame(int offset)
 				SPI_PLUCK_TX[(j * 2) + 2] = (stringStates[j] & 0xff);
 			}
 			SPI_PLUCK_TX[0] = 254;
-			SPI_PLUCK_TX[25] = 253;
+			SPI_PLUCK_TX[31] = 253;
 
-			SCB_CleanDCache_by_Addr((uint32_t*)(((uint32_t)SPI_PLUCK_TX) & ~(uint32_t)0x1F), 26+32);
-			HAL_SPI_Transmit_DMA(&hspi1, SPI_PLUCK_TX, 26);
+			SCB_CleanDCache_by_Addr((uint32_t*)(((uint32_t)SPI_PLUCK_TX) & ~(uint32_t)0x1F), 64);
+			HAL_SPI_TransmitReceive_DMA(&hspi1, SPI_PLUCK_TX, SPI_PLUCK_RX, 32);
 			changeHappened = 0;
+			SPI_busy = 1;
 		}
 	}
+	timeFrame = DWT->CYCCNT - tempCountFrame;
+
 }
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
 {
@@ -899,6 +872,44 @@ void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef *hadc)
 void HAL_ADC_Error(ADC_HandleTypeDef *hadc)
 {
 	;
+}
+
+//volatile uint32_t mySize  = 0;
+//void loadNewFirmware(uint32_t size)
+//{
+//	mySize = size;
+//}
+
+void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
+{
+	SPI_busy = 0;
+	/*
+	//uint32_t newFirmwareSize = 0;
+	SCB_InvalidateDCache_by_Addr((uint32_t *)(((uint32_t )SPI_PLUCK_RX) & ~(uint32_t )0x1F), 64);
+	if ((SPI_PLUCK_RX[0] == 252) && (SPI_PLUCK_RX[1] == 251))
+	{
+		if (SPI_PLUCK_RX[2] == 60)
+		{
+			gettingNewFirmware = 1;
+			newFirmwareBufferPosition = 0;
+		}
+		else if (SPI_PLUCK_RX[2] == 61)
+		{
+			for (int i = 4; i < 32; ++i)
+			{
+				newFirmwareBuffer[newFirmwareBufferPosition++] = SPI_PLUCK_RX[i];
+			}
+		}
+		else if (SPI_PLUCK_RX[2] == 62)
+		{
+			newFirmwareSize = (SPI_PLUCK_RX[4] << 24) + (SPI_PLUCK_RX[5] << 16) + (SPI_PLUCK_RX[6] << 8) + (SPI_PLUCK_RX[7] & 0xff);
+			loadNewFirmware(newFirmwareSize);
+			gettingNewFirmware = 0;
+		}
+		HAL_Delay(1);
+		HAL_SPI_TransmitReceive_DMA(&hspi1, SPI_PLUCK_TX, SPI_PLUCK_RX, 32);
+	}
+	*/
 }
 
 void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
@@ -925,6 +936,23 @@ void HAL_SPI_RxHalfCpltCallback(SPI_HandleTypeDef *hspi)
 	}
 }
 
+// helper function to initialize measuring unit (cycle counter) */
+void CycleCounterInit( void )
+{
+  /* Enable TRC */
+  CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
+
+  /* Unlock DWT registers */
+  if ((*(uint32_t*)0xE0001FB4) & 1)
+    *(uint32_t*)0xE0001FB0 = 0xC5ACCE55;
+
+  /* clear the cycle counter */
+  DWT->CYCCNT = 0;
+
+  /* start the cycle counter */
+  DWT->CTRL = 0x40000001;
+
+}
 /* USER CODE END 4 */
 
 /**

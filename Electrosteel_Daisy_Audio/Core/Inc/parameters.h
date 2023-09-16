@@ -28,6 +28,8 @@ enum SPIMessage
 	ReceivingPresetRequestCommand,
 	ReceivingBootloadCommand,
 	ReceivingVolume,
+	ReceivingBrainFirmwareUpdateRequest,
+	ReceivingPluckFirmwareUpdateRequest,
 	ReceivingEnd =  253
 };
 

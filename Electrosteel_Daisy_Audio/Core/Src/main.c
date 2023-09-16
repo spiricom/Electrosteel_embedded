@@ -69,11 +69,13 @@
 // then try to reprogram both PSOC and other STM32 to wait 2 seconds before sending data, to avoid SPI interrupts screwing init up.
 
 
-uint8_t firmwareUpdateRequested = 0;
+uint_fast8_t  brainFirmwareUpdateRequested = 0;
+uint_fast8_t  pluckFirmwareUpdateRequested = 0;
 
 
+uint8_t SPI_PLUCK_TX[PLUCK_BUFFER_SIZE_TIMES_TWO] __ATTR_RAM_D3;
 uint8_t SPI_PLUCK_RX[PLUCK_BUFFER_SIZE_TIMES_TWO] __ATTR_RAM_D3;
-uint8_t SPI_LEVERS[LEVER_BUFFER_SIZE_TIMES_TWO] __ATTR_RAM_D2_DMA;
+uint8_t SPI_LEVERS_RX[LEVER_BUFFER_SIZE_TIMES_TWO] __ATTR_RAM_D2_DMA;
 uint8_t SPI_LEVERS_TX[LEVER_BUFFER_SIZE_TIMES_TWO] __ATTR_RAM_D2_DMA;
 volatile uint32_t myTester = 0;
 int currentLeverBuffer = 0;
@@ -94,21 +96,32 @@ uint8_t resetFlag = 0;
 
 
 uint8_t brainFirmwareBuffer[2097152] __ATTR_SDRAM; // 2 MB of space for firmware
-uint8_t pluckFirmwareBuffer[2097152] __ATTR_SDRAM; // 2 MB of space for firmware
+//uint8_t pluckFirmwareBuffer[2097152] __ATTR_SDRAM; // 2 MB of space for firmware
 
+//uint8_t localPluck[40000] __ATTR_RAM_D2;
+uint32_t pluckIndex = 0;
+
+uint32_t copyingPluckToLocalArray = 0;
 uint32_t brainFirmwareSize = 0;
 uint32_t pluckFirmwareSize = 0;
 uint8_t foundBrainFirmware = 0;
 uint8_t foundPluckFirmware = 0;
 uint32_t brainFirmwareBufferIndex = 0;
 uint32_t pluckFirmwareBufferIndex = 0;
+uint_fast8_t  brainFirmwareEndSignal = 0;
+uint_fast8_t  pluckFirmwareEndSignal = 0;
+
+uint_fast8_t  pluckFirmwareClearSignal = 0;
+uint_fast8_t  brainFirmwareSendInProgress = 0;
+uint_fast8_t  pluckFirmwareSendInProgress = 0;
+uint32_t  pluckFirmwareReadyToSend = 0;
 volatile uint8_t writingState = 0;
 volatile float 	audioMasterLevel = 1.0f;
 uint8_t fxPre = 0;
 uint8_t pedalControlsMaster = 0;
 
 FIL fdst;
-uint8_t buffer[4096] __ATTR_RAM_D2_DMA;
+uint8_t buffer[4096] __ATTR_RAM_D2;
 volatile uint16_t bufferPos = 0;
 FRESULT res;
 
@@ -166,6 +179,7 @@ const char* specialModeMacroNames[3][12];
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 void PeriphCommonClock_Config(void);
+static void MPU_Initialize(void);
 static void MPU_Config(void);
 /* USER CODE BEGIN PFP */
 void MPU_Conf(void);
@@ -174,8 +188,8 @@ static int checkForSDCardPreset(uint8_t value);
 static void writePresetToSDCard(int fileSize);
 void __ATTR_ITCMRAM parsePreset(int size, int presetNumber);
 void getPresetNamesFromSDCard(void);
-static void checkForBootloadableFiles(void);
-
+static void checkForBootloadableBrainFile(void);
+static void checkForBootloadablePluckFile(void);
 
 /* USER CODE END PFP */
 
@@ -189,7 +203,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 
 	  for (int i = 0; i < 32; i++)
 	  {
-		  levers[!currentLeverBuffer][i] = SPI_LEVERS[i];
+		  levers[!currentLeverBuffer][i] = SPI_LEVERS_RX[i];
 	  }
 	  currentLeverBuffer = !currentLeverBuffer;
 	  HAL_SPI_Receive_DMA(&hspi1, SPI_LEVERS, 32);
@@ -309,6 +323,13 @@ int main(void)
 	  HAL_Delay(200);
   }
   */
+
+  for (int i = 0; i < PLUCK_BUFFER_SIZE_TIMES_TWO; i++)
+  {
+	  SPI_PLUCK_TX[i] = 0;
+  } //put in some values to make the array valid as a preset
+
+
   for (int i = 0; i < 4096; i++)
   {
 	  buffer[i] = 0;
@@ -428,9 +449,11 @@ int main(void)
 	}
 */
 
-    HAL_SPI_Receive_DMA(&hspi6, SPI_PLUCK_RX, PLUCK_BUFFER_SIZE_TIMES_TWO);
+  HAL_SPI_TransmitReceive_DMA(&hspi6, SPI_PLUCK_TX, SPI_PLUCK_RX, PLUCK_BUFFER_SIZE_TIMES_TWO);
 
-    HAL_SPI_TransmitReceive_DMA(&hspi1, SPI_LEVERS_TX, SPI_LEVERS, LEVER_BUFFER_SIZE_TIMES_TWO);
+  HAL_SPI_TransmitReceive_DMA(&hspi1, SPI_LEVERS_TX, SPI_LEVERS_RX, LEVER_BUFFER_SIZE_TIMES_TWO);
+
+
 
 
     audioStart(&hsai_BlockB1, &hsai_BlockA1);
@@ -476,11 +499,29 @@ int main(void)
 	  {
 		  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
 	  }
-
-	  if (firmwareUpdateRequested)
+	  if (brainFirmwareUpdateRequested)
 	  {
-		  checkForBootloadableFiles();
+		  checkForBootloadableBrainFile();
 	  }
+#if 0
+	  if (pluckFirmwareUpdateRequested)
+	  {
+		  checkForBootloadablePluckFile();
+	  }
+
+	  if (copyingPluckToLocalArray)
+	  {
+		  localPluck[pluckIndex] = pluckFirmwareBuffer[pluckIndex];
+		  pluckIndex++;
+		  if (pluckIndex > 40000)
+		  {
+			  copyingPluckToLocalArray = 0;
+			  foundPluckFirmware = 0;
+			  pluckIndex = 0;
+			  pluckFirmwareReadyToSend = 1;
+		  }
+	  }
+#endif
 	  uint32_t rand;
 	  HAL_RNG_GenerateRandomNumber(&hrng, &rand);
 
@@ -810,80 +851,117 @@ static int checkForSDCardPreset(uint8_t numberToLoad)
 
 
 
-static void checkForBootloadableFiles(void)
+static void checkForBootloadableBrainFile(void)
 {
-
-	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0, GPIO_PIN_SET);
-	if(BSP_SD_IsDetected())
+	if (boardNumber == 0)
 	{
-		for (int i = 0; i < AUDIO_BUFFER_SIZE; i+=2)
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0, GPIO_PIN_SET);
+		if(BSP_SD_IsDetected())
 		{
-			audioOutBuffer[i] = 0;
-			audioOutBuffer[i + 1] = 0;
-		}
-		diskBusy = 1;
-		loadFailed = 0;
-
-		disk_initialize(0);
-
-	    disk_status(0);
-		uint32_t bytesRead;
-		if(f_mount(&SDFatFS,  SDPath, 1) == FR_OK)
-		{
-
-			FRESULT res;
-			/* Start to search for firmware files */
-			char finalString[10];
-			//Read Brain Firmware
-			strcat(finalString, "brain.bin");
-
-			res = f_findfirst(&dir, &fno, SDPath, finalString);
-
-			if(res == FR_OK)
+			for (uint_fast16_t i = 0; i < AUDIO_BUFFER_SIZE; i+=2)
 			{
-				if(f_open(&SDFile, fno.fname, FA_OPEN_ALWAYS | FA_READ) == FR_OK)
+				audioOutBuffer[i] = 0;
+				audioOutBuffer[i + 1] = 0;
+			}
+			diskBusy = 1;
+			loadFailed = 0;
+
+			disk_initialize(0);
+
+			disk_status(0);
+			uint_fast32_t  bytesRead;
+			if(f_mount(&SDFatFS,  SDPath, 1) == FR_OK)
+			{
+
+				FRESULT res;
+				/* Start to search for firmware files */
+				char finalString[10] = "brain.bin";
+				//Read Brain Firmware
+				//strcat(finalString, "brain.bin");
+
+				res = f_findfirst(&dir, &fno, SDPath, finalString);
+
+				if(res == FR_OK)
 				{
-				    brainFirmwareSize = f_size(&SDFile);
-
-					f_read(&SDFile, &brainFirmwareBuffer, brainFirmwareSize, &bytesRead);
-					f_close(&SDFile);
-
-					for (int i = 0; i< 700; i++)
+					if(f_open(&SDFile, fno.fname, FA_OPEN_ALWAYS | FA_READ) == FR_OK)
 					{
-						memoryTest[i] = brainFirmwareBuffer[i];
+						brainFirmwareSize = f_size(&SDFile);
+
+						f_read(&SDFile, &brainFirmwareBuffer, brainFirmwareSize, &bytesRead);
+						f_close(&SDFile);
+
+						for (uint_fast16_t i = 0; i< 700; i++)
+						{
+							memoryTest[i] = brainFirmwareBuffer[i];
+						}
+						foundBrainFirmware = 1;
+						brainFirmwareBufferIndex = 0;
 					}
-					foundBrainFirmware = 1;
-					brainFirmwareBufferIndex = 0;
-				}
-			}
-
-			//Read Pluck Firmware
-			char finalString2[10];
-			//Read Brain Firmware
-			strcat(finalString2, "pluck.bin");
-			res = f_findfirst(&dir, &fno, SDPath, finalString2);
-
-			if(res == FR_OK)
-			{
-				if(f_open(&SDFile, fno.fname, FA_OPEN_ALWAYS | FA_READ) == FR_OK)
-				{
-					brainFirmwareSize = f_size(&SDFile);
-
-					f_read(&SDFile, &pluckFirmwareBuffer, pluckFirmwareSize, &bytesRead);
-					f_close(&SDFile);
-					foundPluckFirmware = 1;
-					pluckFirmwareBufferIndex = 0;
 				}
 			}
 		}
+		brainFirmwareUpdateRequested = 0;
+
+
+		diskBusy = 0;
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0, GPIO_PIN_RESET);
 	}
-	firmwareUpdateRequested = 0;
-
-
-	diskBusy = 0;
-	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0, GPIO_PIN_RESET);
 }
 
+//turns out this is not as simple as hoped - there is only one flash ram sector on the pluck IC, and you can't write it without erasing it
+// so it's not possible to program the flash from a custom bootloader, must use the system bootloader, which needs an SPI master to clock it, and needs to come through a different SPI port.
+// need to rethink this but until then we can't update pluck firmware from sd card.
+#if 0
+static void checkForBootloadablePluckFile(void)
+{
+	if (boardNumber == 0)
+	{
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0, GPIO_PIN_SET);
+		if(BSP_SD_IsDetected())
+		{
+			for (uint_fast16_t i = 0; i < AUDIO_BUFFER_SIZE; i+=2)
+			{
+				audioOutBuffer[i] = 0;
+				audioOutBuffer[i + 1] = 0;
+			}
+			diskBusy = 1;
+			loadFailed = 0;
+
+			disk_initialize(0);
+
+			disk_status(0);
+			uint_fast32_t  bytesRead;
+			if(f_mount(&SDFatFS,  SDPath, 1) == FR_OK)
+			{
+
+				FRESULT res;
+				/* Start to search for firmware files */
+
+				//Read Pluck Firmware
+				char finalString[10] = "pluck.bin";
+				res = f_findfirst(&dir, &fno, SDPath, finalString);
+				if(res == FR_OK)
+				{
+					if(f_open(&SDFile, fno.fname, FA_OPEN_ALWAYS | FA_READ) == FR_OK)
+					{
+						pluckFirmwareSize = f_size(&SDFile);
+
+						f_read(&SDFile, &pluckFirmwareBuffer, pluckFirmwareSize, &bytesRead);
+						f_close(&SDFile);
+						copyingPluckToLocalArray = 1;
+						pluckFirmwareBufferIndex = 0;
+					}
+				}
+			}
+		}
+		pluckFirmwareUpdateRequested = 0;
+
+
+		diskBusy = 0;
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0, GPIO_PIN_RESET);
+	}
+}
+#endif
 
 
 static void writePresetToSDCard(int fileSize)
@@ -1417,8 +1495,7 @@ void setLFOShapes(int LFOShape, int i)
 	}
 }
 
-uint8_t brainFirmwareEndSignal = 0;
-uint8_t brainFirmwareSendInProgress = 0;
+
 uint8_t rowNumber = 0;
 uint8_t arrayNumber = 0;
 uint16_t positionInRowLine = 0;
@@ -1517,12 +1594,12 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 	else
 	{
 		// if the first number is a 1 then it's a midi note/ctrl/bend message
-		if (SPI_LEVERS[offset] == ReceivingPitches)
+		if (SPI_LEVERS_RX[offset] == ReceivingPitches)
 		{
 			 uint8_t currentByte = offset+1;
 			 for (int i = 0; i < numStringsThisBoard; i++)
 			 {
-				float myPitch = (float)(SPI_LEVERS[((i+firstString) * 2) + currentByte] << 8) + SPI_LEVERS[((i+firstString) * 2) + 1 + currentByte];
+				float myPitch = (float)(SPI_LEVERS_RX[((i+firstString) * 2) + currentByte] << 8) + SPI_LEVERS_RX[((i+firstString) * 2) + 1 + currentByte];
 				myPitch = myPitch * 0.001953154802777f; //(128 / 65535) scale the 16 bit integer into midinotes.
 				if ((myPitch > 0.0f) && (myPitch < 140.0f))
 				{
@@ -1536,7 +1613,7 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 			 //HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
 		}
 		// if the first number is a 2 then it's a preset write
-		else if (SPI_LEVERS[offset] == ReceivingPreset)
+		else if (SPI_LEVERS_RX[offset] == ReceivingPreset)
 		{
 			//got a new preset to write to memory
 			 //HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
@@ -1555,24 +1632,24 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 				 //write the raw data as a preset number on the SD card
 				 bufferPos = 0;
 			 }
-			 presetNumberToSave = SPI_LEVERS[offset + 1];
+			 presetNumberToSave = SPI_LEVERS_RX[offset + 1];
 			 uint8_t currentByte = offset+2; // first number says what it is 2nd number says which number it is
 
 			 for (int i = 0; i < 28; i++)
 			 {
-				 buffer[bufferPos++] = SPI_LEVERS[currentByte + i];
+				 buffer[bufferPos++] = SPI_LEVERS_RX[currentByte + i];
 
 			 }
 			 //HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
 		}
 
-		else if (SPI_LEVERS[offset] == ReceivingKnobs)
+		else if (SPI_LEVERS_RX[offset] == ReceivingKnobs)
 		{
 			 uint8_t currentByte = offset+1;
 
 			for (int i = 0; i < 12; i++)
 			{
-				uint8_t newByte = SPI_LEVERS[i + currentByte];
+				uint8_t newByte = SPI_LEVERS_RX[i + currentByte];
 				if (knobFrozen[i])
 				{
 					if ((newByte > (prevKnobByte[i] + 2)) || (newByte < (prevKnobByte[i] - 2)))
@@ -1584,7 +1661,7 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 				}
 				else
 				{
-					tExpSmooth_setDest(&knobSmoothers[i], (SPI_LEVERS[i + currentByte] * 0.003921568627451f)); //scaled 0.0 to 1.0
+					tExpSmooth_setDest(&knobSmoothers[i], (SPI_LEVERS_RX[i + currentByte] * 0.003921568627451f)); //scaled 0.0 to 1.0
 					prevKnobByte[i] = newByte;
 				}
 
@@ -1592,7 +1669,7 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 			currentByte += 12;
 			for (int i = 0; i < 10; i++)
 			{
-				tExpSmooth_setDest(&pedalSmoothers[i], (SPI_LEVERS[i + currentByte ] * 0.003921568627451f)); //scaled 0.0 to 1.0
+				tExpSmooth_setDest(&pedalSmoothers[i], (SPI_LEVERS_RX[i + currentByte ] * 0.003921568627451f)); //scaled 0.0 to 1.0
 			}
 			HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_SET);
 			whichBar = 1;
@@ -1600,7 +1677,7 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 			HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_RESET);
 
 		}
-		else if (SPI_LEVERS[offset] == ReceivingEnd)
+		else if (SPI_LEVERS_RX[offset] == ReceivingEnd)
 		{
 			if(writingState == ReceivingPreset)
 			{
@@ -1612,7 +1689,7 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 			}
 		}
 
-		else if (SPI_LEVERS[offset] == ReceivingSingleParamChange)
+		else if (SPI_LEVERS_RX[offset] == ReceivingSingleParamChange)
 		{
 
 			if (presetReady)
@@ -1620,14 +1697,14 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 
 				uint8_t currentByte = offset+1;
 
-				uint16_t whichParam = ((SPI_LEVERS[currentByte]<< 8) + SPI_LEVERS[currentByte+1]);
+				uint16_t whichParam = ((SPI_LEVERS_RX[currentByte]<< 8) + SPI_LEVERS_RX[currentByte+1]);
 				currentByte = currentByte + 2;
 
 
 				for (int v = 0; v < NUM_STRINGS_PER_BOARD; v++)
 				{
 					//get the zero-to-one-value
-					params[whichParam].zeroToOneVal[v] = INV_TWO_TO_16 * ((SPI_LEVERS[currentByte] << 8) + SPI_LEVERS[currentByte+1]);
+					params[whichParam].zeroToOneVal[v] = INV_TWO_TO_16 * ((SPI_LEVERS_RX[currentByte] << 8) + SPI_LEVERS_RX[currentByte+1]);
 				}
 
 				if ((whichParam == Effect1FXType) || (whichParam == Effect2FXType) || (whichParam == Effect3FXType) || (whichParam == Effect4FXType))
@@ -1741,17 +1818,17 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 			}
 		}
 
-		else if (SPI_LEVERS[offset] == ReceivingMappingChange)
+		else if (SPI_LEVERS_RX[offset] == ReceivingMappingChange)
 		{
 			if (presetReady)
 			{
 
 				uint8_t currentByte = offset+1;
 
-				uint16_t destNumber = ((SPI_LEVERS[currentByte]<< 8) + SPI_LEVERS[currentByte+1]);
-				uint8_t whichSlot = (SPI_LEVERS[currentByte+2]);
-				uint8_t mappingChangeType = (SPI_LEVERS[currentByte+3]);
-				int16_t mappingChangeValue = ((SPI_LEVERS[currentByte+4]<< 8) + SPI_LEVERS[currentByte+5]);
+				uint16_t destNumber = ((SPI_LEVERS_RX[currentByte]<< 8) + SPI_LEVERS_RX[currentByte+1]);
+				uint8_t whichSlot = (SPI_LEVERS_RX[currentByte+2]);
+				uint8_t mappingChangeType = (SPI_LEVERS_RX[currentByte+3]);
+				int16_t mappingChangeValue = ((SPI_LEVERS_RX[currentByte+4]<< 8) + SPI_LEVERS_RX[currentByte+5]);
 				uint8_t whichMapping = 0;
 				uint8_t foundOne = 0;
 
@@ -1904,7 +1981,7 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 			}
 
 		}
-		else if (SPI_LEVERS[offset] == ReceivingPresetRequestCommand)
+		else if (SPI_LEVERS_RX[offset] == ReceivingPresetRequestCommand)
 		{
 			//send the current synth preset back to the PSOC5LP master microcontroller
 			if (boardNumber == 0)
@@ -1912,20 +1989,33 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 				;
 			}
 		}
-		else if (SPI_LEVERS[offset] == ReceivingVolume)
+		else if (SPI_LEVERS_RX[offset] == ReceivingVolume)
 		{
-
-					uint8_t currentByte = offset+1;
-
-					masterVolFromBrain =  ((SPI_LEVERS[currentByte]<< 8) * 0.01f);
-					masterVolFromBrainForSynth = masterVolFromBrain * 0.5f;
+			uint_fast8_t  currentByte = offset+1;
+			masterVolFromBrain =  ((SPI_LEVERS_RX[currentByte]) * 0.01f);
+			masterVolFromBrainForSynth = masterVolFromBrain * 0.5f;
 		}
 
+		else if (SPI_LEVERS_RX[offset] == ReceivingBrainFirmwareUpdateRequest)
+		{
+			if (boardNumber == 0)
+			{
+				brainFirmwareUpdateRequested = 1;
+			}
+		}
+
+		else if (SPI_LEVERS_RX[offset] == ReceivingPluckFirmwareUpdateRequest)
+		{
+			if (boardNumber == 0)
+			{
+				pluckFirmwareUpdateRequested = 1;
+			}
+		}
 
 	/*
-		else if (SPI_LEVERS[offset] == LoadingPreset)
+		else if (SPI_LEVERS_RX[offset] == LoadingPreset)
 		{
-			uint8_t loadNumber = SPI_LEVERS[offset+1];
+			uint8_t loadNumber = SPI_LEVERS_RX[offset+1];
 			if (loadNumber < MAX_NUM_PRESETS)
 			{
 				presetNumberToLoad = loadNumber;
@@ -1933,17 +2023,17 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 				presetWaitingToLoad = 1;
 			}
 		}
-		if (SPI_LEVERS[offset] == WaitingForLoadAck)
+		if (SPI_LEVERS_RX[offset] == WaitingForLoadAck)
 		{
-			SPI_LEVERS[offset] = 252;
+			SPI_LEVERS_RX[offset] = 252;
 			if(!loadFailed)
 			{
-				SPI_LEVERS[offset+1] = currentActivePreset;//this will change to the loaded preset number when parsing is finished
+				SPI_LEVERS_RX[offset+1] = currentActivePreset;//this will change to the loaded preset number when parsing is finished
 			}
 			else
 			{
-				SPI_LEVERS[offset+1] = 254; //load failed
-				SPI_LEVERS[offset+2] = currentActivePreset; //tell the PSOC that it needs to show the old currently active preset, since the new load failed.
+				SPI_LEVERS_RX[offset+1] = 254; //load failed
+				SPI_LEVERS_RX[offset+2] = currentActivePreset; //tell the PSOC that it needs to show the old currently active preset, since the new load failed.
 			}
 		}
 		*/
@@ -2783,12 +2873,145 @@ void __ATTR_ITCMRAM HAL_I2C_ErrorCallback(I2C_HandleTypeDef *hi2c)
 }
 
 /* USER CODE BEGIN 4 */
+#if 0
+void sendFirmwareToPluckBoard(uint8_t  offset)
+{
+	if (pluckFirmwareClearSignal)
+	{
+		for (uint8_t i = 0; i < PLUCK_BUFFER_SIZE_TIMES_TWO; i++)
+		{
+			SPI_PLUCK_TX[i] = 0;
+
+		}
+		pluckFirmwareClearSignal = 0;
+		pluckFirmwareSendInProgress = 0;
+		pluckFirmwareReadyToSend = 0;
+	}
+	else if (pluckFirmwareEndSignal)
+	{
+		SPI_PLUCK_TX[offset] = 252;
+		SPI_PLUCK_TX[offset+1] = 251;
+		SPI_PLUCK_TX[offset+2] = 62; //special byte that says I'm done sending you firmware, now use it;
+		SPI_PLUCK_TX[offset+4] = pluckFirmwareSize >> 24;
+		SPI_PLUCK_TX[offset+5] = pluckFirmwareSize >> 16;
+		SPI_PLUCK_TX[offset+6] = pluckFirmwareSize >> 8;
+		SPI_PLUCK_TX[offset+7] = pluckFirmwareSize & 0xff;
+		pluckFirmwareEndSignal = 0;
+		pluckFirmwareClearSignal = 1;
+
+	}
+	else if (pluckFirmwareSendInProgress)
+	{
+
+		SPI_PLUCK_TX[offset] = 252;
+		SPI_PLUCK_TX[offset+1] = 251;
+		SPI_PLUCK_TX[offset+2] = 61; //special byte that says it's a firmware chunk;
+		for (uint8_t i = 4; i < PLUCK_BUFFER_SIZE; i++)
+		{
+			SPI_PLUCK_TX[offset+i] = localPluck[pluckFirmwareBufferIndex++];
+		}
+		if (pluckFirmwareBufferIndex >= pluckFirmwareSize)
+		{
+			pluckFirmwareEndSignal = 1;
+		}
+	}
+	else
+	{
+		SPI_PLUCK_TX[offset] = 252;
+		SPI_PLUCK_TX[offset+1] = 251;
+		SPI_PLUCK_TX[offset+2] = 60; //special byte that says start a firmware update process
+		pluckFirmwareSendInProgress = 1;
+	}
+
+}
+#endif
+void __ATTR_ITCMRAM HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
+{
+	interrupted = 1;
+	if (hspi == &hspi6)
+	{
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_SET);
+		SCB_InvalidateDCache_by_Addr((uint32_t *)(((uint32_t )SPI_PLUCK_RX) & ~(uint32_t )0x1F), PLUCK_BUFFER_SIZE_TIMES_TWO+32);
+
+		if ((SPI_PLUCK_RX[32] == 254) && (SPI_PLUCK_RX[63] == 253))
+		{
+			for (uint_fast8_t i = 0; i < numStringsThisBoard; i++)
+			{
+				stringInputs[i] = (SPI_PLUCK_RX[((i+firstString)*2)+ 33] << 8) + SPI_PLUCK_RX[((i+firstString)*2)+ 34];
+			}
+			newPluck = 1;
+		}
+#if 0
+		if (pluckFirmwareReadyToSend)
+		{
+			sendFirmwareToPluckBoard(PLUCK_BUFFER_SIZE);
+			SCB_CleanDCache_by_Addr((uint32_t *)(((uint32_t )SPI_PLUCK_TX) & ~(uint32_t )0x1F), PLUCK_BUFFER_SIZE_TIMES_TWO+32);
+		}
+
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_RESET);
+#endif
+	}
+
+	else
+	{
+		SCB_InvalidateDCache_by_Addr((uint32_t *)(((uint32_t )SPI_LEVERS_RX) & ~(uint32_t )0x1F), LEVER_BUFFER_SIZE_TIMES_TWO+32);
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_SET);
+		if ((SPI_LEVERS_RX[62] == 254) && (SPI_LEVERS_RX[63] == 253))
+		{
+			handleSPI(LEVER_BUFFER_SIZE);
+		}
+		SCB_CleanDCache_by_Addr((uint32_t *)(((uint32_t )SPI_LEVERS_TX) & ~(uint32_t )0x1F), LEVER_BUFFER_SIZE_TIMES_TWO+32);
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_RESET);
+	}
+}
+
+void __ATTR_ITCMRAM HAL_SPI_TxRxHalfCpltCallback(SPI_HandleTypeDef *hspi)
+{
+	interrupted = 1;
+	if (hspi == &hspi6)
+	{
+		SCB_InvalidateDCache_by_Addr((uint32_t *)(((uint32_t )SPI_PLUCK_RX) & ~(uint32_t )0x1F), PLUCK_BUFFER_SIZE_TIMES_TWO+32);
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_SET);
+		if ((SPI_PLUCK_RX[0] == 254) && (SPI_PLUCK_RX[31] == 253))
+		{
+			for (uint_fast8_t i = 0; i < numStringsThisBoard; i++)
+			{
+				stringInputs[i] = (SPI_PLUCK_RX[((i+firstString)*2)+ 1] << 8) + SPI_PLUCK_RX[((i+firstString)*2)+ 2];
+			}
+			newPluck = 1;
+		}
+#if 0
+		if (pluckFirmwareReadyToSend)
+		{
+			sendFirmwareToPluckBoard(0U);
+			SCB_CleanDCache_by_Addr((uint32_t *)(((uint32_t )SPI_PLUCK_TX) & ~(uint32_t )0x1F), PLUCK_BUFFER_SIZE_TIMES_TWO+32);
+		}
+
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_RESET);
+#endif
+	}
+
+	else
+	{
+		SCB_InvalidateDCache_by_Addr((uint32_t *)(((uint32_t )SPI_LEVERS_RX) & ~(uint32_t )0x1F), LEVER_BUFFER_SIZE_TIMES_TWO+32);
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_SET);
+		if ((SPI_LEVERS_RX[30] == 254) && (SPI_LEVERS_RX[31] == 253))
+		{
+			handleSPI(0);
+		}
+		SCB_CleanDCache_by_Addr((uint32_t *)(((uint32_t )SPI_LEVERS_TX) & ~(uint32_t )0x1F), LEVER_BUFFER_SIZE_TIMES_TWO+32);
+		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_RESET);
+	}
+}
+
+
+
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
   if(GPIO_Pin == GPIO_PIN_6) {
     if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_6) == 0)
     {
-    	firmwareUpdateRequested = 1;
+    	//firmwareUpdateRequested = 1;
     }
   }
 }
@@ -2846,20 +3069,18 @@ void MPU_Config(void)
   */
   MPU_InitStruct.Number = MPU_REGION_NUMBER3;
   MPU_InitStruct.BaseAddress = 0x30000000;
-  MPU_InitStruct.Size = MPU_REGION_SIZE_8KB;
-  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
-  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
-  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
+  MPU_InitStruct.Size = MPU_REGION_SIZE_512KB;
 
   HAL_MPU_ConfigRegion(&MPU_InitStruct);
 
   /** Initializes and configures the Region and the memory to be protected
   */
   MPU_InitStruct.Number = MPU_REGION_NUMBER4;
-  MPU_InitStruct.BaseAddress = 0x30002000;
-  MPU_InitStruct.Size = MPU_REGION_SIZE_256KB;
-  MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
-  MPU_InitStruct.IsCacheable = MPU_ACCESS_CACHEABLE;
+  MPU_InitStruct.Size = MPU_REGION_SIZE_8KB;
+  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
+  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
+  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
+  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
 
   HAL_MPU_ConfigRegion(&MPU_InitStruct);
 
@@ -2868,8 +3089,6 @@ void MPU_Config(void)
   MPU_InitStruct.Number = MPU_REGION_NUMBER5;
   MPU_InitStruct.BaseAddress = 0x38000000;
   MPU_InitStruct.Size = MPU_REGION_SIZE_64KB;
-  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
-  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
 
   HAL_MPU_ConfigRegion(&MPU_InitStruct);
 
@@ -2878,7 +3097,6 @@ void MPU_Config(void)
   MPU_InitStruct.Number = MPU_REGION_NUMBER6;
   MPU_InitStruct.BaseAddress = 0x38800000;
   MPU_InitStruct.Size = MPU_REGION_SIZE_4KB;
-  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
 
   HAL_MPU_ConfigRegion(&MPU_InitStruct);
 
