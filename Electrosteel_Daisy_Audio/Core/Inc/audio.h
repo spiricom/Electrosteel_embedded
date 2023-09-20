@@ -43,8 +43,10 @@
 #define MTOF_TABLE_SIZE	32768
 #define MTOF_TABLE_SIZE_MINUS_ONE 32767
 #define MTOF_TABLE_SIZE_DIV_TWO	16384
-#define ATODB_TABLE_SIZE 8192
-#define DBTOA_TABLE_SIZE 8192
+#define ATODB_TABLE_SIZE 16384
+#define DBTOA_TABLE_SIZE 16384
+#define ATODB_TABLE_SIZE_MINUS_ONE 16383
+#define DBTOA_TABLE_SIZE_MINUS_ONE 16383
 
 /* Exported types ------------------------------------------------------------*/
 typedef enum
@@ -90,7 +92,7 @@ void audioInit(void);
 void audioStart(SAI_HandleTypeDef* hsaiOut, SAI_HandleTypeDef* hsaiIn);
 
 void initFunctionPointers(void);
-
+void changeOversampling(uint32_t newOS);
 
 
 typedef void (*audioFrame_t)(uint16_t);
@@ -120,7 +122,6 @@ void updateStateFromSPIMessage(uint8_t currentByte);
 
 void setTranspose(float in, int v, int string);
 void setPitchBendRange(float in, int v, int string);
-void setNoiseAmp(float in, int v, int string);
 
 void oscillator_tick(float note, int string);
 
@@ -226,6 +227,8 @@ float tiltFilterTick(float sample,int v, int string);
 float hardClipTick(float sample, int v, int string);
 float tanhTick(float sample, int v, int string);
 float softClipTick(float sample, int v, int string);
+float polynomialShaperTick(float sample, int v, int string);
+float delayTick(float sample, int v, int string);
 float satTick(float sample, int v, int string);
 float bcTick(float sample, int v, int string);
 float compressorTick(float sample, int v, int string);
@@ -245,11 +248,19 @@ void compressorParam2(float value, int v, int string);
 void compressorParam3(float value, int v, int string);
 void compressorParam4(float value, int v, int string);
 void compressorParam5(float value, int v, int string);
+
+void delayParam1(float value, int v, int string);
+void delayParam2(float value, int v, int string);
+void delayParam3(float value, int v, int string);
+void delayParam4(float value, int v, int string);
+void delayParam5(float value, int v, int string);
+
 void offsetParam2(float value, int v, int string);
 void param2Linear(float value, int v, int string);
 void param3Linear(float value, int v, int string);
 void param3Soft(float value, int v, int string);
 void param3Hard(float value, int v, int string);
+void param3Poly(float value, int v, int string);
 void param3BC(float value, int v, int string);
 void param4Linear(float value, int v, int string);
 void param5Linear(float value, int v, int string);
@@ -319,7 +330,7 @@ extern volatile int voice;
 extern volatile int prevVoice;
 extern uint8_t oscToTick;
 extern uint8_t filterToTick;
-extern uint8_t overSampled;
+extern uint32_t overSampled;
 extern uint8_t numEffectToTick;
 //extern float audioDisplayBuffer[128];
 extern uint32_t displayBufferIndex;

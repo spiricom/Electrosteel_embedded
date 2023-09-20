@@ -45,6 +45,8 @@ extern "C" {
 #define __ATTR_SDRAM	__attribute__ ((section(".sdram_bss"))) __attribute__ ((aligned (32)))
 #define __ATTR_ITCMRAM	__attribute__ ((section(".itcmram"))) __attribute__ ((aligned (32)))
 
+# define FORCE_INLINE __attribute__((always_inline)) inline
+
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/

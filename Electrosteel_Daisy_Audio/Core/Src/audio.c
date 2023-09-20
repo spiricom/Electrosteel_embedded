@@ -43,7 +43,7 @@ volatile uint32_t newBar = 0 ;
 
 uint8_t oscToTick = NUM_OSC;
 uint8_t filterToTick = NUM_FILT;
-uint8_t overSampled = 1;
+uint32_t overSampled = 1;
 uint8_t numEffectToTick = NUM_EFFECT;
 
 uint8_t numStrings = 10;
@@ -114,7 +114,9 @@ uint8_t noiseOn;
 //noise
 float noiseOuts[2][NUM_STRINGS_PER_BOARD];
 
-tVZFilter noiseShelf1[NUM_STRINGS_PER_BOARD], noiseShelf2[NUM_STRINGS_PER_BOARD], noiseBell1[NUM_STRINGS_PER_BOARD];
+tVZFilterLS noiseShelf1[NUM_STRINGS_PER_BOARD];
+tVZFilterHS noiseShelf2[NUM_STRINGS_PER_BOARD];
+tVZFilterBell noiseBell1[NUM_STRINGS_PER_BOARD];
 tIntPhasor lfoSaw[NUM_LFOS][NUM_STRINGS_PER_BOARD];
 tSquareLFO lfoPulse[NUM_LFOS][NUM_STRINGS_PER_BOARD];
 tCycle lfoSine[NUM_LFOS][NUM_STRINGS_PER_BOARD];
@@ -142,9 +144,9 @@ float bendRangeMultiplier = 0.002929866324849f; //default to divide by 48
 
 //filters
 tDiodeFilter diodeFilters[NUM_FILT][NUM_STRINGS_PER_BOARD];
-tVZFilter VZfilterPeak[NUM_FILT][NUM_STRINGS_PER_BOARD];
-tVZFilter VZfilterLS[NUM_FILT][NUM_STRINGS_PER_BOARD];
-tVZFilter VZfilterHS[NUM_FILT][NUM_STRINGS_PER_BOARD];
+tVZFilterBell VZfilterPeak[NUM_FILT][NUM_STRINGS_PER_BOARD];
+tVZFilterLS VZfilterLS[NUM_FILT][NUM_STRINGS_PER_BOARD];
+tVZFilterHS VZfilterHS[NUM_FILT][NUM_STRINGS_PER_BOARD];
 tVZFilter VZfilterBR[NUM_FILT][NUM_STRINGS_PER_BOARD];
 tSVF lowpass[NUM_FILT][NUM_STRINGS_PER_BOARD];
 tSVF highpass[NUM_FILT][NUM_STRINGS_PER_BOARD];
@@ -165,7 +167,9 @@ float decayExpBufferSizeMinusOne;
 //effects
  tHighpass dcBlock1[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
  tHighpass dcBlock2[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
- tVZFilter shelf1[NUM_EFFECT][NUM_STRINGS_PER_BOARD], shelf2[NUM_EFFECT][NUM_STRINGS_PER_BOARD], bell1[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
+ tVZFilterLS shelf1[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
+ tVZFilterHS shelf2[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
+ tVZFilterBell bell1[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
  tCompressor comp[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
  tCrusher bc[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
  tLockhartWavefolder wf[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
@@ -176,14 +180,18 @@ float decayExpBufferSizeMinusOne;
  float fxMix[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
  float fxPostGain[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
  tDiodeFilter FXdiodeFilters[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
- tVZFilter FXVZfilterPeak[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
- tVZFilter FXVZfilterLS[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
- tVZFilter FXVZfilterHS[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
+ tVZFilterBell FXVZfilterPeak[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
+ tVZFilterLS FXVZfilterLS[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
+ tVZFilterHS FXVZfilterHS[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
  tVZFilter FXVZfilterBR[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
+ tTapeDelay tapeDelay[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
+ tFeedbackLeveler feedbackControl[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
  tSVF FXlowpass[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
  tSVF FXhighpass[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
  tSVF FXbandpass[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
  tLadderFilter FXLadderfilter[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
+ float delayFB[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
+
 //master
 float amplitude[NUM_STRINGS_PER_BOARD];
 float finalMaster[NUM_STRINGS_PER_BOARD];
@@ -306,6 +314,10 @@ volatile uint8_t resetStringInputs = 0;
 
 float octave;
 
+float atodbTableScalar;
+float atodbTableOffset;
+float dbtoaTableScalar;
+float dbtoaTableOffset;
 
 float stringMappedPositions[NUM_STRINGS]  = {1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f};
 float stringFrequencies[NUM_STRINGS] ;
@@ -375,6 +387,8 @@ float pluckPos = 0.5f;
 volatile int switchStrings = 0;
 volatile uint8_t octaveAction = 0;
 
+uint32_t prevOversample;
+
 
 float param1[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
 float param2[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
@@ -383,23 +397,108 @@ float param4[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
 float param5[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
 float shapeDividerS[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
 float shapeDividerH[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
+float polyDivider[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
 float wfState[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
 float invCurFB[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
 /**********************************************/
 
-float __ATTR_ITCMRAM map(float value, float istart, float istop, float ostart, float ostop)
+float FORCE_INLINE aToDbTableLookup(float in)
+{
+    in = fastabsf(in);
+    float floatIndex = LEAF_clip (0, (in * atodbTableScalar) - atodbTableOffset, ATODB_TABLE_SIZE_MINUS_ONE);
+    uint32_t inAmpIndex = (uint32_t) floatIndex;
+    uint32_t inAmpIndexPlusOne = inAmpIndex + 1;
+    if (inAmpIndexPlusOne > ATODB_TABLE_SIZE_MINUS_ONE)
+    {
+    	inAmpIndexPlusOne = ATODB_TABLE_SIZE_MINUS_ONE;
+    }
+    float alpha = floatIndex - (float)inAmpIndex;
+    return ((atoDbTable[inAmpIndex] * (1.0f - alpha)) + (atoDbTable[inAmpIndexPlusOne] * alpha));
+}
+
+float FORCE_INLINE aToDbTableLookupFast(float in)
+{
+    in = fastabsf(in);
+    uint32_t inAmpIndex = LEAF_clip (0, (in * atodbTableScalar) - atodbTableOffset, ATODB_TABLE_SIZE_MINUS_ONE);
+    return atoDbTable[inAmpIndex];
+}
+
+float FORCE_INLINE dbToATableLookup(float in)
+{
+    float floatIndex = LEAF_clip (0, (in * dbtoaTableScalar) - dbtoaTableOffset, DBTOA_TABLE_SIZE_MINUS_ONE);
+    uint32_t inDBIndex = (uint32_t) floatIndex;
+    uint32_t inDBIndexPlusOne = inDBIndex + 1;
+    if (inDBIndexPlusOne > DBTOA_TABLE_SIZE_MINUS_ONE)
+    {
+    	inDBIndexPlusOne = DBTOA_TABLE_SIZE_MINUS_ONE;
+    }
+    float alpha = floatIndex - (float)inDBIndex;
+    return ((dbtoATable[inDBIndex] * (1.0f - alpha)) + (dbtoATable[inDBIndexPlusOne] * alpha));
+}
+
+float FORCE_INLINE dbToATableLookupFast(float in)
+{
+    uint32_t inDBIndex = LEAF_clip (0, (in * dbtoaTableScalar) - dbtoaTableOffset, DBTOA_TABLE_SIZE_MINUS_ONE);
+    return dbtoATable[inDBIndex];
+}
+
+void changeOversampling(uint32_t newOS)
+{
+	if (newOS != prevOversample)
+	{
+		uint32_t osMult = (newOS + 1) * SAMPLE_RATE; // change os to 1-2 range
+		for (int v = 0; v < NUM_STRINGS_PER_BOARD; v++)
+		{
+			for (int i = 0; i < NUM_EFFECT; i++)
+			{
+				tHighpass_setSampleRate(&dcBlock1[i][v], osMult);
+				tHighpass_setSampleRate(&dcBlock2[i][v], osMult);
+				tVZFilterLS_setSampleRate(&shelf1[i][v], osMult);
+				tVZFilterLS_setFreqFast(&shelf1[i][v], shelf1[i][v]->cutoffMIDI);
+				tVZFilterHS_setSampleRate(&shelf2[i][v], osMult);
+				tVZFilterHS_setFreqFast(&shelf2[i][v], shelf2[i][v]->cutoffMIDI);
+				tVZFilterBell_setSampleRate(&bell1[i][v], osMult);
+				tVZFilterBell_setFreqFast(&bell1[i][v], bell1[i][v]->cutoffMIDI);
+				tCompressor_setSampleRate(&comp[i][v], osMult);
+				tCycle_setSampleRate(&mod1[i][v], osMult);
+				tCycle_setSampleRate(&mod2[i][v], osMult);
+				tSVF_setSampleRate(&FXlowpass[i][v],osMult);
+				tSVF_setFreqFast(&FXlowpass[i][v], FXlowpass[i][v]->cutoffMIDI);
+				tSVF_setSampleRate(&FXhighpass[i][v],osMult);
+				tSVF_setFreqFast(&FXhighpass[i][v], FXhighpass[i][v]->cutoffMIDI);
+				tSVF_setSampleRate(&FXbandpass[i][v],osMult);
+				tSVF_setFreqFast(&FXbandpass[i][v], FXbandpass[i][v]->cutoffMIDI);
+				tDiodeFilter_setSampleRate(&FXdiodeFilters[i][v], osMult);
+				tDiodeFilter_setSampleRate(&FXdiodeFilters[i][v], FXdiodeFilters[i][v]->cutoffMIDI);
+				tVZFilterBell_setSampleRate(&FXVZfilterPeak[i][v], osMult);
+				tVZFilterBell_setFreqFast(&FXVZfilterPeak[i][v], FXVZfilterPeak[i][v]->cutoffMIDI);
+				tVZFilterLS_setSampleRate(&FXVZfilterLS[i][v], osMult);
+				tVZFilterLS_setFreqFast(&FXVZfilterLS[i][v], FXVZfilterLS[i][v]->cutoffMIDI);
+				tVZFilterHS_setSampleRate(&FXVZfilterHS[i][v], osMult);
+				tVZFilterHS_setFreqFast(&FXVZfilterHS[i][v], FXVZfilterHS[i][v]->cutoffMIDI);
+				tVZFilter_setSampleRate(&FXVZfilterBR[i][v], osMult);
+				tVZFilter_setFreq(&FXVZfilterBR[i][v], FXVZfilterBR[i][v]->fc);
+				tLadderFilter_setSampleRate(&FXLadderfilter[i][v], osMult);
+				tLadderFilter_setFreqFast(&FXLadderfilter[i][v], FXLadderfilter[i][v]->cutoffMIDI);
+			}
+		}
+	}
+	prevOversample = newOS;
+}
+
+float FORCE_INLINE map(float value, float istart, float istop, float ostart, float ostop)
 {
     return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
 }
 
-float __ATTR_ITCMRAM pickupNonLinearity(float x)
+float FORCE_INLINE pickupNonLinearity(float x)
 {
 	x = x * 2.0f; //initial scaling to match mm of displacement
 	float out = (0.075f * x) + (0.00675f * x * x) +( 0.00211f * x * x * x) + (0.000475f * x * x * x * x) + (0.000831f * x * x * x * x *x);
 	return out * 4.366812227074236f; //output scaling to bring +/-0.229 to +/-1.0
 }
 
-float __ATTR_ITCMRAM mtofTableLookup(float tempMIDI)
+float FORCE_INLINE mtofTableLookup(float tempMIDI)
 {
 	float tempIndexF = ((LEAF_clip(-163.0f, tempMIDI, 163.0f) * 100.0f) + 16384.0f);
 	int tempIndexI = (int)tempIndexF;
@@ -500,7 +599,12 @@ void audioInit()
 		randomFactors[i] = (randomNumber() * 0.4f) + 0.8f;
 	}
 	LEAF_generate_atodb(atoDbTable, ATODB_TABLE_SIZE, 0.00001f, 1.0f);
-	LEAF_generate_dbtoa(dbtoATable, DBTOA_TABLE_SIZE, -90.0f, 30.0f);
+	LEAF_generate_dbtoa(dbtoATable, DBTOA_TABLE_SIZE, -90.0f, 50.0f);
+
+	atodbTableScalar = ATODB_TABLE_SIZE_MINUS_ONE/(1.0f-0.00001f);
+	atodbTableOffset = 0.00001f * atodbTableScalar;
+	dbtoaTableScalar = DBTOA_TABLE_SIZE_MINUS_ONE/(50.0f+90.0f);
+	dbtoaTableOffset = -90.0f * dbtoaTableScalar;
 
 	LEAF_generate_mtof(mtofTable, -163.8375f, 163.8375f,  MTOF_TABLE_SIZE); //mtof table for fast calc
 
@@ -621,9 +725,9 @@ void audioInit()
 			tSVF_init(&highpass[i][v], SVFTypeHighpass, 2000.f, 0.7f, &leaf);
 			tSVF_init(&bandpass[i][v], SVFTypeBandpass, 2000.f, 0.7f, &leaf);
 			tDiodeFilter_init(&diodeFilters[i][v], 2000.f, 0.5f, &leaf);
-			tVZFilter_init(&VZfilterPeak[i][v], Bell, 2000.f, 1.0f, &leaf);
-			tVZFilter_init(&VZfilterLS[i][v], Lowshelf, 2000.f, 1.0f, &leaf);
-			tVZFilter_init(&VZfilterHS[i][v], Highshelf, 2000.f, 1.0f, &leaf);
+			tVZFilterBell_init(&VZfilterPeak[i][v], 2000.f, 1.9f, 1.0f, &leaf);
+			tVZFilterLS_init(&VZfilterLS[i][v], 2000.f, 0.6f, 1.0f, &leaf);
+			tVZFilterHS_init(&VZfilterHS[i][v], 2000.f, 0.6f, 1.0f, &leaf);
 			tVZFilter_init(&VZfilterBR[i][v], BandReject, 2000.f, 1.0f, &leaf);
 			tLadderFilter_init(&Ladderfilter[i][v], 2000.f, 1.0f, &leaf);
 			tExpSmooth_init(&filterCutoffSmoother[i][v], 64.0f, 0.01f, &leaf);
@@ -640,9 +744,9 @@ void audioInit()
 			tSawSquareLFO_init(&lfoSawSquare[i][v], &leaf);
 		}
 		//noise
-		tVZFilter_init(&noiseShelf1[v], Lowshelf, 80.0f, 6.0f, &leaf);
-		tVZFilter_init(&noiseShelf2[v], Highshelf, 12000.0f, 6.0f, &leaf);
-		tVZFilter_init(&noiseBell1[v], Bell, 1000.0f, 1.9f, &leaf);
+		tVZFilterLS_init(&noiseShelf1[v], 80.0f, 0.5f, 1.0f, &leaf);
+		tVZFilterHS_init(&noiseShelf2[v], 12000.0f, 0.5f, 1.0f, &leaf);
+		tVZFilterBell_init(&noiseBell1[v],1000.0f, 1.9f, 1.09f, &leaf);
 
 
 		for (int i = 0; i < NUM_ENV; i++)
@@ -656,32 +760,49 @@ void audioInit()
 		{
 			tCrusher_init(&bc[i][v],&leaf);
 			tHighpass_init(&dcBlock1[i][v], 5.0f,&leaf);
+			tHighpass_setSampleRate(&dcBlock1[i][v], SAMPLE_RATE * OVERSAMPLE);
 			tHighpass_init(&dcBlock2[i][v], 5.0f,&leaf);
-			tVZFilter_init(&shelf1[i][v], Lowshelf, 80.0f, 32.0f,  &leaf);
-			tVZFilter_init(&shelf2[i][v], Highshelf, 12000.0f, 32.0f, &leaf);
-			tVZFilter_init(&bell1[i][v], Bell, 1000.0f, 1.9f, &leaf);
-			tVZFilter_setSampleRate(&shelf1[i][v], SAMPLE_RATE * OVERSAMPLE);
-			tVZFilter_setSampleRate(&shelf2[i][v], SAMPLE_RATE * OVERSAMPLE);
-			tVZFilter_setSampleRate(&bell1[i][v], SAMPLE_RATE * OVERSAMPLE);
+			tHighpass_setSampleRate(&dcBlock2[i][v], SAMPLE_RATE * OVERSAMPLE);
+			tVZFilterLS_init(&shelf1[i][v], 80.0f, 0.5f, 1.0f,&leaf);
+			tVZFilterLS_setSampleRate(&shelf1[i][v], SAMPLE_RATE * OVERSAMPLE);
+			tVZFilterHS_init(&shelf2[i][v], 12000.0f, 0.5f, 1.0f, &leaf);
+			tVZFilterHS_setSampleRate(&shelf2[i][v], SAMPLE_RATE * OVERSAMPLE);
+			tVZFilterBell_init(&bell1[i][v], 1000.0f, 1.9f, 1.0f, &leaf);
+			tVZFilterBell_setSampleRate(&bell1[i][v], SAMPLE_RATE * OVERSAMPLE);
 			tCompressor_init(&comp[i][v], &leaf);
 			tCompressor_setTables(&comp[i][v], atoDbTable, dbtoATable, 0.00001f, 4.0f, -90.0f, 30.0f, ATODB_TABLE_SIZE, DBTOA_TABLE_SIZE);
+			tCompressor_setSampleRate(&comp[i][v], SAMPLE_RATE * OVERSAMPLE);
 			tLinearDelay_initToPool(&delay1[i][v], 4000.0f, 4096, &largePool);
 			tLinearDelay_initToPool(&delay2[i][v], 4000.0f, 4096, &largePool);
 			tCycle_init(&mod1[i][v], &leaf);
+			tCycle_setSampleRate(&mod1[i][v], SAMPLE_RATE * OVERSAMPLE);
 			tCycle_init(&mod2[i][v], &leaf);
+			tCycle_setSampleRate(&mod2[i][v], SAMPLE_RATE * OVERSAMPLE);
 			tCycle_setFreq(&mod1[i][v], 0.2f);
 			tCycle_setFreq(&mod2[i][v], 0.22222222222f);
 
+	        tTapeDelay_initToPool(&tapeDelay[i][v], 15000.0f, 30000, &largePool);
+	        tFeedbackLeveler_init(&feedbackControl[i][v], .99f, 0.01f, 0.125f, 0, &leaf);
+
 			//filters
 			tSVF_init(&FXlowpass[i][v], SVFTypeLowpass, 2000.f, 0.7f, &leaf);
+			tSVF_setSampleRate(&FXlowpass[i][v],SAMPLE_RATE * OVERSAMPLE);
 			tSVF_init(&FXhighpass[i][v], SVFTypeHighpass, 2000.f, 0.7f, &leaf);
+			tSVF_setSampleRate(&FXhighpass[i][v],SAMPLE_RATE * OVERSAMPLE);
 			tSVF_init(&FXbandpass[i][v], SVFTypeBandpass, 2000.f, 0.7f, &leaf);
+			tSVF_setSampleRate(&FXbandpass[i][v],SAMPLE_RATE * OVERSAMPLE);
 			tDiodeFilter_init(&FXdiodeFilters[i][v], 2000.f, 1.0f, &leaf);
-			tVZFilter_init(&FXVZfilterPeak[i][v], Bell, 2000.f, 1.0f, &leaf);
-			tVZFilter_init(&FXVZfilterLS[i][v], Lowshelf, 2000.f, 1.0f, &leaf);
-			tVZFilter_init(&FXVZfilterHS[i][v], Highshelf, 2000.f, 1.0f, &leaf);
+			tDiodeFilter_setSampleRate(&FXdiodeFilters[i][v], SAMPLE_RATE * OVERSAMPLE);
+			tVZFilterBell_init(&FXVZfilterPeak[i][v], 2000.f, 1.6f, 1.0f, &leaf);
+			tVZFilterBell_setSampleRate(&FXVZfilterPeak[i][v], SAMPLE_RATE * OVERSAMPLE);
+			tVZFilterLS_init(&FXVZfilterLS[i][v], 2000.f, 0.6f, 1.0f, &leaf);
+			tVZFilterLS_setSampleRate(&FXVZfilterLS[i][v], SAMPLE_RATE * OVERSAMPLE);
+			tVZFilterHS_init(&FXVZfilterHS[i][v], 2000.f, 0.6f, 1.0f, &leaf);
+			tVZFilterHS_setSampleRate(&FXVZfilterHS[i][v], SAMPLE_RATE * OVERSAMPLE);
 			tVZFilter_init(&FXVZfilterBR[i][v], BandReject, 2000.f, 1.0f, &leaf);
+			tVZFilter_setSampleRate(&FXVZfilterBR[i][v], SAMPLE_RATE * OVERSAMPLE);
 			tLadderFilter_init(&FXLadderfilter[i][v], 2000.f, 1.0f, &leaf);
+			tLadderFilter_setSampleRate(&FXLadderfilter[i][v], SAMPLE_RATE * OVERSAMPLE);
 		}
 
 		for (int i = 0; i < MAX_NUM_MAPPINGS; i++)
@@ -921,6 +1042,7 @@ void __ATTR_ITCMRAM audioFrameSynth(uint16_t buffer_offset)
 			if (overSampled == 1)
 			{
 				overSampled = 0;
+				changeOversampling(overSampled);
 			}
 			else if (oscToTick > 0)
 			{
@@ -1366,20 +1488,6 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 					}
 				}
 			}
-			/*
-			//hard clip before downsampling to get a little more antialiasing from clipped signal.
-			for (int i = 0; i < (OVERSAMPLE); i++)
-			{
-				if (oversamplerArray[i] > .999999f)
-				{
-					oversamplerArray[i] = .999999f;
-				}
-				else if (oversamplerArray[i]< -.999999f)
-				{
-					oversamplerArray[i] = -.999999f;
-				}
-			}
-			*/
 			//downsample to get back to normal sample rate
 			arm_fir_decimate_f32(&osD[v], (float*)&oversamplerArray, &sample, 2);
 		}
@@ -1404,11 +1512,8 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 			sample *= amplitude[v];
 		}
 
-
 		sample = tSVF_tick(&finalLowpass[v], sample) * masterVolFromBrainForSynth;
-		masterSample += sample * finalMaster[v];
-
-
+		masterSample += sample;// * finalMaster[v];
 	}
 	timePerStringTick = DWT->CYCCNT - tempPerStringTick;
 
@@ -1510,8 +1615,8 @@ float __ATTR_ITCMRAM audioTickString1(void)
 		temp += pickupNonLinearity(tSimpleLivingString3_tick(&livStr[i], slideNoise));
 	}
 
-	//float volIdx = LEAF_clip(47.0f, ((volumeSmoothed * 80.0f) + 47.0f), 127.0f);
-	float volIdx = LEAF_clip(0.0f, ((volumeSmoothed * 80.0f)), 127.0f);
+	float volIdx = LEAF_clip(47.0f, ((volumeSmoothed * 80.0f) + 47.0f), 127.0f);
+	//float volIdx = LEAF_clip(0.0f, ((volumeSmoothed * 80.0f)), 127.0f);
 	int volIdxInt = (int) volIdx;
 	float alpha = volIdx-volIdxInt;
 	int volIdxIntPlus = (volIdxInt + 1) & 127;
@@ -1667,8 +1772,8 @@ float __ATTR_ITCMRAM audioTickAdditive(void)
 
 	}
 
-	//float volIdx = LEAF_clip(47.0f, ((volumeSmoothed * 80.0f) + 47.0f), 127.0f);
-	float volIdx = LEAF_clip(0.0f, ((volumeSmoothed * 80.0f)), 127.0f);
+	float volIdx = LEAF_clip(47.0f, ((volumeSmoothed * 80.0f) + 47.0f), 127.0f);
+	//float volIdx = LEAF_clip(0.0f, ((volumeSmoothed * 80.0f)), 127.0f);
 	int volIdxInt = (int) volIdx;
 	float alpha = volIdx-volIdxInt;
 	int volIdxIntPlus = (volIdxInt + 1) & 127;
@@ -1819,8 +1924,6 @@ float __ATTR_ITCMRAM filter_tick(float* samples, float note, int string)
 
 		cutoff[f] = MIDIcutoff + (note  * keyFollow);
 
-		cutoff[f] = LEAF_clip(0.0f, (cutoff[f]-16.0f) * 35.929824561403509f, 4095.0f);
-
 		//smoothing may not be necessary
 		//tExpSmooth_setDest(&filterCutoffSmoother[f][string], cutoff[f]);
 		//cutoff[f] = tExpSmooth_tick(&filterCutoffSmoother[f][string]);
@@ -1873,19 +1976,19 @@ void __ATTR_ITCMRAM  diodeLowpassTick(float* sample, int v, float cutoff, int st
 
 void __ATTR_ITCMRAM  VZpeakTick(float* sample, int v, float cutoff, int string)
 {
-	tVZFilter_setFreqFast(&VZfilterPeak[v][string], cutoff);
-	*sample = tVZFilter_tickEfficient(&VZfilterPeak[v][string], *sample);
+	tVZFilterBell_setFreq(&VZfilterPeak[v][string], cutoff);
+	*sample = tVZFilterBell_tick(&VZfilterPeak[v][string], *sample);
 }
 
 void __ATTR_ITCMRAM  VZlowshelfTick(float* sample, int v, float cutoff, int string)
 {
-	tVZFilter_setFreqFast(&VZfilterLS[v][string], cutoff);
-	*sample = tVZFilter_tickEfficient(&VZfilterLS[v][string], *sample);
+	tVZFilterLS_setFreqFast(&VZfilterLS[v][string], cutoff);
+	*sample = tVZFilterLS_tick(&VZfilterLS[v][string], *sample);
 }
 void __ATTR_ITCMRAM  VZhighshelfTick(float* sample, int v, float cutoff, int string)
 {
-	tVZFilter_setFreqFast(&VZfilterHS[v][string], cutoff);
-	*sample = tVZFilter_tickEfficient(&VZfilterHS[v][string], *sample);
+	tVZFilterHS_setFreqFast(&VZfilterHS[v][string], cutoff);
+	*sample = tVZFilterHS_tick(&VZfilterHS[v][string], *sample);
 }
 void __ATTR_ITCMRAM  VZbandrejectTick(float* sample, int v, float cutoff, int string)
 {
@@ -1912,7 +2015,6 @@ void __ATTR_ITCMRAM setFreqMultPitch(float pitch, int osc, int string)
 		pitch = roundf(pitch);
 	}
 	midiAdd[osc][string] = pitch;
-	freqMult[osc][string] = 1.0f;
 }
 
 void __ATTR_ITCMRAM setFreqMultHarm(float harm, int osc, int string)
@@ -1931,7 +2033,6 @@ void __ATTR_ITCMRAM setFreqMultHarm(float harm, int osc, int string)
 	{
 		freqMult[osc][string] = (1.0f / fabsf((harm - 1)));
 	}
-	midiAdd[osc][string] = 0.0f;
 }
 
 
@@ -1959,17 +2060,17 @@ void __ATTR_ITCMRAM  diodeLowpassSetQ(float q, int v, int string)
 
 void __ATTR_ITCMRAM  VZpeakSetQ(float q, int v, int string)
 {
-	tVZFilter_setResonance(&VZfilterPeak[v][string], q);
+	tVZFilterBell_setBandwidth(&VZfilterPeak[v][string], q);
 }
 
 void __ATTR_ITCMRAM  VZlowshelfSetQ(float q, int v, int string)
 {
-	tVZFilter_setResonance(&VZfilterLS[v][string], q);
+	tVZFilterLS_setResonance(&VZfilterLS[v][string], q);
 }
 
 void __ATTR_ITCMRAM  VZhighshelfSetQ(float q, int v, int string)
 {
-	tVZFilter_setResonance(&VZfilterHS[v][string], q);
+	tVZFilterHS_setResonance(&VZfilterHS[v][string], q);
 }
 
 void __ATTR_ITCMRAM  VZbandrejectSetQ(float q, int v, int string)
@@ -1984,47 +2085,47 @@ void __ATTR_ITCMRAM  LadderLowpassSetQ(float q, int v, int string)
 
 void __ATTR_ITCMRAM  lowpassSetGain(float gain, int v, int string)
 {
-    filterGain[v][string] = fasterdbtoa((gain * 24.0f) - 12.0f);
+    filterGain[v][string] = dbToATableLookup((gain * 24.0f) - 12.0f);
 }
 
 void __ATTR_ITCMRAM  highpassSetGain(float gain, int v, int string)
 {
-	filterGain[v][string] = fasterdbtoa((gain * 24.0f) - 12.0f);
+	filterGain[v][string] = dbToATableLookup((gain * 24.0f) - 12.0f);
 }
 
 void __ATTR_ITCMRAM  bandpassSetGain(float gain, int v, int string)
 {
-	filterGain[v][string] = fasterdbtoa((gain * 24.0f) - 12.0f);
+	filterGain[v][string] = dbToATableLookup((gain * 24.0f) - 12.0f);
 }
 
 void __ATTR_ITCMRAM  diodeLowpassSetGain(float gain, int v, int string)
 {
-	filterGain[v][string] = fasterdbtoa((gain * 24.0f) - 12.0f);
+	filterGain[v][string] = dbToATableLookup((gain * 24.0f) - 12.0f);
 }
 
 void __ATTR_ITCMRAM  VZpeakSetGain(float gain, int v, int string)
 {
-	 tVZFilter_setGain(&VZfilterPeak[v][string], fasterdbtoa((gain * 50.f) - 25.f));
+	 tVZFilterBell_setGain(&VZfilterPeak[v][string], dbToATableLookup((gain * 50.f) - 25.f));
 }
 
 void __ATTR_ITCMRAM  VZlowshelfSetGain(float gain, int v, int string)
 {
-	tVZFilter_setGain(&VZfilterLS[v][string], fasterdbtoa((gain * 50.f) - 25.f));
+	tVZFilterLS_setGain(&VZfilterLS[v][string], dbToATableLookup((gain * 50.f) - 25.f));
 }
 
 void __ATTR_ITCMRAM  VZhighshelfSetGain(float gain, int v, int string)
 {
-	tVZFilter_setGain(&VZfilterLS[v][string], fasterdbtoa((gain * 50.f) - 25.f));
+	tVZFilterHS_setGain(&VZfilterHS[v][string], dbToATableLookup((gain * 50.f) - 25.f));
 }
 
 void  __ATTR_ITCMRAM VZbandrejectSetGain(float gain, int v, int string)
 {
-	filterGain[v][string] = fasterdbtoa((gain * 24.0f) - 12.0f);
+	filterGain[v][string] = dbToATableLookup((gain * 24.0f) - 12.0f);
 }
 
 void  __ATTR_ITCMRAM  LadderLowpassSetGain(float gain, int v, int string)
 {
-	filterGain[v][string] = fasterdbtoa((gain * 24.0f) - 12.0f);
+	filterGain[v][string] = dbToATableLookup((gain * 24.0f) - 12.0f);
 }
 
 
@@ -2104,7 +2205,7 @@ void  __ATTR_ITCMRAM  setPitchBendRange(float in, int v, int string)
 
 void  __ATTR_ITCMRAM  setFinalLowpass(float in, int v, int string)
 {
-	tSVF_setFreqFast(&finalLowpass[string], LEAF_clip(0.0f, (in-16.0f) * 35.929824561403509f, 4095.0f));
+	tSVF_setFreqFast(&finalLowpass[string], in);
 }
 
 
@@ -2270,11 +2371,11 @@ void __ATTR_ITCMRAM lfoPulseSetShape(float s, int v, int string)
 
 void __ATTR_ITCMRAM  clipperGainSet(float value, int v, int string)
 {
-	param1[v][string] = fasterdbtoa(value * 24.0f);
+	param1[v][string] = dbToATableLookup(value * 24.0f);
 }
 void __ATTR_ITCMRAM  wavefolderParam1(float value, int v, int string)
 {
-	param1[v][string] = fasterdbtoa(value * 12.0f);
+	param1[v][string] = dbToATableLookup(value * 12.0f);
 }
 void __ATTR_ITCMRAM  wavefolderParam3(float value, int v, int string)
 {
@@ -2285,23 +2386,23 @@ void __ATTR_ITCMRAM  wavefolderParam3(float value, int v, int string)
 
 void __ATTR_ITCMRAM  tiltParam1(float value, int v, int string)
 {
-	tVZFilter_setGain(&shelf1[v][string], fasterdbtoa(-1.0f * ((value * 30.0f) - 15.0f)));
-	tVZFilter_setGain(&shelf2[v][string], fasterdbtoa((value * 30.0f) - 15.0f));
+	tVZFilterLS_setGain(&shelf1[v][string], dbToATableLookup(-1.0f * ((value * 30.0f) - 15.0f)));
+	tVZFilterHS_setGain(&shelf2[v][string], dbToATableLookup((value * 30.0f) - 15.0f));
 }
 
 void __ATTR_ITCMRAM  tiltParam2(float value, int v, int string)
 {
 	value = (value * 77.0f) + 42.0f;
 	value = LEAF_clip(0.0f, (value-16.0f) * 35.929824561403509f, 4095.0f);
-	tVZFilter_setFreqFast(&bell1[v][string], value);
+	tVZFilterBell_setFreq(&bell1[v][string], value);
 }
 void __ATTR_ITCMRAM  tiltParam3(float value, int v, int string)
 {
-	tVZFilter_setResonance(&bell1[v][string], (value +1.0f)*6.0f);//TODO: make this match plugin
+	tVZFilterBell_setBandwidth(&bell1[v][string], (value +1.0f)*6.0f);//TODO: make this match plugin
 }
 void __ATTR_ITCMRAM  tiltParam4(float value, int v, int string)
 {
-	tVZFilter_setGain(&bell1[v][string], fastdbtoa((value * 34.0f) - 17.0f));
+	tVZFilterBell_setGain(&bell1[v][string], dbToATableLookup((value * 34.0f) - 17.0f));
 }
 
 void __ATTR_ITCMRAM  compressorParam1(float value, int v, int string)
@@ -2359,6 +2460,19 @@ void __ATTR_ITCMRAM param3Hard(float value, int v, int string)
 	}
 	shapeDividerH[v][string] = 1.0f/tempDiv;
 }
+
+void __ATTR_ITCMRAM param3Poly(float value, int v, int string)
+{
+	param3[v][string] = ((value * .99f) + 0.01f)* HALF_PI;
+
+    float tempDiv = fastSine(param3[v][string]);
+    if (tempDiv == 0.0f)
+    {
+        tempDiv = 0.001f;
+    }
+    polyDivider[v][string] = 1.0f/tempDiv;
+}
+
 void __ATTR_ITCMRAM param4Linear(float value, int v, int string)
 {
 	param4[v][string] = value;
@@ -2395,7 +2509,7 @@ void __ATTR_ITCMRAM fxMixSet(float value, int v, int string)
 
 void __ATTR_ITCMRAM fxPostGainSet(float value, int v, int string)
 {
-	fxPostGain[v][string] = fasterdbtoa((value * 24.0f) - 12.0f);
+	fxPostGain[v][string] = dbToATableLookup((value * 24.0f) - 12.0f);
 }
 
 
@@ -2439,6 +2553,7 @@ float __ATTR_ITCMRAM wavefolderTick(float sample, int v, int string)
     return sample;
 }
 
+
 void __ATTR_ITCMRAM chorusParam1(float value, int v, int string)
 {
 	param1[v][string] = value * 5780.0f + 10.0f;
@@ -2458,6 +2573,49 @@ void __ATTR_ITCMRAM chorusParam4(float value, int v, int string)
     tCycle_setFreq(&mod2[v][string], (value * 0.4444444f) + 0.011f);
 }
 
+
+void __ATTR_ITCMRAM delayParam1(float value, int v, int string)
+{
+    tTapeDelay_setDelay(&tapeDelay[v][string], value * 30000.0f + 1.0f);
+}
+
+void __ATTR_ITCMRAM delayParam2(float value, int v, int string)
+{
+	param2[v][string] = LEAF_clip(0.0f, value * 1.1f, 1.1f);
+}
+
+void __ATTR_ITCMRAM delayParam3(float value, int v, int string)
+{
+    tSVF_setFreqFast(&FXlowpass[v][string], (value * 127.0f));
+}
+
+void __ATTR_ITCMRAM delayParam4(float value, int v, int string)
+{
+    tSVF_setFreqFast(&FXhighpass[v][string], (value * 127.0f));
+}
+
+void __ATTR_ITCMRAM delayParam5(float value, int v, int string)
+{
+	param5[v][string] = (value * 1.5f) + 1.0f;
+}
+
+float delayTick(float sample, int v, int string)
+{
+    sample *= param5[v][string];
+
+    sample = sample + (delayFB[v][string] * param2[v][string]);
+
+    sample = fast_tanh5(sample);
+
+    sample = tFeedbackLeveler_tick(&feedbackControl[v][string], sample);
+
+    delayFB[v][string] = tTapeDelay_tick(&tapeDelay[v][string], sample);
+    delayFB[v][string] = tSVF_tick(&FXlowpass[v][string], delayFB[v][string]);
+    sample = tSVF_tick(&FXhighpass[v][string], delayFB[v][string]);
+    sample = fast_tanh5(sample);
+    delayFB[v][string] = sample;
+    return sample;
+}
 
 float __ATTR_ITCMRAM chorusTick(float sample, int v, int string)
 {
@@ -2485,9 +2643,9 @@ float __ATTR_ITCMRAM blankTick(float sample, int v, int string)
 
 float __ATTR_ITCMRAM tiltFilterTick(float sample, int v, int string)
 {
-    sample = tVZFilter_tickEfficient(&shelf1[v][string], sample);
-    sample = tVZFilter_tickEfficient(&shelf2[v][string], sample);
-    sample = tVZFilter_tickEfficient(&bell1[v][string], sample);
+    sample = tVZFilterLS_tick(&shelf1[v][string], sample);
+    sample = tVZFilterHS_tick(&shelf2[v][string], sample);
+    sample = tVZFilterBell_tick(&bell1[v][string], sample);
     return sample;
 }
 
@@ -2550,6 +2708,27 @@ float __ATTR_ITCMRAM hardClipTick(float sample, int v, int string)
 }
 
 
+float __ATTR_ITCMRAM polynomialShaperTick(float sample, int v, int string)
+{
+
+    sample = sample * param1[v][string];
+    sample = sample + param2[v][string];
+
+    if (sample <= -1.0f)
+    {
+        sample = -1.0f;
+    } else if (sample >= 1.0f)
+    {
+        sample = 1.0f;
+    }
+
+	sample = fastSine(  (fastSine(sample*param3[v][string]) * polyDivider[v][string]) * param3[v][string]);
+	sample = sample * polyDivider[v][string];
+
+
+    sample = tHighpass_tick(&dcBlock1[v][string], sample);
+    return sample;
+}
 float __ATTR_ITCMRAM satTick(float sample, int v, int string)
 {;
     sample = sample * param1[v][string];
@@ -2597,16 +2776,16 @@ float __ATTR_ITCMRAM  FXdiodeLowpassTick(float sample, int v, int string)
 
 float __ATTR_ITCMRAM  FXVZpeakTick(float sample, int v, int string)
 {
-	return tVZFilter_tickEfficient(&FXVZfilterPeak[v][string], sample);
+	return tVZFilterBell_tick(&FXVZfilterPeak[v][string], sample);
 }
 
 float __ATTR_ITCMRAM  FXVZlowshelfTick(float sample, int v, int string)
 {
-	return tVZFilter_tickEfficient(&FXVZfilterLS[v][string], sample);
+	return tVZFilterLS_tick(&FXVZfilterLS[v][string], sample);
 }
 float __ATTR_ITCMRAM  FXVZhighshelfTick(float sample, int v, int string)
 {
-	return tVZFilter_tickEfficient(&FXVZfilterHS[v][string], sample);
+	return tVZFilterHS_tick(&FXVZfilterHS[v][string], sample);
 }
 float __ATTR_ITCMRAM  FXVZbandrejectTick(float sample, int v, int string)
 {
@@ -2622,57 +2801,48 @@ float __ATTR_ITCMRAM  FXLadderLowpassTick(float sample, int v, int string)
 void  __ATTR_ITCMRAM FXLowpassParam1(float value, int v, int string)
 {
 	value = (value * 77.0f) + 42.0f;
-	value = LEAF_clip(0.0f, (value-16.0f) * 35.929824561403509f, 4095.0f);
 	tSVF_setFreqFast(&FXlowpass[v][string], value);
 }
 void __ATTR_ITCMRAM FXHighpassParam1(float value, int v, int string)
 {
 	value = (value * 77.0f) + 42.0f;
-	value = LEAF_clip(0.0f, (value-16.0f) * 35.929824561403509f, 4095.0f);
 	tSVF_setFreqFast(&FXhighpass[v][string], value);
 }
 
 void __ATTR_ITCMRAM FXBandpassParam1(float value, int v, int string)
 {
 	value = (value * 77.0f) + 42.0f;
-	value = LEAF_clip(0.0f, (value-16.0f) * 35.929824561403509f, 4095.0f);
     tSVF_setFreqFast(&FXbandpass[v][string], value);
 }
 
 void __ATTR_ITCMRAM FXDiodeParam1(float value, int v, int string)
 {
 	value = (value * 77.0f) + 42.0f;
-	value = LEAF_clip(0.0f, (value-16.0f) * 35.929824561403509f, 4095.0f);
 	tDiodeFilter_setFreqFast(&FXdiodeFilters[v][string], value);
 }
 void __ATTR_ITCMRAM FXPeakParam1(float value, int v, int string)
 {
 	value = (value * 77.0f) + 42.0f;
-	value = LEAF_clip(0.0f, (value-16.0f) * 35.929824561403509f, 4095.0f);
-	tVZFilter_setFreqFast(&FXVZfilterPeak[v][string], value);
+	tVZFilterBell_setFreq(&FXVZfilterPeak[v][string], value);
 }
 void __ATTR_ITCMRAM FXLowShelfParam1(float value, int v, int string)
 {
 	value = (value * 77.0f) + 42.0f;
-    value = LEAF_clip(0.0f, (value-16.0f) * 35.929824561403509f, 4095.0f);
-    tVZFilter_setFreqFast(&FXVZfilterLS[v][string], value);
+    tVZFilterLS_setFreqFast(&FXVZfilterLS[v][string], value);
 }
 void __ATTR_ITCMRAM FXHighShelfParam1(float value, int v, int string)
 {
 	value = (value * 77.0f) + 42.0f;
-	value = LEAF_clip(0.0f, (value-16.0f) * 35.929824561403509f, 4095.0f);
-	tVZFilter_setFreqFast(&FXVZfilterHS[v][string], value);
+	tVZFilterHS_setFreqFast(&FXVZfilterHS[v][string], value);
 }
 void __ATTR_ITCMRAM FXNotchParam1(float value, int v, int string)
 {
 	value = (value * 77.0f) + 42.0f;
-	value = LEAF_clip(0.0f, (value-16.0f) * 35.929824561403509f, 4095.0f);
 	tVZFilter_setFreqFast(&FXVZfilterBR[v][string], value);
 }
 void __ATTR_ITCMRAM FXLadderParam1(float value, int v, int string)
 {
 	value = (value * 77.0f) + 42.0f;
-	value = LEAF_clip(0.0f, (value-16.0f) * 35.929824561403509f, 4095.0f);
 	tLadderFilter_setFreqFast(&FXLadderfilter[v][string], value);
 }
 
@@ -2680,22 +2850,22 @@ void __ATTR_ITCMRAM FXLadderParam1(float value, int v, int string)
 
 void __ATTR_ITCMRAM FXPeakParam2(float value, int v, int string)
 {
-	 tVZFilter_setGain(&FXVZfilterPeak[v][string], fasterdbtoa((value * 50.f) - 25.f));
+	 tVZFilterBell_setGain(&FXVZfilterPeak[v][string], dbToATableLookup((value * 50.f) - 25.f));
 }
 
 void __ATTR_ITCMRAM FXLowShelfParam2(float value, int v, int string)
 {
-tVZFilter_setGain(&FXVZfilterLS[v][string], fasterdbtoa((value * 50.f) - 25.f));
+	tVZFilterLS_setGain(&FXVZfilterLS[v][string], dbToATableLookup((value * 50.f) - 25.f));
 }
 
 void __ATTR_ITCMRAM FXHighShelfParam2(float value, int v, int string)
 {
-	tVZFilter_setGain(&FXVZfilterHS[v][string], fasterdbtoa((value * 50.f) - 25.f));
+	tVZFilterHS_setGain(&FXVZfilterHS[v][string], dbToATableLookup((value * 50.f) - 25.f));
 }
 
 void __ATTR_ITCMRAM FXNotchParam2(float value, int v, int string)
 {
-	tVZFilter_setGain(&FXVZfilterBR[v][string], fasterdbtoa((value * 50.f) - 25.f));
+	tVZFilter_setGain(&FXVZfilterBR[v][string], dbToATableLookup((value * 50.f) - 25.f));
 
 }
 //resonance params
@@ -2722,19 +2892,19 @@ void __ATTR_ITCMRAM FXDiodeParam3(float value, int v, int string)
 
 void __ATTR_ITCMRAM FXPeakParam3(float value, int v, int string)
 {
-	tVZFilter_setResonance(&FXVZfilterPeak[v][string], value);
+	tVZFilterBell_setBandwidth(&FXVZfilterPeak[v][string], value);
 }
 
 
 void __ATTR_ITCMRAM FXLowShelfParam3(float value, int v, int string)
 {
-	tVZFilter_setResonance(&FXVZfilterLS[v][string], value);
+	tVZFilterLS_setResonance(&FXVZfilterLS[v][string], value);
 }
 
 
 void __ATTR_ITCMRAM FXHighShelfParam3(float value, int v, int string)
 {
-	tVZFilter_setResonance(&FXVZfilterHS[v][string], value);
+	tVZFilterHS_setResonance(&FXVZfilterHS[v][string], value);
 }
 
 
@@ -2756,21 +2926,22 @@ void __ATTR_ITCMRAM FXLadderParam3(float value, int v, int string)
 
 void __ATTR_ITCMRAM noiseSetTilt(float value, int v, int string)
 {
-	tVZFilter_setGain(&noiseShelf1[string], fasterdbtoa(-1.0f * ((value * 30.0f) - 15.0f)));
-	tVZFilter_setGain(&noiseShelf2[string], fasterdbtoa((value * 30.0f) - 15.0f));
+	tVZFilterLS_setGain(&noiseShelf1[string], dbToATableLookup(-1.0f * ((value * 30.0f) - 15.0f)));
+	tVZFilterHS_setGain(&noiseShelf2[string], dbToATableLookup((value * 30.0f) - 15.0f));
 }
 
 
 void __ATTR_ITCMRAM noiseSetGain(float value, int v, int string)
 {
-	tVZFilter_setGain(&noiseBell1[string], fasterdbtoa((value* 34.0f) - 17.0f));
+	tVZFilterBell_setGain(&noiseBell1[string], dbToATableLookup((value* 34.0f) - 17.0f));
 }
 
 void __ATTR_ITCMRAM noiseSetFreq(float value, int v, int string)
 {
 	value = (value * 77.0f) + 42.0f;
-	value = LEAF_clip(0.0f, (value-16.0f) * 35.929824561403509f, 4095.0f);
-	tVZFilter_setFreqFast(&noiseBell1[string], value);
+	tVZFilterBell_setFreq(&noiseBell1[string], faster_mtof(value));
+	//value = LEAF_clip(0.0f, (value-16.0f) * 35.929824561403509f, 4095.0f);
+
 }
 
 
@@ -2781,9 +2952,9 @@ void __ATTR_ITCMRAM noise_tick(int string)
 	float filterSend = params[NoiseFilterSend].realVal[string];
 	amp = amp < 0.f ? 0.f : amp;
 	float sample = random_values[randomValPointer++];
-	sample = tVZFilter_tickEfficient(&noiseShelf1[string], sample);
-	sample = tVZFilter_tickEfficient(&noiseShelf2[string], sample);
-	sample = tVZFilter_tickEfficient(&noiseBell1[string], sample);
+	sample = tVZFilterLS_tick(&noiseShelf1[string], sample);
+	sample = tVZFilterHS_tick(&noiseShelf2[string], sample);
+	sample = tVZFilterBell_tick(&noiseBell1[string], sample);
 	sample = sample * amp;
 	float normSample = (sample + 1.f) * 0.5f;
 	sourceValues[NOISE_SOURCE_OFFSET][string] = normSample;
