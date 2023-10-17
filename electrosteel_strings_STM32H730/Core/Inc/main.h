@@ -51,7 +51,7 @@ extern "C" {
 #define RHMUTE_COUNTLIM 1
 
 
-#define ADC_FRAME_SIZE 8
+#define ADC_FRAME_SIZE 1
 #define ADC_BUFFER_SIZE ADC_FRAME_SIZE * 2
 /* USER CODE END EC */
 

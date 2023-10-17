@@ -62,6 +62,7 @@ typedef enum
   String2Loaded,
 }StringModelLoadedTypeDef;
 
+//#define SAMPLERATE96K
 #ifdef SAMPLERATE96K
 #define SAMPLE_RATE 96000.f
 #else

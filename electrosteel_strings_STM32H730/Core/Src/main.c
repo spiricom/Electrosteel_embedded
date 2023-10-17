@@ -87,7 +87,23 @@ tThreshold threshold[NUM_STRINGS];
 volatile uint_fast8_t SPI_busy = 0;
 
 
+uint16_t stringPositions[NUM_STRINGS];
+uint16_t stringTouchRH[NUM_STRINGS];
+int didPlucked[NUM_STRINGS];
+int stringSounding[NUM_STRINGS];
 
+int howManyFrames = 400;
+int brokedIt = 0;
+int didPlucked2[NUM_STRINGS];
+int pluckDelay[NUM_STRINGS];
+int pluckValues[NUM_STRINGS];
+uint32_t stringStates[NUM_STRINGS];
+uint32_t string_values[NUM_STRINGS];
+volatile uint32_t changeHappened = 0;
+
+uint32_t timeFrame;
+uint32_t frameRate;
+uint32_t frameRateStart;
 
 int RHbits[2] = {0,0};
 
@@ -110,6 +126,7 @@ static void MX_RNG_Init(void);
 //void MPU_Conf(void);
 float randomNumber(void);
 void CycleCounterInit(void);
+void MPU_Conf(void);
 //void loadNewFirmware(uint32_t);
 /* USER CODE END 0 */
 
@@ -185,7 +202,7 @@ int main(void)
 
 		for (int j = 0; j < FILTER_ORDER; j++)
 		{
-			tVZFilter_init(&opticalLowpass[i][j], Lowpass, 18000.0f, 0.8f, &leaf);//6000
+			tVZFilter_init(&opticalLowpass[i][j], Lowpass, 10000.0f, 0.8f, &leaf);//6000
 			tHighpass_init(&opticalHighpass[i][j], 10.0f, &leaf);//100
 		}
    }
@@ -209,6 +226,24 @@ int main(void)
   /* USER CODE BEGIN WHILE */
    while (1)
    {
+		if (changeHappened)
+		{
+			if (!SPI_busy)// && (!gettingNewFirmware))
+			{
+				for (int j = 0; j < NUM_STRINGS; ++j)
+				{
+					SPI_PLUCK_TX[(j * 2) + 1] = (stringStates[j] >> 8);
+					SPI_PLUCK_TX[(j * 2) + 2] = (stringStates[j] & 0xff);
+				}
+				SPI_PLUCK_TX[0] = 254;
+				SPI_PLUCK_TX[31] = 253;
+
+				SCB_CleanDCache_by_Addr((uint32_t*)(((uint32_t)SPI_PLUCK_TX) & ~(uint32_t)0x1F), 64);
+				HAL_SPI_TransmitReceive_DMA(&hspi1, SPI_PLUCK_TX, SPI_PLUCK_RX, 32);
+				changeHappened = 0;
+				SPI_busy = 1;
+			}
+		}
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -521,7 +556,7 @@ static void MX_SPI2_Init(void)
   /* SPI2 parameter configuration*/
   hspi2.Instance = SPI2;
   hspi2.Init.Mode = SPI_MODE_SLAVE;
-  hspi2.Init.Direction = SPI_DIRECTION_2LINES;
+  hspi2.Init.Direction = SPI_DIRECTION_2LINES_RXONLY;
   hspi2.Init.DataSize = SPI_DATASIZE_8BIT;
   hspi2.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi2.Init.CLKPhase = SPI_PHASE_1EDGE;
@@ -564,13 +599,13 @@ static void MX_DMA_Init(void)
   HAL_NVIC_SetPriority(DMA1_Stream0_IRQn, 1, 0);
   HAL_NVIC_EnableIRQ(DMA1_Stream0_IRQn);
   /* DMA1_Stream1_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Stream1_IRQn, 1, 0);
+  HAL_NVIC_SetPriority(DMA1_Stream1_IRQn, 2, 0);
   HAL_NVIC_EnableIRQ(DMA1_Stream1_IRQn);
   /* DMA1_Stream2_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Stream2_IRQn, 2, 0);
+  HAL_NVIC_SetPriority(DMA1_Stream2_IRQn, 3, 0);
   HAL_NVIC_EnableIRQ(DMA1_Stream2_IRQn);
   /* DMA1_Stream3_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Stream3_IRQn, 2, 0);
+  HAL_NVIC_SetPriority(DMA1_Stream3_IRQn, 1, 0);
   HAL_NVIC_EnableIRQ(DMA1_Stream3_IRQn);
 
 }
@@ -656,10 +691,10 @@ void MPU_Conf(void)
 	  MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
 
 	  //AN4838
-	  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL1;
+	  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
 	  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
 	  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
-	  MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
+	  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
 
 	  //Shared Device
 //	  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
@@ -702,7 +737,7 @@ int attackDetectPeak2 (int whichString, int tempInt)
 	{
 		// a highpass filter, remove any slow moving signal (effectively centers the signal around zero and gets rid of the signal that isn't high frequency vibration) cutoff of 100Hz, // applied 8 times to get rid of a lot of low frequency bumbling around
 		tempSamp = tHighpass_tick(&opticalHighpass[whichString][k], tempSamp);
-		//tempSamp = tVZFilter_tick(&opticalLowpass[whichString][k], tempSamp * 1.0f);
+		tempSamp = tVZFilter_tick(&opticalLowpass[whichString][k], tempSamp);
 	}
 
 	float tempAbs = fabsf(tempSamp);
@@ -741,7 +776,7 @@ int attackDetectPeak2 (int whichString, int tempInt)
 		{
 			downCounter[whichString]++;
 		}
-		if (downCounter[whichString] > 150)//was 256
+		if (downCounter[whichString] > 100)//was 256
 		{
 			//found a peak?
 			output = stringMaxes[whichString] * 1.75f;
@@ -758,23 +793,7 @@ int attackDetectPeak2 (int whichString, int tempInt)
 }
 
 
-uint16_t stringPositions[NUM_STRINGS];
-uint16_t stringTouchRH[NUM_STRINGS];
-int didPlucked[NUM_STRINGS];
-int stringSounding[NUM_STRINGS];
-
-int howManyFrames = 400;
-int brokedIt = 0;
-int didPlucked2[NUM_STRINGS];
-int pluckDelay[NUM_STRINGS];
-int pluckValues[NUM_STRINGS];
-uint32_t stringStates[NUM_STRINGS];
-uint32_t string_values[NUM_STRINGS];
-int changeHappened = 0;
-
-uint32_t timeFrame;
-uint32_t frameRate;
-uint32_t frameRateStart;
+volatile float CPULoad = 0.0f;
 
 void ADC_Frame(int offset)
 {
@@ -840,25 +859,9 @@ void ADC_Frame(int offset)
 		}
 	}
 	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_0, GPIO_PIN_RESET);
-	if (changeHappened)
-	{
-		if (!SPI_busy)// && (!gettingNewFirmware))
-		{
-			for (int j = 0; j < NUM_STRINGS; ++j)
-			{
-				SPI_PLUCK_TX[(j * 2) + 1] = (stringStates[j] >> 8);
-				SPI_PLUCK_TX[(j * 2) + 2] = (stringStates[j] & 0xff);
-			}
-			SPI_PLUCK_TX[0] = 254;
-			SPI_PLUCK_TX[31] = 253;
 
-			SCB_CleanDCache_by_Addr((uint32_t*)(((uint32_t)SPI_PLUCK_TX) & ~(uint32_t)0x1F), 64);
-			HAL_SPI_TransmitReceive_DMA(&hspi1, SPI_PLUCK_TX, SPI_PLUCK_RX, 32);
-			changeHappened = 0;
-			SPI_busy = 1;
-		}
-	}
 	timeFrame = DWT->CYCCNT - tempCountFrame;
+	CPULoad = (float)timeFrame / (float)frameRate;
 
 }
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)

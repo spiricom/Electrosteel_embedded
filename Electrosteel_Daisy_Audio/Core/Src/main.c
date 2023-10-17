@@ -1409,9 +1409,9 @@ void setOscilllatorShapes(int oscshape, int i)
 		  case 5:
 			  shapeTick[i] = &triTick;
 			  break;
-		  case 6:
-			  shapeTick[i] = &userTick;
-			  break;
+		  //case 6:
+			  //shapeTick[i] = &userTick;
+			  //break;
 		  default:
 			  break;
 	}

@@ -40,7 +40,7 @@ enum MappingChangeTypes
 	ScalarID
 };
 //selectable type number of possible values
-#define NUM_OSC_SHAPES 7
+#define NUM_OSC_SHAPES 6
 #define NUM_FILTER_TYPES 9
 #define NUM_LFO_SHAPES LFOShapeSetNum
 #define NUM_EFFECT_TYPES FXTypeNil
@@ -77,6 +77,7 @@ enum MappingChangeTypes
 #define NOISE_SOURCE_OFFSET 3
 #define MACRO_SOURCE_OFFSET 4
 #define CTRL_SOURCE_OFFSET 12
+#define EXPRESSION_PEDAL_SOURCE_OFFSET 16
 #define MIDI_KEY_SOURCE_OFFSET 17
 #define VELOCITY_SOURCE_OFFSET 18
 #define RANDOM_SOURCE_OFFSET 19
