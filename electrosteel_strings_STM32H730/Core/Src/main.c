@@ -776,7 +776,7 @@ int attackDetectPeak2 (int whichString, int tempInt)
 		{
 			downCounter[whichString]++;
 		}
-		if (downCounter[whichString] > 100)//was 256
+		if (downCounter[whichString] > 164)//was 256
 		{
 			//found a peak?
 			output = stringMaxes[whichString] * 1.75f;
@@ -802,9 +802,6 @@ void ADC_Frame(int offset)
 	uint32_t tempCountFrame = DWT->CYCCNT;
 	frameRate = DWT->CYCCNT - frameRateStart;
 	frameRateStart = DWT->CYCCNT;
-
-	//sampRecords[currentSamp] = frameCount;
-	//currentSamp++;
 
 	for (int i = offset; i < ADC_FRAME_SIZE + offset; i++)
 	{
@@ -886,34 +883,9 @@ void HAL_ADC_Error(ADC_HandleTypeDef *hadc)
 void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
 {
 	SPI_busy = 0;
-	/*
-	//uint32_t newFirmwareSize = 0;
-	SCB_InvalidateDCache_by_Addr((uint32_t *)(((uint32_t )SPI_PLUCK_RX) & ~(uint32_t )0x1F), 64);
-	if ((SPI_PLUCK_RX[0] == 252) && (SPI_PLUCK_RX[1] == 251))
-	{
-		if (SPI_PLUCK_RX[2] == 60)
-		{
-			gettingNewFirmware = 1;
-			newFirmwareBufferPosition = 0;
-		}
-		else if (SPI_PLUCK_RX[2] == 61)
-		{
-			for (int i = 4; i < 32; ++i)
-			{
-				newFirmwareBuffer[newFirmwareBufferPosition++] = SPI_PLUCK_RX[i];
-			}
-		}
-		else if (SPI_PLUCK_RX[2] == 62)
-		{
-			newFirmwareSize = (SPI_PLUCK_RX[4] << 24) + (SPI_PLUCK_RX[5] << 16) + (SPI_PLUCK_RX[6] << 8) + (SPI_PLUCK_RX[7] & 0xff);
-			loadNewFirmware(newFirmwareSize);
-			gettingNewFirmware = 0;
-		}
-		HAL_Delay(1);
-		HAL_SPI_TransmitReceive_DMA(&hspi1, SPI_PLUCK_TX, SPI_PLUCK_RX, 32);
-	}
-	*/
 }
+
+volatile int numResets = 0;
 
 void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
 {
@@ -924,6 +896,16 @@ void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
 		{
 			RHbits[i] = SPI_RX[i+4];
 		}
+	}
+	else
+	{
+		HAL_SPI_Abort(&hspi2);
+		__HAL_RCC_SPI2_FORCE_RESET();
+		__HAL_RCC_SPI2_RELEASE_RESET();
+		MX_SPI2_Init();
+		__HAL_SPI_ENABLE(&hspi2);
+		HAL_SPI_Receive_DMA(&hspi2, SPI_RX, 8);
+		numResets++;
 	}
 }
 
@@ -936,6 +918,16 @@ void HAL_SPI_RxHalfCpltCallback(SPI_HandleTypeDef *hspi)
 		{
 			RHbits[i] = SPI_RX[i];
 		}
+	}
+	else
+	{
+		HAL_SPI_Abort(&hspi2);
+		__HAL_RCC_SPI2_FORCE_RESET();
+		__HAL_RCC_SPI2_RELEASE_RESET();
+		MX_SPI2_Init();
+		__HAL_SPI_ENABLE(&hspi2);
+		HAL_SPI_Receive_DMA(&hspi2, SPI_RX, 8);
+		numResets++;
 	}
 }
 

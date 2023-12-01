@@ -17,10 +17,10 @@ leaf/Src/leaf-filters.o: \
  /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-global.h \
  /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-mempool.h \
  /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-math.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-filters.h \
  /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-dynamics.h \
  /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-analysis.h \
  /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-distortion.h \
- /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-filters.h \
  /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-envelopes.h \
  /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-delay.h \
  /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-oscillators.h \
@@ -38,6 +38,7 @@ leaf/Src/leaf-filters.o: \
  /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-sampling.h \
  /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-physical.h \
  /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-electrical.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-vocal.h \
  ../Drivers/CMSIS/DSP/Include/arm_math.h \
  ../Drivers/CMSIS/Include/cmsis_compiler.h \
  ../Drivers/CMSIS/Include/cmsis_gcc.h
@@ -58,10 +59,10 @@ leaf/Src/leaf-filters.o: \
 /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-global.h:
 /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-mempool.h:
 /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-math.h:
+/Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-filters.h:
 /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-dynamics.h:
 /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-analysis.h:
 /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-distortion.h:
-/Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-filters.h:
 /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-envelopes.h:
 /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-delay.h:
 /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-oscillators.h:
@@ -79,6 +80,7 @@ leaf/Src/leaf-filters.o: \
 /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-sampling.h:
 /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-physical.h:
 /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-electrical.h:
+/Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-vocal.h:
 ../Drivers/CMSIS/DSP/Include/arm_math.h:
 ../Drivers/CMSIS/Include/cmsis_compiler.h:
 ../Drivers/CMSIS/Include/cmsis_gcc.h:

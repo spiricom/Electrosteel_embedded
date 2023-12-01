@@ -38,7 +38,7 @@
 #define HALF_BUFFER_SIZE      AUDIO_FRAME_SIZE * 2 //number of samples per half of the "double-buffer" (twice the audio frame size because there are interleaved samples for both left and right channels)
 #define AUDIO_BUFFER_SIZE     AUDIO_FRAME_SIZE * 4 //number of samples in the whole data structure (four times the audio frame size because of stereo and also double-buffering/ping-ponging)
 #define SMALL_MEM_SIZE 60000
-#define MED_MEM_SIZE 260000//180000
+#define MED_MEM_SIZE 262144//180000
 #define LARGE_MEM_SIZE 62914560//67108864 would be 64 MBytes - size of SDRAM IC, but we are using 2MB each for firmware buffers = 2097152*2 =   4194304, so 67108864-4194304=62914560
 #define MTOF_TABLE_SIZE	32768
 #define MTOF_TABLE_SIZE_MINUS_ONE 32767
@@ -103,6 +103,7 @@ void audioFrameSynth(uint16_t buffer_offset);
 void audioFrameString1(uint16_t buffer_offset);
 void audioFrameString2(uint16_t buffer_offset);
 void audioFrameAdditive(uint16_t buffer_offset);
+void audioFrameVocal(uint16_t buffer_offset);
 
 typedef float (*audioTick_t)(void);
 extern audioTick_t audioTickFunction;
@@ -110,6 +111,7 @@ float audioTickSynth(void);
 float audioTickString1(void);
 float audioTickString2(void);
 float audioTickAdditive(void);
+float audioTickVocal(void);
 
 void audioFrameSynth(uint16_t buffer_offset);
 void audioFrameString1(uint16_t buffer_offset);

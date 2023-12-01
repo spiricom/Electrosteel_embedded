@@ -49,12 +49,12 @@ Core/Src/stm32h7xx_hal_msp.o: ../Core/Src/stm32h7xx_hal_msp.c \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-tables.h \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-math.h \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-distortion.h \
- /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-dynamics.h \
- /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-analysis.h \
- /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-distortion.h \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-filters.h \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-delay.h \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-tables.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-dynamics.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-analysis.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-distortion.h \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-envelopes.h \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-oscillators.h \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-filters.h \
@@ -70,7 +70,7 @@ Core/Src/stm32h7xx_hal_msp.o: ../Core/Src/stm32h7xx_hal_msp.c \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-sampling.h \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-physical.h \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-electrical.h \
- ../Core/Inc/main.h
+ /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-vocal.h ../Core/Inc/main.h
 ../Core/Inc/main.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h:
 ../Core/Inc/stm32h7xx_hal_conf.h:
@@ -123,12 +123,12 @@ Core/Src/stm32h7xx_hal_msp.o: ../Core/Src/stm32h7xx_hal_msp.c \
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-tables.h:
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-math.h:
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-distortion.h:
-/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-dynamics.h:
-/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-analysis.h:
-/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-distortion.h:
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-filters.h:
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-delay.h:
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-tables.h:
+/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-dynamics.h:
+/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-analysis.h:
+/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-distortion.h:
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-envelopes.h:
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-oscillators.h:
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-filters.h:
@@ -144,4 +144,5 @@ Core/Src/stm32h7xx_hal_msp.o: ../Core/Src/stm32h7xx_hal_msp.c \
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-sampling.h:
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-physical.h:
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-electrical.h:
+/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-vocal.h:
 ../Core/Inc/main.h:

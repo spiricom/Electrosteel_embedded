@@ -37,7 +37,8 @@ leaf/Src/leaf-oscillators.o: \
  /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-midi.h \
  /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-sampling.h \
  /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-physical.h \
- /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-electrical.h
+ /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-electrical.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-vocal.h
 /Users/jeffsnyder/dev/LEAF/leaf/Src/../Inc/leaf-oscillators.h:
 /Users/jeffsnyder/dev/LEAF/leaf/Src/../Inc/leaf-math.h:
 /Users/jeffsnyder/dev/LEAF/leaf/Src/../Inc/leaf-global.h:
@@ -76,3 +77,4 @@ leaf/Src/leaf-oscillators.o: \
 /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-sampling.h:
 /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-physical.h:
 /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-electrical.h:
+/Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-vocal.h:

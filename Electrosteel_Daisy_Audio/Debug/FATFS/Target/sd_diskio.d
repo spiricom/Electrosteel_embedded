@@ -53,12 +53,12 @@ FATFS/Target/sd_diskio.o: ../FATFS/Target/sd_diskio.c \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-tables.h \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-math.h \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-distortion.h \
- /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-dynamics.h \
- /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-analysis.h \
- /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-distortion.h \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-filters.h \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-delay.h \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-tables.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-dynamics.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-analysis.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-distortion.h \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-envelopes.h \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-oscillators.h \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-filters.h \
@@ -74,8 +74,9 @@ FATFS/Target/sd_diskio.o: ../FATFS/Target/sd_diskio.c \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-sampling.h \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-physical.h \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-electrical.h \
- ../Core/Inc/main.h ../FATFS/Target/bsp_driver_sd.h \
- ../FATFS/Target/fatfs_platform.h ../FATFS/Target/sd_diskio.h
+ /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-vocal.h ../Core/Inc/main.h \
+ ../FATFS/Target/bsp_driver_sd.h ../FATFS/Target/fatfs_platform.h \
+ ../FATFS/Target/sd_diskio.h
 ../Middlewares/Third_Party/FatFs/src/ff_gen_drv.h:
 ../Middlewares/Third_Party/FatFs/src/diskio.h:
 ../Middlewares/Third_Party/FatFs/src/integer.h:
@@ -133,12 +134,12 @@ FATFS/Target/sd_diskio.o: ../FATFS/Target/sd_diskio.c \
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-tables.h:
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-math.h:
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-distortion.h:
-/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-dynamics.h:
-/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-analysis.h:
-/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-distortion.h:
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-filters.h:
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-delay.h:
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-tables.h:
+/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-dynamics.h:
+/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-analysis.h:
+/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-distortion.h:
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-envelopes.h:
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-oscillators.h:
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-filters.h:
@@ -154,6 +155,7 @@ FATFS/Target/sd_diskio.o: ../FATFS/Target/sd_diskio.c \
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-sampling.h:
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-physical.h:
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-electrical.h:
+/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-vocal.h:
 ../Core/Inc/main.h:
 ../FATFS/Target/bsp_driver_sd.h:
 ../FATFS/Target/fatfs_platform.h:

@@ -49,12 +49,12 @@ Core/Src/audio.o: ../Core/Src/audio.c ../Core/Inc/main.h \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-tables.h \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-math.h \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-distortion.h \
- /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-dynamics.h \
- /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-analysis.h \
- /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-distortion.h \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-filters.h \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-delay.h \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-tables.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-dynamics.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-analysis.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-distortion.h \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-envelopes.h \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-oscillators.h \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-filters.h \
@@ -70,9 +70,10 @@ Core/Src/audio.o: ../Core/Src/audio.c ../Core/Inc/main.h \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-sampling.h \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-physical.h \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-electrical.h \
- ../Core/Inc/main.h ../Core/Inc/codec.h ../Core/Inc/i2c.h \
- ../Core/Inc/gpio.h ../Core/Inc/spi.h ../Core/Inc/parameters.h \
- ../Core/Inc/audio.h ../Drivers/CMSIS/DSP/Include/arm_math.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-vocal.h ../Core/Inc/main.h \
+ ../Core/Inc/codec.h ../Core/Inc/i2c.h ../Core/Inc/gpio.h \
+ ../Core/Inc/spi.h ../Core/Inc/parameters.h ../Core/Inc/audio.h \
+ ../Drivers/CMSIS/DSP/Include/arm_math.h \
  ../Drivers/CMSIS/Include/cmsis_compiler.h
 ../Core/Inc/main.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h:
@@ -126,12 +127,12 @@ Core/Src/audio.o: ../Core/Src/audio.c ../Core/Inc/main.h \
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-tables.h:
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-math.h:
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-distortion.h:
-/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-dynamics.h:
-/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-analysis.h:
-/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-distortion.h:
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-filters.h:
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-delay.h:
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-tables.h:
+/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-dynamics.h:
+/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-analysis.h:
+/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-distortion.h:
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-envelopes.h:
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-oscillators.h:
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-filters.h:
@@ -147,6 +148,7 @@ Core/Src/audio.o: ../Core/Src/audio.c ../Core/Inc/main.h \
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-sampling.h:
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-physical.h:
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-electrical.h:
+/Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-vocal.h:
 ../Core/Inc/main.h:
 ../Core/Inc/codec.h:
 ../Core/Inc/i2c.h:

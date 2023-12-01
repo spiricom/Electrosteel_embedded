@@ -30,5 +30,6 @@ FATFS/Target \
 Middlewares/Third_Party/FatFs/src \
 Middlewares/Third_Party/FatFs/src/option \
 leaf/Externals \
+leaf/Inc \
 leaf/Src \
 

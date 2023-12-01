@@ -41,7 +41,8 @@ leaf/Src/leaf-effects.o: \
  /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-analysis.h \
  /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-physical.h \
  /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-dynamics.h \
- /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-electrical.h
+ /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-electrical.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-vocal.h
 /Users/jeffsnyder/dev/LEAF/leaf/Src/../Inc/leaf-effects.h:
 /Users/jeffsnyder/dev/LEAF/leaf/Src/../Inc/leaf-global.h:
 /Users/jeffsnyder/dev/LEAF/leaf/Src/../Inc/leaf-mempool.h:
@@ -84,3 +85,4 @@ leaf/Src/leaf-effects.o: \
 /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-physical.h:
 /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-dynamics.h:
 /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-electrical.h:
+/Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-vocal.h:
