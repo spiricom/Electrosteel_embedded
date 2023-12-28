@@ -9,6 +9,9 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
+-include leaf/build/Src/subdir.mk
+-include leaf/build/Externals/subdir.mk
+-include leaf/build/subdir.mk
 -include leaf/Src/subdir.mk
 -include leaf/Externals/subdir.mk
 -include Middlewares/Third_Party/FatFs/src/option/subdir.mk
@@ -16,7 +19,6 @@ RM := rm -rf
 -include FATFS/Target/subdir.mk
 -include FATFS/App/subdir.mk
 -include Drivers/STM32H7xx_HAL_Driver/Src/subdir.mk
--include Core/Startup/subdir.mk
 -include Core/Src/subdir.mk
 -include Core/Inc/subdir.mk
 -include objects.mk

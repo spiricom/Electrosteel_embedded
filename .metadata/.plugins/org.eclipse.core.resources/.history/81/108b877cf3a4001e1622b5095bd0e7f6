@@ -1,0 +1,292 @@
+/*
+ * additive.c
+ *
+ *  Created on: Dec 27, 2023
+ *      Author: jeffsnyder
+ */
+
+
+
+
+#include "main.h"
+#include "leaf.h"
+#include "codec.h"
+#include "i2c.h"
+#include "gpio.h"
+#include "spi.h"
+#include "parameters.h"
+#include "audiostream.h"
+#include "arm_math.h"
+#include "additive.h"
+
+
+
+
+void __ATTR_ITCMRAM audioInitAdditive()
+{
+	invNumOvertones = 1.0f / NUM_OVERTONES;
+	for (int i = 0; i < NUM_OVERTONES; i++)
+	{
+		totalGain[0] += partials[i];
+		totalGain[1] += partialsHigh[i];
+		for (int j = 0; j < 3; j++)
+		{
+			for (int k = 0; k < 3; k++)
+			{
+				totalGain_s[j][k] += stringPartialGains[j][k][i];
+			}
+		}
+	}
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			gainNormalizers_s[i][j] = 1.0f / totalGain_s[i][j];
+		}
+	}
+	gainNormalizers[0] = 1.0f / totalGain[0];
+	gainNormalizers[1] = 1.0f / totalGain[1];
+	for (int i = 0; i < NUM_OVERTONES; i++)
+	{
+		partials[i] = partials[i] * gainNormalizers[0];
+		partialsHigh[i] = partialsHigh[i] * gainNormalizers[1];
+		for (int j = 0; j < 3; j++)
+		{
+			for (int k = 0; k < 3; k++)
+			{
+				stringPartialGains[j][k][i] *= gainNormalizers_s[j][k];
+			}
+		}
+	}
+	for (int i = 0; i < NUM_OVERTONES; i++)
+	{
+		  decayAfParts[i] = (((1.0f/partialDecaysHigh[i])-(1.0f/partialDecays[i])) * 0.004048582995951f);  // divided by 370-123 = 247. value is 1/247
+		  decayAf1[i] = decayAfParts[i] * 123.0f;
+		  decayBs[i] = (1.0f/partialDecays[i]) - decayAf1[i];
+		  for (int j = 0; j < 3; j++)
+		  {
+			  for (int k = 0; k < 2; k++)
+			  {
+				  float tempDivisor = (stringFundamentals[j][k+1] -  stringFundamentals[j][k]);
+				  dAp[j][k][i] = ((1.0f / stringDecays[j][k+1][i]) - (1.0f / stringDecays[j][k][i])) / tempDivisor;
+
+				  dAi[j][k][i] = dAp[j][k][i] * stringFundamentals[j][k];
+
+				  dBs[j][k][i] = (1.0f/stringDecays[j][k][i]) - dAi[j][k][i];
+			  }
+		  }
+	}
+	for (int i = 0; i < NUM_STRINGS_PER_BOARD; i++)
+	{
+		for (int j = 0; j < NUM_OVERTONES; j++)
+		{
+			tCycle_init(&additive[i][j], &leaf);
+			tADSRT_init(&additiveEnv[i][j], 5.0f, partialDecays[j] * 1000.0f, 0.0f, 150.0f, decayExpBuffer, DECAY_EXP_BUFFER_SIZE, &leaf);
+		}
+		//tExpSmooth_init(&stringFreqSmoothers[i],1.0f, 0.05f, &leaf);
+	}
+}
+
+
+void __ATTR_ITCMRAM audioFreeAdditive()
+{
+
+}
+
+void __ATTR_ITCMRAM audioFrameAdditive(uint16_t buffer_offset)
+{
+	//HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_SET);
+	uint32_t tempCountFrame = DWT->CYCCNT;
+	int32_t current_sample = 0;
+	if (newPluck)
+	{
+		for (int i = 0; i < numStringsThisBoard; i++)
+		{
+			if ((previousStringInputs[i] == 0) && (stringInputs[i] > 0))
+			{
+				float amplitz = stringInputs[i] * 0.000015259021897f;
+
+				stringOctave[i] = octave;
+				//HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_SET);
+
+				tADSRT_on(&fenvelopes[i], amplitz);
+				stringFrequencies[i] = mtof(stringMIDIPitches[i]+ stringOctave[i]);
+				//float thisDecay = 1.0f / ((decayAfParts[j] * stringFrequencies[i]) + decayBs[j]);
+				float thisDecay;
+				//float thisGain = map(LEAF_clip(132.0f, stringFrequencies[i], 370.0f), 123.0f, 370.0f, partials[j], partialsHigh[j]);
+				float d1;
+				float d2;
+				float thisGain;
+				int thisString = i + firstString;
+				float stringFade;
+				float fakedFreq = stringFrequencies[i] * ((knobScaled[2] * 3.5f) + 0.5f);
+				float height2 = 0.0f;
+				float height1 = 0.0f;
+				if (thisString < 6)
+				{
+					stringFade = (float)thisString * 0.2f;
+					height2 = LEAF_clip(0.0f, LEAF_map(fakedFreq, stringFundamentals[2][0], stringFundamentals[2][2], 0.0f, 2.0f), 1.99f);
+					height1 = LEAF_clip(0.0f, LEAF_map(fakedFreq, stringFundamentals[1][0], stringFundamentals[1][2], 0.0f, 2.0f), 1.99f);
+				}
+				else
+				{
+					stringFade = (float)(thisString - 6.0f) * 0.2f;
+					height2 = LEAF_clip(0.0f, LEAF_map(fakedFreq, stringFundamentals[1][0], stringFundamentals[1][2], 0.0f, 2.0f), 1.99f);
+					height1 = LEAF_clip(0.0f, LEAF_map(fakedFreq, stringFundamentals[0][0], stringFundamentals[0][2], 0.0f, 2.0f), 1.99f);
+				}
+				//float fakedFreq = stringFrequencies[i];
+				//float height2 = LEAF_clip(0.0f,(barInMIDI[0] *  0.083333333333333f) + stringOctave[i] + (knobScaled[2] * 2.0f), 1.99f);
+				//float height1 = height2;
+				int height1Int = floor(height1);
+				float height1Float = height1 - height1Int;
+				int height2Int = floor(height2);
+				float height2Float = height2 - height2Int;
+				for (int j = 0; j < NUM_OVERTONES; j++)
+				{
+					if (thisString < 6)
+					{
+						float x1 =  (stringPartialGains[1][height1Int][j] * (1.0f - height1Float)) + (stringPartialGains[1][height1Int + 1][j] * height1Float);
+						float x2 =  (stringPartialGains[2][height2Int][j] * (1.0f - height2Float)) + (stringPartialGains[2][height2Int + 1][j] * height2Float);
+						thisGain = (x1 * stringFade) + (x2 * (1.0f - stringFade));
+
+
+						if (height2 < 1.0f)
+						{
+							d2 = 1.0f / ((dAp[2][0][j] * LEAF_clip(stringFundamentals[2][0], fakedFreq, stringFundamentals[2][1])) + dBs[2][0][j]);
+						}
+						else
+						{
+							d2 = 1.0f / ((dAp[2][1][j] * LEAF_clip(stringFundamentals[2][1], fakedFreq, stringFundamentals[2][2])) + dBs[2][1][j]);
+						}
+
+						if (height1 < 1.0f)
+						{
+							d1 = 1.0f / ((dAp[1][0][j] * LEAF_clip(stringFundamentals[1][0], fakedFreq, stringFundamentals[1][1])) + dBs[1][0][j]);
+						}
+						else
+						{
+							d1 = 1.0f / ((dAp[1][1][j] * LEAF_clip(stringFundamentals[1][1], fakedFreq, stringFundamentals[1][2])) + dBs[1][1][j]);
+						}
+
+						thisDecay = (d1 * stringFade) + (d2 * (1.0f - stringFade));
+					}
+					else
+					{
+
+
+						float x1 =  stringPartialGains[0][height1Int][j] + (stringPartialGains[1][height1Int + 1][j] * height1Float);
+						float x2 =  stringPartialGains[1][height2Int][j] + (stringPartialGains[2][height2Int + 1][j] * height2Float);
+						thisGain = (x1 * stringFade) + (x2 * (1.0f - stringFade));
+
+						if (height2 < 1.0f)
+						{
+							d2 = 1.0f / ((dAp[1][0][j] * LEAF_clip(stringFundamentals[1][0], fakedFreq, stringFundamentals[1][1])) + dBs[1][0][j]);
+						}
+						else
+						{
+							d2 = 1.0f / ((dAp[1][1][j] * LEAF_clip(stringFundamentals[1][1], fakedFreq, stringFundamentals[1][2])) + dBs[1][1][j]);
+						}
+
+						if (height1 < 1.0f)
+						{
+							d1 = 1.0f / ((dAp[0][0][j] * LEAF_clip(stringFundamentals[0][0], fakedFreq, stringFundamentals[0][1])) + dBs[0][0][j]);
+						}
+						else
+						{
+							d1 = 1.0f / ((dAp[0][1][j] * LEAF_clip(stringFundamentals[0][1], fakedFreq, stringFundamentals[0][2])) + dBs[0][1][j]);
+						}
+
+						thisDecay = (d1 * stringFade) + (d2 * (1.0f - stringFade));
+					}
+					thisDecay *= 2000.0f * knobScaled[3];
+					tADSRT_setDecay(&additiveEnv[i][j], thisDecay + (randomFactors[currentRandom] * knobScaled[5] * 0.1f));// * randomFactors[currentRandom]);
+					currentRandom++;
+					tADSRT_on(&additiveEnv[i][j], amplitz * (thisGain + (randomFactors[currentRandom] * knobScaled[6] * 0.1f)));
+					currentRandom++;
+				}
+			}
+			else if ((previousStringInputs[i] > 0) && (stringInputs[i] == 0))
+			{
+				//note off
+				//HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_RESET);
+				for (int j = 0; j < NUM_OVERTONES; j++)
+				{
+					tADSRT_off(&additiveEnv[i][j]);
+				}
+				tADSRT_off(&fenvelopes[i]);
+			}
+			previousStringInputs[i] = stringInputs[i];
+		}
+		newPluck = 0;
+	}
+
+
+		//mono operation, no need to compute right channel. Also for loop iterating by 2 instead of 1 to avoid if statement.
+	for (int i = 0; i < HALF_BUFFER_SIZE; i+=2)
+	{
+		current_sample = (int32_t)(audioTickAdditive() * TWO_TO_23);
+		audioOutBuffer[buffer_offset + i] = current_sample;
+		audioOutBuffer[buffer_offset + i + 1] = current_sample;
+	}
+
+	if (switchStrings)
+	{
+		switchStringModel(switchStrings);
+	}
+	switchStrings = 0;
+	timeFrame = DWT->CYCCNT - tempCountFrame;
+	frameLoadPercentage = (float)timeFrame * frameLoadMultiplier;
+	//HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_RESET);
+}
+
+
+float __ATTR_ITCMRAM audioTickAdditive(void)
+{
+	float tempSamp = 0.0f;
+	for (int i = 0; i < 12; i++)
+	{
+		knobScaled[i] = tExpSmooth_tick(&knobSmoothers[i]);
+	}
+
+	float filtNoise = tVZFilter_tickEfficient(&noiseFilt, tNoise_tick(&myNoise));
+	filtNoise += tVZFilter_tickEfficient(&noiseFilt2, tNoise_tick(&myNoise));
+
+
+	float volumeSmoothed = tExpSmooth_tick(&volumeSmoother);
+	//float Env2 = 0.0f;
+	for (int i = 0; i < numStringsThisBoard; i++)
+	{
+		float noiseEnv = tADSRT_tick(&fenvelopes[i]); //noise envelope
+		tempSamp += filtNoise * noiseEnv * knobScaled[7];
+		stringFrequencies[i] = mtof(stringMIDIPitches[i]+ stringOctave[i]);
+		for (int j = 0; j < NUM_OVERTONES; j++)
+		{
+			float thisEnv = tADSRT_tick(&additiveEnv[i][j]);
+			float tempFreq = stringFrequencies[i] * (j+1) * ((knobScaled[4]* 0.003f * j) + 1.0f);// * ((Env2 * knobScaled[5])+ 1.0f);
+			//float tempFreq = 0.0f;
+			float tempGain = ((tempFreq - 15000.0f) * 0.00025f);
+			//float tempGain = LEAF_map(tempFreq, 15000.0f, 19000.0f, 0.0, 1.0f);
+			tempGain = LEAF_clip(0.0f, (1.0f-tempGain), 1.0f);
+			tCycle_setFreq(&additive[i][j], tempFreq);
+			//float upRamp = (j * invNumOvertones);
+			//float downRamp = 1.0f - (j * invNumOvertones);
+			//float freqWeight = (upRamp * knobScaled[0]) + (downRamp * (1.0f - knobScaled[0]));
+			tempSamp += tCycle_tick(&additive[i][j]) * thisEnv;// * freqWeight;
+
+		}
+
+
+	}
+
+	float volIdx = LEAF_clip(47.0f, ((volumeSmoothed * 80.0f) + 47.0f), 127.0f);
+	//float volIdx = LEAF_clip(0.0f, ((volumeSmoothed * 80.0f)), 127.0f);
+	int volIdxInt = (int) volIdx;
+	float alpha = volIdx-volIdxInt;
+	int volIdxIntPlus = (volIdxInt + 1) & 127;
+	float omAlpha = 1.0f - alpha;
+	float outVol = volumeAmps128[volIdxInt] * omAlpha;
+	outVol += volumeAmps128[volIdxIntPlus] * alpha;
+	tempSamp *= outVol;
+	tempSamp *= masterVolFromBrain;
+	return tempSamp;
+}

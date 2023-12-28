@@ -826,7 +826,7 @@ void audioInit()
 			tExpSmooth_init(&mapSmoothers[i][v], 0.0f, 0.005f, &leaf);
 		}
 
-		tVoc_init(&vocal[v], 22, &leaf);
+		tVoc_init(&vocal[v], 22, 22, &leaf);
 		arm_fir_interpolate_init_f32(&osI[v],2,32,__leaf_table_fir2XLow, intState[v],1);
 		arm_fir_decimate_init_f32(&osD[v],32, 2,__leaf_table_fir2XLow, decState[v],2);
 
@@ -1730,8 +1730,8 @@ float  __ATTR_ITCMRAM audioTickString2(void)
 
 		tSimpleLivingString5_setFFAmount(&strings[i], knobScaled[7]);
 
-		tSimpleLivingString5_setFBAmount(&strings[i], knobScaled[8]);
-		tSimpleLivingString5_setFoldDepth(&strings[i], knobScaled[9]);
+		//tSimpleLivingString5_setFBAmount(&strings[i], knobScaled[8]);
+		//tSimpleLivingString5_setFoldDepth(&strings[i], knobScaled[9]);
 
 		//tSimpleLivingString5_setBrightness(&strings[i], knobScaled[9]);
 		tSimpleLivingString5_setPluckPosition(&strings[i], knobScaled[2]);

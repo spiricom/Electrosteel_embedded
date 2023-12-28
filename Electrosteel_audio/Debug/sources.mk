@@ -25,7 +25,6 @@ OBJCOPY_BIN :=
 SUBDIRS := \
 Core/Inc \
 Core/Src \
-Core/Startup \
 Drivers/STM32H7xx_HAL_Driver/Src \
 FATFS/App \
 FATFS/Target \
@@ -33,4 +32,7 @@ Middlewares/Third_Party/FatFs/src \
 Middlewares/Third_Party/FatFs/src/option \
 leaf/Externals \
 leaf/Src \
+leaf/build/Externals \
+leaf/build/Src \
+leaf/build \
 

@@ -23,10 +23,24 @@ enum SPIMessage
 	ReceivingKnobs,
 	LoadingPreset,
 	WaitingForLoadAck,
+	ReceivingSingleParamChange,
+	ReceivingMappingChange,
+	ReceivingPresetRequestCommand,
+	ReceivingBootloadCommand,
+	ReceivingVolume,
+	ReceivingBrainFirmwareUpdateRequest,
+	ReceivingPluckFirmwareUpdateRequest,
 	ReceivingEnd =  253
 };
+
+enum MappingChangeTypes
+{
+	SourceID = 0,
+	Amount,
+	ScalarID
+};
 //selectable type number of possible values
-#define NUM_OSC_SHAPES 7
+#define NUM_OSC_SHAPES 6
 #define NUM_FILTER_TYPES 9
 #define NUM_LFO_SHAPES LFOShapeSetNum
 #define NUM_EFFECT_TYPES FXTypeNil
@@ -38,6 +52,7 @@ enum SPIMessage
 #define ENVELOPE_PARAMS_OFFSET 108
 #define LFO_PARAMS_OFFSET 132
 #define FXPREPOST_PARAMS_OFFSET 154
+#define MACRO_PARAMS_OFFSET 3
 
 //number of modules
 #define NUM_OSC 3
@@ -46,23 +61,29 @@ enum SPIMessage
 #define NUM_ENV 4
 #define NUM_LFOS 4
 #define NUM_EFFECT 4
+#define NUM_MACROS 8
+#define NUM_CONTROL 4
 
 #define NUM_STRINGS 12
 #define NUM_STRINGS_PER_BOARD 2
 
 //mapping array defines
 #define NUM_POSSIBLE_HOOKS 3
-#define NUM_SOURCES 28
+#define NUM_SOURCES 38
+
+
 
 #define OSC_SOURCE_OFFSET 0
 #define NOISE_SOURCE_OFFSET 3
 #define MACRO_SOURCE_OFFSET 4
 #define CTRL_SOURCE_OFFSET 12
+#define EXPRESSION_PEDAL_SOURCE_OFFSET 16
 #define MIDI_KEY_SOURCE_OFFSET 17
 #define VELOCITY_SOURCE_OFFSET 18
 #define RANDOM_SOURCE_OFFSET 19
 #define ENV_SOURCE_OFFSET 20
 #define LFO_SOURCE_OFFSET 24
+#define PEDAL_SOURCE_OFFSET 28
 
 
 //struct for every parameter
@@ -110,6 +131,7 @@ typedef struct mapping
 	uint8_t sourceSmoothed[NUM_POSSIBLE_HOOKS];
 	float* scalarSourceValPtr[NUM_POSSIBLE_HOOKS][NUM_STRINGS_PER_BOARD];
 	float amount[NUM_POSSIBLE_HOOKS];
+	uint8_t hookActive[3];
 	uint8_t numHooks;
 } mapping;
 
@@ -196,14 +218,16 @@ typedef enum _FXType
     None = 0,
     Softclip,
     Hardclip,
+	PolynomialShaper,
     ABSaturator,
     Tanh,
-    Shaper,
+    Shaper2,
     Compressor,
     Chorus,
     Bitcrush,
     TiltFilter,
     Wavefolder,
+	Delay,
 	FXLowpass,
 	FXHighpass,
 	FXBandpass,
@@ -217,6 +241,8 @@ typedef enum _FXType
 } FXType;
 
 
+
+//TODO: remove M1 through Ped, shouldn't be params or destinations
 enum ParamNames
 {
 	MIDIKeyMax,
@@ -374,6 +400,7 @@ enum ParamNames
 	OutputAmp,
 	OutputTone,
 	FXOrder,
+	PedalControlsMaster,
 	numParams
 };
 

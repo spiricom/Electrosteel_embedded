@@ -61,7 +61,6 @@ void MX_SAI1_Init(void)
   {
     Error_Handler();
   }
-
   hsai_BlockB1.Instance = SAI1_Block_B;
   hsai_BlockB1.Init.AudioMode = SAI_MODESLAVE_RX;
   hsai_BlockB1.Init.Synchro = SAI_SYNCHRONOUS;
@@ -75,7 +74,6 @@ void MX_SAI1_Init(void)
   {
     Error_Handler();
   }
-
   /* USER CODE BEGIN SAI1_Init 2 */
 
   /* USER CODE END SAI1_Init 2 */

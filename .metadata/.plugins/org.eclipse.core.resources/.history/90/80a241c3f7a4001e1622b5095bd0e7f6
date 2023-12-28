@@ -1,0 +1,21 @@
+/*
+ * synth.h
+ *
+ *  Created on: Dec 27, 2023
+ *      Author: jeffsnyder
+ */
+
+#ifndef SRC_SYNTH_H_
+#define SRC_SYNTH_H_
+
+#include "parameters.h"
+#include "leaf.h"
+#include "main.h"
+#include "audiostream.h"
+
+void audioFrameSynth(uint16_t buffer_offset);
+float audioTickSynth(void);
+void audioInitSynth();
+void  audioFreeSynth();
+
+#endif /* SRC_SYNTH_H_ */
