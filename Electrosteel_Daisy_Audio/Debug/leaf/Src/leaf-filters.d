@@ -8,6 +8,7 @@ leaf/Src/leaf-filters.o: \
  /Users/jeffsnyder/dev/LEAF/leaf/Src/../Inc/leaf-delay.h \
  /Users/jeffsnyder/dev/LEAF/leaf/Src/../Inc/leaf-tables.h \
  /Users/jeffsnyder/dev/LEAF/leaf/Src/../Inc/leaf-tables.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/Src/../Inc/leaf-math.h \
  /Users/jeffsnyder/dev/LEAF/leaf/Src/../leaf.h \
  /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-global.h \
  /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-math.h \
@@ -50,6 +51,7 @@ leaf/Src/leaf-filters.o: \
 /Users/jeffsnyder/dev/LEAF/leaf/Src/../Inc/leaf-delay.h:
 /Users/jeffsnyder/dev/LEAF/leaf/Src/../Inc/leaf-tables.h:
 /Users/jeffsnyder/dev/LEAF/leaf/Src/../Inc/leaf-tables.h:
+/Users/jeffsnyder/dev/LEAF/leaf/Src/../Inc/leaf-math.h:
 /Users/jeffsnyder/dev/LEAF/leaf/Src/../leaf.h:
 /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-global.h:
 /Users/jeffsnyder/dev/LEAF/leaf/Src/.././Inc/leaf-math.h:

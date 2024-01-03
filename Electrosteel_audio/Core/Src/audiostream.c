@@ -49,7 +49,7 @@ volatile uint32_t newBar = 0 ;
 
 
 
-uint8_t numStrings = 12; //TODO FIX THIS!
+uint8_t numStrings = 10; //TODO FIX THIS!
 
 volatile uint16_t previousStringInputs[12];
 

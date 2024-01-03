@@ -21,20 +21,21 @@
 
 
 tTString strings[NUM_STRINGS_PER_BOARD];
-
+tExpSmooth string2PitchSmoother[NUM_STRINGS_PER_BOARD];
 
 void __ATTR_ITCMRAM audioInitString2()
 {
 
 	for (int v = 0; v < numStringsThisBoard; v++)
 	{
-		 tTString_initToPool(&strings[v], 4, &mediumPool);
+		 tTString_initToPool(&strings[v], 4, 25.0f, &mediumPool);
 		 tTString_setHarmonicity(&strings[v], 0.00001f, 100.0f);
 		//tSimpleLivingString5_setBrightness(&strings[v], .99f);
 		//tSimpleLivingString5_setPluckPosition(&strings[v], .5f);
 		//tSimpleLivingString5_setPrepPosition(&strings[v], .4f);
 		//tSimpleLivingString5_setPrepIndex(&strings[v], 0.0f);
 		//tSimpleLivingString5_setPickupPoint(&strings[v], 1.0f);
+		 tExpSmooth_init(&string2PitchSmoother[v], 220.0f, 0.0001f, &leaf);
 	}
 	whichStringModelLoaded = String2Loaded;
 }
@@ -44,6 +45,7 @@ void __ATTR_ITCMRAM audioFreeString2()
 {
 	for (int v = 0; v < numStringsThisBoard; v++)
 	{
+		tExpSmooth_free(&string2PitchSmoother[v]);
 		tTString_free(&strings[v]);
 	}
 }
@@ -100,7 +102,7 @@ uint32_t thisFrameCount = 0;
 float __ATTR_ITCMRAM audioTickString2(void)
 {
 	float temp = 0.0f;
-	float note[numStringsThisBoard];
+	float theNote[NUM_STRINGS_PER_BOARD];
 
 	float volumeSmoothed = tExpSmooth_tick(&volumeSmoother);
 
@@ -119,21 +121,21 @@ float __ATTR_ITCMRAM audioTickString2(void)
 						stringOctave[i] = octave;
 						tADSRT_on(&fenvelopes[i], amplitz);
 
-						note[i] = stringMIDIPitches[i] + stringOctave[i];
+						theNote[i] = stringMIDIPitches[i] + stringOctave[i];
 
-						if (note[i] < 0.0f)
+						if (theNote[i] < 0.0f)
 						{
-							note[i] = 0.0f;
+							theNote[i] = 0.0f;
 						}
-						if (note[i] > 127.0f)
+						if (theNote[i] > 127.0f)
 						{
-							note[i] = 127.0f;
+							theNote[i] = 127.0f;
 						}
-						if (isnan(note[i]))
+						if (isnan(theNote[i]))
 						{
-							note[i] = 64.0f;
+							theNote[i] = 64.0f;
 						}
-						float finalFreq = mtofTableLookup(note[i]);
+						float finalFreq = mtofTableLookup(theNote[i]);
 						tTString_setFreq(&strings[i], finalFreq);
 						//tSimpleLivingString5_setLevMode(&strings[i], (knobScaled[0] > 0.5f));
 
@@ -157,25 +159,25 @@ float __ATTR_ITCMRAM audioTickString2(void)
 			}
 	for (int i = 0; i < numStringsThisBoard; i++)
 	{
-		note[i] = stringMIDIPitches[i] + stringOctave[i];
+		theNote[i] = stringMIDIPitches[i] + stringOctave[i];
 
-		if (note[i] < 0.0f)
+		if (theNote[i] < 0.0f)
 		{
-			note[i] = 0.0f;
+			theNote[i] = 0.0f;
 		}
-		if (note[i] > 127.0f)
+		if (theNote[i] > 127.0f)
 		{
-			note[i] = 127.0f;
+			theNote[i] = 127.0f;
 		}
-		if (isnan(note[i]))
+		if (isnan(theNote[i]))
 		{
-			note[i] = 64.0f;
+			theNote[i] = 64.0f;
 		}
 
 		//float filtNoise = tVZFilter_tickEfficient(&noiseFilt, tNoise_tick(&myNoise));
 		//filtNoise += tVZFilter_tickEfficient(&noiseFilt2, tNoise_tick(&myNoise));
 
-		float env = tADSRT_tick(&fenvelopes[i]); //noise envelope
+		//float env = tADSRT_tick(&fenvelopes[i]); //noise envelope
 
 		//tSimpleLivingString5_setPickupPoint(&strings[i],knobScaled[5]);
 		//tSimpleLivingString5_setDampFreq(&strings[i],knobScaled[6] * 40000.0f);
@@ -190,9 +192,9 @@ float __ATTR_ITCMRAM audioTickString2(void)
 		//tSimpleLivingString5_setBrightness(&strings[i], knobScaled[9]);
 		//tSimpleLivingString5_setPluckPosition(&strings[i], knobScaled[2]);
 
-		float pos1 = knobScaled[10];
-		float pos2 = knobScaled[11];
-		float alpha = i * 0.10f;
+		//float pos1 = knobScaled[10];
+		//float pos2 = knobScaled[11];
+		//float alpha = i * 0.10f;
 		//tSimpleLivingString5_setPrepPosition(&strings[i], pos1 * alpha + pos2 * (1.0f-alpha));
 
 		float barDelta = fabsf(barInMIDI[0]-prevBarInMIDI[0]);
@@ -210,36 +212,34 @@ float __ATTR_ITCMRAM audioTickString2(void)
 
 		float filtNoise = tVZFilter_tickEfficient(&noiseFilt2, tNoise_tick(&myNoise));
 		//filtNoise = tVZFilter_tickEfficient(&noiseFilt2, filtNoise);
-		float slideNoise = filtNoise * barDelta * knobScaled[1] * 200.0f;
+		float slideNoise = filtNoise * barDelta * knobScaled[1] * 20.0f;
 
-		float finalFreq = mtofTableLookup(note[i]);
+		float finalFreq = mtofTableLookup(theNote[i]);
 
 
 		if (thisFrameCount == 0)
 		{
-			float inHarm = LEAF_map(note[i], 20.0f, 76.0f, 0.002f, 0.0001f);
+			float inHarm = LEAF_map(theNote[i], 20.0f, 76.0f, 0.002f, 0.0001f);
 			inHarm = LEAF_clip(0.000001f, inHarm * knobScaled[1], 0.01f);
 			tTString_setHarmonicity(&strings[i], inHarm, finalFreq);
 		}
-
+		tTString_setTensionGain(&strings[i],knobScaled[4]);
+		tTString_setTensionSpeed(&strings[i],knobScaled[5]);
 		tTString_setDecay(&strings[i],knobScaled[0]);
 		//tSimpleLivingString5_setFreq(&strings[i], finalFreq);
+		tTString_setPhantomHarmonicsGain(&strings[i],knobScaled[8]);
+		tTString_setPickupPos(&strings[i],knobScaled[9]);
 
+		tTString_setPickupModFreq(&strings[i],(knobScaled[10]));
+
+		tTString_setPickupModAmp(&strings[i],knobScaled[11]);
 		tTString_setFreq(&strings[i], finalFreq);
 
 		tTString_setFilter(&strings[i], knobScaled[3]);
 
-
-
-		if (knobScaled[4] > 0.5f)
-		{
-			//tSimpleLivingString5_setPrepIndex(&strings[i], knobScaled[0] * env);
-		}
-		else
-		{
-			//tSimpleLivingString5_setPrepIndex(&strings[i], knobScaled[0]);
-		}
-
+		tTString_setHarmonic(&strings[i],(knobScaled[6] * 15.0f) + 2.0f);
+		tTString_setRippleDepth(&strings[i],knobScaled[7]);
+		tTString_setSlideGain(&strings[i],knobScaled[5] * 100.0f);
 		//temp += (tSimpleLivingString5_tick(&strings[i], slideNoise));//(filtNoise * env)));// + (prevSamp[i] * (0.001f * knobScaled[5]))));//filtNoise * theEnv) * env);
 		temp += tTString_tick(&strings[i]);
 	}
