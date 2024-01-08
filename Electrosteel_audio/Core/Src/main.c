@@ -519,7 +519,7 @@ int main(void)
 	  }
 #endif
 	  uint32_t rand;
-	  HAL_RNG_GenerateRandomNumber(&hrng, &rand);
+	  //HAL_RNG_GenerateRandomNumber(&hrng, &rand);
 
 	  if (rand > TWO_TO_31)
 	  {

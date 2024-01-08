@@ -12,7 +12,10 @@ leaf/Src/leaf-physical.o: \
  /Users/jeffsnyder/dev/LEAF/leaf/Src/../Inc/leaf-distortion.h \
  /Users/jeffsnyder/dev/LEAF/leaf/Src/../Inc/leaf-envelopes.h \
  /Users/jeffsnyder/dev/LEAF/leaf/Src/../Inc/leaf-analysis.h \
- /Users/jeffsnyder/dev/LEAF/leaf/Src/../Inc/leaf-dynamics.h
+ /Users/jeffsnyder/dev/LEAF/leaf/Src/../Inc/leaf-dynamics.h \
+ ../Drivers/CMSIS/DSP/Include/arm_math.h \
+ ../Drivers/CMSIS/Include/cmsis_compiler.h \
+ ../Drivers/CMSIS/Include/cmsis_gcc.h
 /Users/jeffsnyder/dev/LEAF/leaf/Src/../Inc/leaf-physical.h:
 /Users/jeffsnyder/dev/LEAF/leaf/Src/../Inc/leaf-global.h:
 /Users/jeffsnyder/dev/LEAF/leaf/Src/../Inc/leaf-mempool.h:
@@ -26,3 +29,6 @@ leaf/Src/leaf-physical.o: \
 /Users/jeffsnyder/dev/LEAF/leaf/Src/../Inc/leaf-envelopes.h:
 /Users/jeffsnyder/dev/LEAF/leaf/Src/../Inc/leaf-analysis.h:
 /Users/jeffsnyder/dev/LEAF/leaf/Src/../Inc/leaf-dynamics.h:
+../Drivers/CMSIS/DSP/Include/arm_math.h:
+../Drivers/CMSIS/Include/cmsis_compiler.h:
+../Drivers/CMSIS/Include/cmsis_gcc.h:
