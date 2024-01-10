@@ -178,7 +178,7 @@ uint8_t whichStringModelLoaded;
 //
 float stringOctave[NUM_STRINGS_PER_BOARD];
 float string1Defaults[12] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.3019f, 0.1764f, 0.7764f, 0.8155f};
-float string2Defaults[12] = {0.588158f, 0.15292f, 0.0f, .952854f, 0.34506f, 0.94892f, 0.0f, 0.0f, 0.3019f, 0.99f, 0.0f, 0.0f};
+float string2Defaults[12] = {0.5f, 0.15292f, 0.5f, .5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.7f, 0.6f, 0.0f, 0.0f};
 
 volatile float MIDIerror = 0.0f;
 
@@ -443,16 +443,18 @@ void __ATTR_ITCMRAM switchStringModel(int which)
 		{
 			audioFreeString2();
 			audioInitString1();
-			//load string1 default params:
-			for (int i = 0; i < 12; i++)
-			{
-				tExpSmooth_setValAndDest(&knobSmoothers[i], string1Defaults[i]);
-				knobFrozen[i] = 1;
-			}
-			tVZFilter_setFreq(&noiseFilt2, 3332.0f); //based on testing with knob values
 
-			audioFrameFunction = audioFrameString1;
 		}
+		//load string1 default params:
+		for (int i = 0; i < 12; i++)
+		{
+			tExpSmooth_setValAndDest(&knobSmoothers[i], string1Defaults[i]);
+			knobFrozen[i] = 1;
+		}
+		tVZFilter_setFreq(&noiseFilt2, 3332.0f); //based on testing with knob values
+
+		audioFrameFunction = audioFrameString1;
+		resetStringInputs = 1;
 	}
 
 
@@ -470,6 +472,7 @@ void __ATTR_ITCMRAM switchStringModel(int which)
 			knobFrozen[i] = 1;
 		}
 		audioFrameFunction = audioFrameString2;
+		resetStringInputs = 1;
 	}
 	presetReady = 1;
 	diskBusy = 0;
@@ -513,17 +516,13 @@ void __ATTR_ITCMRAM HAL_SAI_TxCpltCallback(SAI_HandleTypeDef *hsai)
 	{
 		if (voice == 63)
 		{
-
 			switchStrings = 1;
 			diskBusy = 0;
-			resetStringInputs = 1;
 		}
 		else if (voice == 62)
 		{
-
 			switchStrings = 2;
 			diskBusy = 0;
-			resetStringInputs = 1;
 		}
 		else if (voice == 61)
 		{
@@ -579,17 +578,13 @@ void __ATTR_ITCMRAM HAL_SAI_TxHalfCpltCallback(SAI_HandleTypeDef *hsai)
 	{
 		if (voice == 63)
 		{
-
 			switchStrings = 1;
 			diskBusy = 0;
-			resetStringInputs = 1;
 		}
 		else if (voice == 62)
 		{
-
 			switchStrings = 2;
 			diskBusy = 0;
-			resetStringInputs = 1;
 		}
 		else if (voice == 61)
 		{
@@ -613,7 +608,7 @@ void __ATTR_ITCMRAM HAL_SAI_TxHalfCpltCallback(SAI_HandleTypeDef *hsai)
 			presetWaitingToLoad = 1;
 			presetNumberToLoad = voice;
 			presetReady = 0;
-			if (prevVoice > 60)
+			if (prevVoice >= 60)
 			{
 				resetStringInputs = 1;
 			}

@@ -18,6 +18,5 @@ float audioTickString1(void);
 void audioInitString1();
 void  audioFreeString1();
 
-extern tSimpleLivingString3 livStr[NUM_STRINGS_PER_BOARD];
 
 #endif /* SRC_STRING1_H_ */

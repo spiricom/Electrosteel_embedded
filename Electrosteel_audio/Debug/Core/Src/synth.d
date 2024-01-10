@@ -3,14 +3,15 @@ Core/Src/synth.o: ../Core/Src/synth.c ../Core/Inc/main.h \
  ../Core/Inc/stm32h7xx_hal_conf.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_rcc.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_def.h \
- ../Drivers/CMSIS/Device/ST/STM32H7xx/Include/stm32h7xx.h \
- ../Drivers/CMSIS/Device/ST/STM32H7xx/Include/stm32h743xx.h \
- ../Drivers/CMSIS/Include/core_cm7.h \
- ../Drivers/CMSIS/Include/cmsis_version.h \
- ../Drivers/CMSIS/Include/cmsis_compiler.h \
- ../Drivers/CMSIS/Include/cmsis_gcc.h \
- ../Drivers/CMSIS/Include/mpu_armv7.h \
- ../Drivers/CMSIS/Device/ST/STM32H7xx/Include/system_stm32h7xx.h \
+ /Users/jeffsnyder/dev/CMSIS/Include/stm32h7xx.h \
+ /Users/jeffsnyder/dev/CMSIS/Include/stm32h743xx.h \
+ /Users/jeffsnyder/dev/CMSIS/Include/core_cm7.h \
+ /Users/jeffsnyder/dev/CMSIS/Include/cmsis_version.h \
+ /Users/jeffsnyder/dev/CMSIS/Include/cmsis_compiler.h \
+ /Users/jeffsnyder/dev/CMSIS/Include/cmsis_gcc.h \
+ /Users/jeffsnyder/dev/CMSIS/Include/mpu_armv7.h \
+ /Users/jeffsnyder/dev/CMSIS/Include/cachel1_armv7.h \
+ /Users/jeffsnyder/dev/CMSIS/Include/system_stm32h7xx.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_rcc_ex.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_gpio.h \
@@ -73,21 +74,52 @@ Core/Src/synth.o: ../Core/Src/synth.c ../Core/Inc/main.h \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-vocal.h ../Core/Inc/main.h \
  ../Core/Inc/codec.h ../Core/Inc/i2c.h ../Core/Inc/gpio.h \
  ../Core/Inc/spi.h ../Core/Inc/parameters.h ../Core/Inc/audiostream.h \
- ../Drivers/CMSIS/DSP/Include/arm_math.h \
- ../Drivers/CMSIS/Include/cmsis_compiler.h ../Core/Inc/synth.h
+ /Users/jeffsnyder/dev/CMSIS/Include/arm_math.h \
+ /Users/jeffsnyder/dev/CMSIS/Include/arm_math_types.h \
+ /Users/jeffsnyder/dev/CMSIS/Include/arm_math_memory.h \
+ /Users/jeffsnyder/dev/CMSIS/Include/dsp/none.h \
+ /Users/jeffsnyder/dev/CMSIS/Include/arm_math_types.h \
+ /Users/jeffsnyder/dev/CMSIS/Include/dsp/utils.h \
+ /Users/jeffsnyder/dev/CMSIS/Include/dsp/basic_math_functions.h \
+ /Users/jeffsnyder/dev/CMSIS/Include/arm_math_memory.h \
+ /Users/jeffsnyder/dev/CMSIS/Include/dsp/none.h \
+ /Users/jeffsnyder/dev/CMSIS/Include/dsp/utils.h \
+ /Users/jeffsnyder/dev/CMSIS/Include/dsp/interpolation_functions.h \
+ /Users/jeffsnyder/dev/CMSIS/Include/dsp/bayes_functions.h \
+ /Users/jeffsnyder/dev/CMSIS/Include/dsp/statistics_functions.h \
+ /Users/jeffsnyder/dev/CMSIS/Include/dsp/basic_math_functions.h \
+ /Users/jeffsnyder/dev/CMSIS/Include/dsp/fast_math_functions.h \
+ /Users/jeffsnyder/dev/CMSIS/Include/dsp/matrix_functions.h \
+ /Users/jeffsnyder/dev/CMSIS/Include/dsp/complex_math_functions.h \
+ /Users/jeffsnyder/dev/CMSIS/Include/dsp/statistics_functions.h \
+ /Users/jeffsnyder/dev/CMSIS/Include/dsp/controller_functions.h \
+ /Users/jeffsnyder/dev/CMSIS/Include/dsp/support_functions.h \
+ /Users/jeffsnyder/dev/CMSIS/Include/dsp/distance_functions.h \
+ /Users/jeffsnyder/dev/CMSIS/Include/dsp/matrix_functions.h \
+ /Users/jeffsnyder/dev/CMSIS/Include/dsp/svm_functions.h \
+ /Users/jeffsnyder/dev/CMSIS/Include/dsp/svm_defines.h \
+ /Users/jeffsnyder/dev/CMSIS/Include/dsp/fast_math_functions.h \
+ /Users/jeffsnyder/dev/CMSIS/Include/dsp/transform_functions.h \
+ /Users/jeffsnyder/dev/CMSIS/Include/dsp/complex_math_functions.h \
+ /Users/jeffsnyder/dev/CMSIS/Include/dsp/filtering_functions.h \
+ /Users/jeffsnyder/dev/CMSIS/Include/dsp/support_functions.h \
+ /Users/jeffsnyder/dev/CMSIS/Include/dsp/quaternion_math_functions.h \
+ /Users/jeffsnyder/dev/CMSIS/Include/dsp/window_functions.h \
+ ../Core/Inc/synth.h
 ../Core/Inc/main.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h:
 ../Core/Inc/stm32h7xx_hal_conf.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_rcc.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_def.h:
-../Drivers/CMSIS/Device/ST/STM32H7xx/Include/stm32h7xx.h:
-../Drivers/CMSIS/Device/ST/STM32H7xx/Include/stm32h743xx.h:
-../Drivers/CMSIS/Include/core_cm7.h:
-../Drivers/CMSIS/Include/cmsis_version.h:
-../Drivers/CMSIS/Include/cmsis_compiler.h:
-../Drivers/CMSIS/Include/cmsis_gcc.h:
-../Drivers/CMSIS/Include/mpu_armv7.h:
-../Drivers/CMSIS/Device/ST/STM32H7xx/Include/system_stm32h7xx.h:
+/Users/jeffsnyder/dev/CMSIS/Include/stm32h7xx.h:
+/Users/jeffsnyder/dev/CMSIS/Include/stm32h743xx.h:
+/Users/jeffsnyder/dev/CMSIS/Include/core_cm7.h:
+/Users/jeffsnyder/dev/CMSIS/Include/cmsis_version.h:
+/Users/jeffsnyder/dev/CMSIS/Include/cmsis_compiler.h:
+/Users/jeffsnyder/dev/CMSIS/Include/cmsis_gcc.h:
+/Users/jeffsnyder/dev/CMSIS/Include/mpu_armv7.h:
+/Users/jeffsnyder/dev/CMSIS/Include/cachel1_armv7.h:
+/Users/jeffsnyder/dev/CMSIS/Include/system_stm32h7xx.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_rcc_ex.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_gpio.h:
@@ -156,6 +188,35 @@ Core/Src/synth.o: ../Core/Src/synth.c ../Core/Inc/main.h \
 ../Core/Inc/spi.h:
 ../Core/Inc/parameters.h:
 ../Core/Inc/audiostream.h:
-../Drivers/CMSIS/DSP/Include/arm_math.h:
-../Drivers/CMSIS/Include/cmsis_compiler.h:
+/Users/jeffsnyder/dev/CMSIS/Include/arm_math.h:
+/Users/jeffsnyder/dev/CMSIS/Include/arm_math_types.h:
+/Users/jeffsnyder/dev/CMSIS/Include/arm_math_memory.h:
+/Users/jeffsnyder/dev/CMSIS/Include/dsp/none.h:
+/Users/jeffsnyder/dev/CMSIS/Include/arm_math_types.h:
+/Users/jeffsnyder/dev/CMSIS/Include/dsp/utils.h:
+/Users/jeffsnyder/dev/CMSIS/Include/dsp/basic_math_functions.h:
+/Users/jeffsnyder/dev/CMSIS/Include/arm_math_memory.h:
+/Users/jeffsnyder/dev/CMSIS/Include/dsp/none.h:
+/Users/jeffsnyder/dev/CMSIS/Include/dsp/utils.h:
+/Users/jeffsnyder/dev/CMSIS/Include/dsp/interpolation_functions.h:
+/Users/jeffsnyder/dev/CMSIS/Include/dsp/bayes_functions.h:
+/Users/jeffsnyder/dev/CMSIS/Include/dsp/statistics_functions.h:
+/Users/jeffsnyder/dev/CMSIS/Include/dsp/basic_math_functions.h:
+/Users/jeffsnyder/dev/CMSIS/Include/dsp/fast_math_functions.h:
+/Users/jeffsnyder/dev/CMSIS/Include/dsp/matrix_functions.h:
+/Users/jeffsnyder/dev/CMSIS/Include/dsp/complex_math_functions.h:
+/Users/jeffsnyder/dev/CMSIS/Include/dsp/statistics_functions.h:
+/Users/jeffsnyder/dev/CMSIS/Include/dsp/controller_functions.h:
+/Users/jeffsnyder/dev/CMSIS/Include/dsp/support_functions.h:
+/Users/jeffsnyder/dev/CMSIS/Include/dsp/distance_functions.h:
+/Users/jeffsnyder/dev/CMSIS/Include/dsp/matrix_functions.h:
+/Users/jeffsnyder/dev/CMSIS/Include/dsp/svm_functions.h:
+/Users/jeffsnyder/dev/CMSIS/Include/dsp/svm_defines.h:
+/Users/jeffsnyder/dev/CMSIS/Include/dsp/fast_math_functions.h:
+/Users/jeffsnyder/dev/CMSIS/Include/dsp/transform_functions.h:
+/Users/jeffsnyder/dev/CMSIS/Include/dsp/complex_math_functions.h:
+/Users/jeffsnyder/dev/CMSIS/Include/dsp/filtering_functions.h:
+/Users/jeffsnyder/dev/CMSIS/Include/dsp/support_functions.h:
+/Users/jeffsnyder/dev/CMSIS/Include/dsp/quaternion_math_functions.h:
+/Users/jeffsnyder/dev/CMSIS/Include/dsp/window_functions.h:
 ../Core/Inc/synth.h:

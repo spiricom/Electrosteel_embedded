@@ -14,7 +14,7 @@
 #include "spi.h"
 #include "parameters.h"
 #include "audiostream.h"
-#include "arm_math.h"
+#include <arm_math.h>
 #include "synth.h"
 
 
@@ -325,6 +325,7 @@ void __ATTR_ITCMRAM audioFrameSynth(uint16_t buffer_offset)
 			}
 		}
 		resetStringInputs = 0;
+		newPluck = 1;
 	}
 	if (newPluck)
 	{

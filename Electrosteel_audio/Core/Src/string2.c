@@ -21,7 +21,44 @@
 
 
 tTString strings[NUM_STRINGS_PER_BOARD];
-tExpSmooth string2PitchSmoother[NUM_STRINGS_PER_BOARD];
+
+Lfloat stringParams[10][3][3] =
+{
+
+
+		{
+				{416.0f, 8000.0f, 1.6f},{827.0f, 11560.0f, 0.72f},{1649.0f, 11760.0f, 0.64f}
+		},
+		{
+				{370.0f, 9350.0f, 1.0f},{740.0f, 10870.0f, 0.72f},{1470.0f, 11760.0f, 0.7f}
+		},
+		{
+				{330.0f, 7745.0f, 0.9f}, {660.0f, 9200.0f, 0.88f},{1330.0f, 11760.0f, 0.56f}
+		},
+		{
+				{308.0f, 9500.0f, 1.6f},{615.0f, 9020.0f, 1.4},{1236.0f, 11760.0f, 1.4f}
+		},
+		{
+				{247.0f, 7880.0f, 2.3f}, {495.0f, 9270.0f, 1.1}, {1000.0f, 11760.0f, 0.64f}
+		},
+		{
+				{208.0f, 5733.0f, 2.4f}, {416.0f, 5800.0f, 1.3f}, {837.0f, 11670.0f, 0.5f}
+		},
+		{
+				{185.0f, 5550.0f, 2.6f}, {368.0f, 7100.0f, 1.74f}, {740.0f, 10300.0f, 0.67f}
+		},
+		{
+				{164.0f, 6341.0f, 2.1f}, {327.0f, 5500.0f, 1.8f}, {655.0f, 9177.0f, 0.45f}
+		},
+		{
+				{146.0f, 6190.0f, 3.0f}, {293.0f, 4100.0f, 1.9f}, {586.0f, 8000.0f, 0.7f}
+		},
+		{
+				{123.0f, 5000.0f, 3.1f}, {247.0f, 6700.0f, 2.8f}, {486.0f, 6900.0f, 0.66f}
+		}
+};
+
+
 
 void __ATTR_ITCMRAM audioInitString2()
 {
@@ -30,12 +67,6 @@ void __ATTR_ITCMRAM audioInitString2()
 	{
 		 tTString_initToPool(&strings[v], 1, 15.0f, &mediumPool);
 		 tTString_setHarmonicity(&strings[v], 0.00001f, 100.0f);
-		//tSimpleLivingString5_setBrightness(&strings[v], .99f);
-		//tSimpleLivingString5_setPluckPosition(&strings[v], .5f);
-		//tSimpleLivingString5_setPrepPosition(&strings[v], .4f);
-		//tSimpleLivingString5_setPrepIndex(&strings[v], 0.0f);
-		//tSimpleLivingString5_setPickupPoint(&strings[v], 1.0f);
-		 tExpSmooth_init(&string2PitchSmoother[v], 220.0f, 0.0001f, &leaf);
 		 tTString_setTensionSpeed(&strings[v],0.7f);
 		 tTString_setTensionGain(&strings[v],0.99f);
 	}
@@ -47,7 +78,6 @@ void __ATTR_ITCMRAM audioFreeString2()
 {
 	for (int v = 0; v < numStringsThisBoard; v++)
 	{
-		tExpSmooth_free(&string2PitchSmoother[v]);
 		tTString_free(&strings[v]);
 	}
 }
@@ -63,32 +93,21 @@ void __ATTR_ITCMRAM audioFrameString2(uint16_t buffer_offset)
 			for (int i = 0; i < numStringsThisBoard; i++)
 			{
 				//note off
-				//tSimpleLivingString5_setTargetLev(&strings[i], 0.0f);
-				//tSimpleLivingString5_setLevMode(&strings[i], 0);
-				//tSimpleLivingString5_setDecay(&strings[i], 0.2f);
-				tADSRT_off(&fenvelopes[i]);
+				tTString_mute(&strings[i]);
 				previousStringInputs[i] = 0;
 			}
 			resetStringInputs = 0;
+			newPluck = 1;
 		}
-
-
-
 		//mono operation, no need to compute right channel. Also for loop iterating by 2 instead of 1 to avoid if statement.
 		for (int i = 0; i < HALF_BUFFER_SIZE; i+=2)
 		{
 			int iplusbuffer = buffer_offset + i;
-
-			//audioInputs[0] = ((float) (((int32_t)(audioInBuffer[iplusbuffer]<<8)))) * INV_TWO_TO_31;
-			//audioInputs[1] = ((float) (((int32_t)(audioInBuffer[iplusone]<<8)))) * INV_TWO_TO_31;
-
 			current_sample = (int32_t)(audioTickString2() * TWO_TO_23);
 			audioOutBuffer[iplusbuffer] = current_sample;
 			audioOutBuffer[iplusbuffer + 1] = current_sample;
 
 		}
-
-
 		if (switchStrings)
 		{
 			switchStringModel(switchStrings);
@@ -113,52 +132,41 @@ float __ATTR_ITCMRAM audioTickString2(void)
 		knobScaled[i] = tExpSmooth_tick(&knobSmoothers[i]);
 	}
 	if (newPluck)
+	{
+		for (int i = 0; i < numStringsThisBoard; i++)
+		{
+			if ((previousStringInputs[i] == 0) && (stringInputs[i] > 0))
 			{
-				for (int i = 0; i < numStringsThisBoard; i++)
+				float amplitz = stringInputs[i] * 0.000015259021897f;
+				stringOctave[i] = octave;
+
+				theNote[i] = stringMIDIPitches[i] + stringOctave[i];
+				if (theNote[i] < 0.0f)
 				{
-					if ((previousStringInputs[i] == 0) && (stringInputs[i] > 0))
-					{
-						float amplitz = stringInputs[i] * 0.000015259021897f;
-
-						stringOctave[i] = octave;
-						tADSRT_on(&fenvelopes[i], amplitz);
-
-						theNote[i] = stringMIDIPitches[i] + stringOctave[i];
-
-						if (theNote[i] < 0.0f)
-						{
-							theNote[i] = 0.0f;
-						}
-						if (theNote[i] > 127.0f)
-						{
-							theNote[i] = 127.0f;
-						}
-						if (isnan(theNote[i]))
-						{
-							theNote[i] = 64.0f;
-						}
-						float finalFreq = mtofTableLookup(theNote[i]);
-						tTString_setFreq(&strings[i], finalFreq);
-						//tSimpleLivingString5_setLevMode(&strings[i], (knobScaled[0] > 0.5f));
-
-						//tSimpleLivingString5_setTargetLev(&strings[i], knobScaled[1]);
-						tTString_pluck(&strings[i],  knobScaled[2], amplitz);
-						//tSimpleLivingString5_setDecay(&strings[i], knobScaled[3] * .2f + 0.9f);
-					}
-					else if ((previousStringInputs[i] > 0) && (stringInputs[i] == 0))
-					{
-						//note off
-						//tSimpleLivingString5_setTargetLev(&strings[i], 0.0f);
-						//tSimpleLivingString5_setLevMode(&strings[i], 0);
-						//tSimpleLivingString5_setDecay(&strings[i], 0.2f);
-
-						tTString_mute(&strings[i]);
-						tADSRT_off(&fenvelopes[i]);
-					}
-					previousStringInputs[i] = stringInputs[i];
+					theNote[i] = 0.0f;
 				}
-				newPluck = 0;
+				if (theNote[i] > 127.0f)
+				{
+					theNote[i] = 127.0f;
+				}
+				if (isnan(theNote[i]))
+				{
+					theNote[i] = 64.0f;
+				}
+				float finalFreq = mtofTableLookup(theNote[i]);
+				tTString_setFreq(&strings[i], finalFreq);
+				tTString_pluck(&strings[i],  knobScaled[2], amplitz);
+
 			}
+			else if ((previousStringInputs[i] > 0) && (stringInputs[i] == 0))
+			{
+				//note off
+				tTString_mute(&strings[i]);
+			}
+			previousStringInputs[i] = stringInputs[i];
+		}
+		newPluck = 0;
+	}
 	for (int i = 0; i < numStringsThisBoard; i++)
 	{
 		theNote[i] = stringMIDIPitches[i] + stringOctave[i];
@@ -175,46 +183,6 @@ float __ATTR_ITCMRAM audioTickString2(void)
 		{
 			theNote[i] = 64.0f;
 		}
-
-		//float filtNoise = tVZFilter_tickEfficient(&noiseFilt, tNoise_tick(&myNoise));
-		//filtNoise += tVZFilter_tickEfficient(&noiseFilt2, tNoise_tick(&myNoise));
-
-		//float env = tADSRT_tick(&fenvelopes[i]); //noise envelope
-
-		//tSimpleLivingString5_setPickupPoint(&strings[i],knobScaled[5]);
-		//tSimpleLivingString5_setDampFreq(&strings[i],knobScaled[6] * 40000.0f);
-		//tVZFilter_setFreq(&noiseFilt, faster_mtof(knobScaled[5] * 128.0f));
-		//tVZFilter_setFreq(&noiseFilt2,faster_mtof(knobScaled[6] * 128.0f));
-
-		//tSimpleLivingString5_setFFAmount(&strings[i], knobScaled[7]);
-
-		//tSimpleLivingString5_setFBAmount(&strings[i], knobScaled[8]);
-		//tSimpleLivingString5_setFoldDepth(&strings[i], knobScaled[9]);
-
-		//tSimpleLivingString5_setBrightness(&strings[i], knobScaled[9]);
-		//tSimpleLivingString5_setPluckPosition(&strings[i], knobScaled[2]);
-
-		//float pos1 = knobScaled[10];
-		//float pos2 = knobScaled[11];
-		//float alpha = i * 0.10f;
-		//tSimpleLivingString5_setPrepPosition(&strings[i], pos1 * alpha + pos2 * (1.0f-alpha));
-
-		//float barDelta = fabsf(barInMIDI[0]-prevBarInMIDI[0]);
-		//if (barDelta > 0.5f)
-		//{
-		//	barDelta = 0.0f; //to avoid noise on open string glitches
-		//}
-		//tExpSmooth_setDest(&barSlideSmoother[i], barDelta);
-		//barDelta = tExpSmooth_tick(&barSlideSmoother[i]);
-		//barDelta = tEnvelopeFollower_tick(&barNoiseSmoother[i], barDelta);
-
-		//barDelta = tExpSmooth_tick(&barNoiseSmoother);
-		//prevBarInMIDI[0] = barInMIDI[0];
-		//tVZFilter_setFreq(&noiseFilt, faster_mtof(knobScaled[5] * 128.0f));
-
-		//float filtNoise = tVZFilter_tickEfficient(&noiseFilt2, tNoise_tick(&myNoise));
-		//filtNoise = tVZFilter_tickEfficient(&noiseFilt2, filtNoise);
-		//float slideNoise = filtNoise * barDelta * knobScaled[1] * 20.0f;
 
 		float finalFreq = mtofTableLookup(theNote[i]);
 		float openStringFreq = mtofTableLookup(theNote[i]-barInMIDI[i]);
@@ -239,28 +207,98 @@ float __ATTR_ITCMRAM audioTickString2(void)
 		}
 		//tTString_setTensionGain(&strings[i],knobScaled[4]);
 
-		tTString_setDecay(&strings[i],knobScaled[0]);
-		//tSimpleLivingString5_setFreq(&strings[i], finalFreq);
 		tTString_setPhantomHarmonicsGain(&strings[i],knobScaled[8]);
 		tTString_setPickupPos(&strings[i],knobScaled[9]);
 
 		tTString_setPickupModFreq(&strings[i],(knobScaled[10]));
 
 		tTString_setPickupModAmp(&strings[i],knobScaled[11]);
-
-
-
 		tTString_setFreq(&strings[i], finalFreq);
 
-	//	uint32_t wavelength = 50*(uint32_t)powf(2.0f,(uint32_t)(knobScaled[5] * 5.0f));
-	//	tTString_setWavelength(&strings[i], wavelength);
+
+		Lfloat filterScaling = fastPowf(2.0f, knobScaled[3] * 4.0f - 2.0f); //0.5-2.0f
+		Lfloat decayScaling = fastPowf(2.0f, knobScaled[0] * 4.0f - 2.0f); //0.5-2.0f
+
+		uint32_t which = 0;
+		float alpha = 0.0f;
+		float oneMinusAlpha = 1.0f;
+		for (int i = 0; i < 9; i++)
+		{
+			//find the closest open string frequency and interpolate
+			if (stringParams[i][0][0] > openStringFreq)
+			{
+				if (stringParams[i+1][0][0] < openStringFreq)
+				{
+					which = i;
+					alpha = LEAF_mapToZeroToOneOutput(openStringFreq, stringParams[i][0][0],stringParams[i+1][0][0]);
+					oneMinusAlpha = 1.0f - alpha;
+				}
+				else if (i == 8)
+				{
+					which = 9;
+				}
+			}
+		}
+
+		float barHeight = barInMIDI[i] / 12.0f;
+
+		uint32_t barHeightInt = (uint32_t)barHeight;
+		float barHeightAlpha = barHeight - barHeightInt;
+		float barHeightOneMinusAlpha = 1.0f - barHeightAlpha;
+		uint32_t barHeightIntPlusOne = LEAF_clip(0, barHeightInt + 1, 2);
+
+		uint32_t whichPlusOne = LEAF_clip(0, which+1, 9);
+		float filterFreq = 0.0f;
+		float decayTime = 0.0f;
+
+		if ((which == 0) && (alpha < 0.001f))
+		{
+			//it's higher than measurements
+			float freqRatio1 = stringParams[0][barHeightInt][1] / stringParams[0][barHeightInt][0];
+			float freqRatio2 = stringParams[0][barHeightIntPlusOne][1] / stringParams[0][barHeightIntPlusOne][0];
+
+			filterFreq = (freqRatio1 * barHeightOneMinusAlpha + freqRatio2 * barHeightAlpha) * openStringFreq;
+
+			float decayRatio1 = stringParams[0][barHeightInt][2] / stringParams[0][barHeightInt][0];
+			float decayRatio2 = stringParams[0][barHeightIntPlusOne][2] / stringParams[0][barHeightIntPlusOne][0];
+
+			decayTime = (decayRatio1 * barHeightOneMinusAlpha + decayRatio2 * barHeightAlpha) * openStringFreq;
+		}
+
+		if (which == 9)
+		{
+			//it's lower than measurements
+			float freq1 = stringParams[9][barHeightInt][1];
+			float freq2 = stringParams[9][barHeightIntPlusOne][1];
+			filterFreq = (freq1 * barHeightOneMinusAlpha + freq2 * barHeightAlpha);
+			float decay1 = stringParams[9][barHeightInt][2];
+			float decay2 = stringParams[9][barHeightIntPlusOne][2];
+			decayTime = (decay1 * barHeightOneMinusAlpha + decay2 * barHeightAlpha) ;
+		}
+
+		else
+		{
+			Lfloat filterFreq1 = stringParams[which][barHeightInt][1] * oneMinusAlpha + stringParams[whichPlusOne][barHeightInt][1] * alpha;
+			Lfloat filterFreq2 = stringParams[which][barHeightIntPlusOne][1] * oneMinusAlpha + stringParams[barHeightIntPlusOne][barHeightInt][1] * alpha;
+			filterFreq = filterFreq1 * barHeightOneMinusAlpha + filterFreq2 * barHeightAlpha;
+			Lfloat decayTime1 = stringParams[which][barHeightInt][2] * oneMinusAlpha + stringParams[whichPlusOne][barHeightInt][2] * alpha;
+			Lfloat decayTime2 = stringParams[which][barHeightIntPlusOne][2] * oneMinusAlpha + stringParams[barHeightIntPlusOne][barHeightInt][2] * alpha;
+			decayTime = decayTime1 * barHeightOneMinusAlpha + decayTime2 * barHeightAlpha;
+		}
+
+		tTString_setDecayInSeconds(&strings[i],decayTime * decayScaling);
+		tTString_setFilterFreqDirectly(&strings[i], filterFreq * filterScaling);
+
+		//tTString_setPickupAmount(&strings[i], knobScaled[7]);
 		tTString_setBarPosition(&strings[i],barInMIDI[i]);
 		//tTString_setBarDrive(&strings[i],knobScaled[4]);
 		tTString_setOpenStringFrequency(&strings[i], openStringFreq);
-		tTString_setFilter(&strings[i], knobScaled[3]);
+
 		tTString_setRippleDepth(&strings[i],knobScaled[7]);
 		tTString_setFeedbackStrength(&strings[i],knobScaled[4]);
 		tTString_setFeedbackReactionSpeed(&strings[i],knobScaled[5]);
+		//tTString_setPickupFilterFreq(&strings[i],knobScaled[6]*6000.0f + 1000.0f);
+		//tTString_setPickupFilterQ(&strings[i],knobScaled[7]+0.5f);
 		//temp += (tSimpleLivingString5_tick(&strings[i], slideNoise));//(filtNoise * env)));// + (prevSamp[i] * (0.001f * knobScaled[5]))));//filtNoise * theEnv) * env);
 		temp += tTString_tick(&strings[i]);
 	}

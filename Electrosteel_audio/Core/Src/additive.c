@@ -168,6 +168,23 @@ void __ATTR_ITCMRAM audioFrameAdditive(uint16_t buffer_offset)
 	//HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_SET);
 	uint32_t tempCountFrame = DWT->CYCCNT;
 	int32_t current_sample = 0;
+
+	if (resetStringInputs)
+	{
+		for (int i = 0; i < numStringsThisBoard; i++)
+		{
+			//note off
+			for (int j = 0; j < NUM_OVERTONES; j++)
+			{
+				tADSRT_clear(&additiveEnv[i][j]);
+			}
+			tADSRT_clear(&fenvelopes[i]);
+			previousStringInputs[i] = 0;
+		}
+		resetStringInputs = 0;
+		newPluck = 1;
+	}
+
 	if (newPluck)
 	{
 		for (int i = 0; i < numStringsThisBoard; i++)

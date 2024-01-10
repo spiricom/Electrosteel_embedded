@@ -18,6 +18,5 @@ float audioTickString2(void);
 void audioInitString2();
 void  audioFreeString2();
 
-extern tTString strings[NUM_STRINGS_PER_BOARD];
 
 #endif /* INC_STRING2_H_ */
