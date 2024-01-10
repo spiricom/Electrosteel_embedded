@@ -23,6 +23,7 @@ OBJCOPY_BIN :=
 
 # Every subdirectory with source files must be described here
 SUBDIRS := \
+CMSIS/Source \
 Core/Src \
 Drivers/STM32H7xx_HAL_Driver/Src \
 FATFS/App \

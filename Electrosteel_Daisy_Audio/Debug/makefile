@@ -18,6 +18,7 @@ RM := rm -rf
 -include FATFS/App/subdir.mk
 -include Drivers/STM32H7xx_HAL_Driver/Src/subdir.mk
 -include Core/Src/subdir.mk
+-include CMSIS/Source/subdir.mk
 -include objects.mk
 
 ifneq ($(MAKECMDGOALS),clean)
