@@ -19,7 +19,7 @@
 tSimpleLivingString3 livStr[NUM_STRINGS_PER_BOARD];
 tPickupNonLinearity pu[NUM_STRINGS_PER_BOARD];
 tExpSmooth pitchSmootherS[NUM_STRINGS_PER_BOARD];
-
+float string1Defaults[12] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.3019f, 0.1764f, 0.7764f, 0.8155f};
 void __ATTR_ITCMRAM audioInitString1()
 {
 	for (int v = 0; v < numStringsThisBoard; v++)
@@ -35,6 +35,14 @@ void __ATTR_ITCMRAM audioInitString1()
 		tPickupNonLinearity_init(&pu[v], &leaf);
 		tExpSmooth_init(&pitchSmootherS[v], 64.0f, 0.6f, &leaf);
 	}
+	//load string1 default params:
+	for (int i = 0; i < 12; i++)
+	{
+		tExpSmooth_setFactor(&knobSmoothers[i], 0.001f);
+		tExpSmooth_setValAndDest(&knobSmoothers[i], string1Defaults[i]);
+		knobFrozen[i] = 1;
+	}
+	tVZFilter_setFreq(&noiseFilt2, 3332.0f); //based on testing with knob values
 
 	whichStringModelLoaded = String1Loaded;
 }
@@ -73,8 +81,31 @@ void __ATTR_ITCMRAM audioFrameString1(uint16_t buffer_offset)
 		{
 			if ((previousStringInputs[i] == 0) && (stringInputs[i] > 0))
 			{
-				float amplitz = stringInputs[i] * 0.000015259021897f;
+
 				stringOctave[i] = octave;
+				float note = stringMIDIPitches[i] + stringOctave[i];
+				//sourceValues[MIDI_KEY_SOURCE_OFFSET][v] = (note[v] - midiKeySubtractor) * midiKeyDivisor;
+
+				if (note < 0.0f)
+				{
+					note = 0.0f;
+				}
+				if (note > 127.0f)
+				{
+					note = 127.0f;
+				}
+				if (isnan(note))
+				{
+					note = 64.0f;
+				}
+
+				tExpSmooth_setValAndDest(&pitchSmootherS[i], mtof(note));
+				float finalFreq = tExpSmooth_tick(&pitchSmootherS[i]);
+				tSimpleLivingString3_setFreq(&livStr[i], finalFreq);
+
+
+				float amplitz = stringInputs[i] * 0.000015259021897f;
+
 				//then it's the string synth
 				//tSimpleLivingString3_setDecay(&livStr[i], 20.0f);
 				tSimpleLivingString3_pluck(&livStr[i], amplitz, LEAF_clip(0.0f, ((pluckPos * randomFactors[currentRandom]) * knobScaled[2]) + (pluckPos * (1.0f - knobScaled[2])),1.0f));

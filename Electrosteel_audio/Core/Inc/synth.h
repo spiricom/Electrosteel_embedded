@@ -14,9 +14,10 @@
 #include "audiostream.h"
 
 void audioFrameSynth(uint16_t buffer_offset);
-float audioTickSynth(void);
+float audioTickSynth();
 void audioInitSynth();
 void  audioFreeSynth();
+void  audioSwitchToSynth();
 void changeOversampling(uint32_t newOS);
 void oscillator_tick(float note, int string);
 

@@ -18,6 +18,7 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
+
 #include "main.h"
 #include "bdma.h"
 #include "dma.h"
@@ -32,9 +33,10 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "audio.h"
 #include "leaf.h"
 #include "codec.h"
+#include "audiostream.h"
+#include "synth.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -173,8 +175,8 @@ uint8_t boardNumber = 0;
 
 uint8_t volatile i2cSending = 0;
 
-const char* specialModeNames[3];
-const char* specialModeMacroNames[3][12];
+const char* specialModeNames[4];
+const char* specialModeMacroNames[4][12];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -418,8 +420,20 @@ int main(void)
   specialModeMacroNames[2][10] = "         ";
   specialModeMacroNames[2][11] = "         ";
 
-
-  for (int i = 0; i < 3; i++)
+  specialModeNames[3] = "VOCAL      ";
+  specialModeMacroNames[3][0] = "BLAH      ";
+  specialModeMacroNames[3][1] = "Noise2    ";
+  specialModeMacroNames[3][2] = "Tone      ";
+  specialModeMacroNames[3][3] = "Decay     ";
+  specialModeMacroNames[3][4] = "Stretch   ";
+  specialModeMacroNames[3][5] = "RandDecy  ";
+  specialModeMacroNames[3][6] = "RandGain  ";
+  specialModeMacroNames[3][7] = "NoiseVol  ";
+  specialModeMacroNames[3][8] = "          ";
+  specialModeMacroNames[3][9] = "          ";
+  specialModeMacroNames[3][10] = "         ";
+  specialModeMacroNames[3][11] = "         ";
+  for (int i = 0; i < 4; i++)
   {
 	  for (int j = 0; j < 14; j++)
 	  {
@@ -646,9 +660,8 @@ void PeriphCommonClock_Config(void)
 
 float __ATTR_ITCMRAM randomNumber(void) {
 
-	uint32_t rand;
-	HAL_RNG_GenerateRandomNumber(&hrng, &rand);
-	float num = (float)rand * INV_TWO_TO_32;
+
+	float num = random_values[currentRandom++] + 1.0f * 0.5f;
 	return num;
 }
 

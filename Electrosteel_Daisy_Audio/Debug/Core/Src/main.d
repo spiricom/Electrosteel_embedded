@@ -39,7 +39,7 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_ll_fmc.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi_ex.h \
- ../Core/Inc/parameters.h ../Core/Inc/audio.h \
+ ../Core/Inc/parameters.h ../Core/Inc/audiostream.h \
  /Users/jeffsnyder/dev/LEAF/leaf/leaf.h \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-global.h \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-mempool.h \
@@ -81,7 +81,8 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Middlewares/Third_Party/FatFs/src/ff.h ../FATFS/Target/sd_diskio.h \
  ../Core/Inc/i2c.h ../Core/Inc/rng.h ../Core/Inc/sai.h \
  ../Core/Inc/sdmmc.h ../Core/Inc/spi.h ../Core/Inc/gpio.h \
- ../Core/Inc/fmc.h ../Core/Inc/audio.h ../Core/Inc/codec.h
+ ../Core/Inc/fmc.h ../Core/Inc/codec.h ../Core/Inc/audiostream.h \
+ ../Core/Inc/synth.h
 ../Core/Inc/main.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h:
 ../Core/Inc/stm32h7xx_hal_conf.h:
@@ -124,7 +125,7 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi_ex.h:
 ../Core/Inc/parameters.h:
-../Core/Inc/audio.h:
+../Core/Inc/audiostream.h:
 /Users/jeffsnyder/dev/LEAF/leaf/leaf.h:
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-global.h:
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-mempool.h:
@@ -177,5 +178,6 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Core/Inc/spi.h:
 ../Core/Inc/gpio.h:
 ../Core/Inc/fmc.h:
-../Core/Inc/audio.h:
 ../Core/Inc/codec.h:
+../Core/Inc/audiostream.h:
+../Core/Inc/synth.h:

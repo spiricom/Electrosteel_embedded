@@ -32,7 +32,7 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "parameters.h"
-#include "audio.h"
+#include "audiostream.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -46,7 +46,7 @@ extern "C" {
 #define __ATTR_ITCMRAM	__attribute__ ((section(".itcmram"))) __attribute__ ((aligned (32)))
 
 # define FORCE_INLINE __attribute__((always_inline)) inline
-
+#define SD_DATATIMEOUT 100
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/

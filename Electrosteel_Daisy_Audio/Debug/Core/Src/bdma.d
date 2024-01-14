@@ -39,7 +39,7 @@ Core/Src/bdma.o: ../Core/Src/bdma.c ../Core/Inc/bdma.h ../Core/Inc/main.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_ll_fmc.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi_ex.h \
- ../Core/Inc/parameters.h ../Core/Inc/audio.h \
+ ../Core/Inc/parameters.h ../Core/Inc/audiostream.h \
  /Users/jeffsnyder/dev/LEAF/leaf/leaf.h \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-global.h \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-mempool.h \
@@ -115,7 +115,7 @@ Core/Src/bdma.o: ../Core/Src/bdma.c ../Core/Inc/bdma.h ../Core/Inc/main.h \
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi_ex.h:
 ../Core/Inc/parameters.h:
-../Core/Inc/audio.h:
+../Core/Inc/audiostream.h:
 /Users/jeffsnyder/dev/LEAF/leaf/leaf.h:
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-global.h:
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-mempool.h:

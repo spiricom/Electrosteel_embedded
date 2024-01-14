@@ -44,7 +44,7 @@ Middlewares/Third_Party/FatFs/src/ff_gen_drv.o: \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_ll_fmc.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi_ex.h \
- ../Core/Inc/parameters.h ../Core/Inc/audio.h \
+ ../Core/Inc/parameters.h ../Core/Inc/audiostream.h \
  /Users/jeffsnyder/dev/LEAF/leaf/leaf.h \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-global.h \
  /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-mempool.h \
@@ -125,7 +125,7 @@ Middlewares/Third_Party/FatFs/src/ff_gen_drv.o: \
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi_ex.h:
 ../Core/Inc/parameters.h:
-../Core/Inc/audio.h:
+../Core/Inc/audiostream.h:
 /Users/jeffsnyder/dev/LEAF/leaf/leaf.h:
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-global.h:
 /Users/jeffsnyder/dev/LEAF/leaf/./Inc/leaf-mempool.h:

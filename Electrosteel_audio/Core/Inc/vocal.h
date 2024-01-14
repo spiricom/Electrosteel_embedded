@@ -17,6 +17,7 @@ void audioFrameVocal(uint16_t buffer_offset);
 float audioTickVocal(void);
 void audioInitVocal();
 void  audioFreeVocal();
+void  audioSwitchToVocal();
 
 
 

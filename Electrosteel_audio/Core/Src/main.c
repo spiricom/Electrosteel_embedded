@@ -66,6 +66,9 @@ uint8_t SPI_LEVERS_TX[LEVER_BUFFER_SIZE_TIMES_TWO] __ATTR_RAM_D2_DMA;
 volatile uint32_t myTester = 0;
 int currentLeverBuffer = 0;
 
+uint8_t volatile currentPage = 0;
+uint8_t volatile previousPage = 0;
+
 float random_values[256];
 uint8_t currentRandom = 0;
 uint8_t diskBusy = 0;
@@ -123,7 +126,7 @@ volatile uint32_t presetWaitingToParse = 0;
 volatile uint32_t presetWaitingToWrite = 0;
 volatile uint32_t presetWaitingToLoad = 0;
 
-volatile uint8_t macroNamesArray[MAX_NUM_PRESETS][12][10]__ATTR_RAM_D2;
+volatile uint8_t macroNamesArray[MAX_NUM_PRESETS][20][10]__ATTR_RAM_D2;
 uint8_t whichMacroToSendName = 0;
 
 param params[NUM_PARAMS];
@@ -146,7 +149,7 @@ int oscsEnabled[3] = {0,0,0};
 float midiKeyDivisor;
 float midiKeySubtractor;
 
-uint8_t prevKnobByte[12];
+int32_t volatile prevKnobByte[20];
 
 uint8_t volatile interruptChecker = 0;
 
@@ -159,14 +162,13 @@ uint8_t boardNumber = 0;
 
 uint8_t volatile i2cSending = 0;
 
-const char* specialModeNames[3];
-const char* specialModeMacroNames[3][12];
+const char* specialModeNames[5];
+const char* specialModeMacroNames[5][20];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 void PeriphCommonClock_Config(void);
-static void MPU_Initialize(void);
 static void MPU_Config(void);
 /* USER CODE BEGIN PFP */
 void MPU_Conf(void);
@@ -376,51 +378,88 @@ int main(void)
   specialModeMacroNames[0][1] = "SlideNois ";
   specialModeMacroNames[0][2] = "PluckWidt ";
   specialModeMacroNames[0][3] = "PickNoise ";
-  specialModeMacroNames[0][4] = "PickupSim";
+  specialModeMacroNames[0][4] = "PickupSim ";
   specialModeMacroNames[0][5] = "          ";
   specialModeMacroNames[0][6] = "          ";
   specialModeMacroNames[0][7] = "          ";
   specialModeMacroNames[0][8] = "          ";
   specialModeMacroNames[0][9] = "          ";
-  specialModeMacroNames[0][10] = "         ";
-  specialModeMacroNames[0][11] = "         ";
+  specialModeMacroNames[0][10] = "          ";
+  specialModeMacroNames[0][11] = "          ";
 
   specialModeNames[1] = "PHYS STR2     ";
-  specialModeMacroNames[1][0] = "PrepIndex ";
-  specialModeMacroNames[1][1] = "SlideNoise";
+  specialModeMacroNames[1][0] = "DecayTime ";
+  specialModeMacroNames[1][1] = "Tone      ";
   specialModeMacroNames[1][2] = "PluckPos  ";
-  specialModeMacroNames[1][3] = "Decay     ";
-  specialModeMacroNames[1][4] = "Touch     ";
-  specialModeMacroNames[1][5] = "PickupPos ";
-  specialModeMacroNames[1][6] = "DampFreq  ";
-  specialModeMacroNames[1][7] = "FFAmount  ";
-  specialModeMacroNames[1][8] = "FBAmount  ";
-  specialModeMacroNames[1][9] = "foldDepth ";
-  specialModeMacroNames[1][10] = "prepPosX ";
-  specialModeMacroNames[1][11] = "prepPosY ";
+  specialModeMacroNames[1][3] = "PickupPos ";
+  specialModeMacroNames[1][4] = "SlideNois ";
+  specialModeMacroNames[1][5] = "Stiffness ";
+  specialModeMacroNames[1][6] = "FB Amp    ";
+  specialModeMacroNames[1][7] = "FB Speed  ";
+  specialModeMacroNames[1][8] = "PU Filter ";
+  specialModeMacroNames[1][9] = "Harmonic  ";
+  specialModeMacroNames[1][10] = "HarmPosX  ";
+  specialModeMacroNames[1][11] = "HarmPosY  ";
+  specialModeMacroNames[1][12] = "PUModRate ";
+  specialModeMacroNames[1][13] = "PUModAmp  ";
+  specialModeMacroNames[1][14] = "Ph Harm G ";
+  specialModeMacroNames[1][15] = "PUFilterQ ";
+  specialModeMacroNames[1][16] = "PeakF Q   ";
+  specialModeMacroNames[1][17] = "PeakF Frq ";
+  specialModeMacroNames[1][18] = "Tension G ";
+  specialModeMacroNames[1][19] = "Acoustic  ";
+
 
   specialModeNames[2] = "ADDITIVE      ";
-  specialModeMacroNames[2][0] = "Noise1    ";
-  specialModeMacroNames[2][1] = "Noise2    ";
-  specialModeMacroNames[2][2] = "Tone      ";
-  specialModeMacroNames[2][3] = "Decay     ";
-  specialModeMacroNames[2][4] = "Stretch   ";
-  specialModeMacroNames[2][5] = "RandDecy  ";
-  specialModeMacroNames[2][6] = "RandGain  ";
-  specialModeMacroNames[2][7] = "NoiseVol  ";
+  specialModeMacroNames[2][0] = "Stretch   ";
+  specialModeMacroNames[2][1] = "Tilt      ";
+  specialModeMacroNames[2][2] = "NoiseAmp  ";
+  specialModeMacroNames[2][3] = "PickupPos ";
+  specialModeMacroNames[2][4] = "PickupAmp ";
+  specialModeMacroNames[2][5] = "DiveAmp   ";
+  specialModeMacroNames[2][6] = "DiveRate  ";
+  specialModeMacroNames[2][7] = "          ";
   specialModeMacroNames[2][8] = "          ";
   specialModeMacroNames[2][9] = "          ";
-  specialModeMacroNames[2][10] = "         ";
-  specialModeMacroNames[2][11] = "         ";
+  specialModeMacroNames[2][10] = "Tone      ";
+  specialModeMacroNames[2][11] = "Decay     ";
+
+  specialModeNames[3] = "VOCAL        ";
+  specialModeMacroNames[3][0] = "Size      ";
+  specialModeMacroNames[3][1] = "Chipmunk  ";
+  specialModeMacroNames[3][2] = "Diameter  ";
+  specialModeMacroNames[3][3] = "Nasal     ";
+  specialModeMacroNames[3][4] = "Turb Nois ";
+  specialModeMacroNames[3][5] = "Unvoiced  ";
+  specialModeMacroNames[3][6] = "          ";
+  specialModeMacroNames[3][7] = "          ";
+  specialModeMacroNames[3][8] = "BackPos   ";
+  specialModeMacroNames[3][9] = "BackDiam  ";
+  specialModeMacroNames[3][10] = "ToungePos  ";
+  specialModeMacroNames[3][11] = "ToungeDia  ";
+
+  specialModeNames[4] = "STRING3      ";
+  specialModeMacroNames[4][0] = "Stiffness ";
+  specialModeMacroNames[4][1] = "PU Prop   ";
+  specialModeMacroNames[4][2] = "Plck Prop ";
+  specialModeMacroNames[4][3] = "PU Filter ";
+  specialModeMacroNames[4][4] = "NoiseFilt ";
+  specialModeMacroNames[4][5] = "NoiseGain ";
+  specialModeMacroNames[4][6] = "          ";
+  specialModeMacroNames[4][7] = "          ";
+  specialModeMacroNames[4][8] = "Decay     ";
+  specialModeMacroNames[4][9] = "Damping   ";
+  specialModeMacroNames[4][10] = "PluckPos ";
+  specialModeMacroNames[4][11] = "PU Pos   ";
 
 
-  for (int i = 0; i < 3; i++)
+  for (int i = 0; i < 5; i++)
   {
 	  for (int j = 0; j < 14; j++)
 	  {
 		  presetNamesArray[63-i][j] = specialModeNames[i][j];
 	  }
-	  for (int k = 0; k < 12; k++)
+	  for (int k = 0; k < 20; k++)
 	  {
 		  for (int j = 0; j < 10; j++)
 		  {
@@ -519,7 +558,7 @@ int main(void)
 	  }
 #endif
 	  uint32_t rand;
-	  //HAL_RNG_GenerateRandomNumber(&hrng, &rand);
+	  HAL_RNG_GenerateRandomNumber(&hrng, &rand);
 
 	  if (rand > TWO_TO_31)
 	  {
@@ -633,9 +672,7 @@ void PeriphCommonClock_Config(void)
 
 float __ATTR_ITCMRAM randomNumber(void) {
 
-	uint32_t rand;
-	HAL_RNG_GenerateRandomNumber(&hrng, &rand);
-	float num = (float)rand * INV_TWO_TO_32;
+	float num = (random_values[currentRandom++] + 1.0f) * 0.5f;
 	return num;
 }
 
@@ -1521,7 +1558,8 @@ uint8_t fromAscii(uint8_t input1, uint8_t input2)
 	return ((fromHex(input1)<<4) | (fromHex(input2)));
 }
 
-void __ATTR_ITCMRAM handleSPI (uint8_t offset)
+volatile uint32_t tested[32];
+void  handleSPI (uint8_t offset)
 {
 	interruptChecker = 1;
 
@@ -1653,34 +1691,120 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 		{
 			 uint8_t currentByte = offset+1;
 
-			for (int i = 0; i < 12; i++)
-			{
-				uint8_t newByte = SPI_LEVERS_RX[i + currentByte];
-				if (knobFrozen[i])
+
+
+
+				for (int i = 0; i < 8; i++)
 				{
-					if ((newByte > (prevKnobByte[i] + 2)) || (newByte < (prevKnobByte[i] - 2)))
+					int32_t newByte = SPI_LEVERS_RX[i + currentByte];
+					if (knobFrozen[i])
 					{
-						knobFrozen[i] = 0;
+						if ((newByte > (prevKnobByte[i] + 3)) || (newByte < (prevKnobByte[i] - 3)))
+						{
+							knobFrozen[i] = 0;
+							prevKnobByte[i] = newByte;
+						}
+
+					}
+					else
+					{
+						tExpSmooth_setDest(&knobSmoothers[i], (SPI_LEVERS_RX[i + currentByte] * 0.003921568627451f)); //scaled 0.0 to 1.0
 						prevKnobByte[i] = newByte;
 					}
 
 				}
-				else
+
+				for (int i = 8; i < 12; i++)
 				{
-					tExpSmooth_setDest(&knobSmoothers[i], (SPI_LEVERS_RX[i + currentByte] * 0.003921568627451f)); //scaled 0.0 to 1.0
-					prevKnobByte[i] = newByte;
+					int32_t newByte = SPI_LEVERS_RX[i + currentByte];
+
+					if (knobFrozen[i])
+					{
+						if ((newByte > (prevKnobByte[i] + 3)) || (newByte < (prevKnobByte[i] - 3)))
+						{
+							knobFrozen[i] = 0;
+							prevKnobByte[i] = newByte;
+						}
+
+					}
+					else
+					{
+						tExpSmooth_setDest(&knobSmoothers[i], (newByte * 0.003921568627451f)); //scaled 0.0 to 1.0
+						prevKnobByte[i] = newByte;
+					}
+
+				}
+				currentByte += 12;
+				for (int i = 0; i < 10; i++)
+				{
+					tExpSmooth_setDest(&pedalSmoothers[i], (SPI_LEVERS_RX[i + currentByte ] * 0.003921568627451f)); //scaled 0.0 to 1.0
+				}
+				//HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_SET);
+				whichBar = 1;
+				updateStateFromSPIMessage(offset);
+				//HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_RESET);
+
+
+		}
+
+		else if (SPI_LEVERS_RX[offset] == ReceivingAdditionalKnobs)
+		{
+			 uint8_t currentByte = offset+1;
+
+
+
+				for (int i = 0; i < 8; i++)
+				{
+
+					uint32_t whichKnob = i+12;
+					int32_t newByte = SPI_LEVERS_RX[i + currentByte];
+					if (knobFrozen[whichKnob])
+					{
+						if ((newByte > (prevKnobByte[whichKnob] + 3)) || (newByte < (prevKnobByte[whichKnob] - 3)))
+						{
+							knobFrozen[whichKnob] = 0;
+							prevKnobByte[whichKnob] = newByte;
+						}
+
+					}
+					else
+					{
+						tExpSmooth_setDest(&knobSmoothers[whichKnob], (newByte * 0.003921568627451f)); //scaled 0.0 to 1.0
+						prevKnobByte[whichKnob] = newByte;
+					}
+
+				}
+				for (int i = 8; i < 12; i++)
+				{
+					int32_t newByte = SPI_LEVERS_RX[i + currentByte];
+					uint32_t whichKnob = i;
+					if (knobFrozen[whichKnob])
+					{
+						if ((newByte > (prevKnobByte[whichKnob] + 3)) || (newByte < (prevKnobByte[whichKnob] - 3)))
+						{
+							knobFrozen[whichKnob] = 0;
+							prevKnobByte[whichKnob] = newByte;
+						}
+
+					}
+					else
+					{
+						tExpSmooth_setDest(&knobSmoothers[whichKnob], (SPI_LEVERS_RX[i + currentByte] * 0.003921568627451f)); //scaled 0.0 to 1.0
+						prevKnobByte[whichKnob] = newByte;
+					}
+
 				}
 
-			}
-			currentByte += 12;
-			for (int i = 0; i < 10; i++)
-			{
-				tExpSmooth_setDest(&pedalSmoothers[i], (SPI_LEVERS_RX[i + currentByte ] * 0.003921568627451f)); //scaled 0.0 to 1.0
-			}
-			//HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_SET);
-			whichBar = 1;
-			updateStateFromSPIMessage(offset);
-			//HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_RESET);
+				currentByte += 12;
+				for (int i = 0; i < 10; i++)
+				{
+					tExpSmooth_setDest(&pedalSmoothers[i], (SPI_LEVERS_RX[i + currentByte ] * 0.003921568627451f)); //scaled 0.0 to 1.0
+				}
+				//HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_SET);
+				whichBar = 1;
+				updateStateFromSPIMessage(offset);
+				//HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_RESET);
+
 
 		}
 		else if (SPI_LEVERS_RX[offset] == ReceivingEnd)
@@ -2018,6 +2142,8 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 			}
 		}
 
+
+
 	/*
 		else if (SPI_LEVERS_RX[offset] == LoadingPreset)
 		{
@@ -2080,7 +2206,7 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 				SPI_LEVERS_TX[offset+30] = (sampleClippedCountdown > 0); //report whether there was a clip on the first board in the last 65535 samples
 				SPI_LEVERS_TX[offset+31] = 254;
 				whichMacroToSendName = (whichMacroToSendName + 1);
-				if (whichMacroToSendName >= 12)
+				if (whichMacroToSendName >= 20)
 				{
 					whichMacroToSendName = 0;
 					whichPresetToSendName = (whichPresetToSendName + 1) % MAX_NUM_PRESETS;
@@ -2854,14 +2980,8 @@ void FlushECC(void *ptr, int bytes)
 uint8_t volatile I2CErrors = 0;
 void __ATTR_ITCMRAM HAL_I2C_SlaveRxCpltCallback(I2C_HandleTypeDef *hi2c)
 {
-	  //HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
-	  //HAL_Delay(2);
-	  //HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
-	  //HAL_Delay(2);
+
 	presetWaitingToParse = 4096;
-
-	//HAL_I2C_Slave_Receive_IT(&hi2c1, buffer, 4096);
-
 }
 
 
@@ -2878,175 +2998,54 @@ void __ATTR_ITCMRAM HAL_I2C_ErrorCallback(I2C_HandleTypeDef *hi2c)
 }
 
 /* USER CODE BEGIN 4 */
-#if 0
-void sendFirmwareToPluckBoard(uint8_t  offset)
-{
-	if (pluckFirmwareClearSignal)
-	{
-		for (uint8_t i = 0; i < PLUCK_BUFFER_SIZE_TIMES_TWO; i++)
-		{
-			SPI_PLUCK_TX[i] = 0;
 
-		}
-		pluckFirmwareClearSignal = 0;
-		pluckFirmwareSendInProgress = 0;
-		pluckFirmwareReadyToSend = 0;
-	}
-	else if (pluckFirmwareEndSignal)
-	{
-		SPI_PLUCK_TX[offset] = 252;
-		SPI_PLUCK_TX[offset+1] = 251;
-		SPI_PLUCK_TX[offset+2] = 62; //special byte that says I'm done sending you firmware, now use it;
-		SPI_PLUCK_TX[offset+4] = pluckFirmwareSize >> 24;
-		SPI_PLUCK_TX[offset+5] = pluckFirmwareSize >> 16;
-		SPI_PLUCK_TX[offset+6] = pluckFirmwareSize >> 8;
-		SPI_PLUCK_TX[offset+7] = pluckFirmwareSize & 0xff;
-		pluckFirmwareEndSignal = 0;
-		pluckFirmwareClearSignal = 1;
-
-	}
-	else if (pluckFirmwareSendInProgress)
-	{
-
-		SPI_PLUCK_TX[offset] = 252;
-		SPI_PLUCK_TX[offset+1] = 251;
-		SPI_PLUCK_TX[offset+2] = 61; //special byte that says it's a firmware chunk;
-		for (uint8_t i = 4; i < PLUCK_BUFFER_SIZE; i++)
-		{
-			SPI_PLUCK_TX[offset+i] = localPluck[pluckFirmwareBufferIndex++];
-		}
-		if (pluckFirmwareBufferIndex >= pluckFirmwareSize)
-		{
-			pluckFirmwareEndSignal = 1;
-		}
-	}
-	else
-	{
-		SPI_PLUCK_TX[offset] = 252;
-		SPI_PLUCK_TX[offset+1] = 251;
-		SPI_PLUCK_TX[offset+2] = 60; //special byte that says start a firmware update process
-		pluckFirmwareSendInProgress = 1;
-	}
-
-}
-#endif
 void __ATTR_ITCMRAM HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
 {
 	interrupted = 1;
-	if (hspi == &hspi5)
+
+	SCB_CleanInvalidateDCache_by_Addr((uint32_t *)(((uint32_t )SPI_LEVERS_RX) & ~(uint32_t )0x1F), LEVER_BUFFER_SIZE_TIMES_TWO+32);
+	//HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_SET);
+	if ((SPI_LEVERS_RX[62] == 254) && (SPI_LEVERS_RX[63] == 253))
 	{
-		//HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_SET);
-		SCB_InvalidateDCache_by_Addr((uint32_t *)(((uint32_t )SPI_PLUCK_RX) & ~(uint32_t )0x1F), PLUCK_BUFFER_SIZE_TIMES_TWO+32);
-
-		if ((SPI_PLUCK_RX[32] == 254) && (SPI_PLUCK_RX[63] == 253))
-		{
-			for (uint_fast8_t i = 0; i < numStringsThisBoard; i++)
-			{
-				stringInputs[i] = (SPI_PLUCK_RX[((i+firstString)*2)+ 33] << 8) + SPI_PLUCK_RX[((i+firstString)*2)+ 34];
-			}
-			newPluck = 1;
-		}
-		else
-		{
-			HAL_SPI_Abort(&hspi5);
-			__HAL_RCC_SPI5_FORCE_RESET();
-			__HAL_RCC_SPI5_RELEASE_RESET();
-			MX_SPI5_Init();
-			__HAL_SPI_ENABLE(&hspi5);
-			HAL_SPI_TransmitReceive_DMA(&hspi5, SPI_PLUCK_TX, SPI_PLUCK_RX, PLUCK_BUFFER_SIZE_TIMES_TWO);
-			numResets++;
-		}
-#if 0
-		if (pluckFirmwareReadyToSend)
-		{
-			sendFirmwareToPluckBoard(PLUCK_BUFFER_SIZE);
-			SCB_CleanDCache_by_Addr((uint32_t *)(((uint32_t )SPI_PLUCK_TX) & ~(uint32_t )0x1F), PLUCK_BUFFER_SIZE_TIMES_TWO+32);
-		}
-
-		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_RESET);
-#endif
+		handleSPI(LEVER_BUFFER_SIZE);
 	}
-
 	else
 	{
-		SCB_InvalidateDCache_by_Addr((uint32_t *)(((uint32_t )SPI_LEVERS_RX) & ~(uint32_t )0x1F), LEVER_BUFFER_SIZE_TIMES_TWO+32);
-		//HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_SET);
-		if ((SPI_LEVERS_RX[62] == 254) && (SPI_LEVERS_RX[63] == 253))
-		{
-			handleSPI(LEVER_BUFFER_SIZE);
-		}
-		else
-		{
-			HAL_SPI_Abort(&hspi1);
-			__HAL_RCC_SPI1_FORCE_RESET();
-			__HAL_RCC_SPI1_RELEASE_RESET();
-			MX_SPI1_Init();
-			__HAL_SPI_ENABLE(&hspi1);
-			HAL_SPI_TransmitReceive_DMA(&hspi1, SPI_LEVERS_TX, SPI_LEVERS_RX, LEVER_BUFFER_SIZE_TIMES_TWO);
-			numResets++;
-		}
-		SCB_CleanDCache_by_Addr((uint32_t *)(((uint32_t )SPI_LEVERS_TX) & ~(uint32_t )0x1F), LEVER_BUFFER_SIZE_TIMES_TWO+32);
-		//HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_RESET);
+		HAL_SPI_Abort(&hspi1);
+		__HAL_RCC_SPI1_FORCE_RESET();
+		__HAL_RCC_SPI1_RELEASE_RESET();
+		MX_SPI1_Init();
+		__HAL_SPI_ENABLE(&hspi1);
+		HAL_SPI_TransmitReceive_DMA(&hspi1, SPI_LEVERS_TX, SPI_LEVERS_RX, LEVER_BUFFER_SIZE_TIMES_TWO);
+		numResets++;
 	}
+	SCB_CleanInvalidateDCache_by_Addr((uint32_t *)(((uint32_t )SPI_LEVERS_TX) & ~(uint32_t )0x1F), LEVER_BUFFER_SIZE_TIMES_TWO+32);
+	//HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_RESET);
 }
 
 void __ATTR_ITCMRAM HAL_SPI_TxRxHalfCpltCallback(SPI_HandleTypeDef *hspi)
 {
 	interrupted = 1;
-	if (hspi == &hspi5)
+
+	SCB_CleanInvalidateDCache_by_Addr((uint32_t *)(((uint32_t )SPI_LEVERS_RX) & ~(uint32_t )0x1F), LEVER_BUFFER_SIZE_TIMES_TWO+32);
+	//HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_SET);
+	if ((SPI_LEVERS_RX[30] == 254) && (SPI_LEVERS_RX[31] == 253))
 	{
-		SCB_InvalidateDCache_by_Addr((uint32_t *)(((uint32_t )SPI_PLUCK_RX) & ~(uint32_t )0x1F), PLUCK_BUFFER_SIZE_TIMES_TWO+32);
-		//HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_SET);
-		if ((SPI_PLUCK_RX[0] == 254) && (SPI_PLUCK_RX[31] == 253))
-		{
-			for (uint_fast8_t i = 0; i < numStringsThisBoard; i++)
-			{
-				stringInputs[i] = (SPI_PLUCK_RX[((i+firstString)*2)+ 1] << 8) + SPI_PLUCK_RX[((i+firstString)*2)+ 2];
-			}
-			newPluck = 1;
-		}
-		else
-		{
-			HAL_SPI_Abort(&hspi5);
-			__HAL_RCC_SPI5_FORCE_RESET();
-			__HAL_RCC_SPI5_RELEASE_RESET();
-			MX_SPI5_Init();
-			__HAL_SPI_ENABLE(&hspi5);
-			HAL_SPI_TransmitReceive_DMA(&hspi5, SPI_PLUCK_TX, SPI_PLUCK_RX, PLUCK_BUFFER_SIZE_TIMES_TWO);
-			numResets++;
-		}
-#if 0
-		if (pluckFirmwareReadyToSend)
-		{
-			sendFirmwareToPluckBoard(0U);
-			SCB_CleanDCache_by_Addr((uint32_t *)(((uint32_t )SPI_PLUCK_TX) & ~(uint32_t )0x1F), PLUCK_BUFFER_SIZE_TIMES_TWO+32);
-		}
-
-		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_RESET);
-#endif
+		handleSPI(0);
 	}
-
 	else
 	{
-		SCB_InvalidateDCache_by_Addr((uint32_t *)(((uint32_t )SPI_LEVERS_RX) & ~(uint32_t )0x1F), LEVER_BUFFER_SIZE_TIMES_TWO+32);
-		//HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_SET);
-		if ((SPI_LEVERS_RX[30] == 254) && (SPI_LEVERS_RX[31] == 253))
-		{
-			handleSPI(0);
-		}
-		else
-		{
-			HAL_SPI_Abort(&hspi1);
-			__HAL_RCC_SPI1_FORCE_RESET();
-			__HAL_RCC_SPI1_RELEASE_RESET();
-			MX_SPI1_Init();
-			__HAL_SPI_ENABLE(&hspi1);
-			HAL_SPI_TransmitReceive_DMA(&hspi1, SPI_LEVERS_TX, SPI_LEVERS_RX, LEVER_BUFFER_SIZE_TIMES_TWO);
-			numResets++;
-		}
-		SCB_CleanDCache_by_Addr((uint32_t *)(((uint32_t )SPI_LEVERS_TX) & ~(uint32_t )0x1F), LEVER_BUFFER_SIZE_TIMES_TWO+32);
-		//HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_RESET);
+		HAL_SPI_Abort(&hspi1);
+		__HAL_RCC_SPI1_FORCE_RESET();
+		__HAL_RCC_SPI1_RELEASE_RESET();
+		MX_SPI1_Init();
+		__HAL_SPI_ENABLE(&hspi1);
+		HAL_SPI_TransmitReceive_DMA(&hspi1, SPI_LEVERS_TX, SPI_LEVERS_RX, LEVER_BUFFER_SIZE_TIMES_TWO);
+		numResets++;
 	}
+	SCB_CleanInvalidateDCache_by_Addr((uint32_t *)(((uint32_t )SPI_LEVERS_TX) & ~(uint32_t )0x1F), LEVER_BUFFER_SIZE_TIMES_TWO+32);
+	//HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_RESET);
+
 }
 
 void __ATTR_ITCMRAM HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
@@ -3055,7 +3054,7 @@ void __ATTR_ITCMRAM HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
 	if (hspi == &hspi5)
 	{
 		//HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_SET);
-		SCB_InvalidateDCache_by_Addr((uint32_t *)(((uint32_t )SPI_PLUCK_RX) & ~(uint32_t )0x1F), PLUCK_BUFFER_SIZE_TIMES_TWO+32);
+		SCB_CleanInvalidateDCache_by_Addr((uint32_t *)(((uint32_t )SPI_PLUCK_RX) & ~(uint32_t )0x1F), PLUCK_BUFFER_SIZE_TIMES_TWO+32);
 
 		if ((SPI_PLUCK_RX[32] == 254) && (SPI_PLUCK_RX[63] == 253))
 		{
@@ -3076,6 +3075,8 @@ void __ATTR_ITCMRAM HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
 			HAL_SPI_Receive_DMA(&hspi5,  SPI_PLUCK_RX, PLUCK_BUFFER_SIZE_TIMES_TWO);
 			numResets++;
 		}
+		SCB_CleanInvalidateDCache_by_Addr((uint32_t *)(((uint32_t )SPI_PLUCK_RX) & ~(uint32_t )0x1F), PLUCK_BUFFER_SIZE_TIMES_TWO+32);
+
 
 	}
 
@@ -3087,7 +3088,7 @@ void __ATTR_ITCMRAM HAL_SPI_RxHalfCpltCallback(SPI_HandleTypeDef *hspi)
 	interrupted = 1;
 	if (hspi == &hspi5)
 	{
-		SCB_InvalidateDCache_by_Addr((uint32_t *)(((uint32_t )SPI_PLUCK_RX) & ~(uint32_t )0x1F), PLUCK_BUFFER_SIZE_TIMES_TWO+32);
+		SCB_CleanInvalidateDCache_by_Addr((uint32_t *)(((uint32_t )SPI_PLUCK_RX) & ~(uint32_t )0x1F), PLUCK_BUFFER_SIZE_TIMES_TWO+32);
 		//HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_SET);
 		if ((SPI_PLUCK_RX[0] == 254) && (SPI_PLUCK_RX[31] == 253))
 		{
@@ -3109,6 +3110,8 @@ void __ATTR_ITCMRAM HAL_SPI_RxHalfCpltCallback(SPI_HandleTypeDef *hspi)
 			HAL_SPI_Receive_DMA(&hspi5,  SPI_PLUCK_RX, PLUCK_BUFFER_SIZE_TIMES_TWO);
 			numResets++;
 		}
+		SCB_CleanInvalidateDCache_by_Addr((uint32_t *)(((uint32_t )SPI_PLUCK_RX) & ~(uint32_t )0x1F), PLUCK_BUFFER_SIZE_TIMES_TWO+32);
+
 
 	}
 

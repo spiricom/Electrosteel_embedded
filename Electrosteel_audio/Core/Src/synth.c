@@ -307,6 +307,17 @@ void  audioFreeSynth()
 {
 
 }
+
+void  audioSwitchToSynth()
+{
+	for (int i = 0; i < 20; i++)
+	{
+		tExpSmooth_setFactor(&knobSmoothers[i], 0.001f);
+		//tExpSmooth_setValAndDest(&knobSmoothers[i], string2Defaults[i]);
+		knobFrozen[i] = 1;
+	}
+}
+
 void __ATTR_ITCMRAM audioFrameSynth(uint16_t buffer_offset)
 {
 	//HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_SET);

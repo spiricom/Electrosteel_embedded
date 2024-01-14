@@ -110,7 +110,7 @@ extern uint8_t boardNumber;
 extern uint8_t currentRandom;
 extern uint8_t receivingI2C;
 extern volatile uint8_t presetNamesArray[MAX_NUM_PRESETS][14]__ATTR_RAM_D2;
-extern volatile uint8_t macroNamesArray[MAX_NUM_PRESETS][12][10]__ATTR_RAM_D2;
+extern volatile uint8_t macroNamesArray[MAX_NUM_PRESETS][20][10]__ATTR_RAM_D2;
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
