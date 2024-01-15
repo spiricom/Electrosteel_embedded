@@ -441,7 +441,7 @@ void __ATTR_ITCMRAM switchStringModel(int which)
 			audioInitString1();
 
 		}
-
+		 audioSwitchToString1();
 		audioFrameFunction = audioFrameString1;
 		resetStringInputs = 1;
 	}
@@ -454,7 +454,7 @@ void __ATTR_ITCMRAM switchStringModel(int which)
 			audioFreeString1();
 			audioInitString2();
 		}
-
+		 audioSwitchToString2();
 		audioFrameFunction = audioFrameString2;
 		resetStringInputs = 1;
 	}
@@ -480,11 +480,14 @@ inline void voiceChangeCheck(void)
 		{
 			switchStrings = 1;
 			diskBusy = 0;
+			whichModel = 1;
+
 		}
 		else if (voice == 62)
 		{
 			switchStrings = 2;
 			diskBusy = 0;
+			whichModel = 2;
 		}
 		else if (voice == 61)
 		{
@@ -494,6 +497,7 @@ inline void voiceChangeCheck(void)
 			diskBusy = 0;
 			presetReady = 1;
 			resetStringInputs = 1;
+			whichModel = 3;
 		}
 		else if (voice == 60)
 		{
@@ -503,6 +507,7 @@ inline void voiceChangeCheck(void)
 			diskBusy = 0;
 			presetReady = 1;
 			resetStringInputs = 1;
+			whichModel = 4;
 		}
 		else if (voice == 59)
 		{
@@ -512,11 +517,11 @@ inline void voiceChangeCheck(void)
 			diskBusy = 0;
 			presetReady = 1;
 			resetStringInputs = 1;
+			whichModel = 5;
 		}
 		else
 		{
-			audioFrameFunction = audioFrameSynth;
-			audioSwitchToSynth();
+			audioFrameFunction = audioFrameWaiting;
 			presetWaitingToLoad = 1;
 			presetNumberToLoad = voice;
 			presetReady = 0;
@@ -525,8 +530,11 @@ inline void voiceChangeCheck(void)
 				resetStringInputs = 1;
 			}
 			frameLoadOverCount = 0;
+			whichModel = 0;
 		}
+
 	}
+
 	prevVoice = voice;
 }
 
@@ -558,4 +566,24 @@ void __ATTR_ITCMRAM HAL_SAI_ErrorCallback(SAI_HandleTypeDef *hsai)
 }
 
 
+void __ATTR_ITCMRAM audioFrameWaiting(uint16_t buffer_offset)
+{
+	//HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_SET);
+		uint32_t tempCountFrame = DWT->CYCCNT;
+		//mono operation, no need to compute right channel. Also for loop iterating by 2 instead of 1 to avoid if statement.
+		for (int i = 0; i < HALF_BUFFER_SIZE; i+=2)
+		{
+			int iplusbuffer = buffer_offset + i;
+			audioOutBuffer[iplusbuffer] = 0;
+			audioOutBuffer[iplusbuffer + 1] = 0;
+		}
+		if (switchStrings)
+		{
+			switchStringModel(switchStrings);
+		}
+		switchStrings = 0;
+		timeFrame = DWT->CYCCNT - tempCountFrame;
+		frameLoadPercentage = (float)timeFrame * frameLoadMultiplier;
+		//HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_RESET);
+}
 

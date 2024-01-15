@@ -179,7 +179,14 @@ void __ATTR_ITCMRAM audioSwitchToAdditive()
 	for (int i = 0; i < 12; i++)
 	{
 		tExpSmooth_setFactor(&knobSmoothers[i], 0.001f);
-		tExpSmooth_setValAndDest(&knobSmoothers[i], additiveDefaults[i]);
+		if (voice == 61)
+		{
+			tExpSmooth_setValAndDest(&knobSmoothers[i], additiveDefaults[i]);
+		}
+		else
+		{
+			tExpSmooth_setValAndDest(&knobSmoothers[i], loadedKnobParams[i]);
+		}
 		knobFrozen[i] = 1;
 	}
 	for (int i = 0; i < numStringsThisBoard; i++)

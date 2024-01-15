@@ -35,14 +35,7 @@ void __ATTR_ITCMRAM audioInitString1()
 		tPickupNonLinearity_init(&pu[v], &leaf);
 		tExpSmooth_init(&pitchSmootherS[v], 64.0f, 0.6f, &leaf);
 	}
-	//load string1 default params:
-	for (int i = 0; i < 12; i++)
-	{
-		tExpSmooth_setFactor(&knobSmoothers[i], 0.001f);
-		tExpSmooth_setValAndDest(&knobSmoothers[i], string1Defaults[i]);
-		knobFrozen[i] = 1;
-	}
-	tVZFilter_setFreq(&noiseFilt2, 3332.0f); //based on testing with knob values
+
 
 	whichStringModelLoaded = String1Loaded;
 }
@@ -57,6 +50,29 @@ void __ATTR_ITCMRAM audioFreeString1()
 		tPickupNonLinearity_free(&pu[v]);
 	}
 }
+
+void __ATTR_ITCMRAM audioSwitchToString1()
+{
+	//load string1 default params:
+	for (int i = 0; i < 12; i++)
+	{
+		tExpSmooth_setFactor(&knobSmoothers[i], 0.001f);
+
+		if (voice == 63)
+		{
+			tExpSmooth_setValAndDest(&knobSmoothers[i], string1Defaults[i]);
+		}
+		else
+		{
+			tExpSmooth_setValAndDest(&knobSmoothers[i], loadedKnobParams[i]);
+		}
+
+		knobFrozen[i] = 1;
+	}
+	tVZFilter_setFreq(&noiseFilt2, 3332.0f); //based on testing with knob values
+}
+
+
 
 void __ATTR_ITCMRAM audioFrameString1(uint16_t buffer_offset)
 {

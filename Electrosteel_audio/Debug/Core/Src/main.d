@@ -82,7 +82,8 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Core/Inc/i2c.h ../Core/Inc/rng.h ../Core/Inc/sai.h \
  ../Core/Inc/sdmmc.h ../Core/Inc/spi.h ../Core/Inc/gpio.h \
  ../Core/Inc/fmc.h ../Core/Inc/audiostream.h ../Core/Inc/codec.h \
- ../Core/Inc/synth.h
+ ../Core/Inc/synth.h ../Core/Inc/string1.h ../Core/Inc/string2.h \
+ ../Core/Inc/string3.h ../Core/Inc/additive.h ../Core/Inc/vocal.h
 ../Core/Inc/main.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h:
 ../Core/Inc/stm32h7xx_hal_conf.h:
@@ -180,3 +181,8 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Core/Inc/audiostream.h:
 ../Core/Inc/codec.h:
 ../Core/Inc/synth.h:
+../Core/Inc/string1.h:
+../Core/Inc/string2.h:
+../Core/Inc/string3.h:
+../Core/Inc/additive.h:
+../Core/Inc/vocal.h:

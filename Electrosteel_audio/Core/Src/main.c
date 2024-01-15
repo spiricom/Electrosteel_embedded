@@ -35,6 +35,11 @@
 #include "leaf.h"
 #include "codec.h"
 #include "synth.h"
+#include "string1.h"
+#include "string2.h"
+#include "string3.h"
+#include "additive.h"
+#include "vocal.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -164,6 +169,11 @@ uint8_t volatile i2cSending = 0;
 
 const char* specialModeNames[5];
 const char* specialModeMacroNames[5][20];
+
+float loadedKnobParams[20];
+
+uint8_t whichModel; //0=synth 1=string1 2=string2 3=additive 4=vocal 5=string3
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -933,62 +943,6 @@ static void checkForBootloadableBrainFile(void)
 	}
 }
 
-//turns out this is not as simple as hoped - there is only one flash ram sector on the pluck IC, and you can't write it without erasing it
-// so it's not possible to program the flash from a custom bootloader, must use the system bootloader, which needs an SPI master to clock it, and needs to come through a different SPI port.
-// need to rethink this but until then we can't update pluck firmware from sd card.
-#if 0
-static void checkForBootloadablePluckFile(void)
-{
-	if (boardNumber == 0)
-	{
-		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0, GPIO_PIN_SET);
-		if(BSP_SD_IsDetected())
-		{
-			for (uint_fast16_t i = 0; i < AUDIO_BUFFER_SIZE; i+=2)
-			{
-				audioOutBuffer[i] = 0;
-				audioOutBuffer[i + 1] = 0;
-			}
-			diskBusy = 1;
-			loadFailed = 0;
-
-			disk_initialize(0);
-
-			disk_status(0);
-			uint_fast32_t  bytesRead;
-			if(f_mount(&SDFatFS,  SDPath, 1) == FR_OK)
-			{
-
-				FRESULT res;
-				/* Start to search for firmware files */
-
-				//Read Pluck Firmware
-				char finalString[10] = "pluck.bin";
-				res = f_findfirst(&dir, &fno, SDPath, finalString);
-				if(res == FR_OK)
-				{
-					if(f_open(&SDFile, fno.fname, FA_OPEN_ALWAYS | FA_READ) == FR_OK)
-					{
-						pluckFirmwareSize = f_size(&SDFile);
-
-						f_read(&SDFile, &pluckFirmwareBuffer, pluckFirmwareSize, &bytesRead);
-						f_close(&SDFile);
-						copyingPluckToLocalArray = 1;
-						pluckFirmwareBufferIndex = 0;
-					}
-				}
-			}
-		}
-		pluckFirmwareUpdateRequested = 0;
-
-
-		diskBusy = 0;
-		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0, GPIO_PIN_RESET);
-	}
-}
-#endif
-
-
 static void writePresetToSDCard(int fileSize)
 {
 	__disable_irq();
@@ -1689,60 +1643,55 @@ void  handleSPI (uint8_t offset)
 
 		else if (SPI_LEVERS_RX[offset] == ReceivingKnobs)
 		{
-			 uint8_t currentByte = offset+1;
-
-
-
-
-				for (int i = 0; i < 8; i++)
+			uint8_t currentByte = offset+1;
+			for (int i = 0; i < 8; i++)
+			{
+				int32_t newByte = SPI_LEVERS_RX[i + currentByte];
+				if (knobFrozen[i])
 				{
-					int32_t newByte = SPI_LEVERS_RX[i + currentByte];
-					if (knobFrozen[i])
+					if ((newByte > (prevKnobByte[i] + 3)) || (newByte < (prevKnobByte[i] - 3)))
 					{
-						if ((newByte > (prevKnobByte[i] + 3)) || (newByte < (prevKnobByte[i] - 3)))
-						{
-							knobFrozen[i] = 0;
-							prevKnobByte[i] = newByte;
-						}
-
+						knobFrozen[i] = 0;
+						prevKnobByte[i] = newByte;
 					}
-					else
+				}
+				else
+				{
+					tExpSmooth_setDest(&knobSmoothers[i], (SPI_LEVERS_RX[i + currentByte] * 0.003921568627451f)); //scaled 0.0 to 1.0
+					prevKnobByte[i] = newByte;
+				}
+
+			}
+
+			for (int i = 8; i < 12; i++)
+			{
+				int32_t newByte = SPI_LEVERS_RX[i + currentByte];
+
+				if (knobFrozen[i])
+				{
+					if ((newByte > (prevKnobByte[i] + 3)) || (newByte < (prevKnobByte[i] - 3)))
 					{
-						tExpSmooth_setDest(&knobSmoothers[i], (SPI_LEVERS_RX[i + currentByte] * 0.003921568627451f)); //scaled 0.0 to 1.0
+						knobFrozen[i] = 0;
 						prevKnobByte[i] = newByte;
 					}
 
 				}
-
-				for (int i = 8; i < 12; i++)
+				else
 				{
-					int32_t newByte = SPI_LEVERS_RX[i + currentByte];
-
-					if (knobFrozen[i])
-					{
-						if ((newByte > (prevKnobByte[i] + 3)) || (newByte < (prevKnobByte[i] - 3)))
-						{
-							knobFrozen[i] = 0;
-							prevKnobByte[i] = newByte;
-						}
-
-					}
-					else
-					{
-						tExpSmooth_setDest(&knobSmoothers[i], (newByte * 0.003921568627451f)); //scaled 0.0 to 1.0
-						prevKnobByte[i] = newByte;
-					}
-
+					tExpSmooth_setDest(&knobSmoothers[i], (newByte * 0.003921568627451f)); //scaled 0.0 to 1.0
+					prevKnobByte[i] = newByte;
 				}
-				currentByte += 12;
-				for (int i = 0; i < 10; i++)
-				{
-					tExpSmooth_setDest(&pedalSmoothers[i], (SPI_LEVERS_RX[i + currentByte ] * 0.003921568627451f)); //scaled 0.0 to 1.0
-				}
-				//HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_SET);
-				whichBar = 1;
-				updateStateFromSPIMessage(offset);
-				//HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_RESET);
+
+			}
+			currentByte += 12;
+			for (int i = 0; i < 10; i++)
+			{
+				tExpSmooth_setDest(&pedalSmoothers[i], (SPI_LEVERS_RX[i + currentByte ] * 0.003921568627451f)); //scaled 0.0 to 1.0
+			}
+			//HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_SET);
+			whichBar = 1;
+			updateStateFromSPIMessage(offset);
+			//HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_RESET);
 
 
 		}
@@ -1751,59 +1700,57 @@ void  handleSPI (uint8_t offset)
 		{
 			 uint8_t currentByte = offset+1;
 
+			for (int i = 0; i < 8; i++)
+			{
 
-
-				for (int i = 0; i < 8; i++)
+				uint32_t whichKnob = i+12;
+				int32_t newByte = SPI_LEVERS_RX[i + currentByte];
+				if (knobFrozen[whichKnob])
 				{
-
-					uint32_t whichKnob = i+12;
-					int32_t newByte = SPI_LEVERS_RX[i + currentByte];
-					if (knobFrozen[whichKnob])
+					if ((newByte > (prevKnobByte[whichKnob] + 3)) || (newByte < (prevKnobByte[whichKnob] - 3)))
 					{
-						if ((newByte > (prevKnobByte[whichKnob] + 3)) || (newByte < (prevKnobByte[whichKnob] - 3)))
-						{
-							knobFrozen[whichKnob] = 0;
-							prevKnobByte[whichKnob] = newByte;
-						}
-
-					}
-					else
-					{
-						tExpSmooth_setDest(&knobSmoothers[whichKnob], (newByte * 0.003921568627451f)); //scaled 0.0 to 1.0
+						knobFrozen[whichKnob] = 0;
 						prevKnobByte[whichKnob] = newByte;
 					}
 
 				}
-				for (int i = 8; i < 12; i++)
+				else
 				{
-					int32_t newByte = SPI_LEVERS_RX[i + currentByte];
-					uint32_t whichKnob = i;
-					if (knobFrozen[whichKnob])
-					{
-						if ((newByte > (prevKnobByte[whichKnob] + 3)) || (newByte < (prevKnobByte[whichKnob] - 3)))
-						{
-							knobFrozen[whichKnob] = 0;
-							prevKnobByte[whichKnob] = newByte;
-						}
+					tExpSmooth_setDest(&knobSmoothers[whichKnob], (newByte * 0.003921568627451f)); //scaled 0.0 to 1.0
+					prevKnobByte[whichKnob] = newByte;
+				}
 
-					}
-					else
+			}
+			for (int i = 8; i < 12; i++)
+			{
+				int32_t newByte = SPI_LEVERS_RX[i + currentByte];
+				uint32_t whichKnob = i;
+				if (knobFrozen[whichKnob])
+				{
+					if ((newByte > (prevKnobByte[whichKnob] + 3)) || (newByte < (prevKnobByte[whichKnob] - 3)))
 					{
-						tExpSmooth_setDest(&knobSmoothers[whichKnob], (SPI_LEVERS_RX[i + currentByte] * 0.003921568627451f)); //scaled 0.0 to 1.0
+						knobFrozen[whichKnob] = 0;
 						prevKnobByte[whichKnob] = newByte;
 					}
 
 				}
-
-				currentByte += 12;
-				for (int i = 0; i < 10; i++)
+				else
 				{
-					tExpSmooth_setDest(&pedalSmoothers[i], (SPI_LEVERS_RX[i + currentByte ] * 0.003921568627451f)); //scaled 0.0 to 1.0
+					tExpSmooth_setDest(&knobSmoothers[whichKnob], (SPI_LEVERS_RX[i + currentByte] * 0.003921568627451f)); //scaled 0.0 to 1.0
+					prevKnobByte[whichKnob] = newByte;
 				}
-				//HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_SET);
-				whichBar = 1;
-				updateStateFromSPIMessage(offset);
-				//HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_RESET);
+
+			}
+
+			currentByte += 12;
+			for (int i = 0; i < 10; i++)
+			{
+				tExpSmooth_setDest(&pedalSmoothers[i], (SPI_LEVERS_RX[i + currentByte ] * 0.003921568627451f)); //scaled 0.0 to 1.0
+			}
+			//HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_SET);
+			whichBar = 1;
+			updateStateFromSPIMessage(offset);
+			//HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_RESET);
 
 
 		}
@@ -2141,7 +2088,88 @@ void  handleSPI (uint8_t offset)
 				pluckFirmwareUpdateRequested = 1;
 			}
 		}
+		else if (SPI_LEVERS_RX[offset] == RecievingCommandToStoreCurrentPreset)
+		{
+			if (boardNumber == 0)
+			{
+				uint_fast8_t  currentByte = offset+1;
 
+
+
+				presetNumberToSave = SPI_LEVERS_RX[currentByte];
+				currentByte++;
+				bufferPos = 0;
+
+				for (int i = 0; i < 30; i++)
+				{
+					buffer[bufferPos++] = SPI_LEVERS_RX[currentByte++];
+				}
+				/*
+				for (int i = 0; i < 28; i++)
+				{
+					buffer[bufferPos++] = SPI_LEVERS_RX[currentByte + i];
+					currentByte++;
+				}
+*/
+				if (whichModel != 0)
+				{
+					buffer[1] = 19; // instead of the 18 that was sent by the brain, to signal that this is an internal model, not synth
+
+					//skip over the name, we need to keep it from the brain
+
+					bufferPos = 20;//first byte after name
+					buffer[bufferPos] = whichModel; // not a synth preset, maybe string or additive or something
+					bufferPos++;
+
+					//9-byte macros
+					for (int j = 0; j < 8; j++)
+					{
+						for (int k = 0; k < 9; k++)
+						{
+							buffer[bufferPos] = macroNamesArray[currentActivePreset][j][k];
+							bufferPos++;
+						}
+					}
+					//10-byte macros
+					for (int j = 0; j < 4; j++)
+					{
+						for (int k = 0; k < 10; k++)
+						{
+							buffer[bufferPos] = macroNamesArray[currentActivePreset][j+8][k];
+							bufferPos++;
+						}
+					}
+
+					//remaining 9-byte macros
+					for (int j = 0; j < 8; j++)
+					{
+						for (int k = 0; k < 9; k++)
+						{
+							buffer[bufferPos] = macroNamesArray[currentActivePreset][j+12][k];
+							bufferPos++;
+						}
+					}
+
+					for (int i = 0; i < 20; i++)
+					{
+						//copy the parameters into the default KnobParams Buffer
+						uint16_t integerVersion = knobScaled[i] * TWO_TO_16;
+						buffer[bufferPos] = integerVersion >> 8;
+						buffer[bufferPos+1] = integerVersion & 255;
+						bufferPos = bufferPos + 2;
+					}
+				}
+				else
+				{
+					//need to copy the buffer after the new name into the buffer
+				}
+				 presetNumberToLoad = presetNumberToSave;
+				 /* Parse into Audio Params */
+				 presetWaitingToParse = bufferPos;
+				 presetWaitingToWrite = bufferPos;
+
+			}
+		}
 
 
 	/*
@@ -2254,7 +2282,6 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 
 	uint16_t bufferIndex = 0;
 
-
 	//should add an indicator at the beginning of the version number.
 	// maybe 4 bytes:
 		// [0] = 17   marker1 letting the parser know that a preset version number will follow
@@ -2268,8 +2295,106 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 		if (buffer[bufferIndex + 1] == 18)
 		{
 			presetVersionNumber = ((buffer[bufferIndex + 2] << 8) + buffer[bufferIndex + 3]);
+			whichModel = 0; //this is a synth preset
+			bufferIndex = 4;
 		}
-		bufferIndex = 4;
+
+
+		if (buffer[bufferIndex + 1] == 19) //this means its an internal model, not the subtractive synth
+		{
+			presetVersionNumber = ((buffer[bufferIndex + 2] << 8) + buffer[bufferIndex + 3]);
+
+
+
+			bufferIndex = 4;
+
+
+			//read first 14 items in buffer as the 14 character string that is the name of the preset
+			for (int i = 0; i < 14; i++)
+			{
+				presetName[i] = buffer[bufferIndex];
+				presetNamesArray[presetNumber][i] = buffer[bufferIndex];
+				bufferIndex++;
+			}
+
+			bufferIndex = 20;
+			whichModel = buffer[bufferIndex]; // not a synth preset, maybe string or additive or something
+			bufferIndex++;
+
+
+			//9-byte macros
+			for (int j = 0; j < 8; j++)
+			{
+				for (int k = 0; k < 9; k++)
+				{
+					macroNamesArray[presetNumber][j][k] = buffer[bufferIndex];
+					bufferIndex++;
+				}
+			}
+			//10-byte macros
+			for (int j = 0; j < 4; j++)
+			{
+				for (int k = 0; k < 10; k++)
+				{
+					macroNamesArray[presetNumber][j+8][k] = buffer[bufferIndex];
+					bufferIndex++;
+				}
+			}
+
+			//remaining 9-byte macros
+			for (int j = 0; j < 8; j++)
+			{
+				for (int k = 0; k < 9; k++)
+				{
+					macroNamesArray[presetNumber][j+12][k] = buffer[bufferIndex];
+					bufferIndex++;
+				}
+			}
+
+			for (int i = 0; i < 20; i++)
+			{
+				//copy the parameters into the default KnobParams Buffer
+				loadedKnobParams[i] = INV_TWO_TO_16 * ((buffer[bufferIndex] << 8) + buffer[bufferIndex+1]);
+				bufferIndex = bufferIndex + 2;
+			}
+			presetWaitingToParse = 0;
+			currentActivePreset = presetNumber;
+
+			if (whichModel == 1)
+			{
+				switchStrings = 1;
+			}
+			else if (whichModel == 2)
+			{
+				switchStrings = 2;
+			}
+			else if (whichModel == 3)
+			{
+				audioFrameFunction = audioFrameAdditive;
+				audioSwitchToAdditive();
+			}
+			else if (whichModel == 4)
+			{
+				audioFrameFunction = audioFrameVocal;
+				audioSwitchToVocal();
+			}
+			else if (whichModel == 5)
+			{
+				audioFrameFunction = audioFrameString3;
+				audioSwitchToString3();
+			}
+			audioMasterLevel = 1.0f;
+
+			__enable_irq();
+			presetReady = 1;
+			//HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
+			diskBusy = 0;
+			receivingI2C = 0;
+			return;
+		}
+
+
+
 	}
 
 	//read first 14 items in buffer as the 14 character string that is the name of the preset
@@ -2908,7 +3033,8 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 			}
 		}
 	}
-
+	audioFrameFunction = audioFrameSynth;
+	audioSwitchToSynth();
 	presetWaitingToParse = 0;
 	currentActivePreset = presetNumber;
 	audioMasterLevel = 1.0f;

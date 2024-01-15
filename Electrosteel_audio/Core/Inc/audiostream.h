@@ -113,6 +113,8 @@ float mtofTableLookup(float tempMIDI);
 void  switchStringModel(int which);
 float dbToATableLookup(float in);
 
+void  audioFrameWaiting(uint16_t buffer_offset);
+
 extern tMempool largePool;
 extern float sourceValues[NUM_SOURCES][NUM_STRINGS_PER_BOARD];
 extern uint8_t lfoOn[NUM_LFOS];

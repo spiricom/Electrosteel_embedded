@@ -69,13 +69,7 @@ void __ATTR_ITCMRAM audioInitString2()
 		 tTString_initToPool(&strings[v], 1, 15.0f, &mediumPool);
 		 tTString_setWoundOrUnwound(&strings[v],((firstString+v) > 3)); //string 5 is first wound string (4 in zero-based counting)
 	}
-	//load string2 default params:
-	for (int i = 0; i < 20; i++)
-	{
-		tExpSmooth_setFactor(&knobSmoothers[i], 0.001f);
-		tExpSmooth_setValAndDest(&knobSmoothers[i], string2Defaults[i]);
-		knobFrozen[i] = 1;
-	}
+
 	whichStringModelLoaded = String2Loaded;
 }
 
@@ -87,6 +81,26 @@ void __ATTR_ITCMRAM audioFreeString2()
 		tTString_free(&strings[v]);
 	}
 }
+
+void __ATTR_ITCMRAM audioSwitchToString2()
+{
+	//load string2 default params:
+	for (int i = 0; i < 20; i++)
+	{
+		tExpSmooth_setFactor(&knobSmoothers[i], 0.001f);
+		if (voice == 62)
+		{
+			tExpSmooth_setValAndDest(&knobSmoothers[i], string2Defaults[i]);
+		}
+		else
+		{
+			tExpSmooth_setValAndDest(&knobSmoothers[i], loadedKnobParams[i]);
+		}
+		knobFrozen[i] = 1;
+	}
+}
+
+
 
 void __ATTR_ITCMRAM audioFrameString2(uint16_t buffer_offset)
 {

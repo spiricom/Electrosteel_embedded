@@ -257,8 +257,8 @@ void audioInitSynth()
 			tCompressor_init(&comp[i][v], &leaf);
 			tCompressor_setTables(&comp[i][v], atoDbTable, dbtoATable, 0.00001f, 4.0f, -90.0f, 30.0f, ATODB_TABLE_SIZE, DBTOA_TABLE_SIZE);
 			tCompressor_setSampleRate(&comp[i][v], SAMPLE_RATE * OVERSAMPLE);
-			//tLinearDelay_initToPool(&delay1[i][v], 4000.0f, 4096, &largePool);
-			//tLinearDelay_initToPool(&delay2[i][v], 4000.0f, 4096, &largePool);
+			tLinearDelay_initToPool(&delay1[i][v], 4000.0f, 4096, &largePool);
+			tLinearDelay_initToPool(&delay2[i][v], 4000.0f, 4096, &largePool);
 			tCycle_init(&mod1[i][v], &leaf);
 			tCycle_setSampleRate(&mod1[i][v], SAMPLE_RATE * OVERSAMPLE);
 			tCycle_init(&mod2[i][v], &leaf);
@@ -266,7 +266,7 @@ void audioInitSynth()
 			tCycle_setFreq(&mod1[i][v], 0.2f);
 			tCycle_setFreq(&mod2[i][v], 0.22222222222f);
 
-	        //tTapeDelay_initToPool(&tapeDelay[i][v], 15000.0f, 30000, &largePool);
+	        tTapeDelay_initToPool(&tapeDelay[i][v], 15000.0f, 30000, &largePool);
 	        tFeedbackLeveler_init(&feedbackControl[i][v], .99f, 0.01f, 0.125f, 0, &leaf);
 
 			//filters

@@ -39,6 +39,16 @@ void __ATTR_ITCMRAM audioSwitchToVocal()
 	for (int i = 0; i < 12; i++)
 	{
 		tExpSmooth_setFactor(&knobSmoothers[i], 0.01f);
+
+		if (voice == 60)
+		{
+			tExpSmooth_setValAndDest(&knobSmoothers[i], vocalDefaults[i]);
+		}
+		else
+		{
+			tExpSmooth_setValAndDest(&knobSmoothers[i], loadedKnobParams[i]);
+		}
+
 		tExpSmooth_setValAndDest(&knobSmoothers[i], vocalDefaults[i]);
 		knobFrozen[i] = 1;
 	}
