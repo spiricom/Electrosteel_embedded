@@ -1,5 +1,5 @@
 /*******************************************************************************
-* File Name: testpin3.h  
+* File Name: knobPanelLight2.h  
 * Version 2.20
 *
 * Description:
@@ -15,8 +15,8 @@
 * the software package with which this file was provided.
 *******************************************************************************/
 
-#if !defined(CY_PINS_testpin3_ALIASES_H) /* Pins testpin3_ALIASES_H */
-#define CY_PINS_testpin3_ALIASES_H
+#if !defined(CY_PINS_knobPanelLight2_ALIASES_H) /* Pins knobPanelLight2_ALIASES_H */
+#define CY_PINS_knobPanelLight2_ALIASES_H
 
 #include "cytypes.h"
 #include "cyfitter.h"
@@ -25,12 +25,12 @@
 /***************************************
 *              Constants        
 ***************************************/
-#define testpin3_0			(testpin3__0__PC)
-#define testpin3_0_INTR	((uint16)((uint16)0x0001u << testpin3__0__SHIFT))
+#define knobPanelLight2_0			(knobPanelLight2__0__PC)
+#define knobPanelLight2_0_INTR	((uint16)((uint16)0x0001u << knobPanelLight2__0__SHIFT))
 
-#define testpin3_INTR_ALL	 ((uint16)(testpin3_0_INTR))
+#define knobPanelLight2_INTR_ALL	 ((uint16)(knobPanelLight2_0_INTR))
 
-#endif /* End Pins testpin3_ALIASES_H */
+#endif /* End Pins knobPanelLight2_ALIASES_H */
 
 
 /* [] END OF FILE */

@@ -15,6 +15,7 @@
 #include "gfx.h"
 #include "oled.h"
 
+extern uint8_t whichMacroPageIsActive;
 
 void scanUI(void);
 void enterEditModeMenu(void);
@@ -23,10 +24,12 @@ void leftPressed();
 void rightPressed();
 void downPressed();
 void upPressed();
+void enterPressed();
 void enterLeverCalibrationMode(void);
 void exitLeverCalibrationMode(void);
 void enterFretCalibrationMode(void);
 void exitFretCalibrationMode(void);
+void exitPresetStoreMenu(void);
 void displayCurrentPresetNameAndCopedent(void);
-
+void displayCurrentControlNames(void);
 /* [] END OF FILE */

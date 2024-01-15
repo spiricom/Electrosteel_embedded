@@ -1287,8 +1287,8 @@ UDB 21
 	PLD 1:
 		 Instances:
 			\SPIS_1:BSPIS:inv_ss\
-			\SPIS_2:BSPIS:rx_status_4\
 			\SPIS_1:BSPIS:rx_status_4\
+			\SPIS_2:BSPIS:rx_status_4\
 			\SPIS_2:BSPIS:mosi_buf_overrun_fin\
 
 		 Clock net: \SPIS_2:Net_81\
@@ -2104,20 +2104,19 @@ UDB 8
 
 	Control, status and sync:
 		 Instances:
-			\SPIS_2:BSPIS:RxStsReg\ : statusicell
+			\SPIS_2:BSPIS:TxStsReg\ : statusicell
 
 		 Clock net: \SPIS_2:Net_81\
 		 Set/Reset net: 
 		 Enable net: 
 
 		 Input nets:
-			\SPIS_2:BSPIS:dpMOSI_fifo_full_reg\
-			\SPIS_2:BSPIS:dpMOSI_fifo_not_empty\
-			\SPIS_2:BSPIS:rx_buf_overrun\
-			\SPIS_2:BSPIS:rx_status_4\
+			\SPIS_2:BSPIS:byte_complete\
+			\SPIS_2:BSPIS:miso_tx_empty_reg_fin\
+			\SPIS_2:BSPIS:tx_status_0\
+			\SPIS_2:BSPIS:tx_status_1\
 
 		 Output nets:
-			Net_1369
 
 	Local clock and reset nets:
 
@@ -2200,18 +2199,19 @@ UDB 9
 
 	Control, status and sync:
 		 Instances:
-			\SPIS_2:BSPIS:TxStsReg\ : statusicell
+			\SPIS_2:BSPIS:RxStsReg\ : statusicell
 
 		 Clock net: \SPIS_2:Net_81\
 		 Set/Reset net: 
 		 Enable net: 
 
 		 Input nets:
-			\SPIS_2:BSPIS:byte_complete\
-			\SPIS_2:BSPIS:miso_tx_empty_reg_fin\
-			\SPIS_2:BSPIS:tx_status_0\
-			\SPIS_2:BSPIS:tx_status_1\
+			\SPIS_2:BSPIS:dpMOSI_fifo_full_reg\
+			\SPIS_2:BSPIS:dpMOSI_fifo_not_empty\
+			\SPIS_2:BSPIS:rx_buf_overrun\
+			\SPIS_2:BSPIS:rx_status_4\
 
 		 Output nets:
+			Net_1369
 
 	Local clock and reset nets:

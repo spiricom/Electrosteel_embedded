@@ -30,9 +30,47 @@ uint8_t button4Up = 1;
 uint8_t shiftUp = 1;
 uint8_t editingSliderRepString = 0;
 uint8_t whichMidiSendSelected = 0;
+uint8_t whichFirmwareUpdateSelected = 0;
+uint8_t controlsDisplayed = 0;
+
+uint8_t presetStoreStage = 0;
+
+uint8_t whichMacroPageIsActive = 0;
+
+char newPresetName[14] = {'A',32,32,32,32,32,32,32,32,32,32,32,32,32};
 
 void scanUI(void)
 {
+    if (!knobPanelButton1_Read())
+    {
+        knobPanelLight1_Write(1);
+        knobPanelLight2_Write(0);
+        whichMacroPageIsActive = 0;
+        macroOLEDWaitingToSend = 1;
+        for (int i = 0; i < NUM_MACROS; i++)
+        {
+            knobFrozen[i] = 1;
+            prevMacroKnobValues[i] = prevMacroKnobValues[i+8];
+        }
+        whichMacro = 0;
+        
+    }
+    if (!knobPanelButton2_Read())
+    {
+        knobPanelLight1_Write(0);
+        knobPanelLight2_Write(1);
+        whichMacroPageIsActive = 8;
+        macroOLEDWaitingToSend = 1;
+        for (int i = 0; i < NUM_MACROS; i++)
+        {
+            knobFrozen[i] = 1;
+            prevMacroKnobValues[i+8] = prevMacroKnobValues[i];
+        }
+        whichMacro = 0;
+    }
+    
+    
+    
     uint8_t tempButtons = Status_Reg_1_Read();
     if (!(tempButtons&(1<<4)))
     {
@@ -203,7 +241,8 @@ void scanUI(void)
     
     if ((!(tempButtons&(1<<7))) && (encoderUp))
     {
-        
+        enterPressed();
+        encoderUp = 0;
     }
     else if ((tempButtons&(1<<7)))
     {
@@ -216,6 +255,49 @@ void scanUI(void)
         if (encoderWatch)
         {
             int8_t currentEncoderVal = Decoder_1_GetPosition();
+            
+            if (menuPosition[0][0] == StorePresetMenu) //SelectingPresetToStore
+            {
+                if (prevEncoderVal != currentEncoderVal)
+                {
+                    
+                    if (presetStoreStage == 0)
+                    {
+                        OLEDtextColor(1, 0);
+                        GFXfillRect(&theGFX, 84, 32 ,46 ,32, theGFX.textbgcolor);
+                       
+
+                        myGFX_setFont(1);
+                        presetNumberToStore = presetNumberToStore - (Decoder_1_GetPosition());
+                        Decoder_1_SetPosition(0);
+                        
+                        
+                        GFXsetCursor(&theGFX, 84,58);
+                        
+                        int8_t presetNumberToStoreTemp = presetNumberToStore;
+
+                        uint8_t currentChar = ((uint8_t)presetNumberToStoreTemp / 10);    
+                        GFXwrite(&theGFX, currentChar + 48);
+                        presetNumberToStoreTemp -= currentChar * 10;
+                        currentChar = ((uint8_t)presetNumberToStoreTemp);    
+                        GFXwrite(&theGFX, currentChar + 48);
+                        mainOLEDWaitingToSend = 1;
+                    }
+                    else
+                    {
+                       uint8_t currentChar = presetStoreStage - 1;
+                        newPresetName[currentChar] = newPresetName[currentChar] - (Decoder_1_GetPosition());
+                        Decoder_1_SetPosition(0);
+                        OLEDtextColor(1, 0);
+                        myGFX_setFont(0);
+                        GFXsetCursor(&theGFX, 0,50);
+                        OLEDwriteString(newPresetName, 14, 0, ThirdLine);
+                        mainOLEDWaitingToSend = 1;
+                    }
+                }
+            }
+            
+            
             if (menuPosition[0][0] == TransposeMenu) //editing transpose
             {
                 if (prevEncoderVal != currentEncoderVal)
@@ -279,7 +361,43 @@ void scanUI(void)
                     mainOLEDWaitingToSend = 1;
                 }
             }
-                
+            if (menuPosition[0][0] == VolumeMenu) //editing volume
+            {
+                if (prevEncoderVal != currentEncoderVal)
+                {
+                    OLEDtextColor(1, 0);
+                    OLEDclearLine(ThirdLine);
+                    OLEDclearLine(FourthLine);
+                    float theMultiplier = 1.0f;
+ 
+                    myGFX_setFont(1);
+                    volumeInt = volumeInt - (Decoder_1_GetPosition());
+                    Decoder_1_SetPosition(0);
+                    if (volumeInt < 0.0)
+                    {
+                        volumeInt = 0.0;
+                    }
+                    else if (volumeInt > 100.0)
+                    {
+                        volumeInt = 100.0;
+                    }
+                    OLEDtextColor(1, 0);
+                    GFXsetCursor(&theGFX, 20,53);
+                    GFXwrite(&theGFX, 32);
+                    
+                    int8_t volumeIntTemp = volumeInt;
+                    uint8_t currentChar = ((uint8_t)(volumeIntTemp / 100));  
+                    volumeIntTemp -= currentChar * 100;
+                    GFXwrite(&theGFX, currentChar + 48);
+                    currentChar = ((uint8_t)volumeIntTemp / 10);    
+                    GFXwrite(&theGFX, currentChar + 48);
+                    volumeIntTemp -= currentChar * 10;
+                    currentChar = ((uint8_t)volumeIntTemp);    
+                    GFXwrite(&theGFX, currentChar + 48);
+                    volumeWaitingToSend = 1;
+                    mainOLEDWaitingToSend = 1;
+                }
+            }
             if (menuPosition[0][0] == DeadzonesMenu) //editing deadzones
             {
                 if (prevEncoderVal != currentEncoderVal)
@@ -398,22 +516,23 @@ void scanUI(void)
 
 
 const char* const calibrationNames[] = { "  SET LEVERS ", "  SET FRETS  ", 0 }; 
-const char* const mainMenuNames[] =    { "  CALIBRATION", "  SETTINGS   ", 0 }; 
-const char* const settingsNames[] =   { "  TRANSPOSE  ", "  OCTAVE ACTION", "  DEADZONES    ", "  SLIDER REPR ", "  SMOOTHING   ", "  MIDI SEND  ", 0 }; 
-uint8_t numMainMenuItems = 2;
+const char* const mainMenuNames[] =    {"  STORE_PRESET ", "  CALIBRATION", "  SETTINGS   ", 0 }; 
+const char* const settingsNames[] =   { "  TRANSPOSE  ", "  OCTAVE ACTION", "  DEADZONES    ", "  SLIDER REPR ", "  SMOOTHING   ", "  MIDI SEND  ", "  VOLUME      ", "  FIRMWARE UPDT",0 }; 
+uint8_t numMainMenuItems = 3;
 uint8_t numCalibrationItems = 2;
-uint8_t numSettingsItems = 6;
+uint8_t numSettingsItems = 8;
 
 void enterEditModeMenu(void)
 {
-
     OLEDclear(128, 64);
     myGFX_setFont(2);
     OLEDtextColor(0, 1);
-    OLEDwriteString("  CALIBRATION     ", 15, 0, FirstLine);
+    OLEDwriteString("  STORE PRESET   ", 15, 0, FirstLine);
     OLEDwriteArrow(0, FirstLine);
     OLEDtextColor(1, 0);
-    OLEDwriteString("  SETTINGS       ", 15, 0, SecondLine);
+    OLEDwriteString("  CALIBRATION     ",15, 0, SecondLine);
+    OLEDtextColor(1, 0);
+    OLEDwriteString("  SETTINGS       ", 15, 0, ThirdLine);
     OLEDtextColor(1, 0);
     mainOLEDWaitingToSend = 1;
     editMode = 1;
@@ -445,6 +564,10 @@ void exitEditModeMenu(void)
         EEPROM_WriteByte(transposeSemitones, EEPROM_TRANSPOSE_OFFSET);
         EEPROM_WriteByte(transposeCents, EEPROM_TRANSPOSE_OFFSET + 1);
     }
+    if (menuPosition[0][0] == OctaveActionMenu)
+    {
+        EEPROM_WriteByte(octaveAction, EEPROM_OCTAVE_ACTION_OFFSET);
+    }  
     if (menuPosition[0][0] == DeadzonesMenu)
     {
         EEPROM_WriteByte(deadZone, EEPROM_DEADZONES_OFFSET);
@@ -459,6 +582,10 @@ void exitEditModeMenu(void)
     {
         uint8_t tempByte = ((midiBarSendOn & 1)<<1) + (midiSendOn & 1);
         EEPROM_WriteByte(tempByte,EEPROM_MIDI_SEND_OFFSET);
+    }
+    if (menuPosition[0][0] == VolumeMenu)
+    {
+        EEPROM_WriteByte((uint8_t)volumeInt,EEPROM_VOLUME_OFFSET);
     }
     
     encoderWatch = 0;
@@ -498,7 +625,7 @@ void menuAction(enum direction action)
         else if ((action == Right) || (action == Enter))
         {
             //select this submenu from the main menu
-            menuPosition[0][0] = menuPosition[0][1]+1; //now [0][0] = 1 means calibration and [0][0] = 2 means settings
+            menuPosition[0][0] = menuPosition[0][1]+1; //now [0][0] = 1 means presetStore [0][0] = 2 means calibration and [0][0] = 3 means settings 
             whatToDraw = menuPosition[0][0]+1;
         }
         //ignore left button
@@ -513,7 +640,7 @@ void menuAction(enum direction action)
             {
                 menuPosition[1][1] = 0;
             }
-            whatToDraw = 2;
+            whatToDraw = 3;
         }
         else if (action == Down)
         {
@@ -522,7 +649,7 @@ void menuAction(enum direction action)
             {
                 menuPosition[1][1] = numCalibrationItems-1;
             }
-            whatToDraw = 2;
+            whatToDraw = 3;
         }
         else if ((action == Right) || (action == Enter))
         {
@@ -558,7 +685,7 @@ void menuAction(enum direction action)
             {
                 menuPosition[2][1] = 0;
             }
-            whatToDraw = 3;
+            whatToDraw = 4;
         }
         else if (action == Down)
         {
@@ -567,7 +694,7 @@ void menuAction(enum direction action)
             {
                 menuPosition[2][1] = numSettingsItems-1;
             }
-            whatToDraw = 3;
+            whatToDraw = 4;
         }
         else if ((action == Right) || (action == Enter))
         {
@@ -591,11 +718,12 @@ void menuAction(enum direction action)
             {
                 //octave action setting
                 menuPosition[0][0] = OctaveActionMenu;
-                whatToDraw = 0;
+      
                 OLEDclear(128, 64);
                 myGFX_setFont(2);
                 OLEDtextColor(1, 0);
                 OLEDwriteString("OCTAVE ACTION  ", 15, 0, FirstLine);
+               
                 OLEDtextColor(octaveAction, !octaveAction);
                 OLEDwriteString("ON NEXT NOTE   ", 15, 0, SecondLine);
                 OLEDtextColor(!octaveAction, octaveAction);
@@ -678,6 +806,47 @@ void menuAction(enum direction action)
                 }
                 mainOLEDWaitingToSend = 1;
             }
+            else if (menuPosition[2][1] == 6)
+            {
+                //volume
+                menuPosition[0][0] = VolumeMenu;
+                Decoder_1_Start();
+                whatToDraw = 0;
+                OLEDclear(128, 64);
+                myGFX_setFont(2);
+                OLEDtextColor(1, 0);
+                OLEDwriteString("VOLUME    ", 10, 0, FirstLine);
+                OLEDtextColor(1, 0);
+                myGFX_setFont(1);
+                GFXsetCursor(&theGFX, 20,53);
+                GFXwrite(&theGFX, 32);
+                
+                int8_t volumeIntTemp = volumeInt;
+                uint8_t currentChar = ((uint8_t)(volumeIntTemp / 100));  
+                volumeIntTemp -= currentChar * 100;
+                GFXwrite(&theGFX, currentChar + 48);
+                currentChar = ((uint8_t)volumeIntTemp / 10);    
+                GFXwrite(&theGFX, currentChar + 48);
+                volumeIntTemp -= currentChar * 10;
+                currentChar = ((uint8_t)volumeIntTemp);    
+                GFXwrite(&theGFX, currentChar + 48);
+                mainOLEDWaitingToSend = 1;
+                encoderWatch = 1;
+            }
+            else if (menuPosition[2][1] == 7)
+            {
+                //volume
+                menuPosition[0][0] = FirmwareUpdateMenu;
+                whatToDraw = 0;
+                OLEDclear(128, 64);
+                myGFX_setFont(2);
+                OLEDtextColor(whichFirmwareUpdateSelected, !whichFirmwareUpdateSelected);
+                OLEDwriteString("UPDATE BRAIN", 12, 0, FirstLine);
+                OLEDtextColor(!whichFirmwareUpdateSelected, whichFirmwareUpdateSelected);
+                OLEDwriteString("UPDATE PLUCK", 12, 0, SecondLine);
+                OLEDtextColor(1, 0);
+                mainOLEDWaitingToSend = 1;
+            }
         }
         else if (action == Left) 
         {
@@ -737,7 +906,7 @@ void menuAction(enum direction action)
     }
     else if (menuPosition[0][0] == OctaveActionMenu) //we are in octave action
     {
-        
+        whatToDraw = 0;
         if (action == Up)
         {
             octaveAction = (octaveAction+1)&1;
@@ -753,15 +922,17 @@ void menuAction(enum direction action)
             menuPosition[0][0] = SettingsMenu;
             whatToDraw = 1;
         }
-        
-        myGFX_setFont(2);
-        OLEDtextColor(1, 0);
-        OLEDtextColor(octaveAction, !octaveAction);
-        OLEDwriteString("ON NEXT NOTE   ", 15, 0, SecondLine);
-        OLEDtextColor(!octaveAction, octaveAction);
-        OLEDwriteString("IMMEDIATE      ", 15, 0, ThirdLine);
-        OLEDtextColor(1, 0);
-        mainOLEDWaitingToSend = 1;
+                OLEDclear(128, 64);
+                myGFX_setFont(2);
+                OLEDtextColor(1, 0);
+                OLEDwriteString("OCTAVE ACTION  ", 15, 0, FirstLine);
+               
+                OLEDtextColor(octaveAction, !octaveAction);
+                OLEDwriteString("ON NEXT NOTE   ", 15, 0, SecondLine);
+                OLEDtextColor(!octaveAction, octaveAction);
+                OLEDwriteString("IMMEDIATE      ", 15, 0, ThirdLine);
+                OLEDtextColor(1, 0);
+                mainOLEDWaitingToSend = 1;
     }
 
     else if (menuPosition[0][0] == SliderRepMenu) //we are in sliderRep
@@ -845,6 +1016,81 @@ void menuAction(enum direction action)
                 
     }
     
+     else if (menuPosition[0][0] == FirmwareUpdateMenu) //we are in midisend menu
+    {
+        
+        if (action == Right)
+        {
+            sendFirmwareUpdateRequest = 1+whichFirmwareUpdateSelected;
+        }
+        else if (action == Left)
+        {
+  
+        }
+        else if (action == Up)
+        {
+            whichFirmwareUpdateSelected = (whichFirmwareUpdateSelected+1)&1;
+            OLEDclear(128, 64);
+            myGFX_setFont(2);
+            OLEDtextColor(whichFirmwareUpdateSelected, !whichFirmwareUpdateSelected);
+            OLEDwriteString("UPDATE BRAIN", 12, 0, FirstLine);
+            OLEDtextColor(!whichFirmwareUpdateSelected, whichFirmwareUpdateSelected);
+            OLEDwriteString("UPDATE PLUCK", 12, 0, SecondLine);
+            OLEDtextColor(1, 0);
+            mainOLEDWaitingToSend = 1;
+        }
+        else if (action == Down)
+        {
+            whichFirmwareUpdateSelected = (whichFirmwareUpdateSelected-1)&1;
+            OLEDclear(128, 64);
+            myGFX_setFont(2);
+            OLEDtextColor(whichFirmwareUpdateSelected, !whichFirmwareUpdateSelected);
+            OLEDwriteString("UPDATE BRAIN", 12, 0, FirstLine);
+            OLEDtextColor(!whichFirmwareUpdateSelected, whichFirmwareUpdateSelected);
+            OLEDwriteString("UPDATE PLUCK", 12, 0, SecondLine);
+            OLEDtextColor(1, 0);
+            mainOLEDWaitingToSend = 1;
+        }
+    }
+    
+    else if (menuPosition[0][0] == StorePresetMenu)
+    {
+ 
+        if (action == Right)
+        {
+            presetStoreStage++;
+            if (presetStoreStage >= 15)
+            {
+                exitPresetStoreMenu();
+            }
+            else
+            {
+                whatToDraw = 2;
+            }
+        }
+        else if (action == Left)
+        {
+            //go back to main menu
+            menuPosition[0][0] = 0;
+            whatToDraw = 1;
+            presetStoreStage = 0;
+        }
+        else if (action == Enter)
+        {
+             exitPresetStoreMenu();
+        }
+        else if (action == Up)
+        {
+            ;
+        }
+        else if (action == Down)
+        {
+            ;
+        }
+        //whatToDraw = 2;
+    }
+    
+    
     //now draw stuff
     if (whatToDraw == 1)
     {
@@ -872,6 +1118,61 @@ void menuAction(enum direction action)
     }
     else if (whatToDraw == 2)
     {
+        
+        //store preset
+        if (presetStoreStage == 0)
+        {
+            Decoder_1_Start();
+            whatToDraw = 0;
+            OLEDclear(128, 64);
+            myGFX_setFont(2);
+            OLEDtextColor(1, 0);
+            OLEDwriteString("SELECT DEST",11 , 0, FirstLine);
+            OLEDwriteString("LOCATION THEN ",13 , 0, SecondLine);
+            OLEDwriteString("PUSH -> ",8 , 0, ThirdLine);
+            OLEDtextColor(1, 0);
+            myGFX_setFont(1);
+            GFXsetCursor(&theGFX, 84,58);
+           
+            int8_t presetNumberToStoreTemp = presetNumberToStore;
+
+            uint8_t currentChar = ((uint8_t)presetNumberToStoreTemp / 10);    
+            GFXwrite(&theGFX, currentChar + 48);
+            presetNumberToStoreTemp -= currentChar * 10;
+            currentChar = ((uint8_t)presetNumberToStoreTemp);    
+            GFXwrite(&theGFX, currentChar + 48);
+            mainOLEDWaitingToSend = 1;
+            encoderWatch = 1;
+        }
+        else if (presetStoreStage == 1)
+        {
+            whatToDraw = 0;
+            OLEDclear(128, 64);
+            myGFX_setFont(2);
+            OLEDtextColor(1, 0);
+            OLEDwriteString("USE VALUE KNOB",14 , 0, FirstLine);
+            OLEDwriteString("TO CREATE NAME",14 , 0, SecondLine);
+            OLEDtextColor(1, 0);
+            myGFX_setFont(0);
+            GFXsetCursor(&theGFX, 0,50);
+            OLEDwriteString(newPresetName, 14, 0, ThirdLine);
+            mainOLEDWaitingToSend = 1;
+        }
+        else
+        {
+            whatToDraw = 0;
+            OLEDtextColor(1, 0);
+            myGFX_setFont(0);
+            GFXsetCursor(&theGFX, 0,50);
+            OLEDwriteString(newPresetName, 14, 0, ThirdLine);
+            mainOLEDWaitingToSend = 1;
+        }
+    }
+
+
+    
+    else if (whatToDraw == 3)
+    {
         //draw calibration menu
         OLEDclear(128, 64);
         myGFX_setFont(2);
@@ -893,7 +1194,7 @@ void menuAction(enum direction action)
         OLEDtextColor(1, 0);
         mainOLEDWaitingToSend = 1;
     }
-    else if (whatToDraw == 3)
+    else if (whatToDraw == 4)
     {
         //draw settings menu
         OLEDclear(128, 64);
@@ -926,9 +1227,8 @@ void menuAction(enum direction action)
         }
         mainOLEDWaitingToSend = 1;
     }
+    
 }
-
-
 
 void leftPressed()
 {
@@ -1009,7 +1309,15 @@ void enterPressed()
 {
     if (!editMode) //normal behavior
     {
-        ;//nothing
+        controlsDisplayed = !controlsDisplayed;
+        if (controlsDisplayed)
+        {
+            displayCurrentControlNames();
+        }
+        else
+        {
+            displayCurrentPresetNameAndCopedent();
+        }
     }
     else
     {
@@ -1103,11 +1411,17 @@ void exitFretCalibrationMode(void)
 
 }
 
+void exitPresetStoreMenu(void)
+{
+    presetStoreStage = 0;
+    sendLocalPresetStoreCommand = 1;
+    exitEditModeMenu();
+}
 
 void displayCurrentPresetNameAndCopedent(void)
 {
     int macroCheck = 0;
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < NUM_MACROS; i++)
     {
         if (macroNamesArray[patchNum][i][0] == 255)
         {
@@ -1121,7 +1435,7 @@ void displayCurrentPresetNameAndCopedent(void)
         myGFX_setFont(0);
         OLEDwriteInt(patchNum , 2, 0,FirstLine);
         //OLEDwriteString(" ", 1, OLEDgetCursor(), FirstLine);
-        OLEDwriteString((char *)&presetNamesArray[patchNum][0], NAME_CLIPPED_LENGTH, 0, SecondLine);
+        OLEDwriteString((char *)&presetNamesArray[patchNum][0], PRESET_NAME_CLIPPED_LENGTH, 0, SecondLine);
         GFXwriteFastHLine(&theGFX, 0, 40, 128, 1);
         OLEDwriteInt(currentCopedent , 1, 0,FourthLine);
         OLEDwriteString(" ", 1, OLEDgetCursor(), FourthLine);
@@ -1131,6 +1445,36 @@ void displayCurrentPresetNameAndCopedent(void)
         //and update the macro OLED screens
         whichMacro = 0;
         macroOLEDWaitingToSend = 1;
+        volumeWaitingToSend = 1;
+    }
+    controlsDisplayed = 0;
+}
+
+void displayCurrentControlNames(void)
+{
+    int controlCheck = 0;
+    for (int i = 0; i < NUM_CONTROLS; i++)
+    {
+        if (controlNamesArray[patchNum][i][0] == 255)
+        {
+            controlCheck = 1;
+        }  
+    }
+    if (controlCheck == 0) //don't display if the name data still hasn't been retrieved by the SPI bus (255 is invalid initial data)
+    {
+        OLEDclear(128, 64);
+        OLEDtextColor(1, 0);
+        myGFX_setFont(0);
+        OLEDwriteString("A: ", 3, 0, FirstLine);
+        OLEDwriteString((char *)&controlNamesArray[patchNum][0][0], CONTROL_NAME_CLIPPED_LENGTH, OLEDgetCursor()-6, FirstLine);
+        OLEDwriteString("B: ", 3, 0, SecondLine);
+        OLEDwriteString((char *)&controlNamesArray[patchNum][1][0], CONTROL_NAME_CLIPPED_LENGTH, OLEDgetCursor()-6, SecondLine);
+        OLEDwriteString("X: ", 3, 0, ThirdLine);
+        OLEDwriteString((char *)&controlNamesArray[patchNum][2][0], CONTROL_NAME_CLIPPED_LENGTH, OLEDgetCursor()-6, ThirdLine);
+        OLEDwriteString("Y: ", 3, 0, FourthLine);
+        OLEDwriteString((char *)&controlNamesArray[patchNum][3][0], CONTROL_NAME_CLIPPED_LENGTH, OLEDgetCursor()-6, FourthLine);
+
+        mainOLEDWaitingToSend = 1;
     }
 }
 /* [] END OF FILE */

@@ -1,5 +1,5 @@
 /*******************************************************************************
-* File Name: testpin6.h  
+* File Name: knobPanelButton2.h  
 * Version 2.20
 *
 * Description:
@@ -15,8 +15,8 @@
 * the software package with which this file was provided.
 *******************************************************************************/
 
-#if !defined(CY_PINS_testpin6_ALIASES_H) /* Pins testpin6_ALIASES_H */
-#define CY_PINS_testpin6_ALIASES_H
+#if !defined(CY_PINS_knobPanelButton2_ALIASES_H) /* Pins knobPanelButton2_ALIASES_H */
+#define CY_PINS_knobPanelButton2_ALIASES_H
 
 #include "cytypes.h"
 #include "cyfitter.h"
@@ -25,12 +25,12 @@
 /***************************************
 *              Constants        
 ***************************************/
-#define testpin6_0			(testpin6__0__PC)
-#define testpin6_0_INTR	((uint16)((uint16)0x0001u << testpin6__0__SHIFT))
+#define knobPanelButton2_0			(knobPanelButton2__0__PC)
+#define knobPanelButton2_0_INTR	((uint16)((uint16)0x0001u << knobPanelButton2__0__SHIFT))
 
-#define testpin6_INTR_ALL	 ((uint16)(testpin6_0_INTR))
+#define knobPanelButton2_INTR_ALL	 ((uint16)(knobPanelButton2_0_INTR))
 
-#endif /* End Pins testpin6_ALIASES_H */
+#endif /* End Pins knobPanelButton2_ALIASES_H */
 
 
 /* [] END OF FILE */

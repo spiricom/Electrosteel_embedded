@@ -1231,7 +1231,7 @@ UDB 20
 
 	PLD 1:
 		 Instances:
-			\SPIS_1:BSPIS:rx_status_4\
+			\SPIS_2:BSPIS:rx_status_4\
 			\SPIS_1:BSPIS:byte_complete\
 			\SPIS_2:BSPIS:inv_ss\
 			\SPIS_1:BSPIS:dpcounter_one_reg\
@@ -1242,20 +1242,20 @@ UDB 20
 
 		 Input nets:
 			Net_1455
-			\SPIS_1:BSPIS:dpMOSI_fifo_not_empty\
 			\SPIS_1:BSPIS:dpcounter_one_fin\
 			\SPIS_1:BSPIS:dpcounter_one_reg\
+			\SPIS_2:BSPIS:dpMOSI_fifo_not_empty\
 
 		 Output nets:
 			\SPIS_1:BSPIS:byte_complete\
 			\SPIS_1:BSPIS:dpcounter_one_reg\
-			\SPIS_1:BSPIS:rx_status_4\
 			\SPIS_2:BSPIS:inv_ss\
+			\SPIS_2:BSPIS:rx_status_4\
 
 		 Product terms:
 			!Net_1455
-			!\SPIS_1:BSPIS:dpMOSI_fifo_not_empty\
 			!\SPIS_1:BSPIS:dpcounter_one_reg\ * \SPIS_1:BSPIS:dpcounter_one_fin\
+			!\SPIS_2:BSPIS:dpMOSI_fifo_not_empty\
 			\SPIS_1:BSPIS:dpcounter_one_fin\
 
 	Datapath:
@@ -1315,7 +1315,7 @@ UDB 21
 	PLD 1:
 		 Instances:
 			\SPIS_1:BSPIS:inv_ss\
-			\SPIS_2:BSPIS:rx_status_4\
+			\SPIS_1:BSPIS:rx_status_4\
 			\SPIS_2:BSPIS:mosi_buf_overrun_fin\
 			\SPIS_2:BSPIS:dpcounter_one_reg\
 
@@ -1325,19 +1325,19 @@ UDB 21
 
 		 Input nets:
 			Net_1467
-			\SPIS_2:BSPIS:dpMOSI_fifo_not_empty\
+			\SPIS_1:BSPIS:dpMOSI_fifo_not_empty\
 			\SPIS_2:BSPIS:dpcounter_one_fin\
 			\SPIS_2:BSPIS:mosi_buf_overrun_reg\
 
 		 Output nets:
 			\SPIS_1:BSPIS:inv_ss\
+			\SPIS_1:BSPIS:rx_status_4\
 			\SPIS_2:BSPIS:dpcounter_one_reg\
 			\SPIS_2:BSPIS:mosi_buf_overrun_fin\
-			\SPIS_2:BSPIS:rx_status_4\
 
 		 Product terms:
 			!Net_1467
-			!\SPIS_2:BSPIS:dpMOSI_fifo_not_empty\
+			!\SPIS_1:BSPIS:dpMOSI_fifo_not_empty\
 			\SPIS_2:BSPIS:dpcounter_one_fin\
 			\SPIS_2:BSPIS:mosi_buf_overrun_reg\
 

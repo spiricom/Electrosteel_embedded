@@ -27,11 +27,16 @@ uint8_t singleParamValueHigh = 0;
 uint8_t singleParamValueLow = 0;
             
 uint8_t sendMappingChangeUpdate = 0;
+
+
+uint8_t presetNumberToStore = 0;
             
 
 int8_t transposeSemitones = 0;
 int8_t transposeCents = 0;
 float transposeFloat = 0.0f;
+int8_t volumeInt = 0;
+uint8_t volumeWaitingToSend = 0;
 uint8_t midiSendOn = 0;
 uint8_t midiBarSendOn = 0;
 uint8_t pitchSmoothing = 0;
@@ -40,6 +45,8 @@ uint8_t octaveAction = 0;
 uint8_t stringRepresentation[2] = {3,8};
 
 uint8_t presetArraySection = presetName;
+
+uint8_t sendLocalPresetStoreCommand;
 
 uint16_t messageArraySendCount = 0;
 uint16_t messageArraySize = 0;
@@ -58,6 +65,8 @@ uint16_t numMappings = 0;
 volatile uint8_t parseThatMF = 0;
 volatile float valCheck = 0.0f;
 volatile float testVal = 0.0f;
+
+uint8_t sendFirmwareUpdateRequest = 0;
 
 uint8_t numStrings = 10;
 /*
@@ -87,7 +96,7 @@ uint16_t rawAngle = 0;
 uint16_t midiSent = 0;
 uint16_t midiOverflow = 0;
 
-uint8_t macroKnobValues[NUM_MACROS];
+uint8_t macroKnobValues[NUM_MACROS*NUM_MACRO_PAGES];
 
 uint8_t currentCopedent = 0;
 uint8_t necks[2] = {0,1};
@@ -148,8 +157,11 @@ volatile uint8_t SPI2started = 0;
 
 uint8_t whichMacro = 0;
 
-uint8_t macroKnobValues7bit[8];
-uint8_t prevMacroKnobValues7bit[8];
+uint8_t macroKnobValues7bit[NUM_MACROS*NUM_MACRO_PAGES];
+uint8_t prevMacroKnobValues7bit[NUM_MACROS*NUM_MACRO_PAGES];
+int16_t prevMacroKnobValues[NUM_MACROS*NUM_MACRO_PAGES];
+uint8_t knobFrozen[NUM_MACROS*NUM_MACRO_PAGES];
+
 
 static uint8 CYCODE eepromArray[]={ 0, 0 };
                                             
@@ -198,12 +210,15 @@ uint8_t sliderBugOn = 0;
 
 uint16_t fretMeasurements[NUM_SLIDERS][NUM_FRET_MEASUREMENTS];
 
+
+
 uint8_t currentPresetSelection = 0;
-uint8_t presetNamesArray[MAX_NUM_PRESETS][NAME_LENGTH_IN_BYTES];
+uint8_t presetNamesArray[MAX_NUM_PRESETS][PRESET_NAME_LENGTH_IN_BYTES];
 uint8_t presetNumberToLoad = 0;
 uint8_t presetLoadedResponse[2] = {255, 0};
 
-uint8_t macroNamesArray[MAX_NUM_PRESETS][NUM_MACROS][NAME_LENGTH_IN_BYTES];
+uint8_t macroNamesArray[MAX_NUM_PRESETS][NUM_MACROS*NUM_MACRO_PAGES][MACRO_NAME_LENGTH_IN_BYTES];
+uint8_t controlNamesArray[MAX_NUM_PRESETS][NUM_CONTROLS][CONTROL_NAME_LENGTH_IN_BYTES];
 
 //frets 0, 1, 3, 5, 7, 9, 12, 15, 17, 19, 21, 24
 float fretScalingInMIDI[NUM_FRET_MEASUREMENTS] = {0.0f, 1.0f, 3.0f, 5.0f, 7.0f, 9.0f, 12.0f, 15.0f, 17.0f, 19.0f, 21.0f, 24.0f};
@@ -220,8 +235,8 @@ uint8_t patchNum = 0;
 uint8_t pedal_inverted[NUM_PEDALS] = {0,0,0,0,0,0,0,0,0,0};
 
 
-float copedent[MAX_NUM_COPEDENTS][11][NUM_STRINGS];
-uint8_t copedentNamesArray[MAX_NUM_COPEDENTS][NAME_LENGTH_IN_BYTES];
+float copedent[MAX_NUM_COPEDENTS][NUM_PEDALS+1][NUM_STRINGS];
+uint8_t copedentNamesArray[MAX_NUM_COPEDENTS][COPEDENT_NAME_LENGTH_IN_BYTES];
 
 float prevStringPitchBend[NUM_STRINGS];
 
@@ -249,6 +264,9 @@ uint8_t neckByte = 0;
 uint8_t editMode = 0;
 uint8_t leverCalibrationMode = 0;
 uint8_t fretCalibrationMode = 0;
+
+uint8_t presetWhenMacroWriteStarted = 0;
+uint8_t macroPageWhenMacroWriteStarted = 0;
 
 float pedals_float[NUM_PEDALS] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
 float stringRepDivider = 1.0f;
@@ -365,7 +383,7 @@ void calculatePedalRatios(void)
         float pedalDiff =(float)pedals_high[i] - (float)pedals_low[i]; //temporary diff to calculate deadzone
         float deadZoneFloat = ((float)deadZone) * 0.002f * pedalDiff;
         pedals_lowWithDeadZone[i] = (float)pedals_low[i] + deadZoneFloat;
-        pedals_highWithDeadZone[i] =(float)pedals_high[i] - deadZoneFloat;
+        pedals_highWithDeadZone[i] = (float)pedals_high[i] - deadZoneFloat;
         pedalDiff = pedals_highWithDeadZone[i] - pedals_lowWithDeadZone[i]; //final diff to calculate ratio
         pedalRatios[i] = 4095.0f / pedalDiff;
     }
@@ -451,7 +469,7 @@ CY_ISR(spis_1_ss)
 {
     currentPluckBuffer = !currentPluckBuffer;
 
-    if ((rxBufferPluck[!currentPluckBuffer][0] == 254) && (rxBufferPluck[!currentPluckBuffer][25] == 253)) 
+    if ((rxBufferPluck[!currentPluckBuffer][0] == 254) && (rxBufferPluck[!currentPluckBuffer][31] == 253)) 
     {
         for (int i = 0 ; i < numStrings; i++)
         {
@@ -470,7 +488,21 @@ CY_ISR(spis_1_ss)
 
 }
 
-
+void loadEEPROMdefaults(void)
+{
+    EEPROM_WriteByte(0, EEPROM_CURRENT_PRESET_OFFSET);
+    EEPROM_WriteByte(0, EEPROM_NECKS_OFFSET);
+    EEPROM_WriteByte((int8_t)0, EEPROM_TRANSPOSE_OFFSET);
+    EEPROM_WriteByte((int8_t)0, EEPROM_TRANSPOSE_OFFSET+1);
+    EEPROM_WriteByte(1, EEPROM_MIDI_SEND_OFFSET);
+    EEPROM_WriteByte(64,EEPROM_PITCHSMOOTHING_OFFSET);
+    EEPROM_WriteByte(64,EEPROM_CONTROLSMOOTHING_OFFSET);
+    EEPROM_WriteByte(64,EEPROM_DEADZONES_OFFSET);
+    EEPROM_WriteByte(0,EEPROM_OCTAVE_ACTION_OFFSET);
+    EEPROM_WriteByte(114,EEPROM_STRING_REP_OFFSET);// (strings 3 and 8)
+    EEPROM_WriteByte(0,EEPROM_DUAL_SLIDER_OFFSET);
+    EEPROM_WriteByte(64,EEPROM_VOLUME_OFFSET);
+}
 
 
 int main(void)
@@ -496,6 +528,13 @@ int main(void)
     
     CyDelay(4000);
     //read from eeprom all the stored user settings
+    
+    //check if this is the first time it's ever booted up, in which case there will be no copedents loaded)
+    if (EEPROM_ReadByte(EEPROM_COPEDENT_OFFSET) == 0)
+    {
+        loadEEPROMdefaults();
+        
+    }
     patchNum = EEPROM_ReadByte(EEPROM_CURRENT_PRESET_OFFSET);
     neckByte = EEPROM_ReadByte(EEPROM_NECKS_OFFSET);
     necks[0] = (neckByte >> 5) & 7;
@@ -514,6 +553,7 @@ int main(void)
     stringRepresentation[1] = EEPROM_ReadByte(EEPROM_STRING_REP_OFFSET) & 15;//last 4 bits of the byte
     calculateStringRepDivider();
     dualSlider = EEPROM_ReadByte(EEPROM_DUAL_SLIDER_OFFSET) & 1;
+    volumeInt = (int8_t) EEPROM_ReadByte(EEPROM_VOLUME_OFFSET);
     uint16_t pedal_inverted_byte = (EEPROM_ReadByte(EEPROM_PEDAL_INVERTED_OFFSET) << 8) + EEPROM_ReadByte(EEPROM_PEDAL_INVERTED_OFFSET + 1);
     for (int i = 0; i < NUM_PEDALS; i++)
     {
@@ -521,7 +561,7 @@ int main(void)
     }
     for (int coped = 0; coped < MAX_NUM_COPEDENTS; coped++)
     {
-        for (int letter = 0; letter < NAME_LENGTH_IN_BYTES; letter++)
+        for (int letter = 0; letter < COPEDENT_NAME_LENGTH_IN_BYTES; letter++)
         {
                copedentNamesArray[coped][letter] = EEPROM_ReadByte(EEPROM_COPEDENT_OFFSET + (coped*COPEDENT_SIZE_IN_BYTES) + letter);
         }
@@ -532,8 +572,8 @@ int main(void)
     		{
                 
                 int stringStartLoc = (j*2);
-                uint16_t tempIntHigh = EEPROM_ReadByte(EEPROM_COPEDENT_OFFSET + stringStartLoc + pedalStartLoc + (coped*COPEDENT_SIZE_IN_BYTES) + NAME_LENGTH_IN_BYTES);
-                uint16_t tempIntLow = EEPROM_ReadByte(EEPROM_COPEDENT_OFFSET + stringStartLoc + pedalStartLoc + 1 + (coped*COPEDENT_SIZE_IN_BYTES)+ NAME_LENGTH_IN_BYTES);
+                uint16_t tempIntHigh = EEPROM_ReadByte(EEPROM_COPEDENT_OFFSET + stringStartLoc + pedalStartLoc + (coped*COPEDENT_SIZE_IN_BYTES) + COPEDENT_NAME_LENGTH_IN_BYTES);
+                uint16_t tempIntLow = EEPROM_ReadByte(EEPROM_COPEDENT_OFFSET + stringStartLoc + pedalStartLoc + 1 + (coped*COPEDENT_SIZE_IN_BYTES)+ COPEDENT_NAME_LENGTH_IN_BYTES);
                 copedent[coped][i][j] = (((float)((tempIntHigh << 8) + tempIntLow)) * 0.00390625f) - 128.0f;// (256 value range from -128 to 128, divided by 65536)
             }
     	}
@@ -556,16 +596,23 @@ int main(void)
     //blank out the preset names array so that we can tell when we get the real names from the synth board sd card
     for (int i = 0; i < MAX_NUM_PRESETS; i++)
     {
-        for (int j = 0; j < NAME_LENGTH_IN_BYTES; j++)
+        for (int j = 0; j < PRESET_NAME_LENGTH_IN_BYTES; j++)
         {
             presetNamesArray[i][j] = 255;
 
         }
-        for (int j = 0; j < NUM_MACROS; j++)
+        for (int j = 0; j < NUM_MACROS*NUM_MACRO_PAGES; j++)
         {
-            for (int k = 0; k < NAME_LENGTH_IN_BYTES; k++)
+            for (int k = 0; k < MACRO_NAME_LENGTH_IN_BYTES; k++)
             {
                 macroNamesArray[i][j][k] = 255;
+            }
+        }
+        for (int j = 0; j < NUM_CONTROLS; j++)
+        {
+            for (int k = 0; k < CONTROL_NAME_LENGTH_IN_BYTES; k++)
+            {
+                controlNamesArray[i][j][k] = 255;
             }
         }
         presetAlreadyDisplayed[i] = 0;
@@ -636,7 +683,7 @@ int main(void)
             parseSysex();
         }
        
-        testpin3_Write(1);
+        //testpin3_Write(1);
        //sense levers and pedals
         if (mux_states[main_counter][0] != last_mux)
         {
@@ -724,19 +771,35 @@ int main(void)
                 status = I2C_MasterReadBlocking(0x35, 16, I2C_1_MODE_COMPLETE_XFER);
                 if (status == 0)
                 {
-                    for (int i = 0; i < NUM_MACROS; i++)
+                    for (int i = 0; i < 8; i++)
                     {
-                       uint16_t tempInt =((I2Cbuff2[i*2] << 8) + (I2Cbuff2[(i*2) + 1] & 255)) & 4095; // necessary to AND with 4095 to eliminate the 4 preceding bits set high by default
-                        macroKnobValues[i] = 255 - (tempInt >> 4); //now squish it down to 8 bit for sending (also subtract from 255 because the pot is backwards for some reason
-                        if (midiSendOn)
+                       uint8_t myKnob = i+whichMacroPageIsActive;
+                        uint16_t tempInt =((I2Cbuff2[i*2] << 8) + (I2Cbuff2[(i*2) + 1] & 255)) & 4095; // necessary to AND with 4095 to eliminate the 4 preceding bits set high by default
+                        int16_t tempSquished = 255 - (tempInt >> 4);
+                        if (knobFrozen[myKnob] == 1)
                         {
-                            macroKnobValues7bit[i] = macroKnobValues[i] >> 1;
-                            if (macroKnobValues7bit[i] != prevMacroKnobValues7bit[i])
+                            if ((tempSquished > prevMacroKnobValues[myKnob] + 4) || (tempSquished < prevMacroKnobValues[myKnob] - 4))
                             {
-                                sendMIDIControlChange(i+1, macroKnobValues7bit[i], 0);
+                                //update
+                                macroKnobValues[myKnob] = tempSquished;
+                                knobFrozen[myKnob] = 0;
                             }
-                            prevMacroKnobValues7bit[i] = macroKnobValues7bit[i];
                         }
+                        else
+                        {
+                            macroKnobValues[myKnob] = tempSquished; //now squish it down to 8 bit for sending (also subtract from 255 because the pot is backwards for some reason
+                            if (midiSendOn)
+                            {
+                                macroKnobValues7bit[myKnob] = macroKnobValues[myKnob] >> 1;
+                                if (macroKnobValues7bit[myKnob] != prevMacroKnobValues7bit[myKnob])
+                                {
+                                    sendMIDIControlChange(i+1 + (3*whichMacroPageIsActive), macroKnobValues7bit[myKnob], 0);//first 8 are 1-8 second page is 25-32
+                                }
+                                prevMacroKnobValues7bit[myKnob] = macroKnobValues7bit[myKnob];
+                            }
+                            prevMacroKnobValues[myKnob] =  tempSquished;
+                        }
+
                     }
                     //
                     if (macroOLEDWaitingToSend == 2)
@@ -750,15 +813,22 @@ int main(void)
                         //OLEDwriteInt(w , 1, 0,FirstLine);
                         //OLEDwriteString(" ", 1, OLEDgetCursor(), FourthLine);
                         myGFX_setFont(1);
+                         //make sure we didn't switch stuff while the display was updating
+                        if ((presetWhenMacroWriteStarted != patchNum)  || (macroPageWhenMacroWriteStarted != whichMacroPageIsActive))
+                        {
+                            whichMacro = 0;
+                        }
                         //GFXsetFont(&theGFX,  &SourceCodePro_Regular14pt7b);
-                        OLEDwriteLineMiddle((char *)&macroNamesArray[patchNum][whichMacro][0], MACRO_CLIPPED_LENGTH);
+                        OLEDwriteLineMiddle((char *)&macroNamesArray[patchNum][whichMacro+whichMacroPageIsActive][0], MACRO_NAME_CLIPPED_LENGTH);
                         OLED_draw(128, 32);
 
                         whichMacro++;
-                        if (whichMacro >=8)
+                        if (whichMacro >= NUM_MACROS)
                         {
                             macroOLEDWaitingToSend = 0;
                             whichMacro = 0;
+                           
+
                         }
                     }
                 }
@@ -791,6 +861,8 @@ int main(void)
             if (macroOLEDWaitingToSend == 1)
             {
                 macroOLEDWaitingToSend = 2;
+                presetWhenMacroWriteStarted = patchNum;
+                macroPageWhenMacroWriteStarted = whichMacroPageIsActive;
             }
         }
 
@@ -871,9 +943,9 @@ int main(void)
         {
             main_counter = 0;
         }
-        testpin3_Write(0);
+        //testpin3_Write(0);
 
-        testpin5_Write(1);
+       // testpin5_Write(1);
         
         if ((rxBufferBar[!currentBarBuffer][6] == 254) && (rxBufferBar[!currentBarBuffer][7] == 253))
         {
@@ -909,7 +981,7 @@ int main(void)
             }
         }
         
-        testpin5_Write(0);
+        //testpin5_Write(0);
         if (midiSendOn)
         {
             for (int i = 0 ; i < numStrings; i++)
@@ -927,8 +999,10 @@ int main(void)
         for (int i=  0; i < 4; i++)
         {
             knobs[i] = (ADC_SAR_Seq_1_GetResult16(i)>>4); //divide by 16
-            
-            knobs[i] = 255 - knobs[i];
+            if (i != 2) // all are backwards except X axis
+            {
+                knobs[i] = 255 - knobs[i];
+            }
             if (midiSendOn)
             {
                 knobs7bit[i] = knobs[i] >> 1;
@@ -942,7 +1016,7 @@ int main(void)
             
         }
         
-        testpin4_Write(1);
+        //testpin4_Write(1);
         //calculate the pitch of each string based on the current Copedent
         for (int i = 0; i < numStrings; i++)
     	{
@@ -1003,7 +1077,7 @@ int main(void)
                     }
                 }
             }
-            else if (i == (NUM_STRINGS - 1))
+            else if (i == (numStrings - 1))
             {
                  barMidiOuterStrings[1] = (uint16_t)(barMIDI * 512.0f);
             }
@@ -1025,7 +1099,7 @@ int main(void)
                 stringMIDI[i] = pedalsMIDI + barMIDI;
             }
     	}
-        testpin4_Write(0);
+       // testpin4_Write(0);
 
         
         if (USB_check_flag)
@@ -1049,7 +1123,7 @@ int main(void)
         {
             ;
         }
-        testpin6_Write(1);
+        //testpin6_Write(1);
         if (sendingMessage == 1) //sending synthesis preset to synth board
         {
             if (sendMessageEnd) //send end message
@@ -1114,14 +1188,62 @@ int main(void)
             myArray[31] = 253;
             sendMappingChangeUpdate = 0;
         }
+        else if (volumeWaitingToSend)
+        {
+            myArray[0] = 10;
+            myArray[1] = volumeInt;
+            myArray[30] = 254;
+            myArray[31] = 253;
+            volumeWaitingToSend = 0;
+        }
         
+        else if (sendFirmwareUpdateRequest == 1)
+        {
+            myArray[0] = 11;
+            myArray[1] = 0;
+            myArray[30] = 254;
+            myArray[31] = 253;
+            sendFirmwareUpdateRequest = 0;
+        }
+        else if (sendFirmwareUpdateRequest == 2)
+        {
+            myArray[0] = 12;
+            myArray[1] = 0;
+            myArray[30] = 254;
+            myArray[31] = 253;
+            sendFirmwareUpdateRequest = 0;
+        }
+        
+        else if (sendLocalPresetStoreCommand == 1)
+        {
+            myArray[0] = 14;
+            myArray[1] = presetNumberToStore;
+            myArray[2] = 17;
+            myArray[3] = 18;
+            myArray[4] = 1;
+            myArray[5] = 1;
+            myArray[30] = 254;
+            myArray[31] = 253;
+            for (int i = 0; i < 14; i++)
+            {
+                 myArray[i+6] = newPresetName[i];
+            }
+            sendLocalPresetStoreCommand = 0;
+        }
         
         else if (sendKnobs)
         {
-            myArray[0] = 3; //sending knob stuff, not a preset send
+            if (whichMacroPageIsActive == 0)
+            {
+                myArray[0] = 3; //sending knob stuff, not a preset send
+            }
+            else
+            {
+                myArray[0] = 13; //sending additional knob stuff, not a preset send
+            }
             for (int i = 0; i < 8; i++)
             {
-                myArray[i + 1] = macroKnobValues[i];
+                myArray[i + 1] = macroKnobValues[i+whichMacroPageIsActive];
             }
             for (int i = 0; i < 4; i++)
             {
@@ -1171,16 +1293,35 @@ int main(void)
             int whichPresetToStoreName = inBuffer[1];
             int whichMacroToStoreName = inBuffer[16];
             int bufferPointer = 2;
-            for (int i = 0; i < NAME_LENGTH_IN_BYTES; i++)
+            for (int i = 0; i < PRESET_NAME_LENGTH_IN_BYTES; i++)
             {
                 presetNamesArray[whichPresetToStoreName][i] = inBuffer[bufferPointer];
                 bufferPointer++;
             }
             bufferPointer = 17;
-            for (int i = 0; i < NAME_LENGTH_IN_BYTES; i++)
+            if (whichMacroToStoreName < 8)
             {
-                macroNamesArray[whichPresetToStoreName][whichMacroToStoreName][i] = inBuffer[bufferPointer];
-                bufferPointer++;
+                for (int i = 0; i < MACRO_NAME_LENGTH_IN_BYTES; i++)
+                {
+                    macroNamesArray[whichPresetToStoreName][whichMacroToStoreName][i] = inBuffer[bufferPointer];
+                    bufferPointer++;
+                }
+            }
+            else if (whichMacroToStoreName < 12) //if it's macro #8-12 it's actually a control knob , subtract 8 from the number of which macro and store it in the control knob name array
+            {
+                for (int i = 0; i < CONTROL_NAME_LENGTH_IN_BYTES; i++)
+                {
+                    controlNamesArray[whichPresetToStoreName][(whichMacroToStoreName - 8)][i] = inBuffer[bufferPointer];
+                    bufferPointer++;
+                }
+            }
+            else
+            {
+                for (int i = 0; i < MACRO_NAME_LENGTH_IN_BYTES; i++)
+                {
+                    macroNamesArray[whichPresetToStoreName][whichMacroToStoreName - 4][i] = inBuffer[bufferPointer];
+                    bufferPointer++;
+                }
             }
             if ((whichPresetToStoreName == patchNum) && (whichMacroToStoreName == 7) && (!presetAlreadyDisplayed[whichPresetToStoreName]))
             {
@@ -1228,7 +1369,7 @@ int main(void)
         CyDmaChEnable(rx3Channel, STORE_TD_CFG_ONCMPLT);
         CyDmaChEnable(txChannel, STORE_TD_CFG_ONCMPLT);
         
-        testpin6_Write(0);
+       // testpin6_Write(0);
        
 
      }
@@ -1648,7 +1789,7 @@ void parseSysex(void)
         
         union breakFloat theVal;
         uint32_t i = 6;
-        uint8_t stoppingPoint = NAME_LENGTH_IN_BYTES+6;
+        uint8_t stoppingPoint = PRESET_NAME_LENGTH_IN_BYTES+6;
         for (; i < stoppingPoint; i++)
         {
             presetArray[i-2] = sysexBuffer[i] & 127; // pass on the first 14 elements as 8-bit bytes (they are the chars for the name string)
@@ -1658,17 +1799,26 @@ void parseSysex(void)
         presetArraySection = macroNames;
 
         
-        for (int j = 0; j < NUM_MACROS; j++)
+        for (int j = 0; j < (NUM_MACROS); j++)
         {
-            for (int k = 0; k < NAME_LENGTH_IN_BYTES; k++)
+            for (int k = 0; k < MACRO_NAME_LENGTH_IN_BYTES; k++)
             {
                 presetArray[i-2] = sysexBuffer[i] & 127; // pass on the first 14 elements as 8-bit bytes (they are the chars for the name string)
                 macroNamesArray[presetNumberToWrite][j][k] = sysexBuffer[i] & 127; // pass on the first 14 elements as 8-bit bytes (they are the chars for the name string)
                 i++;
             }
         }
+        for (int j = 0; j < NUM_CONTROLS; j++)
+        {
+            for (int k = 0; k < CONTROL_NAME_LENGTH_IN_BYTES; k++)
+            {
+                presetArray[i-2] = sysexBuffer[i] & 127; // pass on the first 14 elements as 8-bit bytes (they are the chars for the name string)
+                controlNamesArray[presetNumberToWrite][j][k] = sysexBuffer[i] & 127; // pass on the first 14 elements as 8-bit bytes (they are the chars for the name string)
+                i++;
+            }
+        }
         
-        uint16_t valsStart = 4 + NAME_LENGTH_IN_BYTES + (NAME_LENGTH_IN_BYTES * NUM_MACROS);
+        uint16_t valsStart = 4 + PRESET_NAME_LENGTH_IN_BYTES + (MACRO_NAME_LENGTH_IN_BYTES * NUM_MACROS) + (CONTROL_NAME_LENGTH_IN_BYTES * NUM_CONTROLS);
         
         presetArraySection = initialVals;
         
@@ -1851,7 +2001,7 @@ void parseSysex(void)
         
         union breakFloat theVal;
         uint32_t i = 2;
-        uint8_t stoppingPoint = NAME_LENGTH_IN_BYTES+2;
+        uint8_t stoppingPoint = COPEDENT_NAME_LENGTH_IN_BYTES+2;
         for (; i < stoppingPoint; i++)
         {
             //presetArray[i-2] = sysexBuffer[i] & 127; // pass on the first 14 elements as 8-bit bytes (they are the chars for the name string)
@@ -1861,7 +2011,7 @@ void parseSysex(void)
             checkStatus = EEPROM_WriteByte(tempChar, EEPROM_COPEDENT_OFFSET + (i - 2) + (COPEDENT_SIZE_IN_BYTES * copedentNumberToWrite));
         }
         
-        i = NAME_LENGTH_IN_BYTES + 2; // start after the name storage to store the actual values
+        i = COPEDENT_NAME_LENGTH_IN_BYTES + 2; // start after the name storage to store the actual values
 
  
         while(i < sysexPointer)
@@ -1885,7 +2035,7 @@ void parseSysex(void)
                     
                     
                     uint16_t stringStartLoc = stringChange * 2;
-                    checkBase = EEPROM_COPEDENT_OFFSET + stringStartLoc + pedalStartLoc + (COPEDENT_SIZE_IN_BYTES * copedentNumberToWrite) + NAME_LENGTH_IN_BYTES;
+                    checkBase = EEPROM_COPEDENT_OFFSET + stringStartLoc + pedalStartLoc + (COPEDENT_SIZE_IN_BYTES * copedentNumberToWrite) + COPEDENT_NAME_LENGTH_IN_BYTES;
                     checkStatus = EEPROM_WriteByte(tempHigh, checkBase);
                     checkStatus = EEPROM_WriteByte(tempLow, checkBase + 1);
                     currentFloat++;
