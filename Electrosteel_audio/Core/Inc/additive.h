@@ -17,7 +17,7 @@ void audioFrameAdditive(uint16_t buffer_offset);
 float audioTickAdditive(void);
 void audioInitAdditive();
 void  audioFreeAdditive();
-
+void audioSwitchToAdditive();
 
 
 

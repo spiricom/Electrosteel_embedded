@@ -17,6 +17,7 @@ void audioFrameString1(uint16_t buffer_offset);
 float audioTickString1(void);
 void audioInitString1();
 void  audioFreeString1();
+void  audioSwitchToString1();
 
 
 #endif /* SRC_STRING1_H_ */

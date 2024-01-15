@@ -60,6 +60,7 @@ typedef enum
 {
   String1Loaded = 0,
   String2Loaded,
+  String3Loaded,
 }StringModelLoadedTypeDef;
 
 //#define SAMPLERATE96K
@@ -112,6 +113,8 @@ float mtofTableLookup(float tempMIDI);
 void  switchStringModel(int which);
 float dbToATableLookup(float in);
 
+void  audioFrameWaiting(uint16_t buffer_offset);
+
 extern tMempool largePool;
 extern float sourceValues[NUM_SOURCES][NUM_STRINGS_PER_BOARD];
 extern uint8_t lfoOn[NUM_LFOS];
@@ -136,10 +139,10 @@ extern uint32_t displayBufferIndex;
 extern uint8_t numStringsThisBoard;
 extern volatile int firstString;
 extern volatile float stringMIDIPitches[NUM_STRINGS_PER_BOARD];
-extern tExpSmooth knobSmoothers[12];
+extern tExpSmooth knobSmoothers[20];
 extern tExpSmooth pedalSmoothers[10];
 extern volatile uint16_t stringInputs[NUM_STRINGS];
-extern volatile uint8_t knobFrozen[12];
+extern volatile uint8_t knobFrozen[20];
 extern volatile uint8_t whichBar;
 extern volatile uint16_t sampleClippedCountdown;
 extern float masterVolFromBrain;
@@ -156,7 +159,7 @@ extern tMempool mediumPool;
 extern uint8_t whichStringModelLoaded;
 extern float randomFactors[256];
 extern float pluckPos;
-extern float knobScaled[12];
+extern float knobScaled[20];
 extern volatile int switchStrings;
 
 extern uint32_t timeFrame;
@@ -183,6 +186,7 @@ extern float dbtoATable[DBTOA_TABLE_SIZE];
 extern uint32_t frameLoadOverCount;
 extern float pedalScaled[10];
 extern float volumePedal;
+extern float invNumStrings;
 
 
 
