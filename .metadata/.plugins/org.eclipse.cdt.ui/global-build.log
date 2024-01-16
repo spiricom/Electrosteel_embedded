@@ -1,43 +1,13 @@
-19:27:22 **** Incremental Build of configuration Debug for project Electrosteel_audio ****
+17:10:00 **** Incremental Build of configuration Debug for project Electrosteel_audio ****
 make -j7 all 
-arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m7 -std=gnu11 -g -DDEBUG -DARM_MATH_CM7 -DNO_DENORMAL_CHECK -DUSE_HAL_DRIVER -DSTM32H743xx -c -I"/Users/jeffsnyder/dev/CMSIS/Include" -I"/Users/jeffsnyder/dev/LEAF/leaf" -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Middlewares/Third_Party/FatFs/src -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Core/Inc -I../FATFS/Target -I../FATFS/App -I"/Users/jeffsnyder/dev/LEAF/leaf" -Og -ffunction-sections -fdata-sections -fno-strict-aliasing -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
-../Core/Src/main.c: In function 'getPresetNamesFromSDCard':
-../Core/Src/main.c:757:91: warning: passing argument 4 of 'f_read' from incompatible pointer type [-Wincompatible-pointer-types]
-  757 |                                                 f_read(&SDFile, &buffer, f_size(&SDFile), &bytesRead);
-      |                                                                                           ^~~~~~~~~~
-      |                                                                                           |
-      |                                                                                           uint32_t * {aka long unsigned int *}
-In file included from ../FATFS/App/fatfs.h:26,
-                 from ../Core/Src/main.c:23:
-../Middlewares/Third_Party/FatFs/src/ff.h:244:54: note: expected 'UINT *' {aka 'unsigned int *'} but argument is of type 'uint32_t *' {aka 'long unsigned int *'}
-  244 | FRESULT f_read (FIL* fp, void* buff, UINT btr, UINT* br);                       /* Read data from the file */
-      |                                                ~~~~~~^~
-../Core/Src/main.c: In function 'checkForSDCardPreset':
-../Core/Src/main.c:853:83: warning: passing argument 4 of 'f_read' from incompatible pointer type [-Wincompatible-pointer-types]
-  853 |                                         f_read(&SDFile, &buffer, f_size(&SDFile), &bytesRead);
-      |                                                                                   ^~~~~~~~~~
-      |                                                                                   |
-      |                                                                                   uint32_t * {aka long unsigned int *}
-In file included from ../FATFS/App/fatfs.h:26,
-                 from ../Core/Src/main.c:23:
-../Middlewares/Third_Party/FatFs/src/ff.h:244:54: note: expected 'UINT *' {aka 'unsigned int *'} but argument is of type 'uint32_t *' {aka 'long unsigned int *'}
-  244 | FRESULT f_read (FIL* fp, void* buff, UINT btr, UINT* br);                       /* Read data from the file */
-      |                                                ~~~~~~^~
-../Core/Src/main.c: In function 'writePresetToSDCard':
-../Core/Src/main.c:993:77: warning: passing argument 4 of 'f_write' from incompatible pointer type [-Wincompatible-pointer-types]
-  993 |                                         f_write(&SDFile, &buffer, fileSize, &bytesRead);
-      |                                                                             ^~~~~~~~~~
-      |                                                                             |
-      |                                                                             uint32_t * {aka long unsigned int *}
-In file included from ../FATFS/App/fatfs.h:26,
-                 from ../Core/Src/main.c:23:
-../Middlewares/Third_Party/FatFs/src/ff.h:245:61: note: expected 'UINT *' {aka 'unsigned int *'} but argument is of type 'uint32_t *' {aka 'long unsigned int *'}
-  245 | FRESULT f_write (FIL* fp, const void* buff, UINT btw, UINT* bw);        /* Write data to the file */
-      |                                                       ~~~~~~^~
-At top level:
-../Core/Src/main.c:889:13: warning: 'checkForBootloadableBrainFile' defined but not used [-Wunused-function]
-  889 | static void checkForBootloadableBrainFile(void)
-      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+arm-none-eabi-gcc "../Core/Src/synth.c" -mcpu=cortex-m7 -std=gnu11 -g -DDEBUG -DARM_MATH_CM7 -DNO_DENORMAL_CHECK -DUSE_HAL_DRIVER -DSTM32H743xx -c -I"/Users/jeffsnyder/dev/CMSIS/Include" -I"/Users/jeffsnyder/dev/LEAF/leaf" -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Middlewares/Third_Party/FatFs/src -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Core/Inc -I../FATFS/Target -I../FATFS/App -I"/Users/jeffsnyder/dev/LEAF/leaf" -O2 -ffunction-sections -fdata-sections -fno-strict-aliasing -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/synth.d" -MT"Core/Src/synth.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Core/Src/synth.o"
+../Core/Src/synth.c: In function 'filter_tick':
+../Core/Src/synth.c:873:17: warning: 'cutoff[0]' may be used uninitialized in this function [-Wmaybe-uninitialized]
+  873 |                 filterTick[0](&samples[0], 0, cutoff[0], string);
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../Core/Src/synth.c:890:17: warning: 'cutoff[1]' may be used uninitialized in this function [-Wmaybe-uninitialized]
+  890 |                 filterTick[1](&samples[1], 1, cutoff[1], string);
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 arm-none-eabi-gcc -o "Electrosteel_audio.elf" @"objects.list"   -mcpu=cortex-m7 -T"/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/STM32H743ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Electrosteel_audio.map" -Wl,--cref -Wl,--gc-sections -nodefaultlibs -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 Finished building target: Electrosteel_audio.elf
  
@@ -45,17 +15,17 @@ arm-none-eabi-size   Electrosteel_audio.elf
 arm-none-eabi-objdump -h -S  Electrosteel_audio.elf  > "Electrosteel_audio.list"
 arm-none-eabi-objcopy  -O binary  Electrosteel_audio.elf  "Electrosteel_audio.bin"
    text	   data	    bss	    dec	    hex	filename
- 188944	   3648	34219036	34411628	20d146c	Electrosteel_audio.elf
+ 188480	   3648	34219048	34411176	20d12a8	Electrosteel_audio.elf
 Finished building: default.size.stdout
  
 Finished building: Electrosteel_audio.bin
  
 Finished building: Electrosteel_audio.list
  
-19:27:49 **** Incremental Build of configuration Debug for project Electrosteel_audio ****
+17:10:05 **** Incremental Build of configuration Debug for project Electrosteel_audio ****
 make -j7 all 
 arm-none-eabi-size   Electrosteel_audio.elf 
    text	   data	    bss	    dec	    hex	filename
- 188944	   3648	34219036	34411628	20d146c	Electrosteel_audio.elf
+ 188480	   3648	34219048	34411176	20d12a8	Electrosteel_audio.elf
 Finished building: default.size.stdout
  

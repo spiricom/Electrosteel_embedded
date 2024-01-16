@@ -23,7 +23,7 @@ float inv_oversample = 1.0f / OVERSAMPLE;
 
 
 uint32_t prevOversample;
-
+volatile uint32_t nanChuck  = 0;
 
 float oversamplerArray[OVERSAMPLE];
 
@@ -198,7 +198,7 @@ void audioInitSynth()
 
 			tPBSineTriangle_init(&sinePaired[i][v],&leaf);
 
-			tExpSmooth_init(&pitchSmoother[i][v], 64.0f, 0.005f, &leaf);
+			tExpSmooth_init(&pitchSmoother[i][v], 64.0f, 0.05f, &leaf);
 
 			freqMult[i][v] = 1.0f;
 			midiAdd[i][v] = 0.0f;
@@ -515,17 +515,49 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 		{
 			filterSamps[0] += oscOuts[0][i][v];
 			filterSamps[1] += oscOuts[1][i][v];
+			if (isnan(filterSamps[0]))
+			{
+				filterSamps[0] = 0.0f;
+				nanChuck++;
+			}
+			if (isnan(filterSamps[1]))
+			{
+				filterSamps[1] = 0.0f;
+				nanChuck++;
+			}
 		}
+
 		filterSamps[0] += noiseOuts[0][v];
+
 		filterSamps[1] += noiseOuts[1][v];
+		if (isnan(filterSamps[1]))
+		{
+			filterSamps[1] = 0.0f;
+			nanChuck++;
+		}
 
 		uint32_t tempCountFilt = DWT->CYCCNT;
+		if (isnan(filterSamps[0]))
+		{
+			filterSamps[0] = 0.0f;
+			nanChuck++;
+		}
 		sample = filter_tick(&filterSamps[0], note[v], v);
+		if (isnan(filterSamps[0]))
+		{
+			filterSamps[0] = 0.0f;
+			nanChuck++;
+		}
 		timeFilt = DWT->CYCCNT - tempCountFilt;
 
 		if (fxPre)
 		{
 			sample *= amplitude[v];
+			if (isnan(sample))
+			{
+				sample = 0.0f;
+				nanChuck++;
+			}
 		}
 		uint32_t tempCountOS = DWT->CYCCNT;
 
@@ -547,6 +579,11 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 						oversamplerArray[j] = effectTick[i](oversamplerArray[j], i, v); //run the effect
 						oversamplerArray[j] = ((1.0f - fxMix[i][v]) * dry) + (fxMix[i][v] * oversamplerArray[j]); //mix in dry/wet at the "mix" amount
 						oversamplerArray[j] *= fxPostGain[i][v]; //apply postgain
+						if (isnan(sample))
+						{
+							sample = 0.0f;
+							nanChuck++;
+						}
 					}
 				}
 			}
@@ -563,6 +600,11 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 					sample = effectTick[i](sample, i, v); //run the effect
 					sample =((1.0f - fxMix[i][v]) * dry) + (fxMix[i][v] * sample);
 					sample *= fxPostGain[i][v];
+					if (isnan(sample))
+					{
+						sample = 0.0f;
+						nanChuck++;
+					}
 				}
 			}
 		}
@@ -573,7 +615,11 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 		{
 			sample *= amplitude[v];
 		}
-
+		if (isnan(sample))
+		{
+			sample = 0.0f;
+			nanChuck++;
+		}
 		sample = tSVF_tick(&finalLowpass[v], sample) * masterVolFromBrainForSynth;
 		masterSample += sample;// * finalMaster[v];
 	}
@@ -699,12 +745,20 @@ void __ATTR_ITCMRAM oscillator_tick(float note, int string)
 			shapeTick[osc](&sample, osc, finalFreq, shape, 0, string);
 
 			sample *= amp;
-
+			if (isnan(sample))
+			{
+				sample = 0.0f;
+				nanChuck++;
+			}
 			//sourceValues[OSC_SOURCE_OFFSET + osc] = sample; // the define of zero may be wasteful
 			sourceValues[osc][string] = sample;
 
 			sample *= oscAmpMult; // divide down gain if more than one oscillator is sounding (computed at preset load)
-
+			if (isnan(sample))
+			{
+				sample = 0.0f;
+				nanChuck++;
+			}
 			oscOuts[0][osc][string] = sample * (filterSend) * oscParams[OscEnabled].realVal[string];
 			oscOuts[1][osc][string] = sample * (1.0f - filterSend) * oscParams[OscEnabled].realVal[string];
 		}
@@ -811,14 +865,34 @@ float __ATTR_ITCMRAM filter_tick(float* samples, float note, int string)
 
 	if (enabledFilt[0])
 	{
+		if (isnan(samples[0]))
+		{
+			samples[0] = 0.0f;
+			nanChuck++;
+		}
 		filterTick[0](&samples[0], 0, cutoff[0], string);
+		if (isnan(samples[0]))
+		{
+			samples[0] = 0.0f;
+			nanChuck++;
+		}
 	}
 	float sendToFilter2 = samples[0] * (1.0f - sp);
 	samples[1] += sendToFilter2;
 	//compute what gets sent to the second filter
 	if (enabledFilt[1])
 	{
+		if (isnan(samples[1]))
+		{
+			samples[1] = 0.0f;
+			nanChuck++;
+		}
 		filterTick[1](&samples[1], 1, cutoff[1], string);
+		if (isnan(samples[0]))
+		{
+			samples[0] = 0.0f;
+			nanChuck++;
+		}
 	}
 	return samples[1] + (samples[0] * sp);
 }
@@ -1083,6 +1157,11 @@ void  __ATTR_ITCMRAM  setPitchBendRange(float in, int v, int string)
 
 void  __ATTR_ITCMRAM  setFinalLowpass(float in, int v, int string)
 {
+	if (isnan(in))
+	{
+		in = 0.0f;
+		nanChuck++;
+	}
 	tSVF_setFreqFast(&finalLowpass[string], in);
 }
 
@@ -1834,6 +1913,11 @@ void __ATTR_ITCMRAM noise_tick(int string)
 	sample = tVZFilterHS_tick(&noiseShelf2[string], sample);
 	sample = tVZFilterBell_tick(&noiseBell1[string], sample);
 	sample = sample * amp;
+	if (isnan(sample))
+	{
+		nanChuck++;
+		sample = 0.0f;
+	}
 	float normSample = (sample + 1.f) * 0.5f;
 	sourceValues[NOISE_SOURCE_OFFSET][string] = normSample;
 	noiseOuts[0][string] = sample * filterSend *  enabled;

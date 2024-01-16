@@ -89,7 +89,7 @@ uint8_t bootloaderFlag[32] __ATTR_USER_FLASH;
 uint8_t buttonPressed = 0;
 uint8_t resetFlag = 0;
 
-
+uint32_t currentPresetSize = 0;
 uint8_t brainFirmwareBuffer[2097152] __ATTR_SDRAM; // 2 MB of space for firmware
 //uint8_t pluckFirmwareBuffer[2097152] __ATTR_SDRAM; // 2 MB of space for firmware
 
@@ -2100,7 +2100,7 @@ void  handleSPI (uint8_t offset)
 				currentByte++;
 				bufferPos = 0;
 
-				for (int i = 0; i < 30; i++)
+				for (int i = 0; i < 18; i++)
 				{
 					buffer[bufferPos++] = SPI_LEVERS_RX[currentByte++];
 				}
@@ -2158,15 +2158,33 @@ void  handleSPI (uint8_t offset)
 						buffer[bufferPos+1] = integerVersion & 255;
 						bufferPos = bufferPos + 2;
 					}
+
+					 presetNumberToLoad = presetNumberToSave;
+					 /* Parse into Audio Params */
+					 presetWaitingToParse = bufferPos;
+					 presetWaitingToWrite = bufferPos;
+
 				}
-				else
+				else //otherwise, it's a synth preset, keep the current buffer but change the name and the knob/joystick settings
 				{
 					//need to copy the buffer after the new name into the buffer
+					bufferPos = 138;//first byte after name
+
+					for (int i = 0; i < 12; i++)
+					{
+						//copy the parameters into the default KnobParams Buffer
+						uint16_t integerVersion = knobScaled[i] * TWO_TO_16;
+						buffer[bufferPos] = integerVersion >> 8;
+						buffer[bufferPos+1] = integerVersion & 255;
+						bufferPos = bufferPos + 2;
+					}
+
+					 presetNumberToLoad = presetNumberToSave;
+					 /* Parse into Audio Params */
+					 presetWaitingToParse = currentPresetSize; //use current stored preset size because that's how long the whole remaining buffer we didn't alter is
+					 presetWaitingToWrite = currentPresetSize;
+
 				}
-				 presetNumberToLoad = presetNumberToSave;
-				 /* Parse into Audio Params */
-				 presetWaitingToParse = bufferPos;
-				 presetWaitingToWrite = bufferPos;
 
 			}
 		}
@@ -2269,7 +2287,7 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 	//turn off the volume while changing parameters
 	//HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
 	uint16_t presetVersionNumber = 0;
-
+	currentPresetSize = size;
 	 __disable_irq();
 	 presetReady = 0;
 	 for (int i = 0; i < AUDIO_BUFFER_SIZE; i++)
@@ -2285,7 +2303,7 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 	//should add an indicator at the beginning of the version number.
 	// maybe 4 bytes:
 		// [0] = 17   marker1 letting the parser know that a preset version number will follow
-	    // [1] = 18   marker2 letting the parser know that a preset version number will follow
+	    // [1] = 18   marker2 letting the parser know that a preset version number will follow // or 19 to say it's storing an internal preset
 	    // [2] = version number major (i.e. the 01 in 1.04)
 	    // [3] = version number minor (i.e. the 04 in 1.04)
 
@@ -2491,7 +2509,7 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 
 
 
-	 //move past the name characters (14 bytes) and paramcount position (2 bytes) in the buffer to start parsing the parameter data
+	 //move past the name characters (4byte version, 14 bytes name, 9-byte * 8, 10-byte * 4) and paramcount position (2 bytes) in the buffer to start parsing the parameter data
 	bufferIndex = bufferIndex + 2;
 
 	//now read the parameters
