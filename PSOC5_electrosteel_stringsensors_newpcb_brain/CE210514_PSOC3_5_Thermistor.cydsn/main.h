@@ -15,13 +15,14 @@
 
 
 #define EEPROM_COPEDENT_OFFSET 0
-#define COPEDENT_SIZE_IN_BYTES 278 //including name bytes
+#define COPEDENT_SIZE_IN_BYTES 274 //including name bytes
 #define COPEDENT_SIZE_IN_FLOATS 132 // not including name bytes
-#define NAME_LENGTH_IN_BYTES 14
+#define PRESET_NAME_LENGTH_IN_BYTES 14
+#define COPEDENT_NAME_LENGTH_IN_BYTES 10
 #define NUM_FRET_MEASUREMENTS 12
 #define NUM_SLIDERS 2
 #define EEPROM_LEVER_CALIBRATION_OFFSET (EEPROM_COPEDENT_OFFSET + (MAX_NUM_COPEDENTS * COPEDENT_SIZE_IN_BYTES))
-#define LEVER_CALIBRATION_SIZE_IN_BYTES NUM_PEDALS * 4 //for each pedal, store 2 bytes for high and 2 bytes for low
+#define LEVER_CALIBRATION_SIZE_IN_BYTES (NUM_PEDALS * 4) //for each pedal, store 2 bytes for high and 2 bytes for low
 #define EEPROM_FRET_CALIBRATION_OFFSET (EEPROM_LEVER_CALIBRATION_OFFSET + LEVER_CALIBRATION_SIZE_IN_BYTES)
 #define FRET_CALIBRATION_SIZE_IN_BYTES NUM_FRET_MEASUREMENTS * NUM_SLIDERS * 2 //(measurement points *  2 sliders, each point 2 bytes)
 #define EEPROM_CURRENT_PRESET_OFFSET EEPROM_FRET_CALIBRATION_OFFSET + FRET_CALIBRATION_SIZE_IN_BYTES  //2036
@@ -46,17 +47,28 @@
 #define DUAL_SLIDER_SIZE_IN_BYTES 1
 #define EEPROM_NECKS_OFFSET EEPROM_DUAL_SLIDER_OFFSET + DUAL_SLIDER_SIZE_IN_BYTES
 #define NECKS_SIZE_IN_BYTES 1
+#define EEPROM_VOLUME_OFFSET EEPROM_NECKS_OFFSET + NECKS_SIZE_IN_BYTES
+#define VOLUME_SIZE_IN_BYTES 1
 
-#define MACRO_CLIPPED_LENGTH 9
-#define NAME_CLIPPED_LENGTH 12
+
+
+#define PRESET_NAME_CLIPPED_LENGTH 12
 #define COPEDENT_NAME_CLIPPED_LENGTH 10
+#define MACRO_NAME_CLIPPED_LENGTH 9
+#define CONTROL_NAME_CLIPPED_LENGTH 10
+
 #define myBufferSize 32
 #define MAX_NUM_COPEDENTS 7
 #define NUM_STRINGS 12
 #define NUM_PEDALS 10
 #define INV_440 0.0022727272727273f
 
+#define NUM_MACRO_PAGES 2
 #define NUM_MACROS 8
+#define NUM_CONTROLS 4
+#define MACRO_NAME_LENGTH_IN_BYTES 9
+#define CONTROL_NAME_LENGTH_IN_BYTES 10
+
 #define MAX_NUM_PRESETS 64
 
 //log10f is exactly log2(x)/log2(10.0f)
@@ -75,7 +87,7 @@
 #define DMA_TX_SRC_BASE             (CYDEV_SRAM_BASE)
 #define DMA_TX_DST_BASE             (CYDEV_PERIPH_BASE)
 
-#define PLUCK_BUFFER_SIZE                 (26u)
+#define PLUCK_BUFFER_SIZE                 (32u)
 #define BAR_BUFFER_SIZE                 (8u)
 #define STORE_TD_CFG_ONCMPLT        (1u)
 
@@ -85,16 +97,18 @@ extern int octave;
 extern uint8_t currentNeck;
 extern uint8_t currentCopedent;
 extern uint8_t mainOLEDWaitingToSend;
+extern uint8_t volumeWaitingToSend;
 extern uint8_t macroOLEDWaitingToSend;
 extern uint8_t neckByte;
 extern uint8_t necks[2];
 extern uint8_t editMode;
-extern uint8_t macroNamesArray[MAX_NUM_PRESETS][NUM_MACROS][NAME_LENGTH_IN_BYTES];
+extern uint8_t macroNamesArray[MAX_NUM_PRESETS][NUM_MACROS*NUM_MACRO_PAGES][MACRO_NAME_LENGTH_IN_BYTES];
+extern uint8_t controlNamesArray[MAX_NUM_PRESETS][NUM_CONTROLS][CONTROL_NAME_LENGTH_IN_BYTES];
 extern uint8_t patchNum;
 extern uint8_t currentPresetSelection;
-extern uint8_t presetNamesArray[MAX_NUM_PRESETS][NAME_LENGTH_IN_BYTES];
+extern uint8_t presetNamesArray[MAX_NUM_PRESETS][PRESET_NAME_LENGTH_IN_BYTES];
 extern uint8_t presetNumberToLoad;
-extern uint8_t copedentNamesArray[MAX_NUM_COPEDENTS][NAME_LENGTH_IN_BYTES];
+extern uint8_t copedentNamesArray[MAX_NUM_COPEDENTS][COPEDENT_NAME_LENGTH_IN_BYTES];
 extern uint8_t presetAlreadyDisplayed[MAX_NUM_PRESETS];
 extern uint8_t whichMacro;
 extern uint8_t fretCalibrationMode;
@@ -108,6 +122,7 @@ extern volatile uint16_t bar[NUM_SLIDERS];
 extern int8_t transposeSemitones;
 extern int8_t transposeCents;
 extern float transposeFloat;
+extern int8_t volumeInt;
 extern int prevOctave;
 extern uint8_t dualSlider;
 extern uint8_t deadZone;
@@ -115,10 +130,17 @@ extern uint8_t stringRepresentation[NUM_SLIDERS];
 extern uint8_t octaveAction;
 extern uint8_t midiSendOn;
 extern uint8_t midiBarSendOn;
+extern uint8_t sendFirmwareUpdateRequest;
+extern uint8_t knobFrozen[NUM_MACROS*NUM_MACRO_PAGES];
+extern int16_t prevMacroKnobValues[NUM_MACROS*NUM_MACRO_PAGES];
+extern uint8_t presetNumberToStore;
+extern uint8_t sendLocalPresetStoreCommand;
+extern char newPresetName[14];
 
 typedef enum _MenuModes
 {
 	MainMenu = 0,
+    StorePresetMenu,
     CalibrationMenu,
     SettingsMenu,
 	CalibrateLeversMenu,
@@ -128,6 +150,8 @@ typedef enum _MenuModes
     DeadzonesMenu,
     SliderRepMenu,
     MidiSendMenu,
+    VolumeMenu,
+    FirmwareUpdateMenu,
 	NilMenu
 } MenuModes;
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
-* File Name: testpin5.c  
+* File Name: knobPanelLight2.c  
 * Version 2.20
 *
 * Description:
@@ -15,15 +15,15 @@
 *******************************************************************************/
 
 #include "cytypes.h"
-#include "testpin5.h"
+#include "knobPanelLight2.h"
 
 /* APIs are not generated for P15[7:6] on PSoC 5 */
 #if !(CY_PSOC5A &&\
-	 testpin5__PORT == 15 && ((testpin5__MASK & 0xC0) != 0))
+	 knobPanelLight2__PORT == 15 && ((knobPanelLight2__MASK & 0xC0) != 0))
 
 
 /*******************************************************************************
-* Function Name: testpin5_Write
+* Function Name: knobPanelLight2_Write
 ****************************************************************************//**
 *
 * \brief Writes the value to the physical port (data output register), masking
@@ -52,17 +52,17 @@
 *  this function.
 *
 * \funcusage
-*  \snippet testpin5_SUT.c usage_testpin5_Write
+*  \snippet knobPanelLight2_SUT.c usage_knobPanelLight2_Write
 *******************************************************************************/
-void testpin5_Write(uint8 value)
+void knobPanelLight2_Write(uint8 value)
 {
-    uint8 staticBits = (testpin5_DR & (uint8)(~testpin5_MASK));
-    testpin5_DR = staticBits | ((uint8)(value << testpin5_SHIFT) & testpin5_MASK);
+    uint8 staticBits = (knobPanelLight2_DR & (uint8)(~knobPanelLight2_MASK));
+    knobPanelLight2_DR = staticBits | ((uint8)(value << knobPanelLight2_SHIFT) & knobPanelLight2_MASK);
 }
 
 
 /*******************************************************************************
-* Function Name: testpin5_SetDriveMode
+* Function Name: knobPanelLight2_SetDriveMode
 ****************************************************************************//**
 *
 * \brief Sets the drive mode for each of the Pins component's pins.
@@ -85,16 +85,16 @@ void testpin5_Write(uint8 value)
 *  APIs (primary method) or disable interrupts around this function.
 *
 * \funcusage
-*  \snippet testpin5_SUT.c usage_testpin5_SetDriveMode
+*  \snippet knobPanelLight2_SUT.c usage_knobPanelLight2_SetDriveMode
 *******************************************************************************/
-void testpin5_SetDriveMode(uint8 mode)
+void knobPanelLight2_SetDriveMode(uint8 mode)
 {
-	CyPins_SetPinDriveMode(testpin5_0, mode);
+	CyPins_SetPinDriveMode(knobPanelLight2_0, mode);
 }
 
 
 /*******************************************************************************
-* Function Name: testpin5_Read
+* Function Name: knobPanelLight2_Read
 ****************************************************************************//**
 *
 * \brief Reads the associated physical port (pin status register) and masks 
@@ -108,16 +108,16 @@ void testpin5_SetDriveMode(uint8 mode)
 *  The current value for the pins in the component as a right justified number.
 *
 * \funcusage
-*  \snippet testpin5_SUT.c usage_testpin5_Read  
+*  \snippet knobPanelLight2_SUT.c usage_knobPanelLight2_Read  
 *******************************************************************************/
-uint8 testpin5_Read(void)
+uint8 knobPanelLight2_Read(void)
 {
-    return (testpin5_PS & testpin5_MASK) >> testpin5_SHIFT;
+    return (knobPanelLight2_PS & knobPanelLight2_MASK) >> knobPanelLight2_SHIFT;
 }
 
 
 /*******************************************************************************
-* Function Name: testpin5_ReadDataReg
+* Function Name: knobPanelLight2_ReadDataReg
 ****************************************************************************//**
 *
 * \brief Reads the associated physical port's data output register and masks 
@@ -126,8 +126,8 @@ uint8 testpin5_Read(void)
 *
 * The data output register controls the signal applied to the physical pin in 
 * conjunction with the drive mode parameter. This is not the same as the 
-* preferred testpin5_Read() API because the 
-* testpin5_ReadDataReg() reads the data register instead of the status 
+* preferred knobPanelLight2_Read() API because the 
+* knobPanelLight2_ReadDataReg() reads the data register instead of the status 
 * register. For output pins this is a useful function to determine the value 
 * just written to the pin.
 *
@@ -136,19 +136,19 @@ uint8 testpin5_Read(void)
 *  justified number for the component instance.
 *
 * \funcusage
-*  \snippet testpin5_SUT.c usage_testpin5_ReadDataReg 
+*  \snippet knobPanelLight2_SUT.c usage_knobPanelLight2_ReadDataReg 
 *******************************************************************************/
-uint8 testpin5_ReadDataReg(void)
+uint8 knobPanelLight2_ReadDataReg(void)
 {
-    return (testpin5_DR & testpin5_MASK) >> testpin5_SHIFT;
+    return (knobPanelLight2_DR & knobPanelLight2_MASK) >> knobPanelLight2_SHIFT;
 }
 
 
 /* If interrupt is connected for this Pins component */ 
-#if defined(testpin5_INTSTAT) 
+#if defined(knobPanelLight2_INTSTAT) 
 
     /*******************************************************************************
-    * Function Name: testpin5_SetInterruptMode
+    * Function Name: knobPanelLight2_SetInterruptMode
     ****************************************************************************//**
     *
     * \brief Configures the interrupt mode for each of the Pins component's
@@ -161,12 +161,12 @@ uint8 testpin5_ReadDataReg(void)
     * \param position
     *  The pin position as listed in the Pins component. You may OR these to be 
     *  able to configure the interrupt mode of multiple pins within a Pins 
-    *  component. Or you may use testpin5_INTR_ALL to configure the
+    *  component. Or you may use knobPanelLight2_INTR_ALL to configure the
     *  interrupt mode of all the pins in the Pins component.       
-    *  - testpin5_0_INTR       (First pin in the list)
-    *  - testpin5_1_INTR       (Second pin in the list)
+    *  - knobPanelLight2_0_INTR       (First pin in the list)
+    *  - knobPanelLight2_1_INTR       (Second pin in the list)
     *  - ...
-    *  - testpin5_INTR_ALL     (All pins in Pins component)
+    *  - knobPanelLight2_INTR_ALL     (All pins in Pins component)
     *
     * \param mode
     *  Interrupt mode for the selected pins. Valid options are documented in
@@ -182,19 +182,19 @@ uint8 testpin5_ReadDataReg(void)
     *  port.
     *
     * \funcusage
-    *  \snippet testpin5_SUT.c usage_testpin5_SetInterruptMode
+    *  \snippet knobPanelLight2_SUT.c usage_knobPanelLight2_SetInterruptMode
     *******************************************************************************/
-    void testpin5_SetInterruptMode(uint16 position, uint16 mode)
+    void knobPanelLight2_SetInterruptMode(uint16 position, uint16 mode)
     {
-		if((position & testpin5_0_INTR) != 0u) 
+		if((position & knobPanelLight2_0_INTR) != 0u) 
 		{ 
-			 testpin5_0_INTTYPE_REG = (uint8)mode; 
+			 knobPanelLight2_0_INTTYPE_REG = (uint8)mode; 
 		}
     }
     
     
     /*******************************************************************************
-    * Function Name: testpin5_ClearInterrupt
+    * Function Name: knobPanelLight2_ClearInterrupt
     ****************************************************************************//**
     *
     * \brief Clears any active interrupts attached with the component and returns 
@@ -211,11 +211,11 @@ uint8 testpin5_ReadDataReg(void)
     *  those associated with the Pins component.
     *
     * \funcusage
-    *  \snippet testpin5_SUT.c usage_testpin5_ClearInterrupt
+    *  \snippet knobPanelLight2_SUT.c usage_knobPanelLight2_ClearInterrupt
     *******************************************************************************/
-    uint8 testpin5_ClearInterrupt(void)
+    uint8 knobPanelLight2_ClearInterrupt(void)
     {
-        return (testpin5_INTSTAT & testpin5_MASK) >> testpin5_SHIFT;
+        return (knobPanelLight2_INTSTAT & knobPanelLight2_MASK) >> knobPanelLight2_SHIFT;
     }
 
 #endif /* If Interrupts Are Enabled for this Pins component */ 

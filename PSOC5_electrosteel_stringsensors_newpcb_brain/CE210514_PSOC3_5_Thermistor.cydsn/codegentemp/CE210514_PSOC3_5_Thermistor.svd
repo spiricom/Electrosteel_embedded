@@ -19,7 +19,7 @@
         <register>
           <name>Status_Reg_1_STATUS_REG</name>
           <description>No description available</description>
-          <addressOffset>0x4000656A</addressOffset>
+          <addressOffset>0x4000646A</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -28,7 +28,7 @@
         <register>
           <name>Status_Reg_1_MASK_REG</name>
           <description>No description available</description>
-          <addressOffset>0x4000658A</addressOffset>
+          <addressOffset>0x4000648A</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -37,7 +37,7 @@
         <register>
           <name>Status_Reg_1_STATUS_AUX_CTL_REG</name>
           <description>No description available</description>
-          <addressOffset>0x4000659A</addressOffset>
+          <addressOffset>0x4000649A</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -1653,7 +1653,7 @@
         <register>
           <name>USB_Vbus_ps_STATUS_REG</name>
           <description>No description available</description>
-          <addressOffset>0x40006564</addressOffset>
+          <addressOffset>0x4000646B</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -1662,7 +1662,7 @@
         <register>
           <name>USB_Vbus_ps_MASK_REG</name>
           <description>No description available</description>
-          <addressOffset>0x40006584</addressOffset>
+          <addressOffset>0x4000648B</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -1671,7 +1671,7 @@
         <register>
           <name>USB_Vbus_ps_STATUS_AUX_CTL_REG</name>
           <description>No description available</description>
-          <addressOffset>0x40006594</addressOffset>
+          <addressOffset>0x4000649B</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -1953,55 +1953,9 @@
       </addressBlock>
       <registers>
         <register>
-          <name>SPIS_1_RXSTATUS</name>
-          <description>SPIS RX Status Register</description>
-          <addressOffset>0x40006466</addressOffset>
-          <size>8</size>
-          <access>read-write</access>
-          <resetValue>0</resetValue>
-          <resetMask>0</resetMask>
-          <fields>
-            <field>
-              <name>RX_FIFO_Not_Empty</name>
-              <description>Set when the RX Data FIFO is not empty. That is, at least one byte/word is in the RX FIFO</description>
-              <lsb>3</lsb>
-              <msb>3</msb>
-              <access>read-only</access>
-            </field>
-            <field>
-              <name>RX_FIFO_Empty</name>
-              <description>Set when the RX Data FIFO is empty</description>
-              <lsb>4</lsb>
-              <msb>4</msb>
-              <access>read-only</access>
-            </field>
-            <field>
-              <name>RX_Buf_Overrun</name>
-              <description>Set when RX Data has overrun the 4 byte/word FIFO without being moved to the RX buffer                           cmemory array (if one exists)</description>
-              <lsb>5</lsb>
-              <msb>5</msb>
-              <access>read-only</access>
-            </field>
-            <field>
-              <name>RX_FIFO_Full</name>
-              <description>Set when the RX Data FIFO is full</description>
-              <lsb>6</lsb>
-              <msb>6</msb>
-              <access>read-only</access>
-            </field>
-            <field>
-              <name>Interrupt</name>
-              <description>Set when interrupt occurs</description>
-              <lsb>7</lsb>
-              <msb>7</msb>
-              <access>read-only</access>
-            </field>
-          </fields>
-        </register>
-        <register>
           <name>SPIS_1_TX_DATA</name>
           <description>SPIS TX Data</description>
-          <addressOffset>0x40006505</addressOffset>
+          <addressOffset>0x40006407</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -2010,7 +1964,7 @@
         <register>
           <name>SPIS_1_RX_DATA</name>
           <description>SPIS RX Data</description>
-          <addressOffset>0x40006505</addressOffset>
+          <addressOffset>0x40006407</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -2019,7 +1973,7 @@
         <register>
           <name>SPIS_1_TXSTATUS</name>
           <description>SPIS TX Status Register</description>
-          <addressOffset>0x40006567</addressOffset>
+          <addressOffset>0x40006463</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -2062,6 +2016,52 @@
             </field>
           </fields>
         </register>
+        <register>
+          <name>SPIS_1_RXSTATUS</name>
+          <description>SPIS RX Status Register</description>
+          <addressOffset>0x40006565</addressOffset>
+          <size>8</size>
+          <access>read-write</access>
+          <resetValue>0</resetValue>
+          <resetMask>0</resetMask>
+          <fields>
+            <field>
+              <name>RX_FIFO_Not_Empty</name>
+              <description>Set when the RX Data FIFO is not empty. That is, at least one byte/word is in the RX FIFO</description>
+              <lsb>3</lsb>
+              <msb>3</msb>
+              <access>read-only</access>
+            </field>
+            <field>
+              <name>RX_FIFO_Empty</name>
+              <description>Set when the RX Data FIFO is empty</description>
+              <lsb>4</lsb>
+              <msb>4</msb>
+              <access>read-only</access>
+            </field>
+            <field>
+              <name>RX_Buf_Overrun</name>
+              <description>Set when RX Data has overrun the 4 byte/word FIFO without being moved to the RX buffer                           cmemory array (if one exists)</description>
+              <lsb>5</lsb>
+              <msb>5</msb>
+              <access>read-only</access>
+            </field>
+            <field>
+              <name>RX_FIFO_Full</name>
+              <description>Set when the RX Data FIFO is full</description>
+              <lsb>6</lsb>
+              <msb>6</msb>
+              <access>read-only</access>
+            </field>
+            <field>
+              <name>Interrupt</name>
+              <description>Set when interrupt occurs</description>
+              <lsb>7</lsb>
+              <msb>7</msb>
+              <access>read-only</access>
+            </field>
+          </fields>
+        </register>
       </registers>
     </peripheral>
     <peripheral>
@@ -2077,7 +2077,7 @@
         <register>
           <name>I2C_1_DATA</name>
           <description>I2C Data Register</description>
-          <addressOffset>0x4000640B</addressOffset>
+          <addressOffset>0x40006408</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -2093,9 +2093,62 @@
           </fields>
         </register>
         <register>
+          <name>I2C_1_CFG</name>
+          <description>I2C Configuration Register</description>
+          <addressOffset>0x40006478</addressOffset>
+          <size>8</size>
+          <access>read-write</access>
+          <resetValue>0</resetValue>
+          <resetMask>0</resetMask>
+          <fields>
+            <field>
+              <name>start_gen</name>
+              <description>Set to 1 to generate a Start condition on the bus. This bit must be cleared by firmware before initiating the next transaction.</description>
+              <lsb>7</lsb>
+              <msb>7</msb>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>stop_gen</name>
+              <description>Set to 1 to generate a Stop condition on the bus. This bit must be cleared by firmware before initiating the next transaction.</description>
+              <lsb>6</lsb>
+              <msb>6</msb>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>restart_gen</name>
+              <description>Set to 1 to generate a Restart condition on the bus. This bit must be cleared by firmware after a Restart condition is generated.</description>
+              <lsb>5</lsb>
+              <msb>5</msb>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>nack</name>
+              <description>Set to 1 to NAK the next read byte. Clear to ACK next read byte. This bit must be cleared by firmware between bytes.</description>
+              <lsb>4</lsb>
+              <msb>4</msb>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>transmit</name>
+              <description>Set to 1 to set the current mode to transmit or clear to 0 to receive a byte of data. This bit must be cleared by firmware before starting the next transmit or receive transaction.</description>
+              <lsb>2</lsb>
+              <msb>2</msb>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>master_en</name>
+              <description>Set to 1 to enable the master functionality.</description>
+              <lsb>1</lsb>
+              <msb>1</msb>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
+        <register>
           <name>I2C_1_CSR</name>
           <description>I2C Status Register</description>
-          <addressOffset>0x4000646F</addressOffset>
+          <addressOffset>0x40006569</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -2153,62 +2206,9 @@
           </fields>
         </register>
         <register>
-          <name>I2C_1_CFG</name>
-          <description>I2C Configuration Register</description>
-          <addressOffset>0x40006474</addressOffset>
-          <size>8</size>
-          <access>read-write</access>
-          <resetValue>0</resetValue>
-          <resetMask>0</resetMask>
-          <fields>
-            <field>
-              <name>start_gen</name>
-              <description>Set to 1 to generate a Start condition on the bus. This bit must be cleared by firmware before initiating the next transaction.</description>
-              <lsb>7</lsb>
-              <msb>7</msb>
-              <access>read-write</access>
-            </field>
-            <field>
-              <name>stop_gen</name>
-              <description>Set to 1 to generate a Stop condition on the bus. This bit must be cleared by firmware before initiating the next transaction.</description>
-              <lsb>6</lsb>
-              <msb>6</msb>
-              <access>read-write</access>
-            </field>
-            <field>
-              <name>restart_gen</name>
-              <description>Set to 1 to generate a Restart condition on the bus. This bit must be cleared by firmware after a Restart condition is generated.</description>
-              <lsb>5</lsb>
-              <msb>5</msb>
-              <access>read-write</access>
-            </field>
-            <field>
-              <name>nack</name>
-              <description>Set to 1 to NAK the next read byte. Clear to ACK next read byte. This bit must be cleared by firmware between bytes.</description>
-              <lsb>4</lsb>
-              <msb>4</msb>
-              <access>read-write</access>
-            </field>
-            <field>
-              <name>transmit</name>
-              <description>Set to 1 to set the current mode to transmit or clear to 0 to receive a byte of data. This bit must be cleared by firmware before starting the next transmit or receive transaction.</description>
-              <lsb>2</lsb>
-              <msb>2</msb>
-              <access>read-write</access>
-            </field>
-            <field>
-              <name>master_en</name>
-              <description>Set to 1 to enable the master functionality.</description>
-              <lsb>1</lsb>
-              <msb>1</msb>
-              <access>read-write</access>
-            </field>
-          </fields>
-        </register>
-        <register>
           <name>I2C_1_INT_MASK</name>
           <description>I2C Interrupt Enable Mask</description>
-          <addressOffset>0x4000648F</addressOffset>
+          <addressOffset>0x40006589</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -2278,27 +2278,55 @@
       </addressBlock>
       <registers>
         <register>
-          <name>SPIS_2_TX_DATA</name>
-          <description>SPIS TX Data</description>
-          <addressOffset>0x40006408</addressOffset>
+          <name>SPIS_2_TXSTATUS</name>
+          <description>SPIS TX Status Register</description>
+          <addressOffset>0x40006461</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
           <resetMask>0</resetMask>
-        </register>
-        <register>
-          <name>SPIS_2_RX_DATA</name>
-          <description>SPIS RX Data</description>
-          <addressOffset>0x40006408</addressOffset>
-          <size>8</size>
-          <access>read-write</access>
-          <resetValue>0</resetValue>
-          <resetMask>0</resetMask>
+          <fields>
+            <field>
+              <name>SPI_Done</name>
+              <description>Set when all of the data in the transmit FIFO has been sent. Set when Byte/Word Complete                           has been set and TX Data FIFO is empty</description>
+              <lsb>0</lsb>
+              <msb>0</msb>
+              <access>read-only</access>
+            </field>
+            <field>
+              <name>TX_FIFO_Not_Full</name>
+              <description>Set when the TX Data FIFO is not full</description>
+              <lsb>1</lsb>
+              <msb>1</msb>
+              <access>read-only</access>
+            </field>
+            <field>
+              <name>TX_FIFO_Empty</name>
+              <description>Set when the TX Data FIFO is empty</description>
+              <lsb>2</lsb>
+              <msb>2</msb>
+              <access>read-only</access>
+            </field>
+            <field>
+              <name>Byte_Word_Complete</name>
+              <description>Set when a byte/word transmit has completed</description>
+              <lsb>6</lsb>
+              <msb>6</msb>
+              <access>read-only</access>
+            </field>
+            <field>
+              <name>Interrupt</name>
+              <description>Set when interrupt occurs</description>
+              <lsb>7</lsb>
+              <msb>7</msb>
+              <access>read-only</access>
+            </field>
+          </fields>
         </register>
         <register>
           <name>SPIS_2_RXSTATUS</name>
           <description>SPIS RX Status Register</description>
-          <addressOffset>0x40006468</addressOffset>
+          <addressOffset>0x40006466</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
@@ -2342,50 +2370,22 @@
           </fields>
         </register>
         <register>
-          <name>SPIS_2_TXSTATUS</name>
-          <description>SPIS TX Status Register</description>
-          <addressOffset>0x40006568</addressOffset>
+          <name>SPIS_2_RX_DATA</name>
+          <description>SPIS RX Data</description>
+          <addressOffset>0x40006505</addressOffset>
           <size>8</size>
           <access>read-write</access>
           <resetValue>0</resetValue>
           <resetMask>0</resetMask>
-          <fields>
-            <field>
-              <name>SPI_Done</name>
-              <description>Set when all of the data in the transmit FIFO has been sent. Set when Byte/Word Complete                           has been set and TX Data FIFO is empty</description>
-              <lsb>0</lsb>
-              <msb>0</msb>
-              <access>read-only</access>
-            </field>
-            <field>
-              <name>TX_FIFO_Not_Full</name>
-              <description>Set when the TX Data FIFO is not full</description>
-              <lsb>1</lsb>
-              <msb>1</msb>
-              <access>read-only</access>
-            </field>
-            <field>
-              <name>TX_FIFO_Empty</name>
-              <description>Set when the TX Data FIFO is empty</description>
-              <lsb>2</lsb>
-              <msb>2</msb>
-              <access>read-only</access>
-            </field>
-            <field>
-              <name>Byte_Word_Complete</name>
-              <description>Set when a byte/word transmit has completed</description>
-              <lsb>6</lsb>
-              <msb>6</msb>
-              <access>read-only</access>
-            </field>
-            <field>
-              <name>Interrupt</name>
-              <description>Set when interrupt occurs</description>
-              <lsb>7</lsb>
-              <msb>7</msb>
-              <access>read-only</access>
-            </field>
-          </fields>
+        </register>
+        <register>
+          <name>SPIS_2_TX_DATA</name>
+          <description>SPIS TX Data</description>
+          <addressOffset>0x40006505</addressOffset>
+          <size>8</size>
+          <access>read-write</access>
+          <resetValue>0</resetValue>
+          <resetMask>0</resetMask>
         </register>
       </registers>
     </peripheral>
