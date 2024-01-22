@@ -21,7 +21,7 @@
 
 
 tTString strings[NUM_STRINGS_PER_BOARD];
-float string2Defaults[20] = {0.5f, 0.15292f, 0.5f, .5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.7f, 0.6f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+float string2Defaults[20] = {0.5f, 0.5f, 0.7f, 0.5f, 0.4f, 0.15f, 0.0f, 0.0f, 0.1f, 0.0f, 0.9f, 0.2f, 0.2f, 0.2f, 0.4f, 0.0f, 0.7f, 0.0f, 0.5f, 0.5f};
 
 Lfloat stringParams[10][3][3] =
 {

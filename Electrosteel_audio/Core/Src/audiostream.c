@@ -379,7 +379,7 @@ void audioInit()
 			audioOutBuffer[ i] = (int32_t)(0.0f * TWO_TO_23);
 	}
 
-	audioFrameFunction = audioFrameSynth;
+	audioFrameFunction = audioFrameWaiting;
 	HAL_Delay(1);
 
 }
@@ -542,23 +542,25 @@ inline void voiceChangeCheck(void)
 
 void __ATTR_ITCMRAM HAL_SAI_TxCpltCallback(SAI_HandleTypeDef *hsai)
 {
+	SCB_CleanInvalidateDCache_by_Addr((uint32_t*)(((uint32_t)audioOutBuffer) & ~(uint32_t)0x1F), AUDIO_BUFFER_SIZE+32);
 	if ((!diskBusy)&& (presetReady))
 	{
 		audioFrameFunction(HALF_BUFFER_SIZE);
 	}
 
 	voiceChangeCheck();
-	SCB_CleanDCache_by_Addr((uint32_t*)(((uint32_t)audioOutBuffer) & ~(uint32_t)0x1F), AUDIO_BUFFER_SIZE+32);
+	SCB_CleanInvalidateDCache_by_Addr((uint32_t*)(((uint32_t)audioOutBuffer) & ~(uint32_t)0x1F), AUDIO_BUFFER_SIZE+32);
 }
 
 void __ATTR_ITCMRAM HAL_SAI_TxHalfCpltCallback(SAI_HandleTypeDef *hsai)
 {
+	SCB_CleanInvalidateDCache_by_Addr((uint32_t*)(((uint32_t)audioOutBuffer) & ~(uint32_t)0x1F), AUDIO_BUFFER_SIZE+32);
 	if ((!diskBusy)&& (presetReady))
 	{
 		audioFrameFunction(0);
 	}
 	voiceChangeCheck();
-	SCB_CleanDCache_by_Addr((uint32_t*)(((uint32_t)audioOutBuffer) & ~(uint32_t)0x1F), AUDIO_BUFFER_SIZE+32);
+	SCB_CleanInvalidateDCache_by_Addr((uint32_t*)(((uint32_t)audioOutBuffer) & ~(uint32_t)0x1F), AUDIO_BUFFER_SIZE+32);
 }
 
 void __ATTR_ITCMRAM HAL_SAI_ErrorCallback(SAI_HandleTypeDef *hsai)

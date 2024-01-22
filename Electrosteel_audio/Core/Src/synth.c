@@ -21,14 +21,16 @@
 #define OVERSAMPLE 2
 float inv_oversample = 1.0f / OVERSAMPLE;
 
-
+volatile uint32_t nanHappened = 0;
 uint32_t prevOversample;
-volatile uint32_t nanChuck  = 0;
+volatile uint32_t nanChuckTest  = 0;
 
 float oversamplerArray[OVERSAMPLE];
 
-arm_fir_interpolate_instance_f32 osI[NUM_STRINGS_PER_BOARD];
-arm_fir_decimate_instance_f32 osD[NUM_STRINGS_PER_BOARD];
+tOversampler os[NUM_STRINGS_PER_BOARD];
+
+//arm_fir_interpolate_instance_f32 osI[NUM_STRINGS_PER_BOARD];
+//arm_fir_decimate_instance_f32 osD[NUM_STRINGS_PER_BOARD];
 float intState[NUM_STRINGS_PER_BOARD][16];
 float decState[NUM_STRINGS_PER_BOARD][33];
 
@@ -151,7 +153,7 @@ uint8_t envOn[NUM_ENV];
 
  float oscOuts[2][NUM_OSC][NUM_STRINGS_PER_BOARD];
  float oscAmpMult = 1.0f;
- float oscAmpMultArray[4] = {0.0f, 1.0f, 0.5f, 0.333333f};
+ float oscAmpMultArray[4] = {0.0f, 1.0f, 0.707106781186548f, 0.5f};
  uint32_t timeFilt = 0;
  uint32_t timeTick = 0;
  uint32_t timeMap = 0;
@@ -181,8 +183,14 @@ uint8_t envOn[NUM_ENV];
 
 void audioInitSynth()
 {
+    for (int i = 0; i < OVERSAMPLE; i++)
+    {
+        oversamplerArray[i] = 0.0f;
+    }
 	for (int v = 0; v < NUM_STRINGS_PER_BOARD; v++)
 	{
+
+		tOversampler_init(&os[v], OVERSAMPLE, 0, &leaf);
 
 		for(int i = 0; i < NUM_OSC; i++)
 		{
@@ -295,8 +303,8 @@ void audioInitSynth()
 			tExpSmooth_init(&mapSmoothers[i][v], 0.0f, 0.005f, &leaf);
 		}
 
-		arm_fir_interpolate_init_f32(&osI[v],2,32,__leaf_table_fir2XLow, intState[v],1);
-		arm_fir_decimate_init_f32(&osD[v],32, 2,__leaf_table_fir2XLow, decState[v],2);
+		//arm_fir_interpolate_init_f32(&osI[v],2,32,__leaf_table_fir2XLow, intState[v],1);
+		//arm_fir_decimate_init_f32(&osD[v],32, 2,__leaf_table_fir2XLow, decState[v],2);
 
 		tSVF_init(&finalLowpass[v], SVFTypeLowpass, 19000.f, 0.3f, &leaf);
 	}
@@ -373,7 +381,7 @@ void __ATTR_ITCMRAM audioFrameSynth(uint16_t buffer_offset)
 					}
 				}
 				//sample and hold noise
-				sourceValues[RANDOM_SOURCE_OFFSET][i] = (random_values[randomValPointer++] * 0.5f) + 0.5f; // scale between zero and one
+				sourceValues[RANDOM_SOURCE_OFFSET][i] = random_values[randomValPointer++]; // scale between zero and one
 				sourceValues[VELOCITY_SOURCE_OFFSET][i] = amplitz;
 
 			}
@@ -485,7 +493,7 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 		{
 			note[v] = 127.0f;
 		}
-		if (isnan(note[v]))
+		if (!isfinite(note[v]))
 		{
 			note[v] = 64.0f;
 		}
@@ -515,48 +523,48 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 		{
 			filterSamps[0] += oscOuts[0][i][v];
 			filterSamps[1] += oscOuts[1][i][v];
-			if (isnan(filterSamps[0]))
+			if (!isfinite(filterSamps[0]))
 			{
 				filterSamps[0] = 0.0f;
-				nanChuck++;
+				nanChuckTest++;
 			}
-			if (isnan(filterSamps[1]))
+			if (!isfinite(filterSamps[1]))
 			{
 				filterSamps[1] = 0.0f;
-				nanChuck++;
+				nanChuckTest++;
 			}
 		}
 
 		filterSamps[0] += noiseOuts[0][v];
 
 		filterSamps[1] += noiseOuts[1][v];
-		if (isnan(filterSamps[1]))
+		if (!isfinite(filterSamps[1]))
 		{
 			filterSamps[1] = 0.0f;
-			nanChuck++;
+			nanChuckTest++;
 		}
 
 		uint32_t tempCountFilt = DWT->CYCCNT;
-		if (isnan(filterSamps[0]))
+		if (!isfinite(filterSamps[0]))
 		{
 			filterSamps[0] = 0.0f;
-			nanChuck++;
+			nanChuckTest++;
 		}
 		sample = filter_tick(&filterSamps[0], note[v], v);
-		if (isnan(filterSamps[0]))
+		if (!isfinite(filterSamps[0]))
 		{
 			filterSamps[0] = 0.0f;
-			nanChuck++;
+			nanChuckTest++;
 		}
 		timeFilt = DWT->CYCCNT - tempCountFilt;
 
 		if (fxPre)
 		{
 			sample *= amplitude[v];
-			if (isnan(sample))
+			if (!isfinite(sample))
 			{
 				sample = 0.0f;
-				nanChuck++;
+				nanChuckTest++;
 			}
 		}
 		uint32_t tempCountOS = DWT->CYCCNT;
@@ -566,7 +574,8 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 
 			//oversample for non-linear effects (distortion, etc)
 			//using the arm interpolation and decimation cuts 100 cycles off of the processing
-			arm_fir_interpolate_f32(&osI[v], &sample, (float*)&oversamplerArray, 1);
+			//arm_fir_interpolate_f32(&osI[v], &sample, (float*)&oversamplerArray, 1);
+			tOversampler_upsample(&os[v], sample, oversamplerArray);
 
 
 			for (int i = 0; i < 4; i++)
@@ -576,19 +585,20 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 					for (int j = 0; j < OVERSAMPLE; j++)
 					{
 						float dry = oversamplerArray[j]; //store the dry value to mix later
-						oversamplerArray[j] = effectTick[i](oversamplerArray[j], i, v); //run the effect
+						oversamplerArray[j] = effectTick[i](dry, i, v); //run the effect
 						oversamplerArray[j] = ((1.0f - fxMix[i][v]) * dry) + (fxMix[i][v] * oversamplerArray[j]); //mix in dry/wet at the "mix" amount
 						oversamplerArray[j] *= fxPostGain[i][v]; //apply postgain
-						if (isnan(sample))
+						if (!isfinite(sample))
 						{
 							sample = 0.0f;
-							nanChuck++;
+							nanChuckTest++;
 						}
 					}
 				}
 			}
 			//downsample to get back to normal sample rate
-			arm_fir_decimate_f32(&osD[v], (float*)&oversamplerArray, &sample, 2);
+			//arm_fir_decimate_f32(&osD[v], (float*)&oversamplerArray, &sample, 2);
+			sample = tOversampler_downsample(&os[v], oversamplerArray);
 		}
 		else
 		{
@@ -600,10 +610,10 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 					sample = effectTick[i](sample, i, v); //run the effect
 					sample =((1.0f - fxMix[i][v]) * dry) + (fxMix[i][v] * sample);
 					sample *= fxPostGain[i][v];
-					if (isnan(sample))
+					if (!isfinite(sample))
 					{
 						sample = 0.0f;
-						nanChuck++;
+						nanChuckTest++;
 					}
 				}
 			}
@@ -615,10 +625,10 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 		{
 			sample *= amplitude[v];
 		}
-		if (isnan(sample))
+		if (!isfinite(sample) || isinf(sample))
 		{
 			sample = 0.0f;
-			nanChuck++;
+			nanChuckTest++;
 		}
 		sample = tSVF_tick(&finalLowpass[v], sample) * masterVolFromBrainForSynth;
 		masterSample += sample;// * finalMaster[v];
@@ -653,6 +663,10 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 		{
 			sampleClippedCountdown--;
 		}
+	}
+	if (nanChuckTest > 0)
+	{
+		nanHappened = 1;
 	}
 	timeTick = DWT->CYCCNT - tempCountTick;
 
@@ -745,19 +759,19 @@ void __ATTR_ITCMRAM oscillator_tick(float note, int string)
 			shapeTick[osc](&sample, osc, finalFreq, shape, 0, string);
 
 			sample *= amp;
-			if (isnan(sample))
+			if (!isfinite(sample))
 			{
 				sample = 0.0f;
-				nanChuck++;
+				nanChuckTest++;
 			}
 			//sourceValues[OSC_SOURCE_OFFSET + osc] = sample; // the define of zero may be wasteful
 			sourceValues[osc][string] = sample;
 
 			sample *= oscAmpMult; // divide down gain if more than one oscillator is sounding (computed at preset load)
-			if (isnan(sample))
+			if (!isfinite(sample))
 			{
 				sample = 0.0f;
-				nanChuck++;
+				nanChuckTest++;
 			}
 			oscOuts[0][osc][string] = sample * (filterSend) * oscParams[OscEnabled].realVal[string];
 			oscOuts[1][osc][string] = sample * (1.0f - filterSend) * oscParams[OscEnabled].realVal[string];
@@ -838,7 +852,7 @@ void __ATTR_ITCMRAM  userTick(float* sample, int v, float freq, float shape, int
 
 float __ATTR_ITCMRAM filter_tick(float* samples, float note, int string)
 {
-	float cutoff[2];
+	float cutoff[2] = {0.0f, 0.0f};
 	uint8_t enabledFilt[2] = {0,0};
 	for (int f = 0; f < NUM_FILT; f++)
 	{
@@ -849,13 +863,20 @@ float __ATTR_ITCMRAM filter_tick(float* samples, float note, int string)
 
 		float MIDIcutoff = filtParams[FilterCutoff].realVal[string];
 		float keyFollow = filtParams[FilterKeyFollow].realVal[string];
-		if (isnan(note))
+		if (!isfinite(note))
 		{
 			note = 0.0f; //is this necessary?
 		}
 
-		cutoff[f] = MIDIcutoff + (note  * keyFollow);
-
+		float valueToTest = MIDIcutoff + (note  * keyFollow);
+		if (isfinite(valueToTest))
+		{
+			cutoff[f] = valueToTest;
+		}
+		else
+		{
+			nanChuckTest++;
+		}
 		//smoothing may not be necessary
 		//tExpSmooth_setDest(&filterCutoffSmoother[f][string], cutoff[f]);
 		//cutoff[f] = tExpSmooth_tick(&filterCutoffSmoother[f][string]);
@@ -865,16 +886,16 @@ float __ATTR_ITCMRAM filter_tick(float* samples, float note, int string)
 
 	if (enabledFilt[0])
 	{
-		if (isnan(samples[0]))
+		if (!isfinite(samples[0]))
 		{
 			samples[0] = 0.0f;
-			nanChuck++;
+			nanChuckTest++;
 		}
 		filterTick[0](&samples[0], 0, cutoff[0], string);
-		if (isnan(samples[0]))
+		if (!isfinite(samples[0]))
 		{
 			samples[0] = 0.0f;
-			nanChuck++;
+			nanChuckTest++;
 		}
 	}
 	float sendToFilter2 = samples[0] * (1.0f - sp);
@@ -882,16 +903,16 @@ float __ATTR_ITCMRAM filter_tick(float* samples, float note, int string)
 	//compute what gets sent to the second filter
 	if (enabledFilt[1])
 	{
-		if (isnan(samples[1]))
+		if (!isfinite(samples[1]))
 		{
 			samples[1] = 0.0f;
-			nanChuck++;
+			nanChuckTest++;
 		}
 		filterTick[1](&samples[1], 1, cutoff[1], string);
-		if (isnan(samples[0]))
+		if (!isfinite(samples[0]))
 		{
 			samples[0] = 0.0f;
-			nanChuck++;
+			nanChuckTest++;
 		}
 	}
 	return samples[1] + (samples[0] * sp);
@@ -1157,10 +1178,10 @@ void  __ATTR_ITCMRAM  setPitchBendRange(float in, int v, int string)
 
 void  __ATTR_ITCMRAM  setFinalLowpass(float in, int v, int string)
 {
-	if (isnan(in))
+	if (!isfinite(in))
 	{
 		in = 0.0f;
-		nanChuck++;
+		nanChuckTest++;
 	}
 	tSVF_setFreqFast(&finalLowpass[string], in);
 }
@@ -1324,7 +1345,10 @@ void __ATTR_ITCMRAM lfoPulseSetShape(float s, int v, int string)
 
 
 
-
+void __ATTR_ITCMRAM  param1Linear(float value, int v, int string)
+{
+	param1[v][string] = value;
+}
 
 void __ATTR_ITCMRAM  clipperGainSet(float value, int v, int string)
 {
@@ -1380,13 +1404,13 @@ void __ATTR_ITCMRAM  compressorParam3(float value, int v, int string)
 void __ATTR_ITCMRAM  compressorParam4(float value, int v, int string)
 {
 	value = (value +  0.001f);
-	comp[v][string]->tauAttack = fasterexpf(-1.0f/(value * comp[v][string]->sampleRate));
+	comp[v][string]->tauAttack = fastExp4(-1.0f/(value * comp[v][string]->sampleRate));
 }
 
 void __ATTR_ITCMRAM  compressorParam5(float value, int v, int string)
 {
 	value = (value + 0.001f);
-	comp[v][string]->tauRelease = fasterexpf(-1.0f/(value * comp[v][string]->sampleRate));
+	comp[v][string]->tauRelease = fastExp4(-1.0f/(value * comp[v][string]->sampleRate));
 }
 
 void __ATTR_ITCMRAM  offsetParam2(float value, int v, int string)
@@ -1445,7 +1469,7 @@ void __ATTR_ITCMRAM param2BC(float value, int v, int string)
 }
 void __ATTR_ITCMRAM param3BC(float value, int v, int string)
 {
-	value = (value * inv_oversample) + 0.01f;
+	value = ((1.0f - value)* inv_oversample) + 0.01f;
 	tCrusher_setSamplingRatio (&bc[v][string], value);
 }
 void __ATTR_ITCMRAM param4BC(float value, int v, int string)
@@ -1587,7 +1611,7 @@ float __ATTR_ITCMRAM chorusTick(float sample, int v, int string)
 
 float __ATTR_ITCMRAM shaperTick(float sample, int v, int string)
 {
-    sample = sample * param1[v][string];
+    sample = sample * (param1[v][string]+1.0f);
     float temp = LEAF_shaper(sample + (param2[v][string] * param1[v][string]),param3[v][string]);
     temp = tHighpass_tick(&dcBlock1[v][string], temp);
     return temp;
@@ -1612,10 +1636,10 @@ float __ATTR_ITCMRAM tanhTick(float sample, int v, int string)
 	sample = sample * gain;
     gain = gain * 0.5f;
     //need to do something with shape param
-    float temp = tanhf(sample + (param2[v][string]*gain));
+    float temp = fast_tanh5(sample + (param2[v][string]*gain));
     temp = tHighpass_tick(&dcBlock1[v][string], temp);
     //temp *= param4[v][string];
-    temp = tanhf(temp);
+    temp = fast_tanh5(temp);
     //temp = tHighpass_tick(&dcBlock2, temp);
     return temp;
 }
@@ -1634,7 +1658,7 @@ float __ATTR_ITCMRAM softClipTick(float sample, int v, int string)
         sample = 1.0f;
     }
     {
-        sample = (sample) - (((sample * sample * sample))* 0.3333333f);
+        sample = 1.5f * (sample) - (((sample * sample * sample))* 0.3333333f);
         //sample = sample * shapeDividerS[v][string];
     }
 
@@ -1689,10 +1713,10 @@ float __ATTR_ITCMRAM polynomialShaperTick(float sample, int v, int string)
 float __ATTR_ITCMRAM satTick(float sample, int v, int string)
 {;
     sample = sample * param1[v][string];
-    float temp = (sample + (param2[v][string] * param1[v][string])) / (1.0f + fabs(sample + param2[v][string]));
+    float temp = (sample + (param2[v][string] * param1[v][string])) / (1.0f + fabsf(sample + param2[v][string]));
     temp = tHighpass_tick(&dcBlock1[v][string], temp);
     temp = tHighpass_tick(&dcBlock2[v][string], temp);
-    temp = LEAF_tanh(temp);
+    temp = fast_tanh5(temp);
     return temp;
 }
 
@@ -1707,8 +1731,8 @@ float __ATTR_ITCMRAM bcTick(float sample, int v, int string)
 
 float __ATTR_ITCMRAM compressorTick(float sample, int v, int string)
 {
-    //return tCompressor_tickWithTableHardKnee(&comp[v][string], sample);
-	return tCompressor_tick(&comp[v][string], sample);
+    return tCompressor_tickWithTableHardKnee(&comp[v][string], sample);
+	//return tCompressor_tick(&comp[v][string], sample);
 }
 
 float __ATTR_ITCMRAM  FXlowpassTick(float sample, int v, int string)
@@ -1908,14 +1932,14 @@ void __ATTR_ITCMRAM noise_tick(int string)
 	float amp = params[NoiseAmp].realVal[string];
 	float filterSend = params[NoiseFilterSend].realVal[string];
 	amp = amp < 0.f ? 0.f : amp;
-	float sample = random_values[randomValPointer++];
+	float sample = (random_values[randomValPointer++] * 2.0f) - 1.0f;
 	sample = tVZFilterLS_tick(&noiseShelf1[string], sample);
 	sample = tVZFilterHS_tick(&noiseShelf2[string], sample);
 	sample = tVZFilterBell_tick(&noiseBell1[string], sample);
 	sample = sample * amp;
-	if (isnan(sample))
+	if (!isfinite(sample))
 	{
-		nanChuck++;
+		nanChuckTest++;
 		sample = 0.0f;
 	}
 	float normSample = (sample + 1.f) * 0.5f;

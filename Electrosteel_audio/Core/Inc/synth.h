@@ -132,6 +132,7 @@ float shaperTick(float sample, int v, int string);
 float wavefolderTick(float sample, int v, int string);
 float chorusTick(float sample, int v, int string);
 
+void param1Linear(float value, int v, int string);
 void clipperGainSet(float value, int v, int string);
 void wavefolderParam1(float value, int v, int string);
 void wavefolderParam3(float value, int v, int string);
@@ -153,12 +154,18 @@ void delayParam5(float value, int v, int string);
 
 void offsetParam2(float value, int v, int string);
 void param2Linear(float value, int v, int string);
+void param2BC(float value, int v, int string);
+
 void param3Linear(float value, int v, int string);
 void param3Soft(float value, int v, int string);
 void param3Hard(float value, int v, int string);
 void param3Poly(float value, int v, int string);
 void param3BC(float value, int v, int string);
+
+void param4BC(float value, int v, int string);
 void param4Linear(float value, int v, int string);
+
+void param5BC(float value, int v, int string);
 void param5Linear(float value, int v, int string);
 void fxMixSet(float value, int v, int string);
 void fxPostGainSet(float value, int v, int string);

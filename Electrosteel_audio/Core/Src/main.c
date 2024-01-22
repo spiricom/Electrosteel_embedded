@@ -396,6 +396,14 @@ int main(void)
   specialModeMacroNames[0][9] = "          ";
   specialModeMacroNames[0][10] = "          ";
   specialModeMacroNames[0][11] = "          ";
+  specialModeMacroNames[0][12] = "          ";
+  specialModeMacroNames[0][13] = "          ";
+  specialModeMacroNames[0][14] = "          ";
+  specialModeMacroNames[0][15] = "          ";
+  specialModeMacroNames[0][16] = "          ";
+  specialModeMacroNames[0][17] = "          ";
+  specialModeMacroNames[0][18] = "          ";
+  specialModeMacroNames[0][19] = "          ";
 
   specialModeNames[1] = "PHYS STR2     ";
   specialModeMacroNames[1][0] = "DecayTime ";
@@ -412,10 +420,10 @@ int main(void)
   specialModeMacroNames[1][11] = "HarmPosY  ";
   specialModeMacroNames[1][12] = "PUModRate ";
   specialModeMacroNames[1][13] = "PUModAmp  ";
-  specialModeMacroNames[1][14] = "Ph Harm G ";
+  specialModeMacroNames[1][14] = "PhantomH  ";
   specialModeMacroNames[1][15] = "PUFilterQ ";
-  specialModeMacroNames[1][16] = "PeakF Q   ";
-  specialModeMacroNames[1][17] = "PeakF Frq ";
+  specialModeMacroNames[1][16] = "PeakF Frq ";
+  specialModeMacroNames[1][17] = "PeakF Q   ";
   specialModeMacroNames[1][18] = "Tension G ";
   specialModeMacroNames[1][19] = "Acoustic  ";
 
@@ -433,6 +441,14 @@ int main(void)
   specialModeMacroNames[2][9] = "          ";
   specialModeMacroNames[2][10] = "Tone      ";
   specialModeMacroNames[2][11] = "Decay     ";
+  specialModeMacroNames[2][12] = "          ";
+  specialModeMacroNames[2][13] = "          ";
+  specialModeMacroNames[2][14] = "          ";
+  specialModeMacroNames[2][15] = "          ";
+  specialModeMacroNames[2][16] = "          ";
+  specialModeMacroNames[2][17] = "          ";
+  specialModeMacroNames[2][18] = "          ";
+  specialModeMacroNames[2][19] = "          ";
 
   specialModeNames[3] = "VOCAL        ";
   specialModeMacroNames[3][0] = "Size      ";
@@ -447,6 +463,14 @@ int main(void)
   specialModeMacroNames[3][9] = "BackDiam  ";
   specialModeMacroNames[3][10] = "ToungePos  ";
   specialModeMacroNames[3][11] = "ToungeDia  ";
+  specialModeMacroNames[3][12] = "          ";
+  specialModeMacroNames[3][13] = "          ";
+  specialModeMacroNames[3][14] = "          ";
+  specialModeMacroNames[3][15] = "          ";
+  specialModeMacroNames[3][16] = "          ";
+  specialModeMacroNames[3][17] = "          ";
+  specialModeMacroNames[3][18] = "          ";
+  specialModeMacroNames[3][19] = "          ";
 
   specialModeNames[4] = "STRING3      ";
   specialModeMacroNames[4][0] = "Stiffness ";
@@ -461,6 +485,14 @@ int main(void)
   specialModeMacroNames[4][9] = "Damping   ";
   specialModeMacroNames[4][10] = "PluckPos ";
   specialModeMacroNames[4][11] = "PU Pos   ";
+  specialModeMacroNames[4][12] = "          ";
+  specialModeMacroNames[4][13] = "          ";
+  specialModeMacroNames[4][14] = "          ";
+  specialModeMacroNames[4][15] = "          ";
+  specialModeMacroNames[4][16] = "          ";
+  specialModeMacroNames[4][17] = "          ";
+  specialModeMacroNames[4][18] = "          ";
+  specialModeMacroNames[4][19] = "          ";
 
 
   for (int i = 0; i < 5; i++)
@@ -575,8 +607,8 @@ int main(void)
 		  myTestInt++;
 		  //HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
 	  }
-	  float floatrand = (float)rand * INV_TWO_TO_32 ;
-	  random_values[currentRandom++] = (floatrand * 2.0f) - 1.0f;
+	  random_values[currentRandom++] = (float)rand * INV_TWO_TO_32 ;
+	  //random_values[currentRandom++] = (floatrand * 2.0f) - 1.0f;
 
     /* USER CODE END WHILE */
 
@@ -682,8 +714,7 @@ void PeriphCommonClock_Config(void)
 
 float __ATTR_ITCMRAM randomNumber(void) {
 
-	float num = (random_values[currentRandom++] + 1.0f) * 0.5f;
-	return num;
+	return random_values[currentRandom++];
 }
 
 
@@ -1233,7 +1264,7 @@ void setEffectsFunctions(FXType effectType, int i)
 			  break;
 		  case Shaper2:
 			  effectTick[i] = &shaperTick;
-			  effectSetters[i].setParam1 = &clipperGainSet;
+			  effectSetters[i].setParam1 = &param1Linear;
 			  effectSetters[i].setParam2 = &offsetParam2;
 			  effectSetters[i].setParam3 = &param3Linear;
 			  effectSetters[i].setParam4 = &blankFunction;
@@ -1258,10 +1289,10 @@ void setEffectsFunctions(FXType effectType, int i)
 		  case Bitcrush:
 			  effectTick[i] = &bcTick;
 			  effectSetters[i].setParam1 = &clipperGainSet;
-			  effectSetters[i].setParam2 = &param2Linear;
+			  effectSetters[i].setParam2 = &param2BC;
 			  effectSetters[i].setParam3 = &param3BC;
-			  effectSetters[i].setParam4 = &param4Linear;
-			  effectSetters[i].setParam5 = &param5Linear;
+			  effectSetters[i].setParam4 = &param4BC;
+			  effectSetters[i].setParam5 = &param5BC;
 			  break;
 		  case TiltFilter:
 			  effectTick[i] = &tiltFilterTick;
@@ -2441,6 +2472,15 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 		}
 	}
 
+	// blank out 9-byte macros after
+	for (int j = 0; j < 8; j++)
+	{
+		for (int k = 0; k < 9; k++)
+		{
+			macroNamesArray[presetNumber][j+8][k] = 32;
+		}
+	}
+
 	//read first element in buffer (after the 14 character name) as a count of how many parameters
 	uint16_t paramCount = (buffer[bufferIndex] << 8) + buffer[bufferIndex+1];
 	if (paramCount > size)
@@ -2975,14 +3015,14 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 				{
 					noiseOn = 1;
 				}
-				if ((source >= MACRO_SOURCE_OFFSET) && (source < (MACRO_SOURCE_OFFSET + NUM_MACROS + NUM_CONTROL)))
+				if ((scalar >= MACRO_SOURCE_OFFSET) && (scalar < (MACRO_SOURCE_OFFSET + NUM_MACROS + NUM_CONTROL)))
 				{
 					//if it's a macro, also set its value and set the knob to frozen state so it'll hold until the knob is moved.
 
-					uint8_t whichMacro = source - MACRO_SOURCE_OFFSET;
+					uint8_t whichMacro = scalar - MACRO_SOURCE_OFFSET;
 					for (int v = 0; v < numStringsThisBoard; v++)
 					{
-						sourceValues[source][v] = params[whichMacro + MACRO_PARAMS_OFFSET].realVal[v];
+						sourceValues[scalar][v] = params[whichMacro + MACRO_PARAMS_OFFSET].realVal[v];
 					}
 					//set starting point for the knob smoothers to smooth from
 					tExpSmooth_setValAndDest(&knobSmoothers[whichMacro], params[whichMacro + MACRO_PARAMS_OFFSET].realVal[0]);
