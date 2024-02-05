@@ -18,7 +18,8 @@
 #include "audiostream.h"
 #include "arm_math.h"
 #include "string2.h"
-
+#include "string1.h"
+#include "synth.h"
 
 tTString strings[NUM_STRINGS_PER_BOARD];
 float string2Defaults[20] = {0.5f, 0.5f, 0.7f, 0.5f, 0.4f, 0.15f, 0.0f, 0.0f, 0.1f, 0.0f, 0.9f, 0.2f, 0.2f, 0.2f, 0.4f, 0.0f, 0.7f, 0.0f, 0.5f, 0.5f};
@@ -63,14 +64,24 @@ Lfloat stringParams[10][3][3] =
 
 void __ATTR_ITCMRAM audioInitString2()
 {
-
-	for (int v = 0; v < numStringsThisBoard; v++)
+	if (whichStringModelLoaded != String2Loaded)
 	{
-		 tTString_initToPool(&strings[v], 1, 15.0f, &mediumPool);
-		 tTString_setWoundOrUnwound(&strings[v],((firstString+v) > 3)); //string 5 is first wound string (4 in zero-based counting)
-	}
+		if (whichStringModelLoaded == String1Loaded)
+		{
+			audioFreeString1();
+		}
+		else if (whichStringModelLoaded == SynthLoaded)
+		{
+			audioFreeSynth();
+		}
+		for (int v = 0; v < numStringsThisBoard; v++)
+		{
+			 tTString_initToPool(&strings[v], 1, 15.0f, &mediumPool);
+			 tTString_setWoundOrUnwound(&strings[v],((firstString+v) > 3)); //string 5 is first wound string (4 in zero-based counting)
+		}
 
-	whichStringModelLoaded = String2Loaded;
+		whichStringModelLoaded = String2Loaded;
+	}
 }
 
 
@@ -85,6 +96,7 @@ void __ATTR_ITCMRAM audioFreeString2()
 void __ATTR_ITCMRAM audioSwitchToString2()
 {
 	//load string2 default params:
+	audioInitString2();
 	for (int i = 0; i < 20; i++)
 	{
 		tExpSmooth_setFactor(&knobSmoothers[i], 0.001f);
@@ -98,6 +110,8 @@ void __ATTR_ITCMRAM audioSwitchToString2()
 		}
 		knobFrozen[i] = 1;
 	}
+	audioFrameFunction = audioFrameString2;
+	presetReady = 1;
 }
 
 
@@ -141,11 +155,13 @@ void __ATTR_ITCMRAM audioFrameString2(uint16_t buffer_offset)
 			audioOutBuffer[iplusbuffer] = current_sample;
 			audioOutBuffer[iplusbuffer + 1] = current_sample;
 		}
+		/*
 		if (switchStrings)
 		{
 			switchStringModel(switchStrings);
 		}
 		switchStrings = 0;
+		*/
 		timeFrame = DWT->CYCCNT - tempCountFrame;
 		frameLoadPercentage = (float)timeFrame * frameLoadMultiplier;
 		//HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_RESET);
@@ -369,19 +385,12 @@ float __ATTR_ITCMRAM audioTickString2(void)
 		tTString_setDecayInSeconds(&strings[i],decayTime * decayScaling);
 		tTString_setFilterFreqDirectly(&strings[i], filterFreq * filterScaling);
 
-		temp += tTString_tick(&strings[i]);
+		temp += tTString_tick(&strings[i]) * 0.5f;
 	}
 	thisFrameCount = (thisFrameCount + 1) & 63;
-	//float volIdx = LEAF_clip(47.0f, ((volumeSmoothed * 80.0f) + 47.0f), 127.0f);
-	float volIdx = LEAF_clip(0.0f, ((volumeSmoothed * 80.0f)), 127.0f);
-	int volIdxInt = (int) volIdx;
-	float alpha = volIdx-volIdxInt;
-	int volIdxIntPlus = (volIdxInt + 1) & 127;
-	float omAlpha = 1.0f - alpha;
-	float outVol = volumeAmps128[volIdxInt] * omAlpha;
-	outVol += volumeAmps128[volIdxIntPlus] * alpha;
+	//float outVol = 0.0265625f - (0.2467348f * volumeSmoothed) + (1.253049f * volumeSmoothed * volumeSmoothed);
+	float outVol = 0.006721744f + 0.4720157f*volumeSmoothed - 2.542849f*volumeSmoothed*volumeSmoothed + 6.332339f*volumeSmoothed*volumeSmoothed*volumeSmoothed - 3.271672f*volumeSmoothed*volumeSmoothed*volumeSmoothed*volumeSmoothed;
 
-	//temp *= outVol;
 	temp *= outVol * masterVolFromBrain;
 	temp = tanhf(temp);
 	return LEAF_clip(-1.0f, temp * 0.98f, 1.0f);

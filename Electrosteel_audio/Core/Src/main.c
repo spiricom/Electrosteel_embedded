@@ -63,7 +63,8 @@
 uint_fast8_t  brainFirmwareUpdateRequested = 0;
 uint_fast8_t  pluckFirmwareUpdateRequested = 0;
 
-
+uint_fast8_t knobTicked[12];
+uint_fast8_t pedalTicked[10];
 uint8_t SPI_PLUCK_TX[PLUCK_BUFFER_SIZE_TIMES_TWO] __ATTR_RAM_D3;
 uint8_t SPI_PLUCK_RX[PLUCK_BUFFER_SIZE_TIMES_TWO] __ATTR_RAM_D3;
 uint8_t SPI_LEVERS_RX[LEVER_BUFFER_SIZE_TIMES_TWO] __ATTR_RAM_D2_DMA;
@@ -1207,6 +1208,9 @@ void __ATTR_ITCMRAM blankFunction(float a, int b, int c)
 	;
 }
 
+volatile uint8_t chorusAssignment = 255;
+volatile uint8_t delayAssignment = 255;
+
 void setEffectsFunctions(FXType effectType, int i)
 {
 	effectsActive[i] = 1;
@@ -1279,6 +1283,17 @@ void setEffectsFunctions(FXType effectType, int i)
 			  effectSetters[i].setParam5 = &compressorParam5;
 			  break;
 		  case Chorus:
+			  //there isn't enough memory for multiple chorus effects. Disable any other ticks using them
+			  if (chorusAssignment != 255)
+			  {
+				  effectTick[chorusAssignment] = &blankTick;
+				  effectSetters[chorusAssignment].setParam1 = &blankFunction;
+				  effectSetters[chorusAssignment].setParam2 = &blankFunction;
+				  effectSetters[chorusAssignment].setParam3 = &blankFunction;
+				  effectSetters[chorusAssignment].setParam4 = &blankFunction;
+				  effectSetters[chorusAssignment].setParam5 = &blankFunction;
+			  }
+			  chorusAssignment = i;
 			  effectTick[i] = &chorusTick;
 			  effectSetters[i].setParam1 = &chorusParam1;
 			  effectSetters[i].setParam2 = &chorusParam2;
@@ -1312,6 +1327,17 @@ void setEffectsFunctions(FXType effectType, int i)
 			  break;
 
 		  case Delay:
+			  //there isn't enough memory for multiple delay effects. Disable any other ticks using them
+			  if (delayAssignment != 255)
+			  {
+				  effectTick[delayAssignment] = &blankTick;
+				  effectSetters[delayAssignment].setParam1 = &blankFunction;
+				  effectSetters[delayAssignment].setParam2 = &blankFunction;
+				  effectSetters[delayAssignment].setParam3 = &blankFunction;
+				  effectSetters[delayAssignment].setParam4 = &blankFunction;
+				  effectSetters[delayAssignment].setParam5 = &blankFunction;
+			  }
+			  delayAssignment = i;
 			  effectTick[i] = &delayTick;
 			  effectSetters[i].setParam1 = &delayParam1;
 			  effectSetters[i].setParam2 = &delayParam2;
@@ -2329,6 +2355,9 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 	//osc params
 
 
+	chorusAssignment = 255;
+	delayAssignment = 255;
+
 	uint16_t bufferIndex = 0;
 
 	//should add an indicator at the beginning of the version number.
@@ -2891,6 +2920,11 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 	for (int i = 0; i < 12; i++)
 	{
 		knobFrozen[i] = 0;
+		knobTicked[i] = 0;
+	}
+	for (int i = 0; i < 10; i++)
+	{
+		pedalTicked[i] = 0;
 	}
 	//blank out all current mappings
 	for (int i = 0; i < MAX_NUM_MAPPINGS; i++)
@@ -2901,6 +2935,7 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 		mappings[i].hookActive[2] = 0;
 		mappings[i].numHooks = 0;
 	}
+
 
 
 	for (int i = 0; i < mappingCount; i++)
@@ -2988,6 +3023,11 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 			//set starting point for the knob smoothers to smooth from
 			tExpSmooth_setValAndDest(&knobSmoothers[whichMacro], params[whichMacro + MACRO_PARAMS_OFFSET].realVal[0]);
 			knobFrozen[whichMacro] = 1;
+			knobTicked[whichMacro] = 1;
+		}
+		if ((source >= PEDAL_SOURCE_OFFSET) && (source < (PEDAL_SOURCE_OFFSET + 10)))
+		{
+			pedalTicked[source - PEDAL_SOURCE_OFFSET] = 1;
 		}
 		int scalar = buffer[bufferIndex+2];
 		for (int v = 0; v < NUM_STRINGS_PER_BOARD; v++)
@@ -3018,7 +3058,6 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 				if ((scalar >= MACRO_SOURCE_OFFSET) && (scalar < (MACRO_SOURCE_OFFSET + NUM_MACROS + NUM_CONTROL)))
 				{
 					//if it's a macro, also set its value and set the knob to frozen state so it'll hold until the knob is moved.
-
 					uint8_t whichMacro = scalar - MACRO_SOURCE_OFFSET;
 					for (int v = 0; v < numStringsThisBoard; v++)
 					{
@@ -3027,6 +3066,11 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 					//set starting point for the knob smoothers to smooth from
 					tExpSmooth_setValAndDest(&knobSmoothers[whichMacro], params[whichMacro + MACRO_PARAMS_OFFSET].realVal[0]);
 					knobFrozen[whichMacro] = 1;
+					knobTicked[whichMacro] = 1;
+				}
+				if ((scalar >= PEDAL_SOURCE_OFFSET) && (scalar < (PEDAL_SOURCE_OFFSET + 10)))
+				{
+					pedalTicked[scalar - PEDAL_SOURCE_OFFSET] = 1;
 				}
 			}
 		}
@@ -3091,7 +3135,6 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 			}
 		}
 	}
-	audioFrameFunction = audioFrameSynth;
 	audioSwitchToSynth();
 	presetWaitingToParse = 0;
 	currentActivePreset = presetNumber;
@@ -3238,7 +3281,7 @@ void __ATTR_ITCMRAM HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
 	if (hspi == &hspi5)
 	{
 		//HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_SET);
-		SCB_CleanInvalidateDCache_by_Addr((uint32_t *)(((uint32_t )SPI_PLUCK_RX) & ~(uint32_t )0x1F), PLUCK_BUFFER_SIZE_TIMES_TWO+32);
+		//SCB_CleanInvalidateDCache_by_Addr((uint32_t *)(((uint32_t )SPI_PLUCK_RX) & ~(uint32_t )0x1F), PLUCK_BUFFER_SIZE_TIMES_TWO+32);
 
 		if ((SPI_PLUCK_RX[32] == 254) && (SPI_PLUCK_RX[63] == 253))
 		{
@@ -3272,7 +3315,7 @@ void __ATTR_ITCMRAM HAL_SPI_RxHalfCpltCallback(SPI_HandleTypeDef *hspi)
 	interrupted = 1;
 	if (hspi == &hspi5)
 	{
-		SCB_CleanInvalidateDCache_by_Addr((uint32_t *)(((uint32_t )SPI_PLUCK_RX) & ~(uint32_t )0x1F), PLUCK_BUFFER_SIZE_TIMES_TWO+32);
+		//SCB_CleanInvalidateDCache_by_Addr((uint32_t *)(((uint32_t )SPI_PLUCK_RX) & ~(uint32_t )0x1F), PLUCK_BUFFER_SIZE_TIMES_TWO+32);
 		//HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_SET);
 		if ((SPI_PLUCK_RX[0] == 254) && (SPI_PLUCK_RX[31] == 253))
 		{

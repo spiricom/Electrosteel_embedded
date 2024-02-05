@@ -16,6 +16,8 @@
 #include "audiostream.h"
 #include <arm_math.h>
 #include "synth.h"
+#include "string1.h"
+#include "string2.h"
 
 
 #define OVERSAMPLE 2
@@ -126,8 +128,7 @@ uint8_t envOn[NUM_ENV];
  tCompressor comp[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
  tCrusher bc[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
  tLockhartWavefolder wf[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
- tLinearDelay delay1[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
- tLinearDelay delay2[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
+
  tCycle mod1[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
  tCycle mod2[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
  float fxMix[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
@@ -137,13 +138,19 @@ uint8_t envOn[NUM_ENV];
  tVZFilterLS FXVZfilterLS[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
  tVZFilterHS FXVZfilterHS[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
  tVZFilter FXVZfilterBR[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
- tTapeDelay tapeDelay[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
+
  tFeedbackLeveler feedbackControl[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
  tSVF FXlowpass[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
  tSVF FXhighpass[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
  tSVF FXbandpass[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
  tLadderFilter FXLadderfilter[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
  float delayFB[NUM_EFFECT][NUM_STRINGS_PER_BOARD];
+
+ //only one each of chorus delays and tapedelay
+ tLinearDelay delay1[NUM_STRINGS_PER_BOARD];
+ tLinearDelay delay2[NUM_STRINGS_PER_BOARD];
+ tTapeDelay tapeDelay[NUM_STRINGS_PER_BOARD];
+
 
  tSVF finalLowpass[NUM_STRINGS_PER_BOARD];
 
@@ -183,7 +190,7 @@ uint8_t envOn[NUM_ENV];
 
 void audioInitSynth()
 {
-    for (int i = 0; i < OVERSAMPLE; i++)
+	for (int i = 0; i < OVERSAMPLE; i++)
     {
         oversamplerArray[i] = 0.0f;
     }
@@ -265,8 +272,6 @@ void audioInitSynth()
 			tCompressor_init(&comp[i][v], &leaf);
 			tCompressor_setTables(&comp[i][v], atoDbTable, dbtoATable, 0.00001f, 4.0f, -90.0f, 30.0f, ATODB_TABLE_SIZE, DBTOA_TABLE_SIZE);
 			tCompressor_setSampleRate(&comp[i][v], SAMPLE_RATE * OVERSAMPLE);
-			tLinearDelay_initToPool(&delay1[i][v], 4000.0f, 4096, &largePool);
-			tLinearDelay_initToPool(&delay2[i][v], 4000.0f, 4096, &largePool);
 			tCycle_init(&mod1[i][v], &leaf);
 			tCycle_setSampleRate(&mod1[i][v], SAMPLE_RATE * OVERSAMPLE);
 			tCycle_init(&mod2[i][v], &leaf);
@@ -274,7 +279,7 @@ void audioInitSynth()
 			tCycle_setFreq(&mod1[i][v], 0.2f);
 			tCycle_setFreq(&mod2[i][v], 0.22222222222f);
 
-	        tTapeDelay_initToPool(&tapeDelay[i][v], 15000.0f, 30000, &largePool);
+
 	        tFeedbackLeveler_init(&feedbackControl[i][v], .99f, 0.01f, 0.125f, 0, &leaf);
 
 			//filters
@@ -300,7 +305,7 @@ void audioInitSynth()
 
 		for (int i = 0; i < MAX_NUM_MAPPINGS; i++)
 		{
-			tExpSmooth_init(&mapSmoothers[i][v], 0.0f, 0.005f, &leaf);
+			tExpSmooth_init(&mapSmoothers[i][v], 0.0f, 0.01f, &leaf);
 		}
 
 		//arm_fir_interpolate_init_f32(&osI[v],2,32,__leaf_table_fir2XLow, intState[v],1);
@@ -313,17 +318,49 @@ void audioInitSynth()
 
 void  audioFreeSynth()
 {
-
+	for (int v = 0; v < NUM_STRINGS_PER_BOARD; v++)
+	{
+		//for (int i = 0; i < NUM_EFFECT; i++)
+		{
+			tTapeDelay_free(&tapeDelay[v]);
+			tLinearDelay_free(&delay2[v]);
+			tLinearDelay_free(&delay1[v]);
+		}
+	}
 }
 
 void  audioSwitchToSynth()
 {
+	if (whichStringModelLoaded != SynthLoaded)
+	{
+		if (whichStringModelLoaded == String1Loaded)
+		{
+			audioFreeString1();
+		}
+		if (whichStringModelLoaded == String2Loaded)
+		{
+			audioFreeString2();
+		}
+
+		for (int v = 0; v < NUM_STRINGS_PER_BOARD; v++)
+		{
+			//for (int i = 0; i < NUM_EFFECT; i++)
+			{
+
+				tLinearDelay_initToPool(&delay1[v], 4000.0f, 4096, &mediumPool);
+				tLinearDelay_initToPool(&delay2[v], 4000.0f, 4096, &mediumPool);
+				tTapeDelay_initToPool(&tapeDelay[v], 15000.0f, 20000, &mediumPool);
+			}
+		}
+		whichStringModelLoaded = SynthLoaded;
+	}
 	for (int i = 0; i < 20; i++)
 	{
 		tExpSmooth_setFactor(&knobSmoothers[i], 0.001f);
 		//tExpSmooth_setValAndDest(&knobSmoothers[i], string2Defaults[i]);
 		knobFrozen[i] = 1;
 	}
+	audioFrameFunction = audioFrameSynth;
 }
 
 void __ATTR_ITCMRAM audioFrameSynth(uint16_t buffer_offset)
@@ -409,13 +446,13 @@ void __ATTR_ITCMRAM audioFrameSynth(uint16_t buffer_offset)
 	}
 
 
-
+/*
 	if (switchStrings)
 	{
 		switchStringModel(switchStrings);
 	}
 	switchStrings = 0;
-
+*/
 	timeFrame = DWT->CYCCNT - tempCountFrame;
 	frameLoadPercentage = (float)timeFrame * frameLoadMultiplier;
 	if (frameLoadPercentage > .99f)
@@ -438,7 +475,10 @@ void __ATTR_ITCMRAM audioFrameSynth(uint16_t buffer_offset)
 	//HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_RESET);
 }
 
-
+volatile float outVol1 = 0.0f;
+volatile float outVol2 = 0.0f;
+volatile uint32_t timeVolumeLookup = 0;
+volatile uint32_t timeVolumePoly = 0;
 
 float __ATTR_ITCMRAM audioTickSynth(void)
 {
@@ -455,20 +495,28 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 
 	for (int i = 0; i < 12; i++)
 	{
-		knobScaled[i] = tExpSmooth_tick(&knobSmoothers[i]);
-		for (int v = 0; v < numStringsThisBoard; v++)
+		if (knobTicked[i])
 		{
-			sourceValues[MACRO_SOURCE_OFFSET + i][v] = knobScaled[i];
+			knobScaled[i] = tExpSmooth_tick(&knobSmoothers[i]);
+			for (int v = 0; v < numStringsThisBoard; v++)
+			{
+				sourceValues[MACRO_SOURCE_OFFSET + i][v] = knobScaled[i];
+			}
 		}
 	}
+
 	for (int i = 0; i < 10; i++)
 	{
-		pedalScaled[i] = tExpSmooth_tick(&pedalSmoothers[i]);
-		for (int v = 0; v < numStringsThisBoard; v++)
+		if (pedalTicked[i])
 		{
-			sourceValues[PEDAL_SOURCE_OFFSET + i][v] = pedalScaled[i];
+			pedalScaled[i] = tExpSmooth_tick(&pedalSmoothers[i]);
+			for (int v = 0; v < numStringsThisBoard; v++)
+			{
+				sourceValues[PEDAL_SOURCE_OFFSET + i][v] = pedalScaled[i];
+			}
 		}
 	}
+
 	for (int v = 0; v < numStringsThisBoard; v++)
 	{
 		sourceValues[EXPRESSION_PEDAL_SOURCE_OFFSET][v] = volumePedal;
@@ -492,10 +540,6 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 		if (note[v] > 127.0f)
 		{
 			note[v] = 127.0f;
-		}
-		if (!isfinite(note[v]))
-		{
-			note[v] = 64.0f;
 		}
 		timeGettingNote = DWT->CYCCNT - tempCountGettingNote;
 
@@ -523,49 +567,18 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 		{
 			filterSamps[0] += oscOuts[0][i][v];
 			filterSamps[1] += oscOuts[1][i][v];
-			if (!isfinite(filterSamps[0]))
-			{
-				filterSamps[0] = 0.0f;
-				nanChuckTest++;
-			}
-			if (!isfinite(filterSamps[1]))
-			{
-				filterSamps[1] = 0.0f;
-				nanChuckTest++;
-			}
 		}
 
 		filterSamps[0] += noiseOuts[0][v];
-
 		filterSamps[1] += noiseOuts[1][v];
-		if (!isfinite(filterSamps[1]))
-		{
-			filterSamps[1] = 0.0f;
-			nanChuckTest++;
-		}
 
 		uint32_t tempCountFilt = DWT->CYCCNT;
-		if (!isfinite(filterSamps[0]))
-		{
-			filterSamps[0] = 0.0f;
-			nanChuckTest++;
-		}
 		sample = filter_tick(&filterSamps[0], note[v], v);
-		if (!isfinite(filterSamps[0]))
-		{
-			filterSamps[0] = 0.0f;
-			nanChuckTest++;
-		}
 		timeFilt = DWT->CYCCNT - tempCountFilt;
 
 		if (fxPre)
 		{
 			sample *= amplitude[v];
-			if (!isfinite(sample))
-			{
-				sample = 0.0f;
-				nanChuckTest++;
-			}
 		}
 		uint32_t tempCountOS = DWT->CYCCNT;
 
@@ -588,11 +601,7 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 						oversamplerArray[j] = effectTick[i](dry, i, v); //run the effect
 						oversamplerArray[j] = ((1.0f - fxMix[i][v]) * dry) + (fxMix[i][v] * oversamplerArray[j]); //mix in dry/wet at the "mix" amount
 						oversamplerArray[j] *= fxPostGain[i][v]; //apply postgain
-						if (!isfinite(sample))
-						{
-							sample = 0.0f;
-							nanChuckTest++;
-						}
+
 					}
 				}
 			}
@@ -610,11 +619,7 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 					sample = effectTick[i](sample, i, v); //run the effect
 					sample =((1.0f - fxMix[i][v]) * dry) + (fxMix[i][v] * sample);
 					sample *= fxPostGain[i][v];
-					if (!isfinite(sample))
-					{
-						sample = 0.0f;
-						nanChuckTest++;
-					}
+
 				}
 			}
 		}
@@ -625,16 +630,14 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 		{
 			sample *= amplitude[v];
 		}
-		if (!isfinite(sample) || isinf(sample))
-		{
-			sample = 0.0f;
-			nanChuckTest++;
-		}
-		sample = tSVF_tick(&finalLowpass[v], sample) * masterVolFromBrainForSynth;
-		masterSample += sample;// * finalMaster[v];
-	}
-	timePerStringTick = DWT->CYCCNT - tempPerStringTick;
 
+		sample = tSVF_tick(&finalLowpass[v], sample) * masterVolFromBrainForSynth;
+		masterSample += sample * finalMaster[v];
+	}
+	uint32_t tempVolumePoly = DWT->CYCCNT;
+	timePerStringTick = DWT->CYCCNT - tempPerStringTick;
+/*
+	uint32_t tempVolumeLookup = DWT->CYCCNT;
 	float volIdx = LEAF_clip(47.0f, ((volumeSmoothed * 80.0f) + 47.0f), 127.0f);
 	int volIdxInt = (int) volIdx;
 	float alpha = volIdx-volIdxInt;
@@ -643,31 +646,22 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 	float outVol = volumeAmps128[volIdxInt] * omAlpha;
 	outVol += volumeAmps128[volIdxIntPlus] * alpha;
 
+	timeVolumeLookup = DWT->CYCCNT - tempVolumeLookup;
+	outVol1 = outVol;
+*/
+
+	//float outVol = 0.0265625f - (0.2467348f * volumeSmoothed) + (1.253049f * volumeSmoothed * volumeSmoothed);
+
+	//float outVol = 0.008315613f + 0.3774075f*volumeSmoothed - 1.785774f*volumeSmoothed*volumeSmoothed + 4.218241f*volumeSmoothed*volumeSmoothed*volumeSmoothed - 0.8576009f*volumeSmoothed*volumeSmoothed*volumeSmoothed*volumeSmoothed - 0.9656285f*volumeSmoothed*volumeSmoothed*volumeSmoothed*volumeSmoothed*volumeSmoothed;
+	float outVol = 0.006721744f + 0.4720157f*volumeSmoothed - 2.542849f*volumeSmoothed*volumeSmoothed + 6.332339f*volumeSmoothed*volumeSmoothed*volumeSmoothed - 3.271672f*volumeSmoothed*volumeSmoothed*volumeSmoothed*volumeSmoothed;
+
+
 	if (pedalControlsMaster)
 	{
 		masterSample *= outVol;
 	}
-	if (masterSample  > .999999f)
-	{
-		masterSample  = .999999f;
-		sampleClippedCountdown = 65535;
-	}
-	else if (masterSample < -.999999f)
-	{
-		masterSample = -.9999999f;
-		sampleClippedCountdown = 65535;
-	}
-	else
-	{
-		if (sampleClippedCountdown > 0)
-		{
-			sampleClippedCountdown--;
-		}
-	}
-	if (nanChuckTest > 0)
-	{
-		nanHappened = 1;
-	}
+	timeVolumePoly = DWT->CYCCNT - tempVolumePoly;
+
 	timeTick = DWT->CYCCNT - tempCountTick;
 
 	return masterSample * audioMasterLevel * 0.98f;
@@ -759,20 +753,12 @@ void __ATTR_ITCMRAM oscillator_tick(float note, int string)
 			shapeTick[osc](&sample, osc, finalFreq, shape, 0, string);
 
 			sample *= amp;
-			if (!isfinite(sample))
-			{
-				sample = 0.0f;
-				nanChuckTest++;
-			}
+
 			//sourceValues[OSC_SOURCE_OFFSET + osc] = sample; // the define of zero may be wasteful
 			sourceValues[osc][string] = sample;
 
 			sample *= oscAmpMult; // divide down gain if more than one oscillator is sounding (computed at preset load)
-			if (!isfinite(sample))
-			{
-				sample = 0.0f;
-				nanChuckTest++;
-			}
+
 			oscOuts[0][osc][string] = sample * (filterSend) * oscParams[OscEnabled].realVal[string];
 			oscOuts[1][osc][string] = sample * (1.0f - filterSend) * oscParams[OscEnabled].realVal[string];
 		}
@@ -1557,7 +1543,7 @@ void __ATTR_ITCMRAM chorusParam4(float value, int v, int string)
 
 void __ATTR_ITCMRAM delayParam1(float value, int v, int string)
 {
-    tTapeDelay_setDelay(&tapeDelay[v][string], value * 30000.0f + 1.0f);
+    tTapeDelay_setDelay(&tapeDelay[string], value * 30000.0f + 1.0f);
 }
 
 void __ATTR_ITCMRAM delayParam2(float value, int v, int string)
@@ -1580,6 +1566,8 @@ void __ATTR_ITCMRAM delayParam5(float value, int v, int string)
 	param5[v][string] = (value * 1.5f) + 1.0f;
 }
 
+
+
 float delayTick(float sample, int v, int string)
 {
     sample *= param5[v][string];
@@ -1590,7 +1578,7 @@ float delayTick(float sample, int v, int string)
 
     sample = tFeedbackLeveler_tick(&feedbackControl[v][string], sample);
 
-    delayFB[v][string] = tTapeDelay_tick(&tapeDelay[v][string], sample);
+    delayFB[v][string] = tTapeDelay_tick(&tapeDelay[string], sample);
     delayFB[v][string] = tSVF_tick(&FXlowpass[v][string], delayFB[v][string]);
     sample = tSVF_tick(&FXhighpass[v][string], delayFB[v][string]);
     sample = fast_tanh5(sample);
@@ -1600,10 +1588,10 @@ float delayTick(float sample, int v, int string)
 
 float __ATTR_ITCMRAM chorusTick(float sample, int v, int string)
 {
-	tLinearDelay_setDelay(&delay1[v][string], param1[v][string] * .707f * (1.0f + param2[v][string] * tCycle_tick(&mod1[v][string])));
-    tLinearDelay_setDelay(&delay2[v][string], param1[v][string] * .5f * (1.0f - param2[v][string] * tCycle_tick(&mod2[v][string])));
-    float temp = tLinearDelay_tick(&delay1[v][string], sample) - sample;
-    temp += tLinearDelay_tick(&delay2[v][string], sample) - sample;
+	tLinearDelay_setDelay(&delay1[string], param1[v][string] * .707f * (1.0f + param2[v][string] * tCycle_tick(&mod1[v][string])));
+    tLinearDelay_setDelay(&delay2[string], param1[v][string] * .5f * (1.0f - param2[v][string] * tCycle_tick(&mod2[v][string])));
+    float temp = tLinearDelay_tick(&delay1[string], sample) - sample;
+    temp += tLinearDelay_tick(&delay2[string], sample) - sample;
     temp = tHighpass_tick(&dcBlock1[v][string], temp);
 	//float temp = 0.0f;
     return -temp;

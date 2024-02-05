@@ -58,9 +58,11 @@ typedef enum
 
 typedef enum
 {
-  String1Loaded = 0,
+  NothingLoaded = 0,
+  String1Loaded,
   String2Loaded,
   String3Loaded,
+  SynthLoaded,
 }StringModelLoadedTypeDef;
 
 //#define SAMPLERATE96K

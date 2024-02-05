@@ -56,7 +56,7 @@ float invNumStrings = 1.0f / numStrings;
 
 volatile uint16_t previousStringInputs[12];
 
-float volumeAmps128[128] = {0.000562, 0.000569, 0.000577, 0.000580, 0.000587, 0.000601, 0.000622, 0.000650, 0.000676, 0.000699, 0.000720, 0.000739, 0.000753, 0.000766, 0.000791, 0.000826, 0.000872, 0.000912, 0.000953, 0.001012, 0.001091, 0.001188, 0.001270, 0.001360, 0.001465, 0.001586, 0.001717, 0.001829, 0.001963, 0.002118, 0.002295, 0.002469, 0.002636, 0.002834, 0.003063, 0.003322, 0.003496, 0.003750, 0.004143, 0.004675, 0.005342, 0.005880, 0.006473, 0.007122, 0.007827, 0.008516, 0.009167, 0.009968, 0.010916, 0.012014, 0.012944, 0.013977, 0.015352, 0.017070, 0.019130, 0.020965, 0.022847, 0.024823, 0.026891, 0.028835, 0.030496, 0.033044, 0.036478, 0.040799, 0.045093, 0.049150, 0.053819, 0.059097, 0.064986, 0.070712, 0.076315, 0.081930, 0.087560, 0.093117, 0.098283, 0.104249, 0.111012, 0.118575, 0.124879, 0.131163, 0.141721, 0.156554, 0.175663, 0.195870, 0.213414, 0.228730, 0.241817, 0.252675, 0.264038, 0.276776, 0.290871, 0.306323, 0.322794, 0.338528, 0.353711, 0.368343, 0.382424, 0.393015, 0.406556, 0.426763, 0.453639, 0.487182, 0.522242, 0.550876, 0.573000, 0.588613, 0.598943, 0.613145, 0.628104, 0.643820, 0.660293, 0.676658, 0.692845, 0.709881, 0.727766, 0.746500, 0.764505, 0.782949, 0.802346, 0.822696, 0.844189, 0.867268, 0.886360, 0.901464, 0.912581, 0.921606, 0.932834, 0.944061};
+//float volumeAmps128[128] = {0.000562, 0.000569, 0.000577, 0.000580, 0.000587, 0.000601, 0.000622, 0.000650, 0.000676, 0.000699, 0.000720, 0.000739, 0.000753, 0.000766, 0.000791, 0.000826, 0.000872, 0.000912, 0.000953, 0.001012, 0.001091, 0.001188, 0.001270, 0.001360, 0.001465, 0.001586, 0.001717, 0.001829, 0.001963, 0.002118, 0.002295, 0.002469, 0.002636, 0.002834, 0.003063, 0.003322, 0.003496, 0.003750, 0.004143, 0.004675, 0.005342, 0.005880, 0.006473, 0.007122, 0.007827, 0.008516, 0.009167, 0.009968, 0.010916, 0.012014, 0.012944, 0.013977, 0.015352, 0.017070, 0.019130, 0.020965, 0.022847, 0.024823, 0.026891, 0.028835, 0.030496, 0.033044, 0.036478, 0.040799, 0.045093, 0.049150, 0.053819, 0.059097, 0.064986, 0.070712, 0.076315, 0.081930, 0.087560, 0.093117, 0.098283, 0.104249, 0.111012, 0.118575, 0.124879, 0.131163, 0.141721, 0.156554, 0.175663, 0.195870, 0.213414, 0.228730, 0.241817, 0.252675, 0.264038, 0.276776, 0.290871, 0.306323, 0.322794, 0.338528, 0.353711, 0.368343, 0.382424, 0.393015, 0.406556, 0.426763, 0.453639, 0.487182, 0.522242, 0.550876, 0.573000, 0.588613, 0.598943, 0.613145, 0.628104, 0.643820, 0.660293, 0.676658, 0.692845, 0.709881, 0.727766, 0.746500, 0.764505, 0.782949, 0.802346, 0.822696, 0.844189, 0.867268, 0.886360, 0.901464, 0.912581, 0.921606, 0.932834, 0.944061};
 
 BOOL bufferCleared = TRUE;
 
@@ -164,7 +164,7 @@ int currentPluckBuffer = 0;
 int edit = 0;
 int whichTable = 0;
 int presetReady = 0;
-uint8_t whichStringModelLoaded;
+uint8_t whichStringModelLoaded = NothingLoaded;
 
 
 
@@ -349,7 +349,7 @@ void audioInit()
 	}
 
 	audioInitAdditive();
-	audioInitString1();
+	//audioInitString1();
 	audioInitVocal();
 	audioInitSynth();
 	audioInitString3();
@@ -391,9 +391,10 @@ void audioStart(SAI_HandleTypeDef* hsaiOut, SAI_HandleTypeDef* hsaiIn)
 	//receive_status = HAL_SAI_Receive_DMA(hsaiIn, (uint8_t *)&audioInBuffer[0], AUDIO_BUFFER_SIZE);
 }
 
-
+volatile uint32_t timeSPI = 0;
 void __ATTR_ITCMRAM updateStateFromSPIMessage(uint8_t offset)
 {
+	uint32_t tempCountSPI = DWT->CYCCNT;
 	int modeBit = SPI_LEVERS_RX[24 + offset];
 
 	octaveAction = (modeBit >> 6) & 1;
@@ -426,11 +427,13 @@ void __ATTR_ITCMRAM updateStateFromSPIMessage(uint8_t offset)
 		barInMIDI[1] = stringPositions[1] * 0.001953125f;
 	}
 	tExpSmooth_setDest(&volumeSmoother,volumePedal);
+	timeSPI = DWT->CYCCNT - tempCountSPI;
 }
 
 
 
 
+/*
 void __ATTR_ITCMRAM switchStringModel(int which)
 {
 	if (which == 1)
@@ -463,7 +466,7 @@ void __ATTR_ITCMRAM switchStringModel(int which)
 	currentActivePreset = voice;
 
 }
-
+*/
 
 
 
@@ -478,14 +481,19 @@ inline void voiceChangeCheck(void)
 	{
 		if (voice == 63)
 		{
-			switchStrings = 1;
+			audioFrameFunction = audioFrameWaiting;
+			audioSwitchToString1();
+			currentActivePreset = voice;
+			resetStringInputs = 1;
 			diskBusy = 0;
 			whichModel = 1;
-
 		}
 		else if (voice == 62)
 		{
-			switchStrings = 2;
+			audioFrameFunction = audioFrameWaiting;
+			audioSwitchToString2();
+			currentActivePreset = voice;
+			resetStringInputs = 1;
 			diskBusy = 0;
 			whichModel = 2;
 		}
@@ -539,22 +547,26 @@ inline void voiceChangeCheck(void)
 }
 
 
-
+volatile uint32_t timeClean = 0;
 void __ATTR_ITCMRAM HAL_SAI_TxCpltCallback(SAI_HandleTypeDef *hsai)
 {
-	SCB_CleanInvalidateDCache_by_Addr((uint32_t*)(((uint32_t)audioOutBuffer) & ~(uint32_t)0x1F), AUDIO_BUFFER_SIZE+32);
+
+	//SCB_CleanInvalidateDCache_by_Addr((uint32_t*)(((uint32_t)audioOutBuffer) & ~(uint32_t)0x1F), AUDIO_BUFFER_SIZE+32);
+
 	if ((!diskBusy)&& (presetReady))
 	{
 		audioFrameFunction(HALF_BUFFER_SIZE);
 	}
 
 	voiceChangeCheck();
+	uint32_t tempCountClean = DWT->CYCCNT;
 	SCB_CleanInvalidateDCache_by_Addr((uint32_t*)(((uint32_t)audioOutBuffer) & ~(uint32_t)0x1F), AUDIO_BUFFER_SIZE+32);
+	timeClean = DWT->CYCCNT - tempCountClean;
 }
 
 void __ATTR_ITCMRAM HAL_SAI_TxHalfCpltCallback(SAI_HandleTypeDef *hsai)
 {
-	SCB_CleanInvalidateDCache_by_Addr((uint32_t*)(((uint32_t)audioOutBuffer) & ~(uint32_t)0x1F), AUDIO_BUFFER_SIZE+32);
+	//SCB_CleanInvalidateDCache_by_Addr((uint32_t*)(((uint32_t)audioOutBuffer) & ~(uint32_t)0x1F), AUDIO_BUFFER_SIZE+32);
 	if ((!diskBusy)&& (presetReady))
 	{
 		audioFrameFunction(0);
@@ -571,21 +583,16 @@ void __ATTR_ITCMRAM HAL_SAI_ErrorCallback(SAI_HandleTypeDef *hsai)
 void __ATTR_ITCMRAM audioFrameWaiting(uint16_t buffer_offset)
 {
 	//HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_SET);
-		uint32_t tempCountFrame = DWT->CYCCNT;
-		//mono operation, no need to compute right channel. Also for loop iterating by 2 instead of 1 to avoid if statement.
-		for (int i = 0; i < HALF_BUFFER_SIZE; i+=2)
-		{
-			int iplusbuffer = buffer_offset + i;
-			audioOutBuffer[iplusbuffer] = 0;
-			audioOutBuffer[iplusbuffer + 1] = 0;
-		}
-		if (switchStrings)
-		{
-			switchStringModel(switchStrings);
-		}
-		switchStrings = 0;
-		timeFrame = DWT->CYCCNT - tempCountFrame;
-		frameLoadPercentage = (float)timeFrame * frameLoadMultiplier;
-		//HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_RESET);
+	uint32_t tempCountFrame = DWT->CYCCNT;
+	//mono operation, no need to compute right channel. Also for loop iterating by 2 instead of 1 to avoid if statement.
+	for (int i = 0; i < HALF_BUFFER_SIZE; i+=2)
+	{
+		int iplusbuffer = buffer_offset + i;
+		audioOutBuffer[iplusbuffer] = 0;
+		audioOutBuffer[iplusbuffer + 1] = 0;
+	}
+	timeFrame = DWT->CYCCNT - tempCountFrame;
+	frameLoadPercentage = (float)timeFrame * frameLoadMultiplier;
+	//HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_RESET);
 }
 

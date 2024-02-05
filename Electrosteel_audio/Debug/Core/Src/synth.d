@@ -105,7 +105,7 @@ Core/Src/synth.o: ../Core/Src/synth.c ../Core/Inc/main.h \
  /Users/jeffsnyder/dev/CMSIS/Include/dsp/support_functions.h \
  /Users/jeffsnyder/dev/CMSIS/Include/dsp/quaternion_math_functions.h \
  /Users/jeffsnyder/dev/CMSIS/Include/dsp/window_functions.h \
- ../Core/Inc/synth.h
+ ../Core/Inc/synth.h ../Core/Inc/string1.h ../Core/Inc/string2.h
 ../Core/Inc/main.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h:
 ../Core/Inc/stm32h7xx_hal_conf.h:
@@ -220,3 +220,5 @@ Core/Src/synth.o: ../Core/Src/synth.c ../Core/Inc/main.h \
 /Users/jeffsnyder/dev/CMSIS/Include/dsp/quaternion_math_functions.h:
 /Users/jeffsnyder/dev/CMSIS/Include/dsp/window_functions.h:
 ../Core/Inc/synth.h:
+../Core/Inc/string1.h:
+../Core/Inc/string2.h:

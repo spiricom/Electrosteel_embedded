@@ -18,9 +18,11 @@
 #include "audiostream.h"
 #include "arm_math.h"
 #include "string2.h"
-
+#include "string1.h"
+#include "synth.h"
 
 tTString strings[NUM_STRINGS_PER_BOARD];
+float string2Defaults[20] = {0.5f, 0.5f, 0.7f, 0.5f, 0.4f, 0.15f, 0.0f, 0.0f, 0.1f, 0.0f, 0.9f, 0.2f, 0.2f, 0.2f, 0.4f, 0.0f, 0.7f, 0.0f, 0.5f, 0.5f};
 
 Lfloat stringParams[10][3][3] =
 {
@@ -60,17 +62,26 @@ Lfloat stringParams[10][3][3] =
 
 
 
-void audioInitString2()
+void __ATTR_ITCMRAM audioInitString2()
 {
-
-	for (int v = 0; v < numStringsThisBoard; v++)
+	if (whichStringModelLoaded != String2Loaded)
 	{
-		 tTString_initToPool(&strings[v], 1, 15.0f, &mediumPool);
-		 tTString_setHarmonicity(&strings[v], 0.00001f, 100.0f);
-		 tTString_setTensionSpeed(&strings[v],0.7f);
-		 tTString_setTensionGain(&strings[v],0.99f);
+		if (whichStringModelLoaded == String1Loaded)
+		{
+			audioFreeString1();
+		}
+		else if (whichStringModelLoaded == SynthLoaded)
+		{
+			audioFreeSynth();
+		}
+		for (int v = 0; v < numStringsThisBoard; v++)
+		{
+			 tTString_initToPool(&strings[v], 1, 15.0f, &mediumPool);
+			 tTString_setWoundOrUnwound(&strings[v],((firstString+v) > 3)); //string 5 is first wound string (4 in zero-based counting)
+		}
+
+		whichStringModelLoaded = String2Loaded;
 	}
-	whichStringModelLoaded = String2Loaded;
 }
 
 
@@ -81,6 +92,29 @@ void __ATTR_ITCMRAM audioFreeString2()
 		tTString_free(&strings[v]);
 	}
 }
+
+void __ATTR_ITCMRAM audioSwitchToString2()
+{
+	//load string2 default params:
+	audioInitString2();
+	for (int i = 0; i < 20; i++)
+	{
+		tExpSmooth_setFactor(&knobSmoothers[i], 0.001f);
+		if (voice == 62)
+		{
+			tExpSmooth_setValAndDest(&knobSmoothers[i], string2Defaults[i]);
+		}
+		else
+		{
+			tExpSmooth_setValAndDest(&knobSmoothers[i], loadedKnobParams[i]);
+		}
+		knobFrozen[i] = 1;
+	}
+	audioFrameFunction = audioFrameString2;
+	presetReady = 1;
+}
+
+
 
 void __ATTR_ITCMRAM audioFrameString2(uint16_t buffer_offset)
 {
@@ -99,6 +133,20 @@ void __ATTR_ITCMRAM audioFrameString2(uint16_t buffer_offset)
 			resetStringInputs = 0;
 			newPluck = 1;
 		}
+		for (int i = 0; i < numStringsThisBoard; i++)
+		{
+			tTString_setPickupPos(&strings[i],knobScaled[3]);
+			tTString_setSlideGain(&strings[i],knobScaled[4]);
+			tTString_setPickupFilterFreq(&strings[i],knobScaled[8]*6000.0f + 1000.0f);
+			tTString_setPickupModFreq(&strings[i],(knobScaled[12]));
+			tTString_setPickupModAmp(&strings[i],knobScaled[13]);
+			tTString_setPhantomHarmonicsGain(&strings[i],knobScaled[14]);
+			tTString_setPickupFilterQ(&strings[i],knobScaled[15]+0.5f);
+			tTString_setPeakFilterFreq(&strings[i],knobScaled[16]*6000.0f + 60.0f);
+			tTString_setPeakFilterQ(&strings[i],knobScaled[17]);
+			tTString_setTensionGain(&strings[i],knobScaled[18]);
+			tTString_setPickupAmount(&strings[i],knobScaled[19]);
+		}
 		//mono operation, no need to compute right channel. Also for loop iterating by 2 instead of 1 to avoid if statement.
 		for (int i = 0; i < HALF_BUFFER_SIZE; i+=2)
 		{
@@ -106,13 +154,14 @@ void __ATTR_ITCMRAM audioFrameString2(uint16_t buffer_offset)
 			current_sample = (int32_t)(audioTickString2() * TWO_TO_23);
 			audioOutBuffer[iplusbuffer] = current_sample;
 			audioOutBuffer[iplusbuffer + 1] = current_sample;
-
 		}
+		/*
 		if (switchStrings)
 		{
 			switchStringModel(switchStrings);
 		}
 		switchStrings = 0;
+		*/
 		timeFrame = DWT->CYCCNT - tempCountFrame;
 		frameLoadPercentage = (float)timeFrame * frameLoadMultiplier;
 		//HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_RESET);
@@ -122,16 +171,38 @@ uint32_t thisFrameCount = 0;
 
 float __ATTR_ITCMRAM audioTickString2(void)
 {
-
 	float temp = 0.0f;
 	float theNote[NUM_STRINGS_PER_BOARD];
 
 	float volumeSmoothed = tExpSmooth_tick(&volumeSmoother);
 
-	for (int i = 0; i < 12; i++)
+	for (int i = 0; i < 20; i++)
 	{
 		knobScaled[i] = tExpSmooth_tick(&knobSmoothers[i]);
 	}
+
+	/*
+	  specialModeMacroNames[1][0] = "DecayTime ";
+	  specialModeMacroNames[1][1] = "Tone      ";
+	  specialModeMacroNames[1][2] = "PluckPos  ";
+	  specialModeMacroNames[1][3] = "PickupPos ";
+	  specialModeMacroNames[1][4] = "SlideNois ";
+	  specialModeMacroNames[1][5] = "Stiffness ";
+	  specialModeMacroNames[1][6] = "FB Amp    ";
+	  specialModeMacroNames[1][7] = "FB Speed  ";
+	  specialModeMacroNames[1][8] = "PU Filter ";
+	  specialModeMacroNames[1][9] = "Harmonic  ";
+	  specialModeMacroNames[1][10] = "HarmPosX  ";
+	  specialModeMacroNames[1][11] = "HarmPosY  ";
+	  specialModeMacroNames[1][12] = "PUModRate ";
+	  specialModeMacroNames[1][13] = "PUModAmp  ";
+	  specialModeMacroNames[1][14] = "Ph Harm G ";
+	  specialModeMacroNames[1][15] = "PUFilterQ ";
+	  specialModeMacroNames[1][16] = "PeakF Q   ";
+	  specialModeMacroNames[1][17] = "PeakF Frq ";
+	  specialModeMacroNames[1][18] = "Tension G ";
+	  specialModeMacroNames[1][19] = "Tension S ";
+	  */
 	if (newPluck)
 	{
 		for (int i = 0; i < numStringsThisBoard; i++)
@@ -187,14 +258,18 @@ float __ATTR_ITCMRAM audioTickString2(void)
 
 		float finalFreq = mtofTableLookup(theNote[i]);
 		float openStringFreq = mtofTableLookup(theNote[i]-barInMIDI[i]);
-
+		tTString_setWindingsPerInch(&strings[i],LEAF_map(openStringFreq, 123.0f, 247.0f, 70.0f, 120.0f));
 		if (thisFrameCount == 0)
 		{
-			float harmonic = (knobScaled[6] * 8.0f) + 2.0f;
+
+			float thisString = (firstString + i);
+			float thisStringProportion = thisString * invNumStrings;
+			float thisHarmonic = (knobScaled[10] * (1.0f - thisStringProportion)) + (knobScaled[11] * thisStringProportion);
+			float harmonic = (thisHarmonic * 8.0f) + 2.0f;
 			float inHarm = LEAF_map(theNote[i], 20.0f, 76.0f, 0.0001f, 0.00001f);
-			if (knobScaled[1] > 0.05f)
+			if (knobScaled[5] > 0.05f)
 			{
-				inHarm = LEAF_clip(0.00000001f, inHarm * knobScaled[1], 0.01f);
+				inHarm = LEAF_clip(0.00000001f, inHarm * knobScaled[5], 0.01f);
 				tTString_setHarmonicity(&strings[i], inHarm, finalFreq);
 				tTString_setInharmonic(&strings[i], 1);
 				tTString_setHarmonic(&strings[i],harmonic);
@@ -206,19 +281,38 @@ float __ATTR_ITCMRAM audioTickString2(void)
 			}
 
 		}
-		//tTString_setTensionGain(&strings[i],knobScaled[4]);
 
-		tTString_setPhantomHarmonicsGain(&strings[i],knobScaled[8]);
-		tTString_setPickupPos(&strings[i],knobScaled[9]);
 
-		tTString_setPickupModFreq(&strings[i],(knobScaled[10]));
 
-		tTString_setPickupModAmp(&strings[i],knobScaled[11]);
+
+
+
+		//tTString_setPickupAmount(&strings[i], knobScaled[7]);
+		tTString_setBarPosition(&strings[i],barInMIDI[i]);
+		//tTString_setBarDrive(&strings[i],knobScaled[4]);
+		tTString_setOpenStringFrequency(&strings[i], openStringFreq);
+
+
+
+		tTString_setFeedbackStrength(&strings[i],knobScaled[6]);
+		tTString_setFeedbackReactionSpeed(&strings[i],knobScaled[7]);
+
+		tTString_setRippleDepth(&strings[i],knobScaled[9]);
+
+
+		//tTString_setTensionSpeed(&strings[i],knobScaled[19]);
+
+
+
+
+
+
 		tTString_setFreq(&strings[i], finalFreq);
 
 
-		Lfloat filterScaling = fastPowf(2.0f, knobScaled[3] * 4.0f - 2.0f); //0.5-2.0f
+
 		Lfloat decayScaling = fastPowf(2.0f, knobScaled[0] * 4.0f - 2.0f); //0.5-2.0f
+		Lfloat filterScaling = fastPowf(2.0f, knobScaled[1] * 4.0f - 2.0f); //0.5-2.0f
 
 		uint32_t which = 0;
 		float alpha = 0.0f;
@@ -287,35 +381,17 @@ float __ATTR_ITCMRAM audioTickString2(void)
 			decayTime = decayTime1 * barHeightOneMinusAlpha + decayTime2 * barHeightAlpha;
 		}
 
+
 		tTString_setDecayInSeconds(&strings[i],decayTime * decayScaling);
 		tTString_setFilterFreqDirectly(&strings[i], filterFreq * filterScaling);
 
-		//tTString_setPickupAmount(&strings[i], knobScaled[7]);
-		tTString_setBarPosition(&strings[i],barInMIDI[i]);
-		//tTString_setBarDrive(&strings[i],knobScaled[4]);
-		tTString_setOpenStringFrequency(&strings[i], openStringFreq);
-
-		tTString_setRippleDepth(&strings[i],knobScaled[7]);
-		tTString_setFeedbackStrength(&strings[i],knobScaled[4]);
-		tTString_setFeedbackReactionSpeed(&strings[i],knobScaled[5]);
-		//tTString_setPickupFilterFreq(&strings[i],knobScaled[6]*6000.0f + 1000.0f);
-		//tTString_setPickupFilterQ(&strings[i],knobScaled[7]+0.5f);
-		//temp += (tSimpleLivingString5_tick(&strings[i], slideNoise));//(filtNoise * env)));// + (prevSamp[i] * (0.001f * knobScaled[5]))));//filtNoise * theEnv) * env);
-		temp += tTString_tick(&strings[i]);
+		temp += tTString_tick(&strings[i]) * 0.5f;
 	}
 	thisFrameCount = (thisFrameCount + 1) & 63;
-	//float volIdx = LEAF_clip(47.0f, ((volumeSmoothed * 80.0f) + 47.0f), 127.0f);
-	float volIdx = LEAF_clip(0.0f, ((volumeSmoothed * 80.0f)), 127.0f);
-	int volIdxInt = (int) volIdx;
-	float alpha = volIdx-volIdxInt;
-	int volIdxIntPlus = (volIdxInt + 1) & 127;
-	float omAlpha = 1.0f - alpha;
-	float outVol = volumeAmps128[volIdxInt] * omAlpha;
-	outVol += volumeAmps128[volIdxIntPlus] * alpha;
+	//float outVol = 0.0265625f - (0.2467348f * volumeSmoothed) + (1.253049f * volumeSmoothed * volumeSmoothed);
+	float outVol = 0.006721744f + 0.4720157f*volumeSmoothed - 2.542849f*volumeSmoothed*volumeSmoothed + 6.332339f*volumeSmoothed*volumeSmoothed*volumeSmoothed - 3.271672f*volumeSmoothed*volumeSmoothed*volumeSmoothed*volumeSmoothed;
 
-	//temp *= outVol;
 	temp *= outVol * masterVolFromBrain;
-
+	temp = tanhf(temp);
 	return LEAF_clip(-1.0f, temp * 0.98f, 1.0f);
-
 }

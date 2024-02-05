@@ -20,7 +20,7 @@
 tVoc vocal[NUM_STRINGS_PER_BOARD];
 int prevTractLength[NUM_STRINGS_PER_BOARD] = {22, 22};
 int32_t prevActualTractLength[NUM_STRINGS_PER_BOARD] = {22, 22};
-float vocalDefaults[12] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.3019f, 0.1764f, 0.7764f, 0.8155f};
+float vocalDefaults[12] = {0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.3019f, 0.1764f, 0.7764f, 0.8155f};
 void __ATTR_ITCMRAM audioInitVocal()
 {
 	for (int v = 0; v < NUM_STRINGS_PER_BOARD; v++)
@@ -136,12 +136,13 @@ void __ATTR_ITCMRAM audioFrameVocal(uint16_t buffer_offset)
 		audioOutBuffer[buffer_offset + i] = current_sample;
 		audioOutBuffer[buffer_offset + i + 1] = current_sample;
 	}
-
+/*
 	if (switchStrings)
 	{
 		switchStringModel(switchStrings);
 	}
 	switchStrings = 0;
+	*/
 	timeFrame = DWT->CYCCNT - tempCountFrame;
 	frameLoadPercentage = (float)timeFrame * frameLoadMultiplier;
 	//HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_RESET);
@@ -171,15 +172,10 @@ float __ATTR_ITCMRAM audioTickVocal(void)
 		//tVoc_set_tongue_shape(&vocal[i], tongue, 2.9f * knobScaled[1] + 0.1f);
 
 	}
+	//float outVol = 0.0265625f - (0.2467348f * volumeSmoothed) + (1.253049f * volumeSmoothed * volumeSmoothed);
+	//float outVol = 0.008315613f + 0.3774075f*volumeSmoothed - 1.785774f*volumeSmoothed*volumeSmoothed + 4.218241f*volumeSmoothed*volumeSmoothed*volumeSmoothed - 0.8576009f*volumeSmoothed*volumeSmoothed*volumeSmoothed*volumeSmoothed - 0.9656285f*volumeSmoothed*volumeSmoothed*volumeSmoothed*volumeSmoothed*volumeSmoothed;
+	float outVol = 0.006721744f + 0.4720157f*volumeSmoothed - 2.542849f*volumeSmoothed*volumeSmoothed + 6.332339f*volumeSmoothed*volumeSmoothed*volumeSmoothed - 3.271672f*volumeSmoothed*volumeSmoothed*volumeSmoothed*volumeSmoothed;
 
-	float volIdx = LEAF_clip(47.0f, ((volumeSmoothed * 80.0f) + 47.0f), 127.0f);
-	//float volIdx = LEAF_clip(0.0f, ((volumeSmoothed * 80.0f)), 127.0f);
-	int volIdxInt = (int) volIdx;
-	float alpha = volIdx-volIdxInt;
-	int volIdxIntPlus = (volIdxInt + 1) & 127;
-	float omAlpha = 1.0f - alpha;
-	float outVol = volumeAmps128[volIdxInt] * omAlpha;
-	outVol += volumeAmps128[volIdxIntPlus] * alpha;
 	tempSamp *= outVol;
 	tempSamp *= masterVolFromBrain;
 	return tanhf(tempSamp);

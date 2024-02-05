@@ -20,7 +20,7 @@
 #include "additive.h"
 
 
-#define NUM_OVERTONES 16
+#define NUM_OVERTONES 15
 
 
 tCycle additive[NUM_STRINGS_PER_BOARD][NUM_OVERTONES];
@@ -96,7 +96,7 @@ float stringFundamentals[3][3] =
 };
 
 
-float additiveDefaults[12] = {0.15f, 0.56f, 0.5f, 0.95f, 0.20f, 0.25f, 0.63f, 0.96f, 0.3f, 0.1764f, 0.7f, 0.5f};
+float additiveDefaults[12] = {0.15f, 0.50f, 0.7f, 0.95f, 0.20f, 0.5f, 0.63f, 0.96f, 0.3f, 0.1764f, 0.7f, 0.5f};
 
 
 void __ATTR_ITCMRAM audioInitAdditive()
@@ -361,12 +361,14 @@ void __ATTR_ITCMRAM audioFrameAdditive(uint16_t buffer_offset)
 		audioOutBuffer[buffer_offset + i] = current_sample;
 		audioOutBuffer[buffer_offset + i + 1] = current_sample;
 	}
-
+/*
 	if (switchStrings)
 	{
 		switchStringModel(switchStrings);
 	}
+
 	switchStrings = 0;
+		*/
 	timeFrame = DWT->CYCCNT - tempCountFrame;
 	frameLoadPercentage = (float)timeFrame * frameLoadMultiplier;
 	//HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_RESET);
@@ -414,8 +416,6 @@ float __ATTR_ITCMRAM audioTickAdditive(void)
 		gainSum[i] = 0.0f;
 		for (int j = 0; j < NUM_OVERTONES; j++)
 		{
-
-
 			float thisEnv = tADSRT_tick(&additiveEnv[i][j]);
 			float tempFreq = (stringFrequencies[i] * (j+1) * ((stretch * j) + 1.0f));// * ((Env2 * knobScaled[5])+ 1.0f);
 			//float tempFreq = 0.0f;
@@ -429,20 +429,13 @@ float __ATTR_ITCMRAM audioTickAdditive(void)
 			gainSum[i] += freqWeight * finalGains[i][j];
 			float thisWeight = oneMinusPickup + pickupWeights[i][j] * pickup;
 			tempSamp += tCycle_tick(&additive[i][j]) * thisEnv * thisWeight * freqWeight * invGainSum[i];
-
 		}
-
-
 	}
 
-	float volIdx = LEAF_clip(47.0f, ((volumeSmoothed * 80.0f) + 47.0f), 127.0f);
-	//float volIdx = LEAF_clip(0.0f, ((volumeSmoothed * 80.0f)), 127.0f);
-	int volIdxInt = (int) volIdx;
-	float alpha = volIdx-volIdxInt;
-	int volIdxIntPlus = (volIdxInt + 1) & 127;
-	float omAlpha = 1.0f - alpha;
-	float outVol = volumeAmps128[volIdxInt] * omAlpha;
-	outVol += volumeAmps128[volIdxIntPlus] * alpha;
+	//float outVol = 0.0265625f - (0.2467348f * volumeSmoothed) + (1.253049f * volumeSmoothed * volumeSmoothed);
+	float outVol = 0.006721744f + 0.4720157f*volumeSmoothed - 2.542849f*volumeSmoothed*volumeSmoothed + 6.332339f*volumeSmoothed*volumeSmoothed*volumeSmoothed - 3.271672f*volumeSmoothed*volumeSmoothed*volumeSmoothed*volumeSmoothed;
+
+
 	tempSamp *= 0.5f;
 	tempSamp *= outVol;
 	tempSamp *= masterVolFromBrain;

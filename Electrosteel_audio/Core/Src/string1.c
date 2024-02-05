@@ -14,7 +14,8 @@
 #include "audiostream.h"
 #include "arm_math.h"
 #include "string1.h"
-
+#include "string2.h"
+#include "synth.h"
 
 tSimpleLivingString3 livStr[NUM_STRINGS_PER_BOARD];
 tPickupNonLinearity pu[NUM_STRINGS_PER_BOARD];
@@ -22,22 +23,34 @@ tExpSmooth pitchSmootherS[NUM_STRINGS_PER_BOARD];
 float string1Defaults[12] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.3019f, 0.1764f, 0.7764f, 0.8155f};
 void __ATTR_ITCMRAM audioInitString1()
 {
-	for (int v = 0; v < numStringsThisBoard; v++)
+	if (whichStringModelLoaded != String1Loaded)
 	{
 
-		tSimpleLivingString3_initToPool(&livStr[v], 4, 220.0f, 17000.0f,
-													 0.99999f, 0.0f, 0.01f,
-												 0.01f, 0, &mediumPool);
-		tSimpleLivingString3_setTargetLev(&livStr[v], 0.047059f);
-		tSimpleLivingString3_setLevSmoothFactor(&livStr[v], 0.0301913f);
-		tSimpleLivingString3_setLevStrength(&livStr[v], 0.0f);
-		tSimpleLivingString3_setLevMode(&livStr[v], 1);
-		tPickupNonLinearity_init(&pu[v], &leaf);
-		tExpSmooth_init(&pitchSmootherS[v], 64.0f, 0.6f, &leaf);
+		if (whichStringModelLoaded == String2Loaded)
+		{
+			audioFreeString2();
+		}
+		else if (whichStringModelLoaded == SynthLoaded)
+		{
+			audioFreeSynth();
+		}
+
+		for (int v = 0; v < numStringsThisBoard; v++)
+		{
+
+			tSimpleLivingString3_initToPool(&livStr[v], 4, 220.0f, 17000.0f,
+														 0.99999f, 0.0f, 0.01f,
+													 0.01f, 0, &mediumPool);
+			tSimpleLivingString3_setTargetLev(&livStr[v], 0.047059f);
+			tSimpleLivingString3_setLevSmoothFactor(&livStr[v], 0.0301913f);
+			tSimpleLivingString3_setLevStrength(&livStr[v], 0.0f);
+			tSimpleLivingString3_setLevMode(&livStr[v], 1);
+			tPickupNonLinearity_init(&pu[v], &leaf);
+			tExpSmooth_init(&pitchSmootherS[v], 64.0f, 0.6f, &leaf);
+		}
+		whichStringModelLoaded = String1Loaded;
 	}
 
-
-	whichStringModelLoaded = String1Loaded;
 }
 
 
@@ -53,6 +66,8 @@ void __ATTR_ITCMRAM audioFreeString1()
 
 void __ATTR_ITCMRAM audioSwitchToString1()
 {
+
+	audioInitString1();
 	//load string1 default params:
 	for (int i = 0; i < 12; i++)
 	{
@@ -70,6 +85,8 @@ void __ATTR_ITCMRAM audioSwitchToString1()
 		knobFrozen[i] = 1;
 	}
 	tVZFilter_setFreq(&noiseFilt2, 3332.0f); //based on testing with knob values
+	audioFrameFunction = audioFrameString1;
+	presetReady = 1;
 }
 
 
@@ -148,11 +165,13 @@ void __ATTR_ITCMRAM audioFrameString1(uint16_t buffer_offset)
 		audioOutBuffer[iplusbuffer + 1] = current_sample;
 	}
 
+	/*
 	if (switchStrings)
 	{
 		switchStringModel(switchStrings);
 	}
 	switchStrings = 0;
+	*/
 	//HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_RESET);
 	timeFrame = DWT->CYCCNT - tempCountFrame;
 	frameLoadPercentage = (float)timeFrame * frameLoadMultiplier;
@@ -228,14 +247,10 @@ float __ATTR_ITCMRAM audioTickString1(void)
 		temp += tPickupNonLinearity_tick(&pu[i], tSimpleLivingString3_tick(&livStr[i], slideNoise));
 	}
 
-	float volIdx = LEAF_clip(47.0f, ((volumeSmoothed * 80.0f) + 47.0f), 127.0f);
-	//float volIdx = LEAF_clip(0.0f, ((volumeSmoothed * 80.0f)), 127.0f);
-	int volIdxInt = (int) volIdx;
-	float alpha = volIdx-volIdxInt;
-	int volIdxIntPlus = (volIdxInt + 1) & 127;
-	float omAlpha = 1.0f - alpha;
-	float outVol = volumeAmps128[volIdxInt] * omAlpha;
-	outVol += volumeAmps128[volIdxIntPlus] * alpha;
+	//float outVol = 0.0265625f - (0.2467348f * volumeSmoothed) + (1.253049f * volumeSmoothed * volumeSmoothed);
+
+	float outVol = 0.006721744f + 0.4720157f*volumeSmoothed - 2.542849f*volumeSmoothed*volumeSmoothed + 6.332339f*volumeSmoothed*volumeSmoothed*volumeSmoothed - 3.271672f*volumeSmoothed*volumeSmoothed*volumeSmoothed*volumeSmoothed;
+
 
 	//temp = input;
 	temp *= outVol * masterVolFromBrain;
