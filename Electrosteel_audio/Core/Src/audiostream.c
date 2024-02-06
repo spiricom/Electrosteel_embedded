@@ -432,49 +432,6 @@ void __ATTR_ITCMRAM updateStateFromSPIMessage(uint8_t offset)
 
 
 
-
-/*
-void __ATTR_ITCMRAM switchStringModel(int which)
-{
-	if (which == 1)
-	{
-		if (whichStringModelLoaded != String1Loaded)
-		{
-			audioFreeString2();
-			audioInitString1();
-
-		}
-		 audioSwitchToString1();
-		audioFrameFunction = audioFrameString1;
-		resetStringInputs = 1;
-	}
-
-
-	else if (which == 2)
-	{
-		if (whichStringModelLoaded != String2Loaded)
-		{
-			audioFreeString1();
-			audioInitString2();
-		}
-		 audioSwitchToString2();
-		audioFrameFunction = audioFrameString2;
-		resetStringInputs = 1;
-	}
-	presetReady = 1;
-	diskBusy = 0;
-	currentActivePreset = voice;
-
-}
-*/
-
-
-
-
-
-
-
-
 inline void voiceChangeCheck(void)
 {
 	if (voice != prevVoice)
@@ -539,6 +496,11 @@ inline void voiceChangeCheck(void)
 			}
 			frameLoadOverCount = 0;
 			whichModel = 0;
+		}
+		for (int i = 0; i < AUDIO_BUFFER_SIZE; i+=2)
+		{
+			audioOutBuffer[i] = 0;
+			audioOutBuffer[i + 1] = 0;
 		}
 
 	}

@@ -17,6 +17,7 @@ void audioFrameString2(uint16_t buffer_offset);
 float audioTickString2(void);
 void audioInitString2();
 void  audioFreeString2();
+void  audioSwitchToString2();
 
 
 #endif /* INC_STRING2_H_ */

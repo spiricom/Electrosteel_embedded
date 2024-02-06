@@ -22,6 +22,7 @@
 #include "additive.h"
 #include "vocal.h"
 #include "synth.h"
+#include "string3.h"
 
 //the audio buffers are put in the D2 RAM area because that is a memory location that the DMA has access to.
 int32_t audioOutBuffer[AUDIO_BUFFER_SIZE] __ATTR_RAM_D2_DMA;
@@ -49,11 +50,13 @@ volatile uint32_t newBar = 0 ;
 
 
 
-uint8_t numStrings = 12; //TODO FIX THIS!
+const uint8_t numStrings = 12; //TODO FIX THIS!
+
+float invNumStrings = 1.0f / numStrings;
 
 volatile uint16_t previousStringInputs[12];
 
-float volumeAmps128[128] = {0.000562, 0.000569, 0.000577, 0.000580, 0.000587, 0.000601, 0.000622, 0.000650, 0.000676, 0.000699, 0.000720, 0.000739, 0.000753, 0.000766, 0.000791, 0.000826, 0.000872, 0.000912, 0.000953, 0.001012, 0.001091, 0.001188, 0.001270, 0.001360, 0.001465, 0.001586, 0.001717, 0.001829, 0.001963, 0.002118, 0.002295, 0.002469, 0.002636, 0.002834, 0.003063, 0.003322, 0.003496, 0.003750, 0.004143, 0.004675, 0.005342, 0.005880, 0.006473, 0.007122, 0.007827, 0.008516, 0.009167, 0.009968, 0.010916, 0.012014, 0.012944, 0.013977, 0.015352, 0.017070, 0.019130, 0.020965, 0.022847, 0.024823, 0.026891, 0.028835, 0.030496, 0.033044, 0.036478, 0.040799, 0.045093, 0.049150, 0.053819, 0.059097, 0.064986, 0.070712, 0.076315, 0.081930, 0.087560, 0.093117, 0.098283, 0.104249, 0.111012, 0.118575, 0.124879, 0.131163, 0.141721, 0.156554, 0.175663, 0.195870, 0.213414, 0.228730, 0.241817, 0.252675, 0.264038, 0.276776, 0.290871, 0.306323, 0.322794, 0.338528, 0.353711, 0.368343, 0.382424, 0.393015, 0.406556, 0.426763, 0.453639, 0.487182, 0.522242, 0.550876, 0.573000, 0.588613, 0.598943, 0.613145, 0.628104, 0.643820, 0.660293, 0.676658, 0.692845, 0.709881, 0.727766, 0.746500, 0.764505, 0.782949, 0.802346, 0.822696, 0.844189, 0.867268, 0.886360, 0.901464, 0.912581, 0.921606, 0.932834, 0.944061};
+//float volumeAmps128[128] = {0.000562, 0.000569, 0.000577, 0.000580, 0.000587, 0.000601, 0.000622, 0.000650, 0.000676, 0.000699, 0.000720, 0.000739, 0.000753, 0.000766, 0.000791, 0.000826, 0.000872, 0.000912, 0.000953, 0.001012, 0.001091, 0.001188, 0.001270, 0.001360, 0.001465, 0.001586, 0.001717, 0.001829, 0.001963, 0.002118, 0.002295, 0.002469, 0.002636, 0.002834, 0.003063, 0.003322, 0.003496, 0.003750, 0.004143, 0.004675, 0.005342, 0.005880, 0.006473, 0.007122, 0.007827, 0.008516, 0.009167, 0.009968, 0.010916, 0.012014, 0.012944, 0.013977, 0.015352, 0.017070, 0.019130, 0.020965, 0.022847, 0.024823, 0.026891, 0.028835, 0.030496, 0.033044, 0.036478, 0.040799, 0.045093, 0.049150, 0.053819, 0.059097, 0.064986, 0.070712, 0.076315, 0.081930, 0.087560, 0.093117, 0.098283, 0.104249, 0.111012, 0.118575, 0.124879, 0.131163, 0.141721, 0.156554, 0.175663, 0.195870, 0.213414, 0.228730, 0.241817, 0.252675, 0.264038, 0.276776, 0.290871, 0.306323, 0.322794, 0.338528, 0.353711, 0.368343, 0.382424, 0.393015, 0.406556, 0.426763, 0.453639, 0.487182, 0.522242, 0.550876, 0.573000, 0.588613, 0.598943, 0.613145, 0.628104, 0.643820, 0.660293, 0.676658, 0.692845, 0.709881, 0.727766, 0.746500, 0.764505, 0.782949, 0.802346, 0.822696, 0.844189, 0.867268, 0.886360, 0.901464, 0.912581, 0.921606, 0.932834, 0.944061};
 
 BOOL bufferCleared = TRUE;
 
@@ -83,23 +86,15 @@ uint8_t numStringsThisBoard = NUM_STRINGS_PER_BOARD;
 tExpSmooth stringFreqSmoothers[NUM_STRINGS_PER_BOARD];
 
 tExpSmooth volumeSmoother;
-tExpSmooth knobSmoothers[12];
+tExpSmooth knobSmoothers[20];
 tExpSmooth pedalSmoothers[10];
 tExpSmooth barSlideSmoother[NUM_STRINGS_PER_BOARD];
 tEnvelopeFollower barNoiseSmoother[NUM_STRINGS_PER_BOARD];
 
 
-
-
-
 uint8_t lsDecay[NUM_STRINGS_PER_BOARD];
 
-
-
 audioFrame_t audioFrameFunction;
-
-
-
 
 
 
@@ -152,8 +147,8 @@ float stringMappedPositions[NUM_STRINGS]  = {1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
 float stringFrequencies[NUM_STRINGS] ;
 
 float volumePedal  = 0.0f;
-float knobScaled[12];
-volatile uint8_t knobFrozen[12];
+float knobScaled[20];
+volatile uint8_t knobFrozen[20];
 float pedalScaled[10];
 volatile float stringMIDIPitches[NUM_STRINGS_PER_BOARD] ;
 
@@ -169,7 +164,7 @@ int currentPluckBuffer = 0;
 int edit = 0;
 int whichTable = 0;
 int presetReady = 0;
-uint8_t whichStringModelLoaded;
+uint8_t whichStringModelLoaded = NothingLoaded;
 
 
 
@@ -177,8 +172,8 @@ uint8_t whichStringModelLoaded;
 
 //
 float stringOctave[NUM_STRINGS_PER_BOARD];
-float string1Defaults[12] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.3019f, 0.1764f, 0.7764f, 0.8155f};
-float string2Defaults[12] = {0.5f, 0.15292f, 0.5f, .5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.7f, 0.6f, 0.0f, 0.0f};
+
+
 
 volatile float MIDIerror = 0.0f;
 
@@ -296,6 +291,10 @@ void audioInit()
 
 	LEAF_generate_mtof(mtofTable, -163.8375f, 163.8375f,  MTOF_TABLE_SIZE); //mtof table for fast calc
 
+
+
+
+
 	if (numStrings == 6)
 	{
 		firstString = boardNumber;
@@ -334,7 +333,7 @@ void audioInit()
 
 
 	tExpSmooth_init(&volumeSmoother,0.0f, 0.0005f, &leaf);
-	for (int i = 0; i < 12; i++)
+	for (int i = 0; i < 20; i++)
 	{
 		tExpSmooth_init(&knobSmoothers[i],0.0f, 0.0005f, &leaf);
 	}
@@ -350,9 +349,10 @@ void audioInit()
 	}
 
 	audioInitAdditive();
-	audioInitString1();
+	//audioInitString1();
 	audioInitVocal();
 	audioInitSynth();
+	audioInitString3();
 
 	for (int v = 0; v < NUM_STRINGS_PER_BOARD; v++)
 	{
@@ -363,7 +363,7 @@ void audioInit()
 
 		tVZFilter_init(&noiseFilt, BandpassPeak, 1500.0f, 1.5f, &leaf);
 		tVZFilter_init(&noiseFilt2, Lowpass, 800.0f, 0.9f, &leaf);
-		tVZFilter_setFreq(&noiseFilt2, 3332.0f); //based on testing with knob values
+		//tVZFilter_setFreq(&noiseFilt2, 3332.0f); //based on testing with knob values
 
 
 		tVZFilter_setFreq(&noiseFilt, faster_mtof(0.9f * 128.0f));
@@ -379,7 +379,7 @@ void audioInit()
 			audioOutBuffer[ i] = (int32_t)(0.0f * TWO_TO_23);
 	}
 
-	audioFrameFunction = audioFrameSynth;
+	audioFrameFunction = audioFrameWaiting;
 	HAL_Delay(1);
 
 }
@@ -391,9 +391,10 @@ void audioStart(SAI_HandleTypeDef* hsaiOut, SAI_HandleTypeDef* hsaiIn)
 	receive_status = HAL_SAI_Receive_DMA(hsaiIn, (uint8_t *)&audioInBuffer[0], AUDIO_BUFFER_SIZE);
 }
 
-
+volatile uint32_t timeSPI = 0;
 void __ATTR_ITCMRAM updateStateFromSPIMessage(uint8_t offset)
 {
+	uint32_t tempCountSPI = DWT->CYCCNT;
 	int modeBit = SPI_LEVERS_RX[24 + offset];
 
 	octaveAction = (modeBit >> 6) & 1;
@@ -426,192 +427,113 @@ void __ATTR_ITCMRAM updateStateFromSPIMessage(uint8_t offset)
 		barInMIDI[1] = stringPositions[1] * 0.001953125f;
 	}
 	tExpSmooth_setDest(&volumeSmoother,volumePedal);
+	timeSPI = DWT->CYCCNT - tempCountSPI;
 }
 
 
 
-
-void __ATTR_ITCMRAM switchStringModel(int which)
+inline void voiceChangeCheck(void)
 {
-	if (which == 1)
-	{
-		if (whichStringModelLoaded != String1Loaded)
-		{
-			audioFreeString2();
-			audioInitString1();
-
-		}
-		//load string1 default params:
-		for (int i = 0; i < 12; i++)
-		{
-			tExpSmooth_setValAndDest(&knobSmoothers[i], string1Defaults[i]);
-			knobFrozen[i] = 1;
-		}
-		tVZFilter_setFreq(&noiseFilt2, 3332.0f); //based on testing with knob values
-
-		audioFrameFunction = audioFrameString1;
-		resetStringInputs = 1;
-	}
-
-
-	else if (which == 2)
-	{
-		if (whichStringModelLoaded != String2Loaded)
-		{
-			audioFreeString1();
-			audioInitString2();
-		}
-		//load string2 default params:
-		for (int i = 0; i < 12; i++)
-		{
-			tExpSmooth_setValAndDest(&knobSmoothers[i], string2Defaults[i]);
-			knobFrozen[i] = 1;
-		}
-		audioFrameFunction = audioFrameString2;
-		resetStringInputs = 1;
-	}
-	presetReady = 1;
-	diskBusy = 0;
-	currentActivePreset = voice;
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void __ATTR_ITCMRAM HAL_SAI_TxCpltCallback(SAI_HandleTypeDef *hsai)
-{
-	if ((!diskBusy)&& (presetReady))
-	{
-		audioFrameFunction(HALF_BUFFER_SIZE);
-
-
-	}
-
-	else
-	{
-		for (int i = 0; i < HALF_BUFFER_SIZE; i++)
-		{
-			audioOutBuffer[HALF_BUFFER_SIZE+i] = 0;
-		}
-	}
-
 	if (voice != prevVoice)
 	{
 		if (voice == 63)
 		{
-			switchStrings = 1;
+			audioFrameFunction = audioFrameWaiting;
+			audioSwitchToString1();
+			currentActivePreset = voice;
+			resetStringInputs = 1;
 			diskBusy = 0;
+			whichModel = 1;
 		}
 		else if (voice == 62)
 		{
-			switchStrings = 2;
+			audioFrameFunction = audioFrameWaiting;
+			audioSwitchToString2();
+			currentActivePreset = voice;
+			resetStringInputs = 1;
 			diskBusy = 0;
+			whichModel = 2;
 		}
 		else if (voice == 61)
 		{
 			audioFrameFunction = audioFrameAdditive;
+			audioSwitchToAdditive();
 			currentActivePreset = voice;
 			diskBusy = 0;
 			presetReady = 1;
 			resetStringInputs = 1;
+			whichModel = 3;
 		}
 		else if (voice == 60)
 		{
 			audioFrameFunction = audioFrameVocal;
+			audioSwitchToVocal();
 			currentActivePreset = voice;
 			diskBusy = 0;
 			presetReady = 1;
 			resetStringInputs = 1;
+			whichModel = 4;
+		}
+		else if (voice == 59)
+		{
+			audioFrameFunction = audioFrameString3;
+			audioSwitchToString3();
+			currentActivePreset = voice;
+			diskBusy = 0;
+			presetReady = 1;
+			resetStringInputs = 1;
+			whichModel = 5;
 		}
 		else
 		{
-			audioFrameFunction = audioFrameSynth;
+			audioFrameFunction = audioFrameWaiting;
 			presetWaitingToLoad = 1;
 			presetNumberToLoad = voice;
 			presetReady = 0;
-			if (prevVoice > 60)
+			if (prevVoice > 59)
 			{
 				resetStringInputs = 1;
 			}
 			frameLoadOverCount = 0;
+			whichModel = 0;
+		}
+		for (int i = 0; i < AUDIO_BUFFER_SIZE; i+=2)
+		{
+			audioOutBuffer[i] = 0;
+			audioOutBuffer[i + 1] = 0;
 		}
 	}
+
 	prevVoice = voice;
-	SCB_CleanDCache_by_Addr((uint32_t*)(((uint32_t)audioOutBuffer) & ~(uint32_t)0x1F), AUDIO_BUFFER_SIZE+32);
+}
+
+
+volatile uint32_t timeClean = 0;
+void __ATTR_ITCMRAM HAL_SAI_TxCpltCallback(SAI_HandleTypeDef *hsai)
+{
+
+	//SCB_CleanInvalidateDCache_by_Addr((uint32_t*)(((uint32_t)audioOutBuffer) & ~(uint32_t)0x1F), AUDIO_BUFFER_SIZE+32);
+
+	if ((!diskBusy)&& (presetReady))
+	{
+		audioFrameFunction(HALF_BUFFER_SIZE);
+	}
+
+	voiceChangeCheck();
+	uint32_t tempCountClean = DWT->CYCCNT;
+	SCB_CleanInvalidateDCache_by_Addr((uint32_t*)(((uint32_t)audioOutBuffer) & ~(uint32_t)0x1F), AUDIO_BUFFER_SIZE+32);
+	timeClean = DWT->CYCCNT - tempCountClean;
 }
 
 void __ATTR_ITCMRAM HAL_SAI_TxHalfCpltCallback(SAI_HandleTypeDef *hsai)
 {
+	//SCB_CleanInvalidateDCache_by_Addr((uint32_t*)(((uint32_t)audioOutBuffer) & ~(uint32_t)0x1F), AUDIO_BUFFER_SIZE+32);
 	if ((!diskBusy)&& (presetReady))
 	{
 		audioFrameFunction(0);
 	}
-
-
-	else
-	{
-		for (int i = 0; i < HALF_BUFFER_SIZE; i++)
-		{
-			audioOutBuffer[i] = 0;
-		}
-	}
-
-	if (voice != prevVoice)
-	{
-		if (voice == 63)
-		{
-			switchStrings = 1;
-			diskBusy = 0;
-		}
-		else if (voice == 62)
-		{
-			switchStrings = 2;
-			diskBusy = 0;
-		}
-		else if (voice == 61)
-		{
-			audioFrameFunction = audioFrameAdditive;
-			currentActivePreset = voice;
-			diskBusy = 0;
-			presetReady = 1;
-			resetStringInputs = 1;
-		}
-		else if (voice == 60)
-		{
-			audioFrameFunction = audioFrameVocal;
-			currentActivePreset = voice;
-			diskBusy = 0;
-			presetReady = 1;
-			resetStringInputs = 1;
-		}
-		else
-		{
-			audioFrameFunction = audioFrameSynth;
-			presetWaitingToLoad = 1;
-			presetNumberToLoad = voice;
-			presetReady = 0;
-			if (prevVoice >= 60)
-			{
-				resetStringInputs = 1;
-			}
-			frameLoadOverCount = 0;
-		}
-	}
-	prevVoice = voice;
-	SCB_CleanDCache_by_Addr((uint32_t*)(((uint32_t)audioOutBuffer) & ~(uint32_t)0x1F), AUDIO_BUFFER_SIZE+32);
+	voiceChangeCheck();
+	SCB_CleanInvalidateDCache_by_Addr((uint32_t*)(((uint32_t)audioOutBuffer) & ~(uint32_t)0x1F), AUDIO_BUFFER_SIZE+32);
 }
 
 void __ATTR_ITCMRAM HAL_SAI_ErrorCallback(SAI_HandleTypeDef *hsai)
@@ -619,4 +541,18 @@ void __ATTR_ITCMRAM HAL_SAI_ErrorCallback(SAI_HandleTypeDef *hsai)
 }
 
 
-
+void __ATTR_ITCMRAM audioFrameWaiting(uint16_t buffer_offset)
+{
+	//HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_SET);
+	uint32_t tempCountFrame = DWT->CYCCNT;
+	//mono operation, no need to compute right channel. Also for loop iterating by 2 instead of 1 to avoid if statement.
+	for (int i = 0; i < HALF_BUFFER_SIZE; i+=2)
+	{
+		int iplusbuffer = buffer_offset + i;
+		audioOutBuffer[iplusbuffer] = 0;
+		audioOutBuffer[iplusbuffer + 1] = 0;
+	}
+	timeFrame = DWT->CYCCNT - tempCountFrame;
+	frameLoadPercentage = (float)timeFrame * frameLoadMultiplier;
+	//HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_RESET);
+}

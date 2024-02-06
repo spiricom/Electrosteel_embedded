@@ -46,7 +46,7 @@ extern "C" {
 #define __ATTR_ITCMRAM	__attribute__ ((section(".itcmram"))) __attribute__ ((aligned (32)))
 
 # define FORCE_INLINE __attribute__((always_inline)) inline
-#define SD_DATATIMEOUT 100
+
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
@@ -110,7 +110,11 @@ extern uint8_t boardNumber;
 extern uint8_t currentRandom;
 extern uint8_t receivingI2C;
 extern volatile uint8_t presetNamesArray[MAX_NUM_PRESETS][14]__ATTR_RAM_D2;
-extern volatile uint8_t macroNamesArray[MAX_NUM_PRESETS][12][10]__ATTR_RAM_D2;
+extern volatile uint8_t macroNamesArray[MAX_NUM_PRESETS][20][10]__ATTR_RAM_D2;
+extern float loadedKnobParams[20];
+extern uint8_t whichModel;
+extern uint_fast8_t knobTicked[12];
+extern uint_fast8_t pedalTicked[10];
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

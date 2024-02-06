@@ -18,9 +18,7 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
-
 #include "main.h"
-#include "bdma.h"
 #include "dma.h"
 #include "fatfs.h"
 #include "i2c.h"
@@ -33,10 +31,15 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "audiostream.h"
 #include "leaf.h"
 #include "codec.h"
-#include "audiostream.h"
 #include "synth.h"
+#include "string1.h"
+#include "string2.h"
+#include "string3.h"
+#include "additive.h"
+#include "vocal.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -56,31 +59,20 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-//PA0 parseComplete  and initial counter 32
-//PD11 newstringpos inside interrupt 33
-//PG9 updateSPI 34
-//PC0 checkSDForPreset 22
-//PA3 audioframe  23
-//PB1 newBAR recognized in audio frame  24
-//PA6 receiving I2C 26
-//PC1 PLUCK interrupt  27
-//PC4 LEVER interrupt  28
-//PB7 presetWaitingToParse 15
-
-//first set pins to flip to try to understand whether secondary boards are getting the interrupt and where they are when they are silent
-// then try to reprogram both PSOC and other STM32 to wait 2 seconds before sending data, to avoid SPI interrupts screwing init up.
-
 
 uint_fast8_t  brainFirmwareUpdateRequested = 0;
-uint_fast8_t  pluckFirmwareUpdateRequested = 0;
 
-
+uint_fast8_t knobTicked[12];
+uint_fast8_t pedalTicked[10];
 uint8_t SPI_PLUCK_TX[PLUCK_BUFFER_SIZE_TIMES_TWO] __ATTR_RAM_D3;
 uint8_t SPI_PLUCK_RX[PLUCK_BUFFER_SIZE_TIMES_TWO] __ATTR_RAM_D3;
 uint8_t SPI_LEVERS_RX[LEVER_BUFFER_SIZE_TIMES_TWO] __ATTR_RAM_D2_DMA;
 uint8_t SPI_LEVERS_TX[LEVER_BUFFER_SIZE_TIMES_TWO] __ATTR_RAM_D2_DMA;
 volatile uint32_t myTester = 0;
 int currentLeverBuffer = 0;
+
+uint8_t volatile currentPage = 0;
+uint8_t volatile previousPage = 0;
 
 float random_values[256];
 uint8_t currentRandom = 0;
@@ -97,7 +89,7 @@ uint8_t bootloaderFlag[32] __ATTR_USER_FLASH;
 uint8_t buttonPressed = 0;
 uint8_t resetFlag = 0;
 
-
+uint32_t currentPresetSize = 0;
 uint8_t brainFirmwareBuffer[2097152] __ATTR_SDRAM; // 2 MB of space for firmware
 //uint8_t pluckFirmwareBuffer[2097152] __ATTR_SDRAM; // 2 MB of space for firmware
 
@@ -139,7 +131,7 @@ volatile uint32_t presetWaitingToParse = 0;
 volatile uint32_t presetWaitingToWrite = 0;
 volatile uint32_t presetWaitingToLoad = 0;
 
-volatile uint8_t macroNamesArray[MAX_NUM_PRESETS][12][10]__ATTR_RAM_D2;
+volatile uint8_t macroNamesArray[MAX_NUM_PRESETS][20][10]__ATTR_RAM_D2;
 uint8_t whichMacroToSendName = 0;
 
 param params[NUM_PARAMS];
@@ -162,7 +154,7 @@ int oscsEnabled[3] = {0,0,0};
 float midiKeyDivisor;
 float midiKeySubtractor;
 
-uint8_t prevKnobByte[12];
+int32_t volatile prevKnobByte[20];
 
 uint8_t volatile interruptChecker = 0;
 
@@ -175,14 +167,18 @@ uint8_t boardNumber = 0;
 
 uint8_t volatile i2cSending = 0;
 
-const char* specialModeNames[4];
-const char* specialModeMacroNames[4][12];
+const char* specialModeNames[5];
+const char* specialModeMacroNames[5][20];
+
+float loadedKnobParams[20];
+
+uint8_t whichModel; //0=synth 1=string1 2=string2 3=additive 4=vocal 5=string3
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 void PeriphCommonClock_Config(void);
-//static void MPU_Initialize(void);
 static void MPU_Config(void);
 /* USER CODE BEGIN PFP */
 void MPU_Conf(void);
@@ -192,27 +188,12 @@ static void writePresetToSDCard(int fileSize);
 void __ATTR_ITCMRAM parsePreset(int size, int presetNumber);
 void getPresetNamesFromSDCard(void);
 static void checkForBootloadableBrainFile(void);
-//static void checkForBootloadablePluckFile(void);
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-/*
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
-{
-  if(GPIO_Pin == GPIO_PIN_8)
-  {
 
-	  for (int i = 0; i < 32; i++)
-	  {
-		  levers[!currentLeverBuffer][i] = SPI_LEVERS_RX[i];
-	  }
-	  currentLeverBuffer = !currentLeverBuffer;
-	  HAL_SPI_Receive_DMA(&hspi1, SPI_LEVERS, 32);
-  }
-}
-*/
 /* USER CODE END 0 */
 
 /**
@@ -275,6 +256,17 @@ int main(void)
 	int bit2 = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_2);
 	boardNumber = ((bit0 << 1)+(bit1 << 2)+(bit2));
 
+
+	  //HAL_NVIC_DisableIRQ(EXTI15_10_IRQn);
+
+	//GPIO_InitTypeDef GPIO_InitStruct = {0};
+	//  GPIO_InitStruct.Pin = GPIO_PIN_12 | GPIO_PIN_13 | GPIO_PIN_14 | GPIO_PIN_15 ;
+	//  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+	// GPIO_InitStruct.Pull = GPIO_NOPULL;
+	//  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+	  //HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
+
 	if (boardNumber == 0)
 	{
 		  //HAL_NVIC_DisableIRQ(EXTI15_10_IRQn);
@@ -315,17 +307,7 @@ int main(void)
 
 
   CycleCounterInit();
-/*
-  while(true)
-  {
 
-	  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
-	  HAL_Delay(200);
-
-	  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
-	  HAL_Delay(200);
-  }
-  */
 
   for (int i = 0; i < PLUCK_BUFFER_SIZE_TIMES_TWO; i++)
   {
@@ -383,63 +365,120 @@ int main(void)
   specialModeMacroNames[0][1] = "SlideNois ";
   specialModeMacroNames[0][2] = "PluckWidt ";
   specialModeMacroNames[0][3] = "PickNoise ";
-  specialModeMacroNames[0][4] = "PickupSim";
+  specialModeMacroNames[0][4] = "PickupSim ";
   specialModeMacroNames[0][5] = "          ";
   specialModeMacroNames[0][6] = "          ";
   specialModeMacroNames[0][7] = "          ";
   specialModeMacroNames[0][8] = "          ";
   specialModeMacroNames[0][9] = "          ";
-  specialModeMacroNames[0][10] = "         ";
-  specialModeMacroNames[0][11] = "         ";
+  specialModeMacroNames[0][10] = "          ";
+  specialModeMacroNames[0][11] = "          ";
+  specialModeMacroNames[0][12] = "          ";
+  specialModeMacroNames[0][13] = "          ";
+  specialModeMacroNames[0][14] = "          ";
+  specialModeMacroNames[0][15] = "          ";
+  specialModeMacroNames[0][16] = "          ";
+  specialModeMacroNames[0][17] = "          ";
+  specialModeMacroNames[0][18] = "          ";
+  specialModeMacroNames[0][19] = "          ";
 
   specialModeNames[1] = "PHYS STR2     ";
-  specialModeMacroNames[1][0] = "PrepIndex ";
-  specialModeMacroNames[1][1] = "SlideNoise";
+  specialModeMacroNames[1][0] = "DecayTime ";
+  specialModeMacroNames[1][1] = "Tone      ";
   specialModeMacroNames[1][2] = "PluckPos  ";
-  specialModeMacroNames[1][3] = "Decay     ";
-  specialModeMacroNames[1][4] = "Touch     ";
-  specialModeMacroNames[1][5] = "PickupPos ";
-  specialModeMacroNames[1][6] = "DampFreq  ";
-  specialModeMacroNames[1][7] = "FFAmount  ";
-  specialModeMacroNames[1][8] = "FBAmount  ";
-  specialModeMacroNames[1][9] = "foldDepth ";
-  specialModeMacroNames[1][10] = "prepPosX ";
-  specialModeMacroNames[1][11] = "prepPosY ";
+  specialModeMacroNames[1][3] = "PickupPos ";
+  specialModeMacroNames[1][4] = "SlideNois ";
+  specialModeMacroNames[1][5] = "Stiffness ";
+  specialModeMacroNames[1][6] = "FB Amp    ";
+  specialModeMacroNames[1][7] = "FB Speed  ";
+  specialModeMacroNames[1][8] = "PU Filter ";
+  specialModeMacroNames[1][9] = "Harmonic  ";
+  specialModeMacroNames[1][10] = "HarmPosX  ";
+  specialModeMacroNames[1][11] = "HarmPosY  ";
+  specialModeMacroNames[1][12] = "PUModRate ";
+  specialModeMacroNames[1][13] = "PUModAmp  ";
+  specialModeMacroNames[1][14] = "PhantomH  ";
+  specialModeMacroNames[1][15] = "PUFilterQ ";
+  specialModeMacroNames[1][16] = "PeakF Frq ";
+  specialModeMacroNames[1][17] = "PeakF Q   ";
+  specialModeMacroNames[1][18] = "Tension G ";
+  specialModeMacroNames[1][19] = "Acoustic  ";
+
 
   specialModeNames[2] = "ADDITIVE      ";
-  specialModeMacroNames[2][0] = "Noise1    ";
-  specialModeMacroNames[2][1] = "Noise2    ";
-  specialModeMacroNames[2][2] = "Tone      ";
-  specialModeMacroNames[2][3] = "Decay     ";
-  specialModeMacroNames[2][4] = "Stretch   ";
-  specialModeMacroNames[2][5] = "RandDecy  ";
-  specialModeMacroNames[2][6] = "RandGain  ";
-  specialModeMacroNames[2][7] = "NoiseVol  ";
+  specialModeMacroNames[2][0] = "Stretch   ";
+  specialModeMacroNames[2][1] = "Tilt      ";
+  specialModeMacroNames[2][2] = "NoiseAmp  ";
+  specialModeMacroNames[2][3] = "PickupPos ";
+  specialModeMacroNames[2][4] = "PickupAmp ";
+  specialModeMacroNames[2][5] = "DiveAmp   ";
+  specialModeMacroNames[2][6] = "DiveRate  ";
+  specialModeMacroNames[2][7] = "          ";
   specialModeMacroNames[2][8] = "          ";
   specialModeMacroNames[2][9] = "          ";
-  specialModeMacroNames[2][10] = "         ";
-  specialModeMacroNames[2][11] = "         ";
+  specialModeMacroNames[2][10] = "Tone      ";
+  specialModeMacroNames[2][11] = "Decay     ";
+  specialModeMacroNames[2][12] = "          ";
+  specialModeMacroNames[2][13] = "          ";
+  specialModeMacroNames[2][14] = "          ";
+  specialModeMacroNames[2][15] = "          ";
+  specialModeMacroNames[2][16] = "          ";
+  specialModeMacroNames[2][17] = "          ";
+  specialModeMacroNames[2][18] = "          ";
+  specialModeMacroNames[2][19] = "          ";
 
-  specialModeNames[3] = "VOCAL      ";
-  specialModeMacroNames[3][0] = "BLAH      ";
-  specialModeMacroNames[3][1] = "Noise2    ";
-  specialModeMacroNames[3][2] = "Tone      ";
-  specialModeMacroNames[3][3] = "Decay     ";
-  specialModeMacroNames[3][4] = "Stretch   ";
-  specialModeMacroNames[3][5] = "RandDecy  ";
-  specialModeMacroNames[3][6] = "RandGain  ";
-  specialModeMacroNames[3][7] = "NoiseVol  ";
-  specialModeMacroNames[3][8] = "          ";
-  specialModeMacroNames[3][9] = "          ";
-  specialModeMacroNames[3][10] = "         ";
-  specialModeMacroNames[3][11] = "         ";
-  for (int i = 0; i < 4; i++)
+  specialModeNames[3] = "VOCAL        ";
+  specialModeMacroNames[3][0] = "Size      ";
+  specialModeMacroNames[3][1] = "Chipmunk  ";
+  specialModeMacroNames[3][2] = "Diameter  ";
+  specialModeMacroNames[3][3] = "Nasal     ";
+  specialModeMacroNames[3][4] = "Turb Nois ";
+  specialModeMacroNames[3][5] = "Unvoiced  ";
+  specialModeMacroNames[3][6] = "          ";
+  specialModeMacroNames[3][7] = "          ";
+  specialModeMacroNames[3][8] = "BackPos   ";
+  specialModeMacroNames[3][9] = "BackDiam  ";
+  specialModeMacroNames[3][10] = "ToungePos  ";
+  specialModeMacroNames[3][11] = "ToungeDia  ";
+  specialModeMacroNames[3][12] = "          ";
+  specialModeMacroNames[3][13] = "          ";
+  specialModeMacroNames[3][14] = "          ";
+  specialModeMacroNames[3][15] = "          ";
+  specialModeMacroNames[3][16] = "          ";
+  specialModeMacroNames[3][17] = "          ";
+  specialModeMacroNames[3][18] = "          ";
+  specialModeMacroNames[3][19] = "          ";
+
+  specialModeNames[4] = "STRING3      ";
+  specialModeMacroNames[4][0] = "Stiffness ";
+  specialModeMacroNames[4][1] = "PU Prop   ";
+  specialModeMacroNames[4][2] = "Plck Prop ";
+  specialModeMacroNames[4][3] = "PU Filter ";
+  specialModeMacroNames[4][4] = "NoiseFilt ";
+  specialModeMacroNames[4][5] = "NoiseGain ";
+  specialModeMacroNames[4][6] = "          ";
+  specialModeMacroNames[4][7] = "          ";
+  specialModeMacroNames[4][8] = "Decay     ";
+  specialModeMacroNames[4][9] = "Damping   ";
+  specialModeMacroNames[4][10] = "PluckPos ";
+  specialModeMacroNames[4][11] = "PU Pos   ";
+  specialModeMacroNames[4][12] = "          ";
+  specialModeMacroNames[4][13] = "          ";
+  specialModeMacroNames[4][14] = "          ";
+  specialModeMacroNames[4][15] = "          ";
+  specialModeMacroNames[4][16] = "          ";
+  specialModeMacroNames[4][17] = "          ";
+  specialModeMacroNames[4][18] = "          ";
+  specialModeMacroNames[4][19] = "          ";
+
+
+  for (int i = 0; i < 5; i++)
   {
 	  for (int j = 0; j < 14; j++)
 	  {
 		  presetNamesArray[63-i][j] = specialModeNames[i][j];
 	  }
-	  for (int k = 0; k < 12; k++)
+	  for (int k = 0; k < 20; k++)
 	  {
 		  for (int j = 0; j < 10; j++)
 		  {
@@ -472,7 +511,7 @@ int main(void)
 
 
     audioStart(&hsai_BlockB1, &hsai_BlockA1);
-
+	//AudioCodec_init(&hi2c2);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -501,42 +540,24 @@ int main(void)
 	  }
 	  if (presetWaitingToParse > 0)
 	  {
-		  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_SET);
+		  //HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_SET);
 		  parsePreset(presetWaitingToParse, presetNumberToLoad);
-		  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_RESET);
+		  //HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_RESET);
 	  }
 
 	  if ((stringInputs[0] == 0) && (stringInputs[1] == 0))
 	  {
-	  	  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
+	  	  //HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
 	  }
 	  else
 	  {
-		  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
+		  //HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
 	  }
 	  if (brainFirmwareUpdateRequested)
 	  {
 		  checkForBootloadableBrainFile();
 	  }
-#if 0
-	  if (pluckFirmwareUpdateRequested)
-	  {
-		  checkForBootloadablePluckFile();
-	  }
 
-	  if (copyingPluckToLocalArray)
-	  {
-		  localPluck[pluckIndex] = pluckFirmwareBuffer[pluckIndex];
-		  pluckIndex++;
-		  if (pluckIndex > 40000)
-		  {
-			  copyingPluckToLocalArray = 0;
-			  foundPluckFirmware = 0;
-			  pluckIndex = 0;
-			  pluckFirmwareReadyToSend = 1;
-		  }
-	  }
-#endif
 	  uint32_t rand;
 	  HAL_RNG_GenerateRandomNumber(&hrng, &rand);
 
@@ -545,8 +566,8 @@ int main(void)
 		  myTestInt++;
 		  //HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
 	  }
-	  float floatrand = (float)rand * INV_TWO_TO_32 ;
-	  random_values[currentRandom++] = (floatrand * 2.0f) - 1.0f;
+	  random_values[currentRandom++] = (float)rand * INV_TWO_TO_32 ;
+	  //random_values[currentRandom++] = (floatrand * 2.0f) - 1.0f;
 
     /* USER CODE END WHILE */
 
@@ -555,10 +576,6 @@ int main(void)
   /* USER CODE END 3 */
 }
 
-/**
-  * @brief System Clock Configuration
-  * @retval None
-  */
 void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
@@ -660,9 +677,7 @@ void PeriphCommonClock_Config(void)
 
 float __ATTR_ITCMRAM randomNumber(void) {
 
-
-	float num = random_values[currentRandom++] + 1.0f * 0.5f;
-	return num;
+	return random_values[currentRandom++];
 }
 
 
@@ -781,7 +796,7 @@ static int checkForSDCardPreset(uint8_t numberToLoad)
 	int found = 0;
 	prevVoice = numberToLoad;
 	voice = numberToLoad;
-	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0, GPIO_PIN_SET);
+	//HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0, GPIO_PIN_SET);
 	if(BSP_SD_IsDetected())
 	{
 		for (int i = 0; i < AUDIO_BUFFER_SIZE; i+=2)
@@ -850,15 +865,15 @@ static int checkForSDCardPreset(uint8_t numberToLoad)
 	  	 // HAL_Delay(1);
 	  	  //HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
 	  	 // HAL_Delay(1);
-	  	  i2cSending = 1;
+	  	i2cSending = 1;
 	  	__disable_irq();
-	  	  HAL_I2C_Master_Transmit(&hi2c1, 34<<1, buffer, 4096, 10000);
+	  	HAL_I2C_Master_Transmit(&hi2c1, 34<<1, buffer, 4096, 10000);
 	  	__enable_irq();
 	  	i2cSending = 0;
 	}
 
 	diskBusy = 0;
-	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0, GPIO_PIN_RESET);
+	//HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0, GPIO_PIN_RESET);
 	return found;
 }
 
@@ -869,7 +884,7 @@ static void checkForBootloadableBrainFile(void)
 {
 	if (boardNumber == 0)
 	{
-		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0, GPIO_PIN_SET);
+		//HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0, GPIO_PIN_SET);
 		if(BSP_SD_IsDetected())
 		{
 			for (uint_fast16_t i = 0; i < AUDIO_BUFFER_SIZE; i+=2)
@@ -918,65 +933,9 @@ static void checkForBootloadableBrainFile(void)
 
 
 		diskBusy = 0;
-		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0, GPIO_PIN_RESET);
+		//HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0, GPIO_PIN_RESET);
 	}
 }
-
-//turns out this is not as simple as hoped - there is only one flash ram sector on the pluck IC, and you can't write it without erasing it
-// so it's not possible to program the flash from a custom bootloader, must use the system bootloader, which needs an SPI master to clock it, and needs to come through a different SPI port.
-// need to rethink this but until then we can't update pluck firmware from sd card.
-#if 0
-static void checkForBootloadablePluckFile(void)
-{
-	if (boardNumber == 0)
-	{
-		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0, GPIO_PIN_SET);
-		if(BSP_SD_IsDetected())
-		{
-			for (uint_fast16_t i = 0; i < AUDIO_BUFFER_SIZE; i+=2)
-			{
-				audioOutBuffer[i] = 0;
-				audioOutBuffer[i + 1] = 0;
-			}
-			diskBusy = 1;
-			loadFailed = 0;
-
-			disk_initialize(0);
-
-			disk_status(0);
-			uint_fast32_t  bytesRead;
-			if(f_mount(&SDFatFS,  SDPath, 1) == FR_OK)
-			{
-
-				FRESULT res;
-				/* Start to search for firmware files */
-
-				//Read Pluck Firmware
-				char finalString[10] = "pluck.bin";
-				res = f_findfirst(&dir, &fno, SDPath, finalString);
-				if(res == FR_OK)
-				{
-					if(f_open(&SDFile, fno.fname, FA_OPEN_ALWAYS | FA_READ) == FR_OK)
-					{
-						pluckFirmwareSize = f_size(&SDFile);
-
-						f_read(&SDFile, &pluckFirmwareBuffer, pluckFirmwareSize, &bytesRead);
-						f_close(&SDFile);
-						copyingPluckToLocalArray = 1;
-						pluckFirmwareBufferIndex = 0;
-					}
-				}
-			}
-		}
-		pluckFirmwareUpdateRequested = 0;
-
-
-		diskBusy = 0;
-		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0, GPIO_PIN_RESET);
-	}
-}
-#endif
-
 
 static void writePresetToSDCard(int fileSize)
 {
@@ -1003,23 +962,95 @@ static void writePresetToSDCard(int fileSize)
 			        presetNumberToSave = 99;
 			    }
 
+
+			    //first, delete any existing presets that share the same number
+			    FRESULT res;
+				/* Start to search for preset files */
+				char charBufC[10];
+				char finalStringC[10];
+
 				//turn the integer value into a 2 digit string
-				char charBuf[10];
-				char finalString[10];
-				itoa(presetNumberToSave, charBuf, 10);
-				int len = ((strlen(charBuf)));
+
+				itoa(presetNumberToSave, charBufC, 10);
+				int len = ((strlen(charBufC)));
 				if (len == 1)
 				{
-					finalString[2] = charBuf[1];
-					finalString[1] = charBuf[0];
-					finalString[0] = '0';
-					strcat(finalString, ".ebp");
+					finalStringC[2] = charBufC[1];
+					finalStringC[1] = charBufC[0];
+					finalStringC[0] = '0';
+					strcat(finalStringC, "*.ebp");
 				}
 
 				else
 				{
-					strcat(charBuf, ".ebp");
-					strcpy(finalString, charBuf);
+					strcat(charBufC, "*.ebp");
+					strcpy(finalStringC, charBufC);
+				}
+
+				uint32_t keepChecking = 1;
+				while(keepChecking)
+				{
+					res = f_findfirst(&dir, &fno, SDPath, finalStringC);
+
+					//delete if found
+					if((res == FR_OK) && (fno.fname[0]))
+					{
+						f_unlink (fno.fname);
+					}
+					else
+					{
+						keepChecking = 0;
+					}
+				}
+
+			    //turn the integer value into a 2 digit string
+				char charBuf[22];
+				char finalString[22];
+				itoa(presetNumberToSave, charBuf, 10);
+				len = ((strlen(charBuf)));
+				if (len == 1)
+				{
+					finalString[21] = 0;
+					finalString[20] = 'p';
+					finalString[19] = 'b';
+					finalString[18] = 'e';
+					finalString[17] = '.';
+					for (int i = 0; i < 14; i++)
+					{
+						finalString[i+3] = buffer[i+4];
+						//replace spaces with underscores for filename
+						if (finalString[i+3] == 32)
+						{
+							finalString[i+3] = '_';
+						}
+					}
+					finalString[2] = '_';
+					finalString[1] = charBuf[0];
+					finalString[0] = '0';
+
+				}
+
+				else
+				{
+					finalString[21] = 0;
+					finalString[20] = 'p';
+					finalString[19] = 'b';
+					finalString[18] = 'e';
+					finalString[17] = '.';
+					for (int i = 0; i < 14; i++)
+					{
+						finalString[i+3] = buffer[i+4];
+						//replace spaces with underscores for filename
+						if (finalString[i+3] == 32)
+						{
+							finalString[i+3] = '_';
+						}
+					}
+					finalString[2] = '_';
+					finalString[1] = charBuf[1];
+					finalString[0] = charBuf[0];
+
+
 				}
 
 				if(f_open(&SDFile, finalString, FA_CREATE_ALWAYS | FA_WRITE) == FR_OK)
@@ -1211,6 +1242,9 @@ void __ATTR_ITCMRAM blankFunction(float a, int b, int c)
 	;
 }
 
+volatile uint8_t chorusAssignment = 255;
+volatile uint8_t delayAssignment = 255;
+
 void setEffectsFunctions(FXType effectType, int i)
 {
 	effectsActive[i] = 1;
@@ -1268,7 +1302,7 @@ void setEffectsFunctions(FXType effectType, int i)
 			  break;
 		  case Shaper2:
 			  effectTick[i] = &shaperTick;
-			  effectSetters[i].setParam1 = &clipperGainSet;
+			  effectSetters[i].setParam1 = &param1Linear;
 			  effectSetters[i].setParam2 = &offsetParam2;
 			  effectSetters[i].setParam3 = &param3Linear;
 			  effectSetters[i].setParam4 = &blankFunction;
@@ -1283,6 +1317,17 @@ void setEffectsFunctions(FXType effectType, int i)
 			  effectSetters[i].setParam5 = &compressorParam5;
 			  break;
 		  case Chorus:
+			  //there isn't enough memory for multiple chorus effects. Disable any other ticks using them
+			  if (chorusAssignment != 255)
+			  {
+				  effectTick[chorusAssignment] = &blankTick;
+				  effectSetters[chorusAssignment].setParam1 = &blankFunction;
+				  effectSetters[chorusAssignment].setParam2 = &blankFunction;
+				  effectSetters[chorusAssignment].setParam3 = &blankFunction;
+				  effectSetters[chorusAssignment].setParam4 = &blankFunction;
+				  effectSetters[chorusAssignment].setParam5 = &blankFunction;
+			  }
+			  chorusAssignment = i;
 			  effectTick[i] = &chorusTick;
 			  effectSetters[i].setParam1 = &chorusParam1;
 			  effectSetters[i].setParam2 = &chorusParam2;
@@ -1293,10 +1338,10 @@ void setEffectsFunctions(FXType effectType, int i)
 		  case Bitcrush:
 			  effectTick[i] = &bcTick;
 			  effectSetters[i].setParam1 = &clipperGainSet;
-			  effectSetters[i].setParam2 = &param2Linear;
+			  effectSetters[i].setParam2 = &param2BC;
 			  effectSetters[i].setParam3 = &param3BC;
-			  effectSetters[i].setParam4 = &param4Linear;
-			  effectSetters[i].setParam5 = &param5Linear;
+			  effectSetters[i].setParam4 = &param4BC;
+			  effectSetters[i].setParam5 = &param5BC;
 			  break;
 		  case TiltFilter:
 			  effectTick[i] = &tiltFilterTick;
@@ -1316,6 +1361,17 @@ void setEffectsFunctions(FXType effectType, int i)
 			  break;
 
 		  case Delay:
+			  //there isn't enough memory for multiple delay effects. Disable any other ticks using them
+			  if (delayAssignment != 255)
+			  {
+				  effectTick[delayAssignment] = &blankTick;
+				  effectSetters[delayAssignment].setParam1 = &blankFunction;
+				  effectSetters[delayAssignment].setParam2 = &blankFunction;
+				  effectSetters[delayAssignment].setParam3 = &blankFunction;
+				  effectSetters[delayAssignment].setParam4 = &blankFunction;
+				  effectSetters[delayAssignment].setParam5 = &blankFunction;
+			  }
+			  delayAssignment = i;
 			  effectTick[i] = &delayTick;
 			  effectSetters[i].setParam1 = &delayParam1;
 			  effectSetters[i].setParam2 = &delayParam2;
@@ -1547,7 +1603,8 @@ uint8_t fromAscii(uint8_t input1, uint8_t input2)
 	return ((fromHex(input1)<<4) | (fromHex(input2)));
 }
 
-void __ATTR_ITCMRAM handleSPI (uint8_t offset)
+volatile uint32_t tested[32];
+void  handleSPI (uint8_t offset)
 {
 	interruptChecker = 1;
 
@@ -1638,10 +1695,10 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 					stringMIDIPitches[i] = myPitch;
 				}
 			 }
-			 HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_SET);
+			 //HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_SET);
 			 whichBar = 0;
 			 updateStateFromSPIMessage(offset);
-			 HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_RESET);
+			 //HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_RESET);
 			 //HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
 		}
 		// if the first number is a 2 then it's a preset write
@@ -1677,14 +1734,33 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 
 		else if (SPI_LEVERS_RX[offset] == ReceivingKnobs)
 		{
-			 uint8_t currentByte = offset+1;
-
-			for (int i = 0; i < 12; i++)
+			uint8_t currentByte = offset+1;
+			for (int i = 0; i < 8; i++)
 			{
-				uint8_t newByte = SPI_LEVERS_RX[i + currentByte];
+				int32_t newByte = SPI_LEVERS_RX[i + currentByte];
 				if (knobFrozen[i])
 				{
-					if ((newByte > (prevKnobByte[i] + 2)) || (newByte < (prevKnobByte[i] - 2)))
+					if ((newByte > (prevKnobByte[i] + 3)) || (newByte < (prevKnobByte[i] - 3)))
+					{
+						knobFrozen[i] = 0;
+						prevKnobByte[i] = newByte;
+					}
+				}
+				else
+				{
+					tExpSmooth_setDest(&knobSmoothers[i], (SPI_LEVERS_RX[i + currentByte] * 0.003921568627451f)); //scaled 0.0 to 1.0
+					prevKnobByte[i] = newByte;
+				}
+
+			}
+
+			for (int i = 8; i < 12; i++)
+			{
+				int32_t newByte = SPI_LEVERS_RX[i + currentByte];
+
+				if (knobFrozen[i])
+				{
+					if ((newByte > (prevKnobByte[i] + 3)) || (newByte < (prevKnobByte[i] - 3)))
 					{
 						knobFrozen[i] = 0;
 						prevKnobByte[i] = newByte;
@@ -1693,7 +1769,7 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 				}
 				else
 				{
-					tExpSmooth_setDest(&knobSmoothers[i], (SPI_LEVERS_RX[i + currentByte] * 0.003921568627451f)); //scaled 0.0 to 1.0
+					tExpSmooth_setDest(&knobSmoothers[i], (newByte * 0.003921568627451f)); //scaled 0.0 to 1.0
 					prevKnobByte[i] = newByte;
 				}
 
@@ -1703,10 +1779,70 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 			{
 				tExpSmooth_setDest(&pedalSmoothers[i], (SPI_LEVERS_RX[i + currentByte ] * 0.003921568627451f)); //scaled 0.0 to 1.0
 			}
-			HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_SET);
+			//HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_SET);
 			whichBar = 1;
 			updateStateFromSPIMessage(offset);
-			HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_RESET);
+			//HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_RESET);
+
+
+		}
+
+		else if (SPI_LEVERS_RX[offset] == ReceivingAdditionalKnobs)
+		{
+			 uint8_t currentByte = offset+1;
+
+			for (int i = 0; i < 8; i++)
+			{
+
+				uint32_t whichKnob = i+12;
+				int32_t newByte = SPI_LEVERS_RX[i + currentByte];
+				if (knobFrozen[whichKnob])
+				{
+					if ((newByte > (prevKnobByte[whichKnob] + 3)) || (newByte < (prevKnobByte[whichKnob] - 3)))
+					{
+						knobFrozen[whichKnob] = 0;
+						prevKnobByte[whichKnob] = newByte;
+					}
+
+				}
+				else
+				{
+					tExpSmooth_setDest(&knobSmoothers[whichKnob], (newByte * 0.003921568627451f)); //scaled 0.0 to 1.0
+					prevKnobByte[whichKnob] = newByte;
+				}
+
+			}
+			for (int i = 8; i < 12; i++)
+			{
+				int32_t newByte = SPI_LEVERS_RX[i + currentByte];
+				uint32_t whichKnob = i;
+				if (knobFrozen[whichKnob])
+				{
+					if ((newByte > (prevKnobByte[whichKnob] + 3)) || (newByte < (prevKnobByte[whichKnob] - 3)))
+					{
+						knobFrozen[whichKnob] = 0;
+						prevKnobByte[whichKnob] = newByte;
+					}
+
+				}
+				else
+				{
+					tExpSmooth_setDest(&knobSmoothers[whichKnob], (SPI_LEVERS_RX[i + currentByte] * 0.003921568627451f)); //scaled 0.0 to 1.0
+					prevKnobByte[whichKnob] = newByte;
+				}
+
+			}
+
+			currentByte += 12;
+			for (int i = 0; i < 10; i++)
+			{
+				tExpSmooth_setDest(&pedalSmoothers[i], (SPI_LEVERS_RX[i + currentByte ] * 0.003921568627451f)); //scaled 0.0 to 1.0
+			}
+			//HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_SET);
+			whichBar = 1;
+			updateStateFromSPIMessage(offset);
+			//HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_RESET);
+
 
 		}
 		else if (SPI_LEVERS_RX[offset] == ReceivingEnd)
@@ -2040,9 +2176,110 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 		{
 			if (boardNumber == 0)
 			{
-				pluckFirmwareUpdateRequested = 1;
+				//pluckFirmwareUpdateRequested = 1;
 			}
 		}
+		else if (SPI_LEVERS_RX[offset] == RecievingCommandToStoreCurrentPreset)
+		{
+			if (boardNumber == 0)
+			{
+				uint_fast8_t  currentByte = offset+1;
+
+
+
+				presetNumberToSave = SPI_LEVERS_RX[currentByte];
+				currentByte++;
+				bufferPos = 0;
+
+				for (int i = 0; i < 18; i++)
+				{
+					buffer[bufferPos++] = SPI_LEVERS_RX[currentByte++];
+				}
+				/*
+				for (int i = 0; i < 28; i++)
+				{
+					buffer[bufferPos++] = SPI_LEVERS_RX[currentByte + i];
+					currentByte++;
+				}
+*/
+				if (whichModel != 0)
+				{
+					buffer[1] = 19; // instead of the 18 that was sent by the brain, to signal that this is an internal model, not synth
+
+					//skip over the name, we need to keep it from the brain
+
+					bufferPos = 20;//first byte after name
+					buffer[bufferPos] = whichModel; // not a synth preset, maybe string or additive or something
+					bufferPos++;
+
+					//9-byte macros
+					for (int j = 0; j < 8; j++)
+					{
+						for (int k = 0; k < 9; k++)
+						{
+							buffer[bufferPos] = macroNamesArray[currentActivePreset][j][k];
+							bufferPos++;
+						}
+					}
+					//10-byte macros
+					for (int j = 0; j < 4; j++)
+					{
+						for (int k = 0; k < 10; k++)
+						{
+							buffer[bufferPos] = macroNamesArray[currentActivePreset][j+8][k];
+							bufferPos++;
+						}
+					}
+
+					//remaining 9-byte macros
+					for (int j = 0; j < 8; j++)
+					{
+						for (int k = 0; k < 9; k++)
+						{
+							buffer[bufferPos] = macroNamesArray[currentActivePreset][j+12][k];
+							bufferPos++;
+						}
+					}
+
+					for (int i = 0; i < 20; i++)
+					{
+						//copy the parameters into the default KnobParams Buffer
+						uint16_t integerVersion = knobScaled[i] * TWO_TO_16;
+						buffer[bufferPos] = integerVersion >> 8;
+						buffer[bufferPos+1] = integerVersion & 255;
+						bufferPos = bufferPos + 2;
+					}
+
+					 presetNumberToLoad = presetNumberToSave;
+					 /* Parse into Audio Params */
+					 presetWaitingToParse = bufferPos;
+					 presetWaitingToWrite = bufferPos;
+
+				}
+				else //otherwise, it's a synth preset, keep the current buffer but change the name and the knob/joystick settings
+				{
+					//need to copy the buffer after the new name into the buffer
+					bufferPos = 138;//first byte after name
+
+					for (int i = 0; i < 12; i++)
+					{
+						//copy the parameters into the default KnobParams Buffer
+						uint16_t integerVersion = knobScaled[i] * TWO_TO_16;
+						buffer[bufferPos] = integerVersion >> 8;
+						buffer[bufferPos+1] = integerVersion & 255;
+						bufferPos = bufferPos + 2;
+					}
+
+					 presetNumberToLoad = presetNumberToSave;
+					 /* Parse into Audio Params */
+					 presetWaitingToParse = currentPresetSize; //use current stored preset size because that's how long the whole remaining buffer we didn't alter is
+					 presetWaitingToWrite = currentPresetSize;
+
+				}
+
+			}
+		}
+
 
 	/*
 		else if (SPI_LEVERS_RX[offset] == LoadingPreset)
@@ -2106,7 +2343,7 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 				SPI_LEVERS_TX[offset+30] = (sampleClippedCountdown > 0); //report whether there was a clip on the first board in the last 65535 samples
 				SPI_LEVERS_TX[offset+31] = 254;
 				whichMacroToSendName = (whichMacroToSendName + 1);
-				if (whichMacroToSendName >= 12)
+				if (whichMacroToSendName >= 20)
 				{
 					whichMacroToSendName = 0;
 					whichPresetToSendName = (whichPresetToSendName + 1) % MAX_NUM_PRESETS;
@@ -2114,7 +2351,7 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 			}
 		}
 	}
-	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_RESET);
+	//HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_RESET);
 }
 
 
@@ -2139,9 +2376,9 @@ void __ATTR_ITCMRAM handleSPI (uint8_t offset)
 void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 {
 	//turn off the volume while changing parameters
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
+	//HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
 	uint16_t presetVersionNumber = 0;
-
+	currentPresetSize = size;
 	 __disable_irq();
 	 presetReady = 0;
 	 for (int i = 0; i < AUDIO_BUFFER_SIZE; i++)
@@ -2152,13 +2389,15 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 	//osc params
 
 
-	uint16_t bufferIndex = 0;
+	chorusAssignment = 255;
+	delayAssignment = 255;
 
+	uint16_t bufferIndex = 0;
 
 	//should add an indicator at the beginning of the version number.
 	// maybe 4 bytes:
 		// [0] = 17   marker1 letting the parser know that a preset version number will follow
-	    // [1] = 18   marker2 letting the parser know that a preset version number will follow
+	    // [1] = 18   marker2 letting the parser know that a preset version number will follow // or 19 to say it's storing an internal preset
 	    // [2] = version number major (i.e. the 01 in 1.04)
 	    // [3] = version number minor (i.e. the 04 in 1.04)
 
@@ -2168,8 +2407,106 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 		if (buffer[bufferIndex + 1] == 18)
 		{
 			presetVersionNumber = ((buffer[bufferIndex + 2] << 8) + buffer[bufferIndex + 3]);
+			whichModel = 0; //this is a synth preset
+			bufferIndex = 4;
 		}
-		bufferIndex = 4;
+
+
+		if (buffer[bufferIndex + 1] == 19) //this means its an internal model, not the subtractive synth
+		{
+			presetVersionNumber = ((buffer[bufferIndex + 2] << 8) + buffer[bufferIndex + 3]);
+
+
+
+			bufferIndex = 4;
+
+
+			//read first 14 items in buffer as the 14 character string that is the name of the preset
+			for (int i = 0; i < 14; i++)
+			{
+				presetName[i] = buffer[bufferIndex];
+				presetNamesArray[presetNumber][i] = buffer[bufferIndex];
+				bufferIndex++;
+			}
+
+			bufferIndex = 20;
+			whichModel = buffer[bufferIndex]; // not a synth preset, maybe string or additive or something
+			bufferIndex++;
+
+
+			//9-byte macros
+			for (int j = 0; j < 8; j++)
+			{
+				for (int k = 0; k < 9; k++)
+				{
+					macroNamesArray[presetNumber][j][k] = buffer[bufferIndex];
+					bufferIndex++;
+				}
+			}
+			//10-byte macros
+			for (int j = 0; j < 4; j++)
+			{
+				for (int k = 0; k < 10; k++)
+				{
+					macroNamesArray[presetNumber][j+8][k] = buffer[bufferIndex];
+					bufferIndex++;
+				}
+			}
+
+			//remaining 9-byte macros
+			for (int j = 0; j < 8; j++)
+			{
+				for (int k = 0; k < 9; k++)
+				{
+					macroNamesArray[presetNumber][j+12][k] = buffer[bufferIndex];
+					bufferIndex++;
+				}
+			}
+
+			for (int i = 0; i < 20; i++)
+			{
+				//copy the parameters into the default KnobParams Buffer
+				loadedKnobParams[i] = INV_TWO_TO_16 * ((buffer[bufferIndex] << 8) + buffer[bufferIndex+1]);
+				bufferIndex = bufferIndex + 2;
+			}
+			presetWaitingToParse = 0;
+			currentActivePreset = presetNumber;
+
+			if (whichModel == 1)
+			{
+				switchStrings = 1;
+			}
+			else if (whichModel == 2)
+			{
+				switchStrings = 2;
+			}
+			else if (whichModel == 3)
+			{
+				audioFrameFunction = audioFrameAdditive;
+				audioSwitchToAdditive();
+			}
+			else if (whichModel == 4)
+			{
+				audioFrameFunction = audioFrameVocal;
+				audioSwitchToVocal();
+			}
+			else if (whichModel == 5)
+			{
+				audioFrameFunction = audioFrameString3;
+				audioSwitchToString3();
+			}
+			audioMasterLevel = 1.0f;
+
+			__enable_irq();
+			presetReady = 1;
+			//HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
+			diskBusy = 0;
+			receivingI2C = 0;
+			return;
+		}
+
+
+
 	}
 
 	//read first 14 items in buffer as the 14 character string that is the name of the preset
@@ -2195,6 +2532,15 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 		{
 			macroNamesArray[presetNumber][j+8][k] = buffer[bufferIndex];
 			bufferIndex++;
+		}
+	}
+
+	// blank out 9-byte macros after
+	for (int j = 0; j < 8; j++)
+	{
+		for (int k = 0; k < 9; k++)
+		{
+			macroNamesArray[presetNumber][j+8][k] = 32;
 		}
 	}
 
@@ -2266,7 +2612,7 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 
 
 
-	 //move past the name characters (14 bytes) and paramcount position (2 bytes) in the buffer to start parsing the parameter data
+	 //move past the name characters (4byte version, 14 bytes name, 9-byte * 8, 10-byte * 4) and paramcount position (2 bytes) in the buffer to start parsing the parameter data
 	bufferIndex = bufferIndex + 2;
 
 	//now read the parameters
@@ -2608,6 +2954,11 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 	for (int i = 0; i < 12; i++)
 	{
 		knobFrozen[i] = 0;
+		knobTicked[i] = 0;
+	}
+	for (int i = 0; i < 10; i++)
+	{
+		pedalTicked[i] = 0;
 	}
 	//blank out all current mappings
 	for (int i = 0; i < MAX_NUM_MAPPINGS; i++)
@@ -2618,6 +2969,7 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 		mappings[i].hookActive[2] = 0;
 		mappings[i].numHooks = 0;
 	}
+
 
 
 	for (int i = 0; i < mappingCount; i++)
@@ -2705,6 +3057,11 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 			//set starting point for the knob smoothers to smooth from
 			tExpSmooth_setValAndDest(&knobSmoothers[whichMacro], params[whichMacro + MACRO_PARAMS_OFFSET].realVal[0]);
 			knobFrozen[whichMacro] = 1;
+			knobTicked[whichMacro] = 1;
+		}
+		if ((source >= PEDAL_SOURCE_OFFSET) && (source < (PEDAL_SOURCE_OFFSET + 10)))
+		{
+			pedalTicked[source - PEDAL_SOURCE_OFFSET] = 1;
 		}
 		int scalar = buffer[bufferIndex+2];
 		for (int v = 0; v < NUM_STRINGS_PER_BOARD; v++)
@@ -2732,18 +3089,22 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 				{
 					noiseOn = 1;
 				}
-				if ((source >= MACRO_SOURCE_OFFSET) && (source < (MACRO_SOURCE_OFFSET + NUM_MACROS + NUM_CONTROL)))
+				if ((scalar >= MACRO_SOURCE_OFFSET) && (scalar < (MACRO_SOURCE_OFFSET + NUM_MACROS + NUM_CONTROL)))
 				{
 					//if it's a macro, also set its value and set the knob to frozen state so it'll hold until the knob is moved.
-
-					uint8_t whichMacro = source - MACRO_SOURCE_OFFSET;
+					uint8_t whichMacro = scalar - MACRO_SOURCE_OFFSET;
 					for (int v = 0; v < numStringsThisBoard; v++)
 					{
-						sourceValues[source][v] = params[whichMacro + MACRO_PARAMS_OFFSET].realVal[v];
+						sourceValues[scalar][v] = params[whichMacro + MACRO_PARAMS_OFFSET].realVal[v];
 					}
 					//set starting point for the knob smoothers to smooth from
 					tExpSmooth_setValAndDest(&knobSmoothers[whichMacro], params[whichMacro + MACRO_PARAMS_OFFSET].realVal[0]);
 					knobFrozen[whichMacro] = 1;
+					knobTicked[whichMacro] = 1;
+				}
+				if ((scalar >= PEDAL_SOURCE_OFFSET) && (scalar < (PEDAL_SOURCE_OFFSET + 10)))
+				{
+					pedalTicked[scalar - PEDAL_SOURCE_OFFSET] = 1;
 				}
 			}
 		}
@@ -2808,7 +3169,7 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 			}
 		}
 	}
-
+	audioSwitchToSynth();
 	presetWaitingToParse = 0;
 	currentActivePreset = presetNumber;
 	audioMasterLevel = 1.0f;
@@ -2817,7 +3178,7 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 	changeOversampling(overSampled);
 	__enable_irq();
 	presetReady = 1;
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
+	//HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
 	diskBusy = 0;
 	receivingI2C = 0;
 
@@ -2880,14 +3241,9 @@ void FlushECC(void *ptr, int bytes)
 uint8_t volatile I2CErrors = 0;
 void __ATTR_ITCMRAM HAL_I2C_SlaveRxCpltCallback(I2C_HandleTypeDef *hi2c)
 {
-	  //HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
-	  //HAL_Delay(2);
-	  //HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
-	  //HAL_Delay(2);
+
 	presetWaitingToParse = 4096;
-
 	HAL_I2C_Slave_Receive_IT(&hi2c1, buffer, 4096);
-
 }
 
 
@@ -2904,65 +3260,12 @@ void __ATTR_ITCMRAM HAL_I2C_ErrorCallback(I2C_HandleTypeDef *hi2c)
 }
 
 /* USER CODE BEGIN 4 */
-#if 0
-void sendFirmwareToPluckBoard(uint8_t  offset)
-{
-	if (pluckFirmwareClearSignal)
-	{
-		for (uint8_t i = 0; i < PLUCK_BUFFER_SIZE_TIMES_TWO; i++)
-		{
-			SPI_PLUCK_TX[i] = 0;
-
-		}
-		pluckFirmwareClearSignal = 0;
-		pluckFirmwareSendInProgress = 0;
-		pluckFirmwareReadyToSend = 0;
-	}
-	else if (pluckFirmwareEndSignal)
-	{
-		SPI_PLUCK_TX[offset] = 252;
-		SPI_PLUCK_TX[offset+1] = 251;
-		SPI_PLUCK_TX[offset+2] = 62; //special byte that says I'm done sending you firmware, now use it;
-		SPI_PLUCK_TX[offset+4] = pluckFirmwareSize >> 24;
-		SPI_PLUCK_TX[offset+5] = pluckFirmwareSize >> 16;
-		SPI_PLUCK_TX[offset+6] = pluckFirmwareSize >> 8;
-		SPI_PLUCK_TX[offset+7] = pluckFirmwareSize & 0xff;
-		pluckFirmwareEndSignal = 0;
-		pluckFirmwareClearSignal = 1;
-
-	}
-	else if (pluckFirmwareSendInProgress)
-	{
-
-		SPI_PLUCK_TX[offset] = 252;
-		SPI_PLUCK_TX[offset+1] = 251;
-		SPI_PLUCK_TX[offset+2] = 61; //special byte that says it's a firmware chunk;
-		for (uint8_t i = 4; i < PLUCK_BUFFER_SIZE; i++)
-		{
-			SPI_PLUCK_TX[offset+i] = localPluck[pluckFirmwareBufferIndex++];
-		}
-		if (pluckFirmwareBufferIndex >= pluckFirmwareSize)
-		{
-			pluckFirmwareEndSignal = 1;
-		}
-	}
-	else
-	{
-		SPI_PLUCK_TX[offset] = 252;
-		SPI_PLUCK_TX[offset+1] = 251;
-		SPI_PLUCK_TX[offset+2] = 60; //special byte that says start a firmware update process
-		pluckFirmwareSendInProgress = 1;
-	}
-
-}
-#endif
 void __ATTR_ITCMRAM HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
 {
 	interrupted = 1;
 	if (hspi == &hspi6)
 	{
-		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_SET);
-		SCB_InvalidateDCache_by_Addr((uint32_t *)(((uint32_t )SPI_PLUCK_RX) & ~(uint32_t )0x1F), PLUCK_BUFFER_SIZE_TIMES_TWO+32);
+		//HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_SET);
 
 		if ((SPI_PLUCK_RX[32] == 254) && (SPI_PLUCK_RX[63] == 253))
 		{
@@ -2982,21 +3285,13 @@ void __ATTR_ITCMRAM HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
 			HAL_SPI_TransmitReceive_DMA(&hspi6, SPI_PLUCK_TX, SPI_PLUCK_RX, PLUCK_BUFFER_SIZE_TIMES_TWO);
 			numResets++;
 		}
-#if 0
-		if (pluckFirmwareReadyToSend)
-		{
-			sendFirmwareToPluckBoard(PLUCK_BUFFER_SIZE);
-			SCB_CleanDCache_by_Addr((uint32_t *)(((uint32_t )SPI_PLUCK_TX) & ~(uint32_t )0x1F), PLUCK_BUFFER_SIZE_TIMES_TWO+32);
-		}
-
-		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_RESET);
-#endif
+		SCB_CleanInvalidateDCache_by_Addr((uint32_t *)(((uint32_t )SPI_PLUCK_RX) & ~(uint32_t )0x1F), PLUCK_BUFFER_SIZE_TIMES_TWO+32);
 	}
 
 	else
 	{
-		SCB_InvalidateDCache_by_Addr((uint32_t *)(((uint32_t )SPI_LEVERS_RX) & ~(uint32_t )0x1F), LEVER_BUFFER_SIZE_TIMES_TWO+32);
-		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_SET);
+		SCB_CleanInvalidateDCache_by_Addr((uint32_t *)(((uint32_t )SPI_LEVERS_RX) & ~(uint32_t )0x1F), LEVER_BUFFER_SIZE_TIMES_TWO+32);
+		//HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_SET);
 		if ((SPI_LEVERS_RX[62] == 254) && (SPI_LEVERS_RX[63] == 253))
 		{
 			handleSPI(LEVER_BUFFER_SIZE);
@@ -3011,8 +3306,8 @@ void __ATTR_ITCMRAM HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
 			HAL_SPI_TransmitReceive_DMA(&hspi1, SPI_LEVERS_TX, SPI_LEVERS_RX, LEVER_BUFFER_SIZE_TIMES_TWO);
 			numResets++;
 		}
-		SCB_CleanDCache_by_Addr((uint32_t *)(((uint32_t )SPI_LEVERS_TX) & ~(uint32_t )0x1F), LEVER_BUFFER_SIZE_TIMES_TWO+32);
-		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_RESET);
+		SCB_CleanInvalidateDCache_by_Addr((uint32_t *)(((uint32_t )SPI_LEVERS_RX) & ~(uint32_t )0x1F), LEVER_BUFFER_SIZE_TIMES_TWO+32);
+		//HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_RESET);
 	}
 }
 
@@ -3021,8 +3316,8 @@ void __ATTR_ITCMRAM HAL_SPI_TxRxHalfCpltCallback(SPI_HandleTypeDef *hspi)
 	interrupted = 1;
 	if (hspi == &hspi6)
 	{
-		SCB_InvalidateDCache_by_Addr((uint32_t *)(((uint32_t )SPI_PLUCK_RX) & ~(uint32_t )0x1F), PLUCK_BUFFER_SIZE_TIMES_TWO+32);
-		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_SET);
+
+		//HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_SET);
 		if ((SPI_PLUCK_RX[0] == 254) && (SPI_PLUCK_RX[31] == 253))
 		{
 			for (uint_fast8_t i = 0; i < numStringsThisBoard; i++)
@@ -3041,21 +3336,14 @@ void __ATTR_ITCMRAM HAL_SPI_TxRxHalfCpltCallback(SPI_HandleTypeDef *hspi)
 			HAL_SPI_TransmitReceive_DMA(&hspi6, SPI_PLUCK_TX, SPI_PLUCK_RX, PLUCK_BUFFER_SIZE_TIMES_TWO);
 			numResets++;
 		}
-#if 0
-		if (pluckFirmwareReadyToSend)
-		{
-			sendFirmwareToPluckBoard(0U);
-			SCB_CleanDCache_by_Addr((uint32_t *)(((uint32_t )SPI_PLUCK_TX) & ~(uint32_t )0x1F), PLUCK_BUFFER_SIZE_TIMES_TWO+32);
-		}
+		SCB_CleanInvalidateDCache_by_Addr((uint32_t *)(((uint32_t )SPI_PLUCK_RX) & ~(uint32_t )0x1F), PLUCK_BUFFER_SIZE_TIMES_TWO+32);
 
-		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_RESET);
-#endif
 	}
 
 	else
 	{
-		SCB_InvalidateDCache_by_Addr((uint32_t *)(((uint32_t )SPI_LEVERS_RX) & ~(uint32_t )0x1F), LEVER_BUFFER_SIZE_TIMES_TWO+32);
-		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_SET);
+		SCB_CleanInvalidateDCache_by_Addr((uint32_t *)(((uint32_t )SPI_LEVERS_RX) & ~(uint32_t )0x1F), LEVER_BUFFER_SIZE_TIMES_TWO+32);
+		//HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_SET);
 		if ((SPI_LEVERS_RX[30] == 254) && (SPI_LEVERS_RX[31] == 253))
 		{
 			handleSPI(0);
@@ -3070,8 +3358,8 @@ void __ATTR_ITCMRAM HAL_SPI_TxRxHalfCpltCallback(SPI_HandleTypeDef *hspi)
 			HAL_SPI_TransmitReceive_DMA(&hspi1, SPI_LEVERS_TX, SPI_LEVERS_RX, LEVER_BUFFER_SIZE_TIMES_TWO);
 			numResets++;
 		}
-		SCB_CleanDCache_by_Addr((uint32_t *)(((uint32_t )SPI_LEVERS_TX) & ~(uint32_t )0x1F), LEVER_BUFFER_SIZE_TIMES_TWO+32);
-		HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_RESET);
+		SCB_CleanInvalidateDCache_by_Addr((uint32_t *)(((uint32_t )SPI_LEVERS_RX) & ~(uint32_t )0x1F), LEVER_BUFFER_SIZE_TIMES_TWO+32);
+		//HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_RESET);
 	}
 }
 
@@ -3092,101 +3380,102 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 
 void MPU_Config(void)
 {
-  MPU_Region_InitTypeDef MPU_InitStruct = {0};
+	MPU_Region_InitTypeDef MPU_InitStruct = {0};
 
-  /* Disables the MPU */
-  HAL_MPU_Disable();
+	  /* Disables the MPU */
+	  HAL_MPU_Disable();
 
-  /** Initializes and configures the Region and the memory to be protected
-  */
-  MPU_InitStruct.Enable = MPU_REGION_ENABLE;
-  MPU_InitStruct.Number = MPU_REGION_NUMBER0;
-  MPU_InitStruct.BaseAddress = 0x0;
-  MPU_InitStruct.Size = MPU_REGION_SIZE_4GB;
-  MPU_InitStruct.SubRegionDisable = 0x87;
-  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
-  MPU_InitStruct.AccessPermission = MPU_REGION_NO_ACCESS;
-  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_DISABLE;
-  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
-  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
-  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
+	  /** Initializes and configures the Region and the memory to be protected
+	  */
+	  MPU_InitStruct.Enable = MPU_REGION_ENABLE;
+	  MPU_InitStruct.Number = MPU_REGION_NUMBER0;
+	  MPU_InitStruct.BaseAddress = 0x0;
+	  MPU_InitStruct.Size = MPU_REGION_SIZE_4GB;
+	  MPU_InitStruct.SubRegionDisable = 0x87;
+	  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
+	  MPU_InitStruct.AccessPermission = MPU_REGION_NO_ACCESS;
+	  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_DISABLE;
+	  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
+	  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
+	  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
 
-  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+	  HAL_MPU_ConfigRegion(&MPU_InitStruct);
 
-  /** Initializes and configures the Region and the memory to be protected
-  */
-  MPU_InitStruct.Number = MPU_REGION_NUMBER1;
-  MPU_InitStruct.BaseAddress = 0x024000000;
-  MPU_InitStruct.Size = MPU_REGION_SIZE_256KB;
-  MPU_InitStruct.SubRegionDisable = 0x0;
-  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL1;
-  MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
-  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_ENABLE;
-  MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
-  MPU_InitStruct.IsCacheable = MPU_ACCESS_CACHEABLE;
-  MPU_InitStruct.IsBufferable = MPU_ACCESS_BUFFERABLE;
+	  /** Initializes and configures the Region and the memory to be protected
+	  */
+	  MPU_InitStruct.Number = MPU_REGION_NUMBER1;
+	  MPU_InitStruct.BaseAddress = 0x024000000;
+	  MPU_InitStruct.Size = MPU_REGION_SIZE_256KB;
+	  MPU_InitStruct.SubRegionDisable = 0x0;
+	  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL1;
+	  MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
+	  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_ENABLE;
+	  MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
+	  MPU_InitStruct.IsCacheable = MPU_ACCESS_CACHEABLE;
+	  MPU_InitStruct.IsBufferable = MPU_ACCESS_BUFFERABLE;
 
-  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+	  HAL_MPU_ConfigRegion(&MPU_InitStruct);
 
-  /** Initializes and configures the Region and the memory to be protected
-  */
-  MPU_InitStruct.Number = MPU_REGION_NUMBER2;
-  MPU_InitStruct.BaseAddress = 0x24040000;
-  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_DISABLE;
+	  /** Initializes and configures the Region and the memory to be protected
+	  */
+	  MPU_InitStruct.Number = MPU_REGION_NUMBER2;
+	  MPU_InitStruct.BaseAddress = 0x24040000;
+	  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_DISABLE;
 
-  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+	  HAL_MPU_ConfigRegion(&MPU_InitStruct);
 
-  /** Initializes and configures the Region and the memory to be protected
-  */
-  MPU_InitStruct.Number = MPU_REGION_NUMBER3;
-  MPU_InitStruct.BaseAddress = 0x30000000;
-  MPU_InitStruct.Size = MPU_REGION_SIZE_512KB;
+	  /** Initializes and configures the Region and the memory to be protected
+	  */
+	  MPU_InitStruct.Number = MPU_REGION_NUMBER3;
+	  MPU_InitStruct.BaseAddress = 0x30000000;
+	  MPU_InitStruct.Size = MPU_REGION_SIZE_512KB;
 
-  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+	  HAL_MPU_ConfigRegion(&MPU_InitStruct);
 
-  /** Initializes and configures the Region and the memory to be protected
-  */
-  MPU_InitStruct.Number = MPU_REGION_NUMBER4;
-  MPU_InitStruct.Size = MPU_REGION_SIZE_8KB;
-  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
-  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
-  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
-  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
+	  /** Initializes and configures the Region and the memory to be protected
+	  */
+	  MPU_InitStruct.Number = MPU_REGION_NUMBER4;
+	  MPU_InitStruct.Size = MPU_REGION_SIZE_8KB;
+	  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
+	  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
+	  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
+	  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
 
-  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+	  HAL_MPU_ConfigRegion(&MPU_InitStruct);
 
-  /** Initializes and configures the Region and the memory to be protected
-  */
-  MPU_InitStruct.Number = MPU_REGION_NUMBER5;
-  MPU_InitStruct.BaseAddress = 0x38000000;
-  MPU_InitStruct.Size = MPU_REGION_SIZE_64KB;
+	  /** Initializes and configures the Region and the memory to be protected
+	  */
+	  MPU_InitStruct.Number = MPU_REGION_NUMBER5;
+	  MPU_InitStruct.BaseAddress = 0x38000000;
+	  MPU_InitStruct.Size = MPU_REGION_SIZE_64KB;
 
-  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+	  HAL_MPU_ConfigRegion(&MPU_InitStruct);
 
-  /** Initializes and configures the Region and the memory to be protected
-  */
-  MPU_InitStruct.Number = MPU_REGION_NUMBER6;
-  MPU_InitStruct.BaseAddress = 0x38800000;
-  MPU_InitStruct.Size = MPU_REGION_SIZE_4KB;
+	  /** Initializes and configures the Region and the memory to be protected
+	  */
+	  MPU_InitStruct.Number = MPU_REGION_NUMBER6;
+	  MPU_InitStruct.BaseAddress = 0x38800000;
+	  MPU_InitStruct.Size = MPU_REGION_SIZE_4KB;
 
-  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+	  HAL_MPU_ConfigRegion(&MPU_InitStruct);
 
-  /** Initializes and configures the Region and the memory to be protected
-  */
-  MPU_InitStruct.Number = MPU_REGION_NUMBER7;
-  MPU_InitStruct.BaseAddress = 0xc0000000;
-  MPU_InitStruct.Size = MPU_REGION_SIZE_64MB;
+	  /** Initializes and configures the Region and the memory to be protected
+	  */
+	  MPU_InitStruct.Number = MPU_REGION_NUMBER7;
+	  MPU_InitStruct.BaseAddress = 0xc0000000;
+	  MPU_InitStruct.Size = MPU_REGION_SIZE_64MB;
 
-  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+	  HAL_MPU_ConfigRegion(&MPU_InitStruct);
 
-  /** Initializes and configures the Region and the memory to be protected
-  */
-  MPU_InitStruct.Number = MPU_REGION_NUMBER8;
-  MPU_InitStruct.BaseAddress = 0x90040000;
+	  /** Initializes and configures the Region and the memory to be protected
+	  */
+	  MPU_InitStruct.Number = MPU_REGION_NUMBER8;
+	  MPU_InitStruct.BaseAddress = 0x90040000;
 
-  HAL_MPU_ConfigRegion(&MPU_InitStruct);
-  /* Enables the MPU */
-  HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
+	  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+	  /* Enables the MPU */
+	  HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
+
 
 }
 

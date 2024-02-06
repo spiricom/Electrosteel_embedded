@@ -999,24 +999,92 @@ static void writePresetToSDCard(int fileSize)
 			    {
 			        presetNumberToSave = 99;
 			    }
+			    //first, delete any existing presets that share the same number
+			    FRESULT res;
+				/* Start to search for preset files */
+				char charBufC[10];
+				char finalStringC[10];
 
-				//turn the integer value into a 2 digit string
-				char charBuf[10];
-				char finalString[10];
-				itoa(presetNumberToSave, charBuf, 10);
-				int len = ((strlen(charBuf)));
+				itoa(presetNumberToSave, charBufC, 10);
+				int len = ((strlen(charBufC)));
 				if (len == 1)
 				{
-					finalString[2] = charBuf[1];
-					finalString[1] = charBuf[0];
-					finalString[0] = '0';
-					strcat(finalString, ".ebp");
+					finalStringC[2] = charBufC[1];
+					finalStringC[1] = charBufC[0];
+					finalStringC[0] = '0';
+					strcat(finalStringC, "*.ebp");
 				}
 
 				else
 				{
-					strcat(charBuf, ".ebp");
-					strcpy(finalString, charBuf);
+					strcat(charBufC, "*.ebp");
+					strcpy(finalStringC, charBufC);
+				}
+
+				uint32_t keepChecking = 1;
+				while(keepChecking)
+				{
+					res = f_findfirst(&dir, &fno, SDPath, finalStringC);
+
+					//delete if found
+					if((res == FR_OK) && (fno.fname[0]))
+					{
+						f_unlink (fno.fname);
+					}
+					else
+					{
+						keepChecking = 0;
+					}
+				}
+
+			    //turn the integer value into a 2 digit string
+				char charBuf[22];
+				char finalString[22];
+				itoa(presetNumberToSave, charBuf, 10);
+				len = ((strlen(charBuf)));
+				if (len == 1)
+				{
+					finalString[21] = 0;
+					finalString[20] = 'p';
+					finalString[19] = 'b';
+					finalString[18] = 'e';
+					finalString[17] = '.';
+					for (int i = 0; i < 14; i++)
+					{
+						finalString[i+3] = buffer[i+4];
+						//replace spaces with underscores for filename
+						if (finalString[i+3] == 32)
+						{
+							finalString[i+3] = '_';
+						}
+					}
+					finalString[2] = '_';
+					finalString[1] = charBuf[0];
+					finalString[0] = '0';
+
+				}
+
+				else
+				{
+					finalString[21] = 0;
+					finalString[20] = 'p';
+					finalString[19] = 'b';
+					finalString[18] = 'e';
+					finalString[17] = '.';
+					for (int i = 0; i < 14; i++)
+					{
+						finalString[i+3] = buffer[i+4];
+						//replace spaces with underscores for filename
+						if (finalString[i+3] == 32)
+						{
+							finalString[i+3] = '_';
+						}
+					}
+					finalString[2] = '_';
+					finalString[1] = charBuf[1];
+					finalString[0] = charBuf[0];
+
+
 				}
 
 				if(f_open(&SDFile, finalString, FA_CREATE_ALWAYS | FA_WRITE) == FR_OK)
