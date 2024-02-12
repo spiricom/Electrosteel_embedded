@@ -579,7 +579,7 @@ int main(void)
 	  }
 	  if (brainFirmwareUpdateRequested)
 	  {
-		  //checkForBootloadableBrainFile();
+		  checkForBootloadableBrainFile();
 	  }
 #if 0
 	  if (pluckFirmwareUpdateRequested)
@@ -2574,7 +2574,7 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 	{
 		for (int k = 0; k < 9; k++)
 		{
-			macroNamesArray[presetNumber][j+8][k] = 32;
+			macroNamesArray[presetNumber][j+12][k] = 32;
 		}
 	}
 

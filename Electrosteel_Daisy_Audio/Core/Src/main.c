@@ -366,7 +366,7 @@ int main(void)
   specialModeMacroNames[0][2] = "PluckWidt ";
   specialModeMacroNames[0][3] = "PickNoise ";
   specialModeMacroNames[0][4] = "PickupSim ";
-  specialModeMacroNames[0][5] = "          ";
+  specialModeMacroNames[0][5] = "E-bow     ";
   specialModeMacroNames[0][6] = "          ";
   specialModeMacroNames[0][7] = "          ";
   specialModeMacroNames[0][8] = "          ";
@@ -487,6 +487,10 @@ int main(void)
 	  }
   }
 
+  for (int i = 0; i < 20; i++)
+  {
+	  prevKnobByte[i] = 256;
+  }
 
 	//now to send all the necessary messages to the codec
 
@@ -1738,7 +1742,11 @@ void  handleSPI (uint8_t offset)
 			for (int i = 0; i < 8; i++)
 			{
 				int32_t newByte = SPI_LEVERS_RX[i + currentByte];
-				if (knobFrozen[i])
+				if (prevKnobByte[i] == 256)
+				{
+					prevKnobByte[i] = newByte;
+				}
+				else if (knobFrozen[i])
 				{
 					if ((newByte > (prevKnobByte[i] + 3)) || (newByte < (prevKnobByte[i] - 3)))
 					{
@@ -1757,8 +1765,11 @@ void  handleSPI (uint8_t offset)
 			for (int i = 8; i < 12; i++)
 			{
 				int32_t newByte = SPI_LEVERS_RX[i + currentByte];
-
-				if (knobFrozen[i])
+				if (prevKnobByte[i] == 256)
+				{
+					prevKnobByte[i] = newByte;
+				}
+				else if (knobFrozen[i])
 				{
 					if ((newByte > (prevKnobByte[i] + 3)) || (newByte < (prevKnobByte[i] - 3)))
 					{
@@ -1796,7 +1807,11 @@ void  handleSPI (uint8_t offset)
 
 				uint32_t whichKnob = i+12;
 				int32_t newByte = SPI_LEVERS_RX[i + currentByte];
-				if (knobFrozen[whichKnob])
+				if (prevKnobByte[whichKnob] == 256)
+				{
+					prevKnobByte[whichKnob] = newByte;
+				}
+				else if (knobFrozen[whichKnob])
 				{
 					if ((newByte > (prevKnobByte[whichKnob] + 3)) || (newByte < (prevKnobByte[whichKnob] - 3)))
 					{
@@ -1816,7 +1831,11 @@ void  handleSPI (uint8_t offset)
 			{
 				int32_t newByte = SPI_LEVERS_RX[i + currentByte];
 				uint32_t whichKnob = i;
-				if (knobFrozen[whichKnob])
+				if (prevKnobByte[whichKnob] == 256)
+				{
+					prevKnobByte[whichKnob] = newByte;
+				}
+				else if (knobFrozen[whichKnob])
 				{
 					if ((newByte > (prevKnobByte[whichKnob] + 3)) || (newByte < (prevKnobByte[whichKnob] - 3)))
 					{
@@ -2085,9 +2104,13 @@ void  handleSPI (uint8_t offset)
 							mappings[whichMapping].sourceValPtr[whichSlot][v] = &sourceValues[source][v];
 							mappings[whichMapping].scalarSourceValPtr[whichSlot][v] = &defaultScaling; //blank out the scalar source, because otherwise it will point to some random function or a null pointer
 						}
-						if (source < 4) //if it's oscillators or noise (the first 4 elements of the source array), don't smooth to allow FM
+						if (source < MACRO_SOURCE_OFFSET) //if it's oscillators or noise (the first 4 elements of the source array), don't smooth to allow FM
 						{
 							mappings[whichMapping].sourceSmoothed[whichSlot] = 0;
+						}
+						if ((source >= MACRO_SOURCE_OFFSET) && (source < (LFO_SOURCE_OFFSET)))
+						{
+							knobTicked[source-MACRO_SOURCE_OFFSET] = 1;
 						}
 						if ((source >= LFO_SOURCE_OFFSET) && (source < (LFO_SOURCE_OFFSET + NUM_LFOS)))
 						{
@@ -2107,8 +2130,6 @@ void  handleSPI (uint8_t offset)
 						}
 						mappings[whichMapping].amount[whichSlot] = 0.0f;
 					}
-
-
 				}
 				else if (mappingChangeType == Amount)
 				{
@@ -2126,6 +2147,10 @@ void  handleSPI (uint8_t offset)
 						else
 						{
 							mappings[whichMapping].scalarSourceValPtr[whichSlot][v] = &sourceValues[scalar][v];
+							if ((scalar >= MACRO_SOURCE_OFFSET) && (scalar < (LFO_SOURCE_OFFSET)))
+							{
+								knobTicked[scalar-MACRO_SOURCE_OFFSET] = 1;
+							}
 							if ((scalar >= LFO_SOURCE_OFFSET) && (scalar < (LFO_SOURCE_OFFSET + NUM_LFOS)))
 							{
 								lfoOn[scalar - LFO_SOURCE_OFFSET] = 1;
@@ -2188,6 +2213,10 @@ void  handleSPI (uint8_t offset)
 
 
 				presetNumberToSave = SPI_LEVERS_RX[currentByte];
+				if (presetNumberToSave > 58)
+				{
+					return;
+				}
 				currentByte++;
 				bufferPos = 0;
 
@@ -2474,11 +2503,11 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 
 			if (whichModel == 1)
 			{
-				switchStrings = 1;
+				audioSwitchToString1();
 			}
 			else if (whichModel == 2)
 			{
-				switchStrings = 2;
+				audioSwitchToString2();
 			}
 			else if (whichModel == 3)
 			{
@@ -2540,7 +2569,7 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 	{
 		for (int k = 0; k < 9; k++)
 		{
-			macroNamesArray[presetNumber][j+8][k] = 32;
+			macroNamesArray[presetNumber][j+12][k] = 32;
 		}
 	}
 

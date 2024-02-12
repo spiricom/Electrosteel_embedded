@@ -1,17 +1,7 @@
-16:16:52 **** Incremental Build of configuration Debug for project Electrosteel_audio ****
+19:12:46 **** Incremental Build of configuration Debug for project Electrosteel_Daisy_Audio ****
 make -j7 all 
-arm-none-eabi-gcc "../Core/Src/audiostream.c" -mcpu=cortex-m7 -std=gnu11 -g -DDEBUG -DARM_MATH_CM7 -DNO_DENORMAL_CHECK -DUSE_HAL_DRIVER -DSTM32H743xx -c -I"/Users/jeffsnyder/dev/CMSIS/Include" -I"/Users/jeffsnyder/dev/LEAF/leaf" -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Middlewares/Third_Party/FatFs/src -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Core/Inc -I../FATFS/Target -I../FATFS/App -I"/Users/jeffsnyder/dev/LEAF/leaf" -Ofast -ffunction-sections -fdata-sections -fno-strict-aliasing -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/audiostream.d" -MT"Core/Src/audiostream.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Core/Src/audiostream.o"
-arm-none-eabi-gcc -o "Electrosteel_audio.elf" @"objects.list"   -mcpu=cortex-m7 -T"/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_audio/STM32H743ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Electrosteel_audio.map" -Wl,--cref -Wl,--gc-sections -nodefaultlibs -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
-Finished building target: Electrosteel_audio.elf
- 
-arm-none-eabi-size   Electrosteel_audio.elf 
-arm-none-eabi-objdump -h -S  Electrosteel_audio.elf  > "Electrosteel_audio.list"
-arm-none-eabi-objcopy  -O binary  Electrosteel_audio.elf  "Electrosteel_audio.bin"
+arm-none-eabi-size   Electrosteel_Daisy_Audio.elf 
    text	   data	    bss	    dec	    hex	filename
- 224480	   3268	34218524	34446272	20d9bc0	Electrosteel_audio.elf
+ 244056	   3260	34219692	34467008	20decc0	Electrosteel_Daisy_Audio.elf
 Finished building: default.size.stdout
- 
-Finished building: Electrosteel_audio.bin
- 
-Finished building: Electrosteel_audio.list
  

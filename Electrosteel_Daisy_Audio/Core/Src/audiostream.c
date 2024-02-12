@@ -50,7 +50,7 @@ volatile uint32_t newBar = 0 ;
 
 
 
-const uint8_t numStrings = 12; //TODO FIX THIS!
+const uint8_t numStrings = 10; //TODO FIX THIS!
 
 float invNumStrings = 1.0f / numStrings;
 
@@ -490,7 +490,7 @@ inline void voiceChangeCheck(void)
 			presetWaitingToLoad = 1;
 			presetNumberToLoad = voice;
 			presetReady = 0;
-			if (prevVoice > 59)
+			if (prevVoice > 58)
 			{
 				resetStringInputs = 1;
 			}
