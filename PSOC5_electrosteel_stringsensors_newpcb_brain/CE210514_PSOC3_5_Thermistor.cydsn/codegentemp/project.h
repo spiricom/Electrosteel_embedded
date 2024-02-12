@@ -129,6 +129,7 @@
 #include "EEPROM.h"
 #include "DMA_3_dma.h"
 #include "DMA_4_dma.h"
+#include "Bootloadable.h"
 #include "Clock_2.h"
 #include "Status_Reg_1.h"
 #include "knobPanelButton2_aliases.h"

@@ -1,0 +1,3586 @@
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"ADC_SAR_Seq_1_SAR.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.global	ADC_SAR_Seq_1_SAR_initVar
+  20              		.bss
+  21              		.type	ADC_SAR_Seq_1_SAR_initVar, %object
+  22              		.size	ADC_SAR_Seq_1_SAR_initVar, 1
+  23              	ADC_SAR_Seq_1_SAR_initVar:
+  24 0000 00       		.space	1
+  25              		.comm	ADC_SAR_Seq_1_SAR_offset,2,2
+  26              		.comm	ADC_SAR_Seq_1_SAR_countsPerVolt,2,2
+  27              		.comm	ADC_SAR_Seq_1_SAR_countsPer10Volt,4,4
+  28              		.comm	ADC_SAR_Seq_1_SAR_shift,2,2
+  29              		.section	.text.ADC_SAR_Seq_1_SAR_Start,"ax",%progbits
+  30              		.align	2
+  31              		.global	ADC_SAR_Seq_1_SAR_Start
+  32              		.thumb
+  33              		.thumb_func
+  34              		.type	ADC_SAR_Seq_1_SAR_Start, %function
+  35              	ADC_SAR_Seq_1_SAR_Start:
+  36              	.LFB0:
+  37              		.file 1 "Generated_Source\\PSoC5\\ADC_SAR_Seq_1_SAR.c"
+   1:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** /*******************************************************************************
+   2:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * File Name: ADC_SAR_Seq_1_SAR.c
+   3:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Version 3.10
+   4:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+   5:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Description:
+   6:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  This file provides the source code to the API for the Successive
+   7:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  approximation ADC Component.
+   8:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+   9:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Note:
+  10:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+  11:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** ********************************************************************************
+  12:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Copyright 2008-2015, Cypress Semiconductor Corporation.  All rights reserved.
+  13:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * You may use this file only in accordance with the license, terms, conditions,
+  14:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * disclaimers, and limitations in the end user license agreement accompanying
+  15:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * the software package with which this file was provided.
+  16:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *******************************************************************************/
+  17:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+  18:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** #include "CyLib.h"
+  19:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** #include "ADC_SAR_Seq_1_SAR.h"
+  20:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 2
+
+
+  21:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** #if(ADC_SAR_Seq_1_SAR_DEFAULT_INTERNAL_CLK)
+  22:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     #include "ADC_SAR_Seq_1_SAR_theACLK.h"
+  23:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** #endif /* End ADC_SAR_Seq_1_SAR_DEFAULT_INTERNAL_CLK */
+  24:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+  25:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+  26:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** /***************************************
+  27:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Forward function references
+  28:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** ***************************************/
+  29:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** static void ADC_SAR_Seq_1_SAR_CalcGain(uint8 resolution);
+  30:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+  31:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+  32:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** /***************************************
+  33:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Global data allocation
+  34:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** ***************************************/
+  35:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** uint8 ADC_SAR_Seq_1_SAR_initVar = 0u;
+  36:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** volatile int16 ADC_SAR_Seq_1_SAR_offset;
+  37:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** volatile int16 ADC_SAR_Seq_1_SAR_countsPerVolt;     /* Obsolete Gain compensation */
+  38:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** volatile int32 ADC_SAR_Seq_1_SAR_countsPer10Volt;   /* Gain compensation */
+  39:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** volatile int16 ADC_SAR_Seq_1_SAR_shift;
+  40:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+  41:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+  42:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** /*******************************************************************************
+  43:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Function Name: ADC_SAR_Seq_1_SAR_Start
+  44:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** ********************************************************************************
+  45:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+  46:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Summary:
+  47:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  This is the preferred method to begin component operation.
+  48:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  ADC_SAR_Seq_1_SAR_Start() sets the initVar variable, calls the
+  49:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  ADC_SAR_Seq_1_SAR_Init() function, and then calls the
+  50:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  ADC_SAR_Seq_1_SAR_Enable() function.
+  51:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+  52:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Parameters:
+  53:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  None.
+  54:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+  55:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Return:
+  56:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  None.
+  57:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+  58:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Global variables:
+  59:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  The ADC_SAR_Seq_1_SAR_initVar variable is used to indicate when/if initial
+  60:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  configuration of this component has happened. The variable is initialized to
+  61:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  zero and set to 1 the first time ADC_Start() is called. This allows for
+  62:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  component Re-Start without re-initialization in all subsequent calls to the
+  63:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  ADC_SAR_Seq_1_SAR_Start() routine.
+  64:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  If re-initialization of the component is required the variable should be set
+  65:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  to zero before call of ADC_SAR_Seq_1_SAR_Start() routine, or the user may call
+  66:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  ADC_SAR_Seq_1_SAR_Init() and ADC_SAR_Seq_1_SAR_Enable() as done in the
+  67:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  ADC_SAR_Seq_1_SAR_Start() routine.
+  68:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+  69:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Side Effect:
+  70:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  If the initVar variable is already set, this function only calls the
+  71:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  ADC_SAR_Seq_1_SAR_Enable() function.
+  72:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+  73:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *******************************************************************************/
+  74:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** void ADC_SAR_Seq_1_SAR_Start(void)
+  75:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** {
+  38              		.loc 1 75 0
+  39              		.cfi_startproc
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 3
+
+
+  40              		@ args = 0, pretend = 0, frame = 0
+  41              		@ frame_needed = 1, uses_anonymous_args = 0
+  42 0000 80B5     		push	{r7, lr}
+  43              		.cfi_def_cfa_offset 8
+  44              		.cfi_offset 7, -8
+  45              		.cfi_offset 14, -4
+  46 0002 00AF     		add	r7, sp, #0
+  47              		.cfi_def_cfa_register 7
+  76:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+  77:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     /* If not Initialized then initialize all required hardware and software */
+  78:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     if(ADC_SAR_Seq_1_SAR_initVar == 0u)
+  48              		.loc 1 78 0
+  49 0004 064B     		ldr	r3, .L3
+  50 0006 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  51 0008 002B     		cmp	r3, #0
+  52 000a 04D1     		bne	.L2
+  79:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     {
+  80:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         ADC_SAR_Seq_1_SAR_Init();
+  53              		.loc 1 80 0
+  54 000c FFF7FEFF 		bl	ADC_SAR_Seq_1_SAR_Init
+  81:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         ADC_SAR_Seq_1_SAR_initVar = 1u;
+  55              		.loc 1 81 0
+  56 0010 034B     		ldr	r3, .L3
+  57 0012 0122     		movs	r2, #1
+  58 0014 1A70     		strb	r2, [r3]
+  59              	.L2:
+  82:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     }
+  83:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     ADC_SAR_Seq_1_SAR_Enable();
+  60              		.loc 1 83 0
+  61 0016 FFF7FEFF 		bl	ADC_SAR_Seq_1_SAR_Enable
+  84:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** }
+  62              		.loc 1 84 0
+  63 001a 00BF     		nop
+  64 001c 80BD     		pop	{r7, pc}
+  65              	.L4:
+  66 001e 00BF     		.align	2
+  67              	.L3:
+  68 0020 00000000 		.word	ADC_SAR_Seq_1_SAR_initVar
+  69              		.cfi_endproc
+  70              	.LFE0:
+  71              		.size	ADC_SAR_Seq_1_SAR_Start, .-ADC_SAR_Seq_1_SAR_Start
+  72              		.section	.text.ADC_SAR_Seq_1_SAR_Init,"ax",%progbits
+  73              		.align	2
+  74              		.global	ADC_SAR_Seq_1_SAR_Init
+  75              		.thumb
+  76              		.thumb_func
+  77              		.type	ADC_SAR_Seq_1_SAR_Init, %function
+  78              	ADC_SAR_Seq_1_SAR_Init:
+  79              	.LFB1:
+  85:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+  86:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+  87:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** /*******************************************************************************
+  88:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Function Name: ADC_SAR_Seq_1_SAR_Init
+  89:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** ********************************************************************************
+  90:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+  91:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Summary:
+  92:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  Initialize component's parameters to the parameters set by user in the
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 4
+
+
+  93:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  customizer of the component placed onto schematic. Usually called in
+  94:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  ADC_SAR_Seq_1_SAR_Start().
+  95:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+  96:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Parameters:
+  97:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  None.
+  98:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+  99:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Return:
+ 100:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  None.
+ 101:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 102:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Global variables:
+ 103:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  The ADC_SAR_Seq_1_SAR_offset variable is initialized to 0.
+ 104:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 105:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *******************************************************************************/
+ 106:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** void ADC_SAR_Seq_1_SAR_Init(void)
+ 107:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** {
+  80              		.loc 1 107 0
+  81              		.cfi_startproc
+  82              		@ args = 0, pretend = 0, frame = 0
+  83              		@ frame_needed = 1, uses_anonymous_args = 0
+  84 0000 80B5     		push	{r7, lr}
+  85              		.cfi_def_cfa_offset 8
+  86              		.cfi_offset 7, -8
+  87              		.cfi_offset 14, -4
+  88 0002 00AF     		add	r7, sp, #0
+  89              		.cfi_def_cfa_register 7
+ 108:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 109:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     /* This is only valid if there is an internal clock */
+ 110:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     #if(ADC_SAR_Seq_1_SAR_DEFAULT_INTERNAL_CLK)
+ 111:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         ADC_SAR_Seq_1_SAR_theACLK_SetMode(CYCLK_DUTY);
+ 112:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     #endif /* End ADC_SAR_Seq_1_SAR_DEFAULT_INTERNAL_CLK */
+ 113:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 114:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     #if(ADC_SAR_Seq_1_SAR_IRQ_REMOVE == 0u)
+ 115:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         /* Start and set interrupt vector */
+ 116:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         CyIntSetPriority(ADC_SAR_Seq_1_SAR_INTC_NUMBER, ADC_SAR_Seq_1_SAR_INTC_PRIOR_NUMBER);
+ 117:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         (void)CyIntSetVector(ADC_SAR_Seq_1_SAR_INTC_NUMBER, &ADC_SAR_Seq_1_SAR_ISR);
+ 118:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     #endif   /* End ADC_SAR_Seq_1_SAR_IRQ_REMOVE */
+ 119:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 120:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     /* Enable IRQ mode*/
+ 121:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     ADC_SAR_Seq_1_SAR_SAR_CSR1_REG |= ADC_SAR_Seq_1_SAR_SAR_IRQ_MASK_EN | ADC_SAR_Seq_1_SAR_SAR_IRQ
+  90              		.loc 1 121 0
+  91 0004 074A     		ldr	r2, .L6
+  92 0006 074B     		ldr	r3, .L6
+  93 0008 1B78     		ldrb	r3, [r3]
+  94 000a DBB2     		uxtb	r3, r3
+  95 000c 43F00603 		orr	r3, r3, #6
+  96 0010 DBB2     		uxtb	r3, r3
+  97 0012 1370     		strb	r3, [r2]
+ 122:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 123:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     /*Set SAR ADC resolution ADC */
+ 124:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     ADC_SAR_Seq_1_SAR_SetResolution(ADC_SAR_Seq_1_SAR_DEFAULT_RESOLUTION);
+  98              		.loc 1 124 0
+  99 0014 0C20     		movs	r0, #12
+ 100 0016 FFF7FEFF 		bl	ADC_SAR_Seq_1_SAR_SetResolution
+ 125:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     ADC_SAR_Seq_1_SAR_offset = 0;
+ 101              		.loc 1 125 0
+ 102 001a 034B     		ldr	r3, .L6+4
+ 103 001c 0022     		movs	r2, #0
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 5
+
+
+ 104 001e 1A80     		strh	r2, [r3]	@ movhi
+ 126:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** }
+ 105              		.loc 1 126 0
+ 106 0020 00BF     		nop
+ 107 0022 80BD     		pop	{r7, pc}
+ 108              	.L7:
+ 109              		.align	2
+ 110              	.L6:
+ 111 0024 09590040 		.word	1073764617
+ 112 0028 00000000 		.word	ADC_SAR_Seq_1_SAR_offset
+ 113              		.cfi_endproc
+ 114              	.LFE1:
+ 115              		.size	ADC_SAR_Seq_1_SAR_Init, .-ADC_SAR_Seq_1_SAR_Init
+ 116              		.section	.text.ADC_SAR_Seq_1_SAR_Enable,"ax",%progbits
+ 117              		.align	2
+ 118              		.global	ADC_SAR_Seq_1_SAR_Enable
+ 119              		.thumb
+ 120              		.thumb_func
+ 121              		.type	ADC_SAR_Seq_1_SAR_Enable, %function
+ 122              	ADC_SAR_Seq_1_SAR_Enable:
+ 123              	.LFB2:
+ 127:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 128:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 129:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** /*******************************************************************************
+ 130:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Function Name: ADC_SAR_Seq_1_SAR_Enable
+ 131:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** ********************************************************************************
+ 132:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 133:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Summary:
+ 134:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  Enables the reference, clock and power for SAR ADC.
+ 135:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 136:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Parameters:
+ 137:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  None.
+ 138:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 139:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Return:
+ 140:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  None.
+ 141:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 142:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *******************************************************************************/
+ 143:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** void ADC_SAR_Seq_1_SAR_Enable(void)
+ 144:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** {
+ 124              		.loc 1 144 0
+ 125              		.cfi_startproc
+ 126              		@ args = 0, pretend = 0, frame = 8
+ 127              		@ frame_needed = 1, uses_anonymous_args = 0
+ 128 0000 80B5     		push	{r7, lr}
+ 129              		.cfi_def_cfa_offset 8
+ 130              		.cfi_offset 7, -8
+ 131              		.cfi_offset 14, -4
+ 132 0002 82B0     		sub	sp, sp, #8
+ 133              		.cfi_def_cfa_offset 16
+ 134 0004 00AF     		add	r7, sp, #0
+ 135              		.cfi_def_cfa_register 7
+ 145:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     uint8 tmpReg;
+ 146:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     uint8 enableInterrupts;
+ 147:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     enableInterrupts = CyEnterCriticalSection();
+ 136              		.loc 1 147 0
+ 137 0006 FFF7FEFF 		bl	CyEnterCriticalSection
+ 138 000a 0346     		mov	r3, r0
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 6
+
+
+ 139 000c FB71     		strb	r3, [r7, #7]
+ 148:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 149:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     /* Enable the SAR ADC block in Active Power Mode */
+ 150:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     ADC_SAR_Seq_1_SAR_PWRMGR_SAR_REG |= ADC_SAR_Seq_1_SAR_ACT_PWR_SAR_EN;
+ 140              		.loc 1 150 0
+ 141 000e 254A     		ldr	r2, .L9
+ 142 0010 244B     		ldr	r3, .L9
+ 143 0012 1B78     		ldrb	r3, [r3]
+ 144 0014 DBB2     		uxtb	r3, r3
+ 145 0016 43F00203 		orr	r3, r3, #2
+ 146 001a DBB2     		uxtb	r3, r3
+ 147 001c 1370     		strb	r3, [r2]
+ 151:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 152:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****      /* Enable the SAR ADC in Standby Power Mode*/
+ 153:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     ADC_SAR_Seq_1_SAR_STBY_PWRMGR_SAR_REG |= ADC_SAR_Seq_1_SAR_STBY_PWR_SAR_EN;
+ 148              		.loc 1 153 0
+ 149 001e 224A     		ldr	r2, .L9+4
+ 150 0020 214B     		ldr	r3, .L9+4
+ 151 0022 1B78     		ldrb	r3, [r3]
+ 152 0024 DBB2     		uxtb	r3, r3
+ 153 0026 43F00203 		orr	r3, r3, #2
+ 154 002a DBB2     		uxtb	r3, r3
+ 155 002c 1370     		strb	r3, [r2]
+ 154:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 155:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     /* This is only valid if there is an internal clock */
+ 156:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     #if(ADC_SAR_Seq_1_SAR_DEFAULT_INTERNAL_CLK)
+ 157:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         ADC_SAR_Seq_1_SAR_PWRMGR_CLK_REG |= ADC_SAR_Seq_1_SAR_ACT_PWR_CLK_EN;
+ 158:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         ADC_SAR_Seq_1_SAR_STBY_PWRMGR_CLK_REG |= ADC_SAR_Seq_1_SAR_STBY_PWR_CLK_EN;
+ 159:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     #endif /* End ADC_SAR_Seq_1_SAR_DEFAULT_INTERNAL_CLK */
+ 160:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 161:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     /* Enable VCM buffer and Enable Int Ref Amp */
+ 162:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     tmpReg = ADC_SAR_Seq_1_SAR_SAR_CSR3_REG;
+ 156              		.loc 1 162 0
+ 157 002e 1F4B     		ldr	r3, .L9+8
+ 158 0030 1B78     		ldrb	r3, [r3]
+ 159 0032 BB71     		strb	r3, [r7, #6]
+ 163:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     tmpReg |= ADC_SAR_Seq_1_SAR_SAR_EN_BUF_VCM_EN;
+ 160              		.loc 1 163 0
+ 161 0034 BB79     		ldrb	r3, [r7, #6]
+ 162 0036 43F00203 		orr	r3, r3, #2
+ 163 003a BB71     		strb	r3, [r7, #6]
+ 164:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     /* PD_BUF_VREF is OFF in External reference or Vdda reference mode */
+ 165:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     #if((ADC_SAR_Seq_1_SAR_DEFAULT_REFERENCE == ADC_SAR_Seq_1_SAR__EXT_REF) || \
+ 166:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         (ADC_SAR_Seq_1_SAR_DEFAULT_RANGE == ADC_SAR_Seq_1_SAR__VNEG_VDDA_DIFF))
+ 167:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         tmpReg &= (uint8)~ADC_SAR_Seq_1_SAR_SAR_EN_BUF_VREF_EN;
+ 168:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     #else /* In INTREF or INTREF Bypassed this buffer is ON */
+ 169:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         tmpReg |= ADC_SAR_Seq_1_SAR_SAR_EN_BUF_VREF_EN;
+ 164              		.loc 1 169 0
+ 165 003c BB79     		ldrb	r3, [r7, #6]
+ 166 003e 43F00103 		orr	r3, r3, #1
+ 167 0042 BB71     		strb	r3, [r7, #6]
+ 170:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     #endif /* ADC_SAR_Seq_1_SAR_DEFAULT_REFERENCE == ADC_SAR_Seq_1_SAR__EXT_REF */
+ 171:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     ADC_SAR_Seq_1_SAR_SAR_CSR3_REG = tmpReg;
+ 168              		.loc 1 171 0
+ 169 0044 194A     		ldr	r2, .L9+8
+ 170 0046 BB79     		ldrb	r3, [r7, #6]
+ 171 0048 1370     		strb	r3, [r2]
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 7
+
+
+ 172:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 173:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     /* Set reference for ADC */
+ 174:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     #if(ADC_SAR_Seq_1_SAR_DEFAULT_RANGE == ADC_SAR_Seq_1_SAR__VNEG_VDDA_DIFF)
+ 175:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         #if(ADC_SAR_Seq_1_SAR_DEFAULT_REFERENCE == ADC_SAR_Seq_1_SAR__EXT_REF)
+ 176:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****             ADC_SAR_Seq_1_SAR_SAR_CSR6_REG = ADC_SAR_Seq_1_SAR_INT_BYPASS_EXT_VREF; /* S2 */
+ 177:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         #else /* Internal Vdda reference or obsolete bypass mode */
+ 178:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****             ADC_SAR_Seq_1_SAR_SAR_CSR6_REG = ADC_SAR_Seq_1_SAR_VDDA_VREF;           /* S7 */
+ 179:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         #endif /* ADC_SAR_Seq_1_SAR_DEFAULT_REFERENCE == ADC_SAR_Seq_1_SAR__EXT_REF */
+ 180:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     #else  /* Reference goes through internal buffer */
+ 181:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         #if(ADC_SAR_Seq_1_SAR_DEFAULT_REFERENCE == ADC_SAR_Seq_1_SAR__INT_REF_NOT_BYPASSED)
+ 182:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****             ADC_SAR_Seq_1_SAR_SAR_CSR6_REG = ADC_SAR_Seq_1_SAR_INT_VREF;            /* S3 + S4 */
+ 172              		.loc 1 182 0
+ 173 004a 194B     		ldr	r3, .L9+12
+ 174 004c 1822     		movs	r2, #24
+ 175 004e 1A70     		strb	r2, [r3]
+ 183:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         #else /* INTREF Bypassed of External */
+ 184:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****             ADC_SAR_Seq_1_SAR_SAR_CSR6_REG = ADC_SAR_Seq_1_SAR_INT_BYPASS_EXT_VREF; /* S2 */
+ 185:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         #endif /* ADC_SAR_Seq_1_SAR_DEFAULT_REFERENCE == ADC_SAR_Seq_1_SAR__INT_REF_NOT_BYPASSED */
+ 186:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     #endif /* VNEG_VDDA_DIFF */
+ 187:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 188:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     /* Low non-overlap delay for sampling clock signals (for 1MSPS) */
+ 189:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     #if(ADC_SAR_Seq_1_SAR_HIGH_POWER_PULSE == 0u) /* MinPulseWidth <= 50 ns */
+ 190:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         ADC_SAR_Seq_1_SAR_SAR_CSR5_REG &= (uint8)~ADC_SAR_Seq_1_SAR_SAR_DLY_INC;
+ 191:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     #else /* Set High non-overlap delay for sampling clock signals (for <500KSPS)*/
+ 192:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         ADC_SAR_Seq_1_SAR_SAR_CSR5_REG |= ADC_SAR_Seq_1_SAR_SAR_DLY_INC;
+ 176              		.loc 1 192 0
+ 177 0050 184A     		ldr	r2, .L9+16
+ 178 0052 184B     		ldr	r3, .L9+16
+ 179 0054 1B78     		ldrb	r3, [r3]
+ 180 0056 DBB2     		uxtb	r3, r3
+ 181 0058 43F04003 		orr	r3, r3, #64
+ 182 005c DBB2     		uxtb	r3, r3
+ 183 005e 1370     		strb	r3, [r2]
+ 193:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     #endif /* ADC_SAR_Seq_1_SAR_HIGH_POWER_PULSE == 0u */
+ 194:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 195:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     /* Increase comparator latch enable delay by 20%, 
+ 196:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     *  Increase comparator bias current by 30% without impacting delaysDelay 
+ 197:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     *  Default for 1MSPS) 
+ 198:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     */
+ 199:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     #if(ADC_SAR_Seq_1_SAR_HIGH_POWER_PULSE == 0u)    /* MinPulseWidth <= 50 ns */
+ 200:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         ADC_SAR_Seq_1_SAR_SAR_CSR5_REG |= ADC_SAR_Seq_1_SAR_SAR_SEL_CSEL_DFT_CHAR;
+ 201:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     #else /* for <500ksps */
+ 202:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         ADC_SAR_Seq_1_SAR_SAR_CSR5_REG &= (uint8)~ADC_SAR_Seq_1_SAR_SAR_SEL_CSEL_DFT_CHAR;
+ 184              		.loc 1 202 0
+ 185 0060 144A     		ldr	r2, .L9+16
+ 186 0062 144B     		ldr	r3, .L9+16
+ 187 0064 1B78     		ldrb	r3, [r3]
+ 188 0066 DBB2     		uxtb	r3, r3
+ 189 0068 23F00303 		bic	r3, r3, #3
+ 190 006c DBB2     		uxtb	r3, r3
+ 191 006e 1370     		strb	r3, [r2]
+ 203:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     #endif /* ADC_SAR_Seq_1_SAR_HIGH_POWER_PULSE == 0u */
+ 204:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 205:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     /* Set default power and other configurations for control register 0 in multiple lines */
+ 206:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     ADC_SAR_Seq_1_SAR_SAR_CSR0_REG = (uint8)((uint8)ADC_SAR_Seq_1_SAR_DEFAULT_POWER << ADC_SAR_Seq_
+ 192              		.loc 1 206 0
+ 193 0070 114B     		ldr	r3, .L9+20
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 8
+
+
+ 194 0072 CE22     		movs	r2, #206
+ 195 0074 1A70     		strb	r2, [r3]
+ 207:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     /* SAR_HIZ_CLEAR:   Should not be used for LP */
+ 208:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     #if ((CY_PSOC5LP) || (ADC_SAR_Seq_1_SAR_DEFAULT_REFERENCE != ADC_SAR_Seq_1_SAR__EXT_REF))
+ 209:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         | ADC_SAR_Seq_1_SAR_SAR_HIZ_CLEAR
+ 210:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     #endif /* SAR_HIZ_CLEAR */
+ 211:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     /*Set Convertion mode */
+ 212:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     #if(ADC_SAR_Seq_1_SAR_DEFAULT_CONV_MODE != ADC_SAR_Seq_1_SAR__FREE_RUNNING)      /* If triggere
+ 213:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         | ADC_SAR_Seq_1_SAR_SAR_MX_SOF_UDB           /* source: UDB */
+ 214:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         | ADC_SAR_Seq_1_SAR_SAR_SOF_MODE_EDGE        /* Set edge-sensitive sof source */
+ 215:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     #endif /* ADC_SAR_Seq_1_SAR_DEFAULT_CONV_MODE */
+ 216:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     ; /* end of multiple line initialization */
+ 217:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 218:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     ADC_SAR_Seq_1_SAR_SAR_TR0_REG = ADC_SAR_Seq_1_SAR_SAR_CAP_TRIM_2;
+ 196              		.loc 1 218 0
+ 197 0076 114B     		ldr	r3, .L9+24
+ 198 0078 0222     		movs	r2, #2
+ 199 007a 1A70     		strb	r2, [r3]
+ 219:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 220:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     /* Enable clock for SAR ADC*/
+ 221:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     ADC_SAR_Seq_1_SAR_SAR_CLK_REG |= ADC_SAR_Seq_1_SAR_SAR_MX_CLK_EN;
+ 200              		.loc 1 221 0
+ 201 007c 104A     		ldr	r2, .L9+28
+ 202 007e 104B     		ldr	r3, .L9+28
+ 203 0080 1B78     		ldrb	r3, [r3]
+ 204 0082 DBB2     		uxtb	r3, r3
+ 205 0084 43F00803 		orr	r3, r3, #8
+ 206 0088 DBB2     		uxtb	r3, r3
+ 207 008a 1370     		strb	r3, [r2]
+ 222:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 223:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     CyDelayUs(10u); /* The block is ready to use 10 us after the enable signal is set high. */
+ 208              		.loc 1 223 0
+ 209 008c 0A20     		movs	r0, #10
+ 210 008e FFF7FEFF 		bl	CyDelayUs
+ 224:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 225:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     #if(ADC_SAR_Seq_1_SAR_IRQ_REMOVE == 0u)
+ 226:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         /* Clear a pending interrupt */
+ 227:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         CyIntClearPending(ADC_SAR_Seq_1_SAR_INTC_NUMBER);
+ 228:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     #endif   /* End ADC_SAR_Seq_1_SAR_IRQ_REMOVE */
+ 229:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 230:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     CyExitCriticalSection(enableInterrupts);
+ 211              		.loc 1 230 0
+ 212 0092 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 213 0094 1846     		mov	r0, r3
+ 214 0096 FFF7FEFF 		bl	CyExitCriticalSection
+ 231:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** }
+ 215              		.loc 1 231 0
+ 216 009a 00BF     		nop
+ 217 009c 0837     		adds	r7, r7, #8
+ 218              		.cfi_def_cfa_offset 8
+ 219 009e BD46     		mov	sp, r7
+ 220              		.cfi_def_cfa_register 13
+ 221              		@ sp needed
+ 222 00a0 80BD     		pop	{r7, pc}
+ 223              	.L10:
+ 224 00a2 00BF     		.align	2
+ 225              	.L9:
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 9
+
+
+ 226 00a4 AB430040 		.word	1073759147
+ 227 00a8 BB430040 		.word	1073759163
+ 228 00ac 0B590040 		.word	1073764619
+ 229 00b0 0E590040 		.word	1073764622
+ 230 00b4 0D590040 		.word	1073764621
+ 231 00b8 08590040 		.word	1073764616
+ 232 00bc 16460040 		.word	1073759766
+ 233 00c0 2F5B0040 		.word	1073765167
+ 234              		.cfi_endproc
+ 235              	.LFE2:
+ 236              		.size	ADC_SAR_Seq_1_SAR_Enable, .-ADC_SAR_Seq_1_SAR_Enable
+ 237              		.section	.text.ADC_SAR_Seq_1_SAR_Stop,"ax",%progbits
+ 238              		.align	2
+ 239              		.global	ADC_SAR_Seq_1_SAR_Stop
+ 240              		.thumb
+ 241              		.thumb_func
+ 242              		.type	ADC_SAR_Seq_1_SAR_Stop, %function
+ 243              	ADC_SAR_Seq_1_SAR_Stop:
+ 244              	.LFB3:
+ 232:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 233:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 234:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** /*******************************************************************************
+ 235:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Function Name: ADC_SAR_Seq_1_SAR_Stop
+ 236:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** ********************************************************************************
+ 237:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 238:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Summary:
+ 239:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  Stops ADC conversions and puts the ADC into its lowest power mode.
+ 240:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 241:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Parameters:
+ 242:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  None.
+ 243:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 244:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Return:
+ 245:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  None.
+ 246:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 247:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *******************************************************************************/
+ 248:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** void ADC_SAR_Seq_1_SAR_Stop(void)
+ 249:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** {
+ 245              		.loc 1 249 0
+ 246              		.cfi_startproc
+ 247              		@ args = 0, pretend = 0, frame = 8
+ 248              		@ frame_needed = 1, uses_anonymous_args = 0
+ 249 0000 80B5     		push	{r7, lr}
+ 250              		.cfi_def_cfa_offset 8
+ 251              		.cfi_offset 7, -8
+ 252              		.cfi_offset 14, -4
+ 253 0002 82B0     		sub	sp, sp, #8
+ 254              		.cfi_def_cfa_offset 16
+ 255 0004 00AF     		add	r7, sp, #0
+ 256              		.cfi_def_cfa_register 7
+ 250:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     uint8 enableInterrupts;
+ 251:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     enableInterrupts = CyEnterCriticalSection();
+ 257              		.loc 1 251 0
+ 258 0006 FFF7FEFF 		bl	CyEnterCriticalSection
+ 259 000a 0346     		mov	r3, r0
+ 260 000c FB71     		strb	r3, [r7, #7]
+ 252:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 253:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     /* Stop all conversions */
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 10
+
+
+ 254:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     ADC_SAR_Seq_1_SAR_SAR_CSR0_REG &= (uint8)~ADC_SAR_Seq_1_SAR_SAR_SOF_START_CONV;
+ 261              		.loc 1 254 0
+ 262 000e 104A     		ldr	r2, .L12
+ 263 0010 0F4B     		ldr	r3, .L12
+ 264 0012 1B78     		ldrb	r3, [r3]
+ 265 0014 DBB2     		uxtb	r3, r3
+ 266 0016 23F00103 		bic	r3, r3, #1
+ 267 001a DBB2     		uxtb	r3, r3
+ 268 001c 1370     		strb	r3, [r2]
+ 255:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     /* Disable the SAR ADC block in Active Power Mode */
+ 256:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     ADC_SAR_Seq_1_SAR_PWRMGR_SAR_REG &= (uint8)~ADC_SAR_Seq_1_SAR_ACT_PWR_SAR_EN;
+ 269              		.loc 1 256 0
+ 270 001e 0D4A     		ldr	r2, .L12+4
+ 271 0020 0C4B     		ldr	r3, .L12+4
+ 272 0022 1B78     		ldrb	r3, [r3]
+ 273 0024 DBB2     		uxtb	r3, r3
+ 274 0026 23F00203 		bic	r3, r3, #2
+ 275 002a DBB2     		uxtb	r3, r3
+ 276 002c 1370     		strb	r3, [r2]
+ 257:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     /* Disable the SAR ADC in Standby Power Mode */
+ 258:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     ADC_SAR_Seq_1_SAR_STBY_PWRMGR_SAR_REG &= (uint8)~ADC_SAR_Seq_1_SAR_STBY_PWR_SAR_EN;
+ 277              		.loc 1 258 0
+ 278 002e 0A4A     		ldr	r2, .L12+8
+ 279 0030 094B     		ldr	r3, .L12+8
+ 280 0032 1B78     		ldrb	r3, [r3]
+ 281 0034 DBB2     		uxtb	r3, r3
+ 282 0036 23F00203 		bic	r3, r3, #2
+ 283 003a DBB2     		uxtb	r3, r3
+ 284 003c 1370     		strb	r3, [r2]
+ 259:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 260:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     /* This is only valid if there is an internal clock */
+ 261:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     #if(ADC_SAR_Seq_1_SAR_DEFAULT_INTERNAL_CLK)
+ 262:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         ADC_SAR_Seq_1_SAR_PWRMGR_CLK_REG &= (uint8)~ADC_SAR_Seq_1_SAR_ACT_PWR_CLK_EN;
+ 263:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         ADC_SAR_Seq_1_SAR_STBY_PWRMGR_CLK_REG &= (uint8)~ADC_SAR_Seq_1_SAR_STBY_PWR_CLK_EN;
+ 264:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     #endif /* End ADC_SAR_Seq_1_SAR_DEFAULT_INTERNAL_CLK */
+ 265:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 266:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     CyExitCriticalSection(enableInterrupts);
+ 285              		.loc 1 266 0
+ 286 003e FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 287 0040 1846     		mov	r0, r3
+ 288 0042 FFF7FEFF 		bl	CyExitCriticalSection
+ 267:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 268:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** }
+ 289              		.loc 1 268 0
+ 290 0046 00BF     		nop
+ 291 0048 0837     		adds	r7, r7, #8
+ 292              		.cfi_def_cfa_offset 8
+ 293 004a BD46     		mov	sp, r7
+ 294              		.cfi_def_cfa_register 13
+ 295              		@ sp needed
+ 296 004c 80BD     		pop	{r7, pc}
+ 297              	.L13:
+ 298 004e 00BF     		.align	2
+ 299              	.L12:
+ 300 0050 08590040 		.word	1073764616
+ 301 0054 AB430040 		.word	1073759147
+ 302 0058 BB430040 		.word	1073759163
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 11
+
+
+ 303              		.cfi_endproc
+ 304              	.LFE3:
+ 305              		.size	ADC_SAR_Seq_1_SAR_Stop, .-ADC_SAR_Seq_1_SAR_Stop
+ 306              		.section	.text.ADC_SAR_Seq_1_SAR_SetPower,"ax",%progbits
+ 307              		.align	2
+ 308              		.global	ADC_SAR_Seq_1_SAR_SetPower
+ 309              		.thumb
+ 310              		.thumb_func
+ 311              		.type	ADC_SAR_Seq_1_SAR_SetPower, %function
+ 312              	ADC_SAR_Seq_1_SAR_SetPower:
+ 313              	.LFB4:
+ 269:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 270:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 271:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** /*******************************************************************************
+ 272:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Function Name: ADC_SAR_Seq_1_SAR_SetPower
+ 273:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** ********************************************************************************
+ 274:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 275:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Summary:
+ 276:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  Sets the operational power of the ADC. You should use the higher power
+ 277:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  settings with faster clock speeds.
+ 278:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 279:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Parameters:
+ 280:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  power:  Power setting for ADC
+ 281:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  0 ->    Normal
+ 282:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  1 ->    Medium power
+ 283:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  2 ->    1.25 power
+ 284:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  3 ->    Minimum power.
+ 285:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 286:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Return:
+ 287:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  None.
+ 288:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 289:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *******************************************************************************/
+ 290:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** void ADC_SAR_Seq_1_SAR_SetPower(uint8 power)
+ 291:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** {
+ 314              		.loc 1 291 0
+ 315              		.cfi_startproc
+ 316              		@ args = 0, pretend = 0, frame = 16
+ 317              		@ frame_needed = 1, uses_anonymous_args = 0
+ 318              		@ link register save eliminated.
+ 319 0000 80B4     		push	{r7}
+ 320              		.cfi_def_cfa_offset 4
+ 321              		.cfi_offset 7, -4
+ 322 0002 85B0     		sub	sp, sp, #20
+ 323              		.cfi_def_cfa_offset 24
+ 324 0004 00AF     		add	r7, sp, #0
+ 325              		.cfi_def_cfa_register 7
+ 326 0006 0346     		mov	r3, r0
+ 327 0008 FB71     		strb	r3, [r7, #7]
+ 292:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     uint8 tmpReg;
+ 293:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 294:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     /* mask off invalid power settings */
+ 295:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     power &= ADC_SAR_Seq_1_SAR_SAR_API_POWER_MASK;
+ 328              		.loc 1 295 0
+ 329 000a FB79     		ldrb	r3, [r7, #7]
+ 330 000c 03F00303 		and	r3, r3, #3
+ 331 0010 FB71     		strb	r3, [r7, #7]
+ 296:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 12
+
+
+ 297:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     /* Set Power parameter  */
+ 298:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     tmpReg = ADC_SAR_Seq_1_SAR_SAR_CSR0_REG & (uint8)~ADC_SAR_Seq_1_SAR_SAR_POWER_MASK;
+ 332              		.loc 1 298 0
+ 333 0012 0A4B     		ldr	r3, .L15
+ 334 0014 1B78     		ldrb	r3, [r3]
+ 335 0016 DBB2     		uxtb	r3, r3
+ 336 0018 03F03F03 		and	r3, r3, #63
+ 337 001c FB73     		strb	r3, [r7, #15]
+ 299:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     tmpReg |= (uint8)(power << ADC_SAR_Seq_1_SAR_SAR_POWER_SHIFT);
+ 338              		.loc 1 299 0
+ 339 001e FB79     		ldrb	r3, [r7, #7]
+ 340 0020 9B01     		lsls	r3, r3, #6
+ 341 0022 DAB2     		uxtb	r2, r3
+ 342 0024 FB7B     		ldrb	r3, [r7, #15]
+ 343 0026 1343     		orrs	r3, r3, r2
+ 344 0028 FB73     		strb	r3, [r7, #15]
+ 300:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     ADC_SAR_Seq_1_SAR_SAR_CSR0_REG = tmpReg;
+ 345              		.loc 1 300 0
+ 346 002a 044A     		ldr	r2, .L15
+ 347 002c FB7B     		ldrb	r3, [r7, #15]
+ 348 002e 1370     		strb	r3, [r2]
+ 301:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** }
+ 349              		.loc 1 301 0
+ 350 0030 00BF     		nop
+ 351 0032 1437     		adds	r7, r7, #20
+ 352              		.cfi_def_cfa_offset 4
+ 353 0034 BD46     		mov	sp, r7
+ 354              		.cfi_def_cfa_register 13
+ 355              		@ sp needed
+ 356 0036 80BC     		pop	{r7}
+ 357              		.cfi_restore 7
+ 358              		.cfi_def_cfa_offset 0
+ 359 0038 7047     		bx	lr
+ 360              	.L16:
+ 361 003a 00BF     		.align	2
+ 362              	.L15:
+ 363 003c 08590040 		.word	1073764616
+ 364              		.cfi_endproc
+ 365              	.LFE4:
+ 366              		.size	ADC_SAR_Seq_1_SAR_SetPower, .-ADC_SAR_Seq_1_SAR_SetPower
+ 367              		.section	.text.ADC_SAR_Seq_1_SAR_SetResolution,"ax",%progbits
+ 368              		.align	2
+ 369              		.global	ADC_SAR_Seq_1_SAR_SetResolution
+ 370              		.thumb
+ 371              		.thumb_func
+ 372              		.type	ADC_SAR_Seq_1_SAR_SetResolution, %function
+ 373              	ADC_SAR_Seq_1_SAR_SetResolution:
+ 374              	.LFB5:
+ 302:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 303:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 304:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** /*******************************************************************************
+ 305:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Function Name: ADC_SAR_Seq_1_SAR_SetResolution
+ 306:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** ********************************************************************************
+ 307:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 308:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Summary:
+ 309:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  Sets the Relution of the SAR.
+ 310:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 13
+
+
+ 311:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Parameters:
+ 312:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  resolution:
+ 313:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  12 ->    RES12
+ 314:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  10 ->    RES10
+ 315:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  8  ->    RES8
+ 316:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 317:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Return:
+ 318:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  None.
+ 319:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 320:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Side Effects:
+ 321:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  The ADC resolution cannot be changed during a conversion cycle. The
+ 322:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  recommended best practice is to stop conversions with
+ 323:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  ADC_StopConvert(), change the resolution, then restart the
+ 324:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  conversions with ADC_StartConvert().
+ 325:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  If you decide not to stop conversions before calling this API, you
+ 326:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  should use ADC_IsEndConversion() to wait until conversion is complete
+ 327:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  before changing the resolution.
+ 328:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  If you call ADC_SetResolution() during a conversion, the resolution will
+ 329:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  not be changed until the current conversion is complete. Data will not be
+ 330:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  available in the new resolution for another 6 + "New Resolution(in bits)"
+ 331:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  clock cycles.
+ 332:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  You may need add a delay of this number of clock cycles after
+ 333:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  ADC_SetResolution() is called before data is valid again.
+ 334:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  Affects ADC_CountsTo_Volts(), ADC_CountsTo_mVolts(), and
+ 335:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  ADC_CountsTo_uVolts() by calculating the correct conversion between ADC
+ 336:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  counts and the applied input voltage. Calculation depends on resolution,
+ 337:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  input range, and voltage reference.
+ 338:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 339:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *******************************************************************************/
+ 340:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** void ADC_SAR_Seq_1_SAR_SetResolution(uint8 resolution)
+ 341:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** {
+ 375              		.loc 1 341 0
+ 376              		.cfi_startproc
+ 377              		@ args = 0, pretend = 0, frame = 16
+ 378              		@ frame_needed = 1, uses_anonymous_args = 0
+ 379 0000 80B5     		push	{r7, lr}
+ 380              		.cfi_def_cfa_offset 8
+ 381              		.cfi_offset 7, -8
+ 382              		.cfi_offset 14, -4
+ 383 0002 84B0     		sub	sp, sp, #16
+ 384              		.cfi_def_cfa_offset 24
+ 385 0004 00AF     		add	r7, sp, #0
+ 386              		.cfi_def_cfa_register 7
+ 387 0006 0346     		mov	r3, r0
+ 388 0008 FB71     		strb	r3, [r7, #7]
+ 342:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     uint8 tmpReg;
+ 343:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 344:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     /* Set SAR ADC resolution and sample width: 18 conversion cycles at 12bits + 1 gap */
+ 345:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     switch (resolution)
+ 389              		.loc 1 345 0
+ 390 000a FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 391 000c 0A2B     		cmp	r3, #10
+ 392 000e 07D0     		beq	.L19
+ 393 0010 0C2B     		cmp	r3, #12
+ 394 0012 02D0     		beq	.L20
+ 395 0014 082B     		cmp	r3, #8
+ 396 0016 06D0     		beq	.L21
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 14
+
+
+ 397 0018 08E0     		b	.L23
+ 398              	.L20:
+ 346:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     {
+ 347:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         case (uint8)ADC_SAR_Seq_1_SAR__BITS_12:
+ 348:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****             tmpReg = ADC_SAR_Seq_1_SAR_SAR_RESOLUTION_12BIT | ADC_SAR_Seq_1_SAR_SAR_SAMPLE_WIDTH;
+ 399              		.loc 1 348 0
+ 400 001a C223     		movs	r3, #194
+ 401 001c FB73     		strb	r3, [r7, #15]
+ 349:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****             break;
+ 402              		.loc 1 349 0
+ 403 001e 0BE0     		b	.L22
+ 404              	.L19:
+ 350:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         case (uint8)ADC_SAR_Seq_1_SAR__BITS_10:
+ 351:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****             tmpReg = ADC_SAR_Seq_1_SAR_SAR_RESOLUTION_10BIT | ADC_SAR_Seq_1_SAR_SAR_SAMPLE_WIDTH;
+ 405              		.loc 1 351 0
+ 406 0020 8223     		movs	r3, #130
+ 407 0022 FB73     		strb	r3, [r7, #15]
+ 352:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****             break;
+ 408              		.loc 1 352 0
+ 409 0024 08E0     		b	.L22
+ 410              	.L21:
+ 353:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         case (uint8)ADC_SAR_Seq_1_SAR__BITS_8:
+ 354:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****             tmpReg = ADC_SAR_Seq_1_SAR_SAR_RESOLUTION_8BIT | ADC_SAR_Seq_1_SAR_SAR_SAMPLE_WIDTH;
+ 411              		.loc 1 354 0
+ 412 0026 4223     		movs	r3, #66
+ 413 0028 FB73     		strb	r3, [r7, #15]
+ 355:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****             break;
+ 414              		.loc 1 355 0
+ 415 002a 05E0     		b	.L22
+ 416              	.L23:
+ 356:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         default:
+ 357:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****             tmpReg = ADC_SAR_Seq_1_SAR_SAR_RESOLUTION_12BIT | ADC_SAR_Seq_1_SAR_SAR_SAMPLE_WIDTH;
+ 417              		.loc 1 357 0
+ 418 002c C223     		movs	r3, #194
+ 419 002e FB73     		strb	r3, [r7, #15]
+ 358:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****             /* Halt CPU in debug mode if resolution is out of valid range */
+ 359:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****             CYASSERT(0u != 0u);
+ 420              		.loc 1 359 0
+ 421 0030 0020     		movs	r0, #0
+ 422 0032 FFF7FEFF 		bl	CyHalt
+ 360:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****             break;
+ 423              		.loc 1 360 0
+ 424 0036 00BF     		nop
+ 425              	.L22:
+ 361:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     }
+ 362:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     ADC_SAR_Seq_1_SAR_SAR_CSR2_REG = tmpReg;
+ 426              		.loc 1 362 0
+ 427 0038 054A     		ldr	r2, .L24
+ 428 003a FB7B     		ldrb	r3, [r7, #15]
+ 429 003c 1370     		strb	r3, [r2]
+ 363:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 364:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****      /* Calculate gain for convert counts to volts */
+ 365:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     ADC_SAR_Seq_1_SAR_CalcGain(resolution);
+ 430              		.loc 1 365 0
+ 431 003e FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 432 0040 1846     		mov	r0, r3
+ 433 0042 FFF7FEFF 		bl	ADC_SAR_Seq_1_SAR_CalcGain
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 15
+
+
+ 366:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** }
+ 434              		.loc 1 366 0
+ 435 0046 00BF     		nop
+ 436 0048 1037     		adds	r7, r7, #16
+ 437              		.cfi_def_cfa_offset 8
+ 438 004a BD46     		mov	sp, r7
+ 439              		.cfi_def_cfa_register 13
+ 440              		@ sp needed
+ 441 004c 80BD     		pop	{r7, pc}
+ 442              	.L25:
+ 443 004e 00BF     		.align	2
+ 444              	.L24:
+ 445 0050 0A590040 		.word	1073764618
+ 446              		.cfi_endproc
+ 447              	.LFE5:
+ 448              		.size	ADC_SAR_Seq_1_SAR_SetResolution, .-ADC_SAR_Seq_1_SAR_SetResolution
+ 449              		.section	.text.ADC_SAR_Seq_1_SAR_StartConvert,"ax",%progbits
+ 450              		.align	2
+ 451              		.global	ADC_SAR_Seq_1_SAR_StartConvert
+ 452              		.thumb
+ 453              		.thumb_func
+ 454              		.type	ADC_SAR_Seq_1_SAR_StartConvert, %function
+ 455              	ADC_SAR_Seq_1_SAR_StartConvert:
+ 456              	.LFB6:
+ 367:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 368:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 369:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** #if(ADC_SAR_Seq_1_SAR_DEFAULT_CONV_MODE != ADC_SAR_Seq_1_SAR__HARDWARE_TRIGGER)
+ 370:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 371:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 372:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     /*******************************************************************************
+ 373:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     * Function Name: ADC_SAR_Seq_1_SAR_StartConvert
+ 374:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     ********************************************************************************
+ 375:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     *
+ 376:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     * Summary:
+ 377:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     *  Forces the ADC to initiate a conversion. In free-running mode, the ADC runs
+ 378:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     *  continuously. In software trigger mode, the function also acts as a software
+ 379:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     *  version of the SOC and every conversion must be triggered by
+ 380:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     *  ADC_SAR_Seq_1_SAR_StartConvert(). This function is not available when the
+ 381:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     *  Hardware Trigger sample mode is selected.
+ 382:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     *
+ 383:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     * Parameters:
+ 384:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     *  None.
+ 385:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     *
+ 386:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     * Return:
+ 387:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     *  None.
+ 388:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     *
+ 389:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     * Theory:
+ 390:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     *  Forces the ADC to initiate a conversion. In Free Running mode, the ADC will
+ 391:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     *  run continuously. In a software trigger mode the function also acts as a
+ 392:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     *  software version of the SOC. Here every conversion has to be triggered by
+ 393:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     *  the routine. This writes into the SOC bit in SAR_CTRL reg.
+ 394:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     *
+ 395:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     * Side Effects:
+ 396:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     *  In a software trigger mode the function switches source for SOF from the
+ 397:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     *  external pin to the internal SOF generation. Application should not call
+ 398:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     *  StartConvert if external source used for SOF.
+ 399:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     *
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 16
+
+
+ 400:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     *******************************************************************************/
+ 401:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     void ADC_SAR_Seq_1_SAR_StartConvert(void)
+ 402:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     {
+ 457              		.loc 1 402 0
+ 458              		.cfi_startproc
+ 459              		@ args = 0, pretend = 0, frame = 0
+ 460              		@ frame_needed = 1, uses_anonymous_args = 0
+ 461              		@ link register save eliminated.
+ 462 0000 80B4     		push	{r7}
+ 463              		.cfi_def_cfa_offset 4
+ 464              		.cfi_offset 7, -4
+ 465 0002 00AF     		add	r7, sp, #0
+ 466              		.cfi_def_cfa_register 7
+ 403:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         #if(ADC_SAR_Seq_1_SAR_DEFAULT_CONV_MODE != ADC_SAR_Seq_1_SAR__FREE_RUNNING)  /* If software
+ 404:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****             ADC_SAR_Seq_1_SAR_SAR_CSR0_REG &= (uint8)~ADC_SAR_Seq_1_SAR_SAR_MX_SOF_UDB;   /* source
+ 467              		.loc 1 404 0
+ 468 0004 094A     		ldr	r2, .L27
+ 469 0006 094B     		ldr	r3, .L27
+ 470 0008 1B78     		ldrb	r3, [r3]
+ 471 000a DBB2     		uxtb	r3, r3
+ 472 000c 23F00403 		bic	r3, r3, #4
+ 473 0010 DBB2     		uxtb	r3, r3
+ 474 0012 1370     		strb	r3, [r2]
+ 405:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         #endif /* End ADC_SAR_Seq_1_SAR_DEFAULT_CONV_MODE */
+ 406:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 407:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         /* Start the conversion */
+ 408:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         ADC_SAR_Seq_1_SAR_SAR_CSR0_REG |= ADC_SAR_Seq_1_SAR_SAR_SOF_START_CONV;
+ 475              		.loc 1 408 0
+ 476 0014 054A     		ldr	r2, .L27
+ 477 0016 054B     		ldr	r3, .L27
+ 478 0018 1B78     		ldrb	r3, [r3]
+ 479 001a DBB2     		uxtb	r3, r3
+ 480 001c 43F00103 		orr	r3, r3, #1
+ 481 0020 DBB2     		uxtb	r3, r3
+ 482 0022 1370     		strb	r3, [r2]
+ 409:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     }
+ 483              		.loc 1 409 0
+ 484 0024 00BF     		nop
+ 485 0026 BD46     		mov	sp, r7
+ 486              		.cfi_def_cfa_register 13
+ 487              		@ sp needed
+ 488 0028 80BC     		pop	{r7}
+ 489              		.cfi_restore 7
+ 490              		.cfi_def_cfa_offset 0
+ 491 002a 7047     		bx	lr
+ 492              	.L28:
+ 493              		.align	2
+ 494              	.L27:
+ 495 002c 08590040 		.word	1073764616
+ 496              		.cfi_endproc
+ 497              	.LFE6:
+ 498              		.size	ADC_SAR_Seq_1_SAR_StartConvert, .-ADC_SAR_Seq_1_SAR_StartConvert
+ 499              		.section	.text.ADC_SAR_Seq_1_SAR_StopConvert,"ax",%progbits
+ 500              		.align	2
+ 501              		.global	ADC_SAR_Seq_1_SAR_StopConvert
+ 502              		.thumb
+ 503              		.thumb_func
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 17
+
+
+ 504              		.type	ADC_SAR_Seq_1_SAR_StopConvert, %function
+ 505              	ADC_SAR_Seq_1_SAR_StopConvert:
+ 506              	.LFB7:
+ 410:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 411:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 412:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     /*******************************************************************************
+ 413:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     * Function Name: ADC_SAR_Seq_1_SAR_StopConvert
+ 414:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     ********************************************************************************
+ 415:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     *
+ 416:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     * Summary:
+ 417:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     *  Forces the ADC to stop conversions. If a conversion is currently executing,
+ 418:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     *  that conversion will complete, but no further conversions will occur. This
+ 419:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     *  function is not available when the Hardware Trigger sample mode is selected.
+ 420:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     *
+ 421:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     * Parameters:
+ 422:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     *  None.
+ 423:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     *
+ 424:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     * Return:
+ 425:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     *  None.
+ 426:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     *
+ 427:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     * Theory:
+ 428:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     *  Stops ADC conversion in Free Running mode.
+ 429:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     *
+ 430:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     * Side Effects:
+ 431:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     *  In Software Trigger sample mode, this function sets a software version of the
+ 432:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     *  SOC to low level and switches the SOC source to hardware SOC input.
+ 433:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     *
+ 434:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     *******************************************************************************/
+ 435:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     void ADC_SAR_Seq_1_SAR_StopConvert(void)
+ 436:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     {
+ 507              		.loc 1 436 0
+ 508              		.cfi_startproc
+ 509              		@ args = 0, pretend = 0, frame = 0
+ 510              		@ frame_needed = 1, uses_anonymous_args = 0
+ 511              		@ link register save eliminated.
+ 512 0000 80B4     		push	{r7}
+ 513              		.cfi_def_cfa_offset 4
+ 514              		.cfi_offset 7, -4
+ 515 0002 00AF     		add	r7, sp, #0
+ 516              		.cfi_def_cfa_register 7
+ 437:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         /* Stop all conversions */
+ 438:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         ADC_SAR_Seq_1_SAR_SAR_CSR0_REG &= (uint8)~ADC_SAR_Seq_1_SAR_SAR_SOF_START_CONV;
+ 517              		.loc 1 438 0
+ 518 0004 094A     		ldr	r2, .L30
+ 519 0006 094B     		ldr	r3, .L30
+ 520 0008 1B78     		ldrb	r3, [r3]
+ 521 000a DBB2     		uxtb	r3, r3
+ 522 000c 23F00103 		bic	r3, r3, #1
+ 523 0010 DBB2     		uxtb	r3, r3
+ 524 0012 1370     		strb	r3, [r2]
+ 439:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 440:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         #if(ADC_SAR_Seq_1_SAR_DEFAULT_CONV_MODE != ADC_SAR_Seq_1_SAR__FREE_RUNNING)  /* If software
+ 441:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****             /* Return source to UDB for hardware SOF signal */
+ 442:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****             ADC_SAR_Seq_1_SAR_SAR_CSR0_REG |= ADC_SAR_Seq_1_SAR_SAR_MX_SOF_UDB;    /* source: UDB *
+ 525              		.loc 1 442 0
+ 526 0014 054A     		ldr	r2, .L30
+ 527 0016 054B     		ldr	r3, .L30
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 18
+
+
+ 528 0018 1B78     		ldrb	r3, [r3]
+ 529 001a DBB2     		uxtb	r3, r3
+ 530 001c 43F00403 		orr	r3, r3, #4
+ 531 0020 DBB2     		uxtb	r3, r3
+ 532 0022 1370     		strb	r3, [r2]
+ 443:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         #endif /* End ADC_SAR_Seq_1_SAR_DEFAULT_CONV_MODE */
+ 444:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 445:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     }
+ 533              		.loc 1 445 0
+ 534 0024 00BF     		nop
+ 535 0026 BD46     		mov	sp, r7
+ 536              		.cfi_def_cfa_register 13
+ 537              		@ sp needed
+ 538 0028 80BC     		pop	{r7}
+ 539              		.cfi_restore 7
+ 540              		.cfi_def_cfa_offset 0
+ 541 002a 7047     		bx	lr
+ 542              	.L31:
+ 543              		.align	2
+ 544              	.L30:
+ 545 002c 08590040 		.word	1073764616
+ 546              		.cfi_endproc
+ 547              	.LFE7:
+ 548              		.size	ADC_SAR_Seq_1_SAR_StopConvert, .-ADC_SAR_Seq_1_SAR_StopConvert
+ 549              		.section	.text.ADC_SAR_Seq_1_SAR_IsEndConversion,"ax",%progbits
+ 550              		.align	2
+ 551              		.global	ADC_SAR_Seq_1_SAR_IsEndConversion
+ 552              		.thumb
+ 553              		.thumb_func
+ 554              		.type	ADC_SAR_Seq_1_SAR_IsEndConversion, %function
+ 555              	ADC_SAR_Seq_1_SAR_IsEndConversion:
+ 556              	.LFB8:
+ 446:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 447:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** #endif /* End ADC_SAR_Seq_1_SAR_DEFAULT_CONV_MODE != ADC_SAR_Seq_1_SAR__HARDWARE_TRIGGER */
+ 448:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 449:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 450:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** /*******************************************************************************
+ 451:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Function Name: ADC_SAR_Seq_1_SAR_IsEndConversion
+ 452:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** ********************************************************************************
+ 453:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 454:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Summary:
+ 455:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  Immediately returns the status of the conversion or does not return
+ 456:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  (blocking) until the conversion completes, depending on the retMode
+ 457:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  parameter.
+ 458:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 459:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Parameters:
+ 460:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  retMode:  Check conversion return mode.
+ 461:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *   ADC_SAR_Seq_1_SAR_RETURN_STATUS: Immediately returns the status. If the
+ 462:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *     value returned is zero, the conversion is not complete, and this function
+ 463:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *     should be retried until a nonzero result is returned.
+ 464:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *   ADC_SAR_Seq_1_SAR_WAIT_FOR_RESULT: Does not return a result until the ADC
+ 465:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *     conversion is complete.
+ 466:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 467:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Return:
+ 468:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  (uint8)  0 =>  The ADC is still calculating the last result.
+ 469:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *           1 =>  The last conversion is complete.
+ 470:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 19
+
+
+ 471:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Side Effects:
+ 472:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  This function reads the end of conversion status, which is cleared on read.
+ 473:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 474:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *******************************************************************************/
+ 475:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** uint8 ADC_SAR_Seq_1_SAR_IsEndConversion(uint8 retMode)
+ 476:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** {
+ 557              		.loc 1 476 0
+ 558              		.cfi_startproc
+ 559              		@ args = 0, pretend = 0, frame = 16
+ 560              		@ frame_needed = 1, uses_anonymous_args = 0
+ 561 0000 80B5     		push	{r7, lr}
+ 562              		.cfi_def_cfa_offset 8
+ 563              		.cfi_offset 7, -8
+ 564              		.cfi_offset 14, -4
+ 565 0002 84B0     		sub	sp, sp, #16
+ 566              		.cfi_def_cfa_offset 24
+ 567 0004 00AF     		add	r7, sp, #0
+ 568              		.cfi_def_cfa_register 7
+ 569 0006 0346     		mov	r3, r0
+ 570 0008 FB71     		strb	r3, [r7, #7]
+ 571              	.L34:
+ 477:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     uint8 status;
+ 478:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 479:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     do
+ 480:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     {
+ 481:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         status = ADC_SAR_Seq_1_SAR_SAR_CSR1_REG & ADC_SAR_Seq_1_SAR_SAR_EOF_1;
+ 572              		.loc 1 481 0 discriminator 2
+ 573 000a 0C4B     		ldr	r3, .L37
+ 574 000c 1B78     		ldrb	r3, [r3]
+ 575 000e DBB2     		uxtb	r3, r3
+ 576 0010 03F00103 		and	r3, r3, #1
+ 577 0014 FB73     		strb	r3, [r7, #15]
+ 482:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     } while ((status != ADC_SAR_Seq_1_SAR_SAR_EOF_1) && (retMode == ADC_SAR_Seq_1_SAR_WAIT_FOR_RESU
+ 578              		.loc 1 482 0 discriminator 2
+ 579 0016 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 580 0018 012B     		cmp	r3, #1
+ 581 001a 02D0     		beq	.L33
+ 582              		.loc 1 482 0 is_stmt 0 discriminator 1
+ 583 001c FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 584 001e 002B     		cmp	r3, #0
+ 585 0020 F3D0     		beq	.L34
+ 586              	.L33:
+ 483:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     /* If convertion complete, wait until EOF bit released */
+ 484:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     if(status == ADC_SAR_Seq_1_SAR_SAR_EOF_1)
+ 587              		.loc 1 484 0 is_stmt 1
+ 588 0022 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 589 0024 012B     		cmp	r3, #1
+ 590 0026 04D1     		bne	.L35
+ 485:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     {
+ 486:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         /* wait one ADC clock to let the EOC status bit release */
+ 487:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         CyDelayUs(1u);
+ 591              		.loc 1 487 0
+ 592 0028 0120     		movs	r0, #1
+ 593 002a FFF7FEFF 		bl	CyDelayUs
+ 488:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         /* Do the unconditional read operation of the CSR1 register to make sure the EOC bit has be
+ 489:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         CY_GET_REG8(ADC_SAR_Seq_1_SAR_SAR_CSR1_PTR);
+ 594              		.loc 1 489 0
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 20
+
+
+ 595 002e 034B     		ldr	r3, .L37
+ 596 0030 1B78     		ldrb	r3, [r3]
+ 597              	.L35:
+ 490:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     }
+ 491:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 492:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     return(status);
+ 598              		.loc 1 492 0
+ 599 0032 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 493:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** }
+ 600              		.loc 1 493 0
+ 601 0034 1846     		mov	r0, r3
+ 602 0036 1037     		adds	r7, r7, #16
+ 603              		.cfi_def_cfa_offset 8
+ 604 0038 BD46     		mov	sp, r7
+ 605              		.cfi_def_cfa_register 13
+ 606              		@ sp needed
+ 607 003a 80BD     		pop	{r7, pc}
+ 608              	.L38:
+ 609              		.align	2
+ 610              	.L37:
+ 611 003c 09590040 		.word	1073764617
+ 612              		.cfi_endproc
+ 613              	.LFE8:
+ 614              		.size	ADC_SAR_Seq_1_SAR_IsEndConversion, .-ADC_SAR_Seq_1_SAR_IsEndConversion
+ 615              		.section	.text.ADC_SAR_Seq_1_SAR_GetResult8,"ax",%progbits
+ 616              		.align	2
+ 617              		.global	ADC_SAR_Seq_1_SAR_GetResult8
+ 618              		.thumb
+ 619              		.thumb_func
+ 620              		.type	ADC_SAR_Seq_1_SAR_GetResult8, %function
+ 621              	ADC_SAR_Seq_1_SAR_GetResult8:
+ 622              	.LFB9:
+ 494:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 495:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 496:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** /*******************************************************************************
+ 497:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Function Name: ADC_SAR_Seq_1_SAR_GetResult8
+ 498:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** ********************************************************************************
+ 499:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 500:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Summary:
+ 501:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  Returns the result of an 8-bit conversion. If the resolution is set greater
+ 502:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  than 8 bits, the function returns the LSB of the result.
+ 503:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  ADC_SAR_Seq_1_SAR_IsEndConversion() should be called to verify that the data
+ 504:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *   sample is ready.
+ 505:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 506:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Parameters:
+ 507:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  None.
+ 508:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 509:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Return:
+ 510:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  The LSB of the last ADC conversion.
+ 511:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 512:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Global Variables:
+ 513:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  ADC_SAR_Seq_1_SAR_shift - used to convert the ADC counts to the 2s
+ 514:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  compliment form.
+ 515:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 516:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Side Effects:
+ 517:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  Converts the ADC counts to the 2s complement form.
+ 518:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 21
+
+
+ 519:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *******************************************************************************/
+ 520:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** int8 ADC_SAR_Seq_1_SAR_GetResult8( void )
+ 521:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** {
+ 623              		.loc 1 521 0
+ 624              		.cfi_startproc
+ 625              		@ args = 0, pretend = 0, frame = 0
+ 626              		@ frame_needed = 1, uses_anonymous_args = 0
+ 627              		@ link register save eliminated.
+ 628 0000 80B4     		push	{r7}
+ 629              		.cfi_def_cfa_offset 4
+ 630              		.cfi_offset 7, -4
+ 631 0002 00AF     		add	r7, sp, #0
+ 632              		.cfi_def_cfa_register 7
+ 522:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     return( (int8)ADC_SAR_Seq_1_SAR_SAR_WRK0_REG - (int8)ADC_SAR_Seq_1_SAR_shift);
+ 633              		.loc 1 522 0
+ 634 0004 064B     		ldr	r3, .L41
+ 635 0006 1B78     		ldrb	r3, [r3]
+ 636 0008 DAB2     		uxtb	r2, r3
+ 637 000a 064B     		ldr	r3, .L41+4
+ 638 000c 1B88     		ldrh	r3, [r3]	@ movhi
+ 639 000e 1BB2     		sxth	r3, r3
+ 640 0010 DBB2     		uxtb	r3, r3
+ 641 0012 D31A     		subs	r3, r2, r3
+ 642 0014 DBB2     		uxtb	r3, r3
+ 643 0016 5BB2     		sxtb	r3, r3
+ 523:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** }
+ 644              		.loc 1 523 0
+ 645 0018 1846     		mov	r0, r3
+ 646 001a BD46     		mov	sp, r7
+ 647              		.cfi_def_cfa_register 13
+ 648              		@ sp needed
+ 649 001c 80BC     		pop	{r7}
+ 650              		.cfi_restore 7
+ 651              		.cfi_def_cfa_offset 0
+ 652 001e 7047     		bx	lr
+ 653              	.L42:
+ 654              		.align	2
+ 655              	.L41:
+ 656 0020 A25B0040 		.word	1073765282
+ 657 0024 00000000 		.word	ADC_SAR_Seq_1_SAR_shift
+ 658              		.cfi_endproc
+ 659              	.LFE9:
+ 660              		.size	ADC_SAR_Seq_1_SAR_GetResult8, .-ADC_SAR_Seq_1_SAR_GetResult8
+ 661              		.section	.text.ADC_SAR_Seq_1_SAR_GetResult16,"ax",%progbits
+ 662              		.align	2
+ 663              		.global	ADC_SAR_Seq_1_SAR_GetResult16
+ 664              		.thumb
+ 665              		.thumb_func
+ 666              		.type	ADC_SAR_Seq_1_SAR_GetResult16, %function
+ 667              	ADC_SAR_Seq_1_SAR_GetResult16:
+ 668              	.LFB10:
+ 524:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 525:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 526:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** /*******************************************************************************
+ 527:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Function Name: ADC_SAR_Seq_1_SAR_GetResult16
+ 528:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** ********************************************************************************
+ 529:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 22
+
+
+ 530:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Summary:
+ 531:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  Returns a 16-bit result for a conversion with a result that has a resolution
+ 532:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  of 8 to 12 bits.
+ 533:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  ADC_SAR_Seq_1_SAR_IsEndConversion() should be called to verify that the data
+ 534:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *   sample is ready
+ 535:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 536:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Parameters:
+ 537:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  None.
+ 538:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 539:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Return:
+ 540:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  The 16-bit result of the last ADC conversion
+ 541:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 542:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Global Variables:
+ 543:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  ADC_SAR_Seq_1_SAR_shift - used to convert the ADC counts to the 2s
+ 544:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  compliment form.
+ 545:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 546:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Side Effects:
+ 547:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  Converts the ADC counts to the 2s complement form.
+ 548:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 549:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *******************************************************************************/
+ 550:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** int16 ADC_SAR_Seq_1_SAR_GetResult16( void )
+ 551:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** {
+ 669              		.loc 1 551 0
+ 670              		.cfi_startproc
+ 671              		@ args = 0, pretend = 0, frame = 8
+ 672              		@ frame_needed = 1, uses_anonymous_args = 0
+ 673              		@ link register save eliminated.
+ 674 0000 80B4     		push	{r7}
+ 675              		.cfi_def_cfa_offset 4
+ 676              		.cfi_offset 7, -4
+ 677 0002 83B0     		sub	sp, sp, #12
+ 678              		.cfi_def_cfa_offset 16
+ 679 0004 00AF     		add	r7, sp, #0
+ 680              		.cfi_def_cfa_register 7
+ 552:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     uint16 res;
+ 553:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 554:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     res = CY_GET_REG16(ADC_SAR_Seq_1_SAR_SAR_WRK_PTR);
+ 681              		.loc 1 554 0
+ 682 0006 084B     		ldr	r3, .L45
+ 683 0008 1B88     		ldrh	r3, [r3]	@ movhi
+ 684 000a FB80     		strh	r3, [r7, #6]	@ movhi
+ 555:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 556:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     return( (int16)res - ADC_SAR_Seq_1_SAR_shift );
+ 685              		.loc 1 556 0
+ 686 000c 074B     		ldr	r3, .L45+4
+ 687 000e 1B88     		ldrh	r3, [r3]	@ movhi
+ 688 0010 1BB2     		sxth	r3, r3
+ 689 0012 9BB2     		uxth	r3, r3
+ 690 0014 FA88     		ldrh	r2, [r7, #6]	@ movhi
+ 691 0016 D31A     		subs	r3, r2, r3
+ 692 0018 9BB2     		uxth	r3, r3
+ 693 001a 1BB2     		sxth	r3, r3
+ 557:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** }
+ 694              		.loc 1 557 0
+ 695 001c 1846     		mov	r0, r3
+ 696 001e 0C37     		adds	r7, r7, #12
+ 697              		.cfi_def_cfa_offset 4
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 23
+
+
+ 698 0020 BD46     		mov	sp, r7
+ 699              		.cfi_def_cfa_register 13
+ 700              		@ sp needed
+ 701 0022 80BC     		pop	{r7}
+ 702              		.cfi_restore 7
+ 703              		.cfi_def_cfa_offset 0
+ 704 0024 7047     		bx	lr
+ 705              	.L46:
+ 706 0026 00BF     		.align	2
+ 707              	.L45:
+ 708 0028 A25B0040 		.word	1073765282
+ 709 002c 00000000 		.word	ADC_SAR_Seq_1_SAR_shift
+ 710              		.cfi_endproc
+ 711              	.LFE10:
+ 712              		.size	ADC_SAR_Seq_1_SAR_GetResult16, .-ADC_SAR_Seq_1_SAR_GetResult16
+ 713              		.section	.text.ADC_SAR_Seq_1_SAR_SetOffset,"ax",%progbits
+ 714              		.align	2
+ 715              		.global	ADC_SAR_Seq_1_SAR_SetOffset
+ 716              		.thumb
+ 717              		.thumb_func
+ 718              		.type	ADC_SAR_Seq_1_SAR_SetOffset, %function
+ 719              	ADC_SAR_Seq_1_SAR_SetOffset:
+ 720              	.LFB11:
+ 558:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 559:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 560:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** /*******************************************************************************
+ 561:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Function Name: ADC_SAR_Seq_1_SAR_SetOffset
+ 562:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** ********************************************************************************
+ 563:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 564:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Summary:
+ 565:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  Sets the ADC offset, which is used by ADC_SAR_Seq_1_SAR_CountsTo_Volts(),
+ 566:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  ADC_SAR_Seq_1_SAR_CountsTo_mVolts(), and ADC_SAR_Seq_1_SAR_CountsTo_uVolts()
+ 567:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  to subtract the offset from the given reading before calculating the voltage
+ 568:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  conversion.
+ 569:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 570:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Parameters:
+ 571:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  int16: This value is measured when the inputs are shorted or connected to
+ 572:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****    the same input voltage.
+ 573:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 574:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Return:
+ 575:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  None.
+ 576:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 577:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Global Variables:
+ 578:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  The ADC_SAR_Seq_1_SAR_offset variable modified. This variable is used for
+ 579:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  offset calibration purpose.
+ 580:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  Affects the ADC_SAR_Seq_1_SAR_CountsTo_Volts,
+ 581:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  ADC_SAR_Seq_1_SAR_CountsTo_mVolts, ADC_SAR_Seq_1_SAR_CountsTo_uVolts functions
+ 582:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  by subtracting the given offset.
+ 583:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 584:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *******************************************************************************/
+ 585:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** void ADC_SAR_Seq_1_SAR_SetOffset(int16 offset)
+ 586:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** {
+ 721              		.loc 1 586 0
+ 722              		.cfi_startproc
+ 723              		@ args = 0, pretend = 0, frame = 8
+ 724              		@ frame_needed = 1, uses_anonymous_args = 0
+ 725              		@ link register save eliminated.
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 24
+
+
+ 726 0000 80B4     		push	{r7}
+ 727              		.cfi_def_cfa_offset 4
+ 728              		.cfi_offset 7, -4
+ 729 0002 83B0     		sub	sp, sp, #12
+ 730              		.cfi_def_cfa_offset 16
+ 731 0004 00AF     		add	r7, sp, #0
+ 732              		.cfi_def_cfa_register 7
+ 733 0006 0346     		mov	r3, r0
+ 734 0008 FB80     		strh	r3, [r7, #6]	@ movhi
+ 587:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     ADC_SAR_Seq_1_SAR_offset = offset;
+ 735              		.loc 1 587 0
+ 736 000a 044A     		ldr	r2, .L48
+ 737 000c FB88     		ldrh	r3, [r7, #6]	@ movhi
+ 738 000e 1380     		strh	r3, [r2]	@ movhi
+ 588:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** }
+ 739              		.loc 1 588 0
+ 740 0010 00BF     		nop
+ 741 0012 0C37     		adds	r7, r7, #12
+ 742              		.cfi_def_cfa_offset 4
+ 743 0014 BD46     		mov	sp, r7
+ 744              		.cfi_def_cfa_register 13
+ 745              		@ sp needed
+ 746 0016 80BC     		pop	{r7}
+ 747              		.cfi_restore 7
+ 748              		.cfi_def_cfa_offset 0
+ 749 0018 7047     		bx	lr
+ 750              	.L49:
+ 751 001a 00BF     		.align	2
+ 752              	.L48:
+ 753 001c 00000000 		.word	ADC_SAR_Seq_1_SAR_offset
+ 754              		.cfi_endproc
+ 755              	.LFE11:
+ 756              		.size	ADC_SAR_Seq_1_SAR_SetOffset, .-ADC_SAR_Seq_1_SAR_SetOffset
+ 757              		.section	.text.ADC_SAR_Seq_1_SAR_CalcGain,"ax",%progbits
+ 758              		.align	2
+ 759              		.thumb
+ 760              		.thumb_func
+ 761              		.type	ADC_SAR_Seq_1_SAR_CalcGain, %function
+ 762              	ADC_SAR_Seq_1_SAR_CalcGain:
+ 763              	.LFB12:
+ 589:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 590:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 591:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** /*******************************************************************************
+ 592:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Function Name: ADC_SAR_Seq_1_SAR_CalcGain
+ 593:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** ********************************************************************************
+ 594:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 595:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Summary:
+ 596:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  This function calculates the ADC gain in counts per 10 volt.
+ 597:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 598:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Parameters:
+ 599:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  uint8: resolution
+ 600:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 601:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Return:
+ 602:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  None.
+ 603:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 604:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Global Variables:
+ 605:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  ADC_SAR_Seq_1_SAR_shift variable initialized. This variable is used to
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 25
+
+
+ 606:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  convert the ADC counts to the 2s compliment form.
+ 607:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  ADC_SAR_Seq_1_SAR_countsPer10Volt variable initialized. This variable is used
+ 608:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  for gain calibration purpose.
+ 609:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 610:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *******************************************************************************/
+ 611:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** static void ADC_SAR_Seq_1_SAR_CalcGain( uint8 resolution )
+ 612:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** {
+ 764              		.loc 1 612 0
+ 765              		.cfi_startproc
+ 766              		@ args = 0, pretend = 0, frame = 16
+ 767              		@ frame_needed = 1, uses_anonymous_args = 0
+ 768 0000 80B5     		push	{r7, lr}
+ 769              		.cfi_def_cfa_offset 8
+ 770              		.cfi_offset 7, -8
+ 771              		.cfi_offset 14, -4
+ 772 0002 84B0     		sub	sp, sp, #16
+ 773              		.cfi_def_cfa_offset 24
+ 774 0004 00AF     		add	r7, sp, #0
+ 775              		.cfi_def_cfa_register 7
+ 776 0006 0346     		mov	r3, r0
+ 777 0008 FB71     		strb	r3, [r7, #7]
+ 613:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     int32 counts;
+ 614:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     #if(!((ADC_SAR_Seq_1_SAR_DEFAULT_RANGE == ADC_SAR_Seq_1_SAR__VSS_TO_VREF) || \
+ 615:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****          (ADC_SAR_Seq_1_SAR_DEFAULT_RANGE == ADC_SAR_Seq_1_SAR__VSSA_TO_VDDA) || \
+ 616:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****          (ADC_SAR_Seq_1_SAR_DEFAULT_RANGE == ADC_SAR_Seq_1_SAR__VSSA_TO_VDAC)) )
+ 617:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         uint16 diff_zero;
+ 618:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     #endif /* End ADC_SAR_Seq_1_SAR_DEFAULT_RANGE */
+ 619:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 620:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     switch (resolution)
+ 778              		.loc 1 620 0
+ 779 000a FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 780 000c 0A2B     		cmp	r3, #10
+ 781 000e 08D0     		beq	.L52
+ 782 0010 0C2B     		cmp	r3, #12
+ 783 0012 02D0     		beq	.L53
+ 784 0014 082B     		cmp	r3, #8
+ 785 0016 08D0     		beq	.L54
+ 786 0018 0BE0     		b	.L57
+ 787              	.L53:
+ 621:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     {
+ 622:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         case (uint8)ADC_SAR_Seq_1_SAR__BITS_12:
+ 623:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****             counts = (int32)ADC_SAR_Seq_1_SAR_SAR_WRK_MAX_12BIT;
+ 788              		.loc 1 623 0
+ 789 001a 4FF48053 		mov	r3, #4096
+ 790 001e FB60     		str	r3, [r7, #12]
+ 624:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****             #if(!((ADC_SAR_Seq_1_SAR_DEFAULT_RANGE == ADC_SAR_Seq_1_SAR__VSS_TO_VREF) || \
+ 625:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****                  (ADC_SAR_Seq_1_SAR_DEFAULT_RANGE == ADC_SAR_Seq_1_SAR__VSSA_TO_VDDA) || \
+ 626:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****                  (ADC_SAR_Seq_1_SAR_DEFAULT_RANGE == ADC_SAR_Seq_1_SAR__VSSA_TO_VDAC)) )
+ 627:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****                 diff_zero = ADC_SAR_Seq_1_SAR_SAR_DIFF_SHIFT;
+ 628:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****             #endif /* End ADC_SAR_Seq_1_SAR_DEFAULT_RANGE */
+ 629:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****             break;
+ 791              		.loc 1 629 0
+ 792 0020 0DE0     		b	.L55
+ 793              	.L52:
+ 630:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         case (uint8)ADC_SAR_Seq_1_SAR__BITS_10:
+ 631:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****             counts = (int32)ADC_SAR_Seq_1_SAR_SAR_WRK_MAX_10BIT;
+ 794              		.loc 1 631 0
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 26
+
+
+ 795 0022 4FF48063 		mov	r3, #1024
+ 796 0026 FB60     		str	r3, [r7, #12]
+ 632:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****             #if(!((ADC_SAR_Seq_1_SAR_DEFAULT_RANGE == ADC_SAR_Seq_1_SAR__VSS_TO_VREF) || \
+ 633:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****                  (ADC_SAR_Seq_1_SAR_DEFAULT_RANGE == ADC_SAR_Seq_1_SAR__VSSA_TO_VDDA) || \
+ 634:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****                  (ADC_SAR_Seq_1_SAR_DEFAULT_RANGE == ADC_SAR_Seq_1_SAR__VSSA_TO_VDAC)) )
+ 635:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****                 diff_zero = ADC_SAR_Seq_1_SAR_SAR_DIFF_SHIFT >> 2u;
+ 636:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****             #endif /* End ADC_SAR_Seq_1_SAR_DEFAULT_RANGE */
+ 637:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****             break;
+ 797              		.loc 1 637 0
+ 798 0028 09E0     		b	.L55
+ 799              	.L54:
+ 638:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         case (uint8)ADC_SAR_Seq_1_SAR__BITS_8:
+ 639:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****             counts = (int32)ADC_SAR_Seq_1_SAR_SAR_WRK_MAX_8BIT;
+ 800              		.loc 1 639 0
+ 801 002a 4FF48073 		mov	r3, #256
+ 802 002e FB60     		str	r3, [r7, #12]
+ 640:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****             #if(!((ADC_SAR_Seq_1_SAR_DEFAULT_RANGE == ADC_SAR_Seq_1_SAR__VSS_TO_VREF) || \
+ 641:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****                  (ADC_SAR_Seq_1_SAR_DEFAULT_RANGE == ADC_SAR_Seq_1_SAR__VSSA_TO_VDDA) || \
+ 642:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****                  (ADC_SAR_Seq_1_SAR_DEFAULT_RANGE == ADC_SAR_Seq_1_SAR__VSSA_TO_VDAC)) )
+ 643:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****                 diff_zero = ADC_SAR_Seq_1_SAR_SAR_DIFF_SHIFT >> 4u;
+ 644:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****             #endif /* End ADC_SAR_Seq_1_SAR_DEFAULT_RANGE */
+ 645:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****             break;
+ 803              		.loc 1 645 0
+ 804 0030 05E0     		b	.L55
+ 805              	.L57:
+ 646:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         default: /* Halt CPU in debug mode if resolution is out of valid range */
+ 647:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****             counts = 0;
+ 806              		.loc 1 647 0
+ 807 0032 0023     		movs	r3, #0
+ 808 0034 FB60     		str	r3, [r7, #12]
+ 648:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****             #if(!((ADC_SAR_Seq_1_SAR_DEFAULT_RANGE == ADC_SAR_Seq_1_SAR__VSS_TO_VREF) || \
+ 649:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****                  (ADC_SAR_Seq_1_SAR_DEFAULT_RANGE == ADC_SAR_Seq_1_SAR__VSSA_TO_VDDA) || \
+ 650:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****                  (ADC_SAR_Seq_1_SAR_DEFAULT_RANGE == ADC_SAR_Seq_1_SAR__VSSA_TO_VDAC)) )
+ 651:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****                 diff_zero = 0u;
+ 652:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****             #endif /* End ADC_SAR_Seq_1_SAR_DEFAULT_RANGE */
+ 653:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****             CYASSERT(0u != 0u);
+ 809              		.loc 1 653 0
+ 810 0036 0020     		movs	r0, #0
+ 811 0038 FFF7FEFF 		bl	CyHalt
+ 654:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****             break;
+ 812              		.loc 1 654 0
+ 813 003c 00BF     		nop
+ 814              	.L55:
+ 655:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     }
+ 656:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     ADC_SAR_Seq_1_SAR_countsPerVolt = 0; /* Clear obsolete variable */
+ 815              		.loc 1 656 0
+ 816 003e 0C4B     		ldr	r3, .L58
+ 817 0040 0022     		movs	r2, #0
+ 818 0042 1A80     		strh	r2, [r3]	@ movhi
+ 657:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     /* Calculate gain in counts per 10 volts with rounding */
+ 658:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     ADC_SAR_Seq_1_SAR_countsPer10Volt = (((counts * ADC_SAR_Seq_1_SAR_10MV_COUNTS) +
+ 819              		.loc 1 658 0
+ 820 0044 FB68     		ldr	r3, [r7, #12]
+ 821 0046 42F21072 		movw	r2, #10000
+ 822 004a 02FB03F3 		mul	r3, r2, r3
+ 823 004e 03F58063 		add	r3, r3, #1024
+ 659:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****                         ADC_SAR_Seq_1_SAR_DEFAULT_REF_VOLTAGE_MV) / (ADC_SAR_Seq_1_SAR_DEFAULT_REF_
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 27
+
+
+ 824              		.loc 1 659 0
+ 825 0052 002B     		cmp	r3, #0
+ 826 0054 01DA     		bge	.L56
+ 827 0056 03F2FF73 		addw	r3, r3, #2047
+ 828              	.L56:
+ 829 005a DB12     		asrs	r3, r3, #11
+ 830 005c 1A46     		mov	r2, r3
+ 658:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****                         ADC_SAR_Seq_1_SAR_DEFAULT_REF_VOLTAGE_MV) / (ADC_SAR_Seq_1_SAR_DEFAULT_REF_
+ 831              		.loc 1 658 0
+ 832 005e 054B     		ldr	r3, .L58+4
+ 833 0060 1A60     		str	r2, [r3]
+ 660:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 661:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     #if( (ADC_SAR_Seq_1_SAR_DEFAULT_RANGE == ADC_SAR_Seq_1_SAR__VSS_TO_VREF) || \
+ 662:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****          (ADC_SAR_Seq_1_SAR_DEFAULT_RANGE == ADC_SAR_Seq_1_SAR__VSSA_TO_VDDA) || \
+ 663:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****          (ADC_SAR_Seq_1_SAR_DEFAULT_RANGE == ADC_SAR_Seq_1_SAR__VSSA_TO_VDAC) )
+ 664:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         ADC_SAR_Seq_1_SAR_shift = 0;
+ 834              		.loc 1 664 0
+ 835 0062 054B     		ldr	r3, .L58+8
+ 836 0064 0022     		movs	r2, #0
+ 837 0066 1A80     		strh	r2, [r3]	@ movhi
+ 665:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     #else
+ 666:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         ADC_SAR_Seq_1_SAR_shift = diff_zero;
+ 667:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     #endif /* End ADC_SAR_Seq_1_SAR_DEFAULT_RANGE */
+ 668:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** }
+ 838              		.loc 1 668 0
+ 839 0068 00BF     		nop
+ 840 006a 1037     		adds	r7, r7, #16
+ 841              		.cfi_def_cfa_offset 8
+ 842 006c BD46     		mov	sp, r7
+ 843              		.cfi_def_cfa_register 13
+ 844              		@ sp needed
+ 845 006e 80BD     		pop	{r7, pc}
+ 846              	.L59:
+ 847              		.align	2
+ 848              	.L58:
+ 849 0070 00000000 		.word	ADC_SAR_Seq_1_SAR_countsPerVolt
+ 850 0074 00000000 		.word	ADC_SAR_Seq_1_SAR_countsPer10Volt
+ 851 0078 00000000 		.word	ADC_SAR_Seq_1_SAR_shift
+ 852              		.cfi_endproc
+ 853              	.LFE12:
+ 854              		.size	ADC_SAR_Seq_1_SAR_CalcGain, .-ADC_SAR_Seq_1_SAR_CalcGain
+ 855              		.section	.text.ADC_SAR_Seq_1_SAR_SetGain,"ax",%progbits
+ 856              		.align	2
+ 857              		.global	ADC_SAR_Seq_1_SAR_SetGain
+ 858              		.thumb
+ 859              		.thumb_func
+ 860              		.type	ADC_SAR_Seq_1_SAR_SetGain, %function
+ 861              	ADC_SAR_Seq_1_SAR_SetGain:
+ 862              	.LFB13:
+ 669:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 670:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 671:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** /*******************************************************************************
+ 672:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Function Name: ADC_SAR_Seq_1_SAR_SetGain
+ 673:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** ********************************************************************************
+ 674:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 675:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Summary:
+ 676:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  Sets the ADC gain in counts per volt for the voltage conversion functions
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 28
+
+
+ 677:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  that follow. This value is set by default by the reference and input range
+ 678:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  settings. It should only be used to further calibrate the ADC with a known
+ 679:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  input or if the ADC is using an external reference.
+ 680:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 681:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Parameters:
+ 682:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  int16 adcGain counts per volt
+ 683:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 684:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Return:
+ 685:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  None.
+ 686:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 687:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Global Variables:
+ 688:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  ADC_SAR_Seq_1_SAR_countsPer10Volt variable modified. This variable is used
+ 689:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  for gain calibration purpose.
+ 690:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 691:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *******************************************************************************/
+ 692:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** void ADC_SAR_Seq_1_SAR_SetGain(int16 adcGain)
+ 693:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** {
+ 863              		.loc 1 693 0
+ 864              		.cfi_startproc
+ 865              		@ args = 0, pretend = 0, frame = 8
+ 866              		@ frame_needed = 1, uses_anonymous_args = 0
+ 867              		@ link register save eliminated.
+ 868 0000 80B4     		push	{r7}
+ 869              		.cfi_def_cfa_offset 4
+ 870              		.cfi_offset 7, -4
+ 871 0002 83B0     		sub	sp, sp, #12
+ 872              		.cfi_def_cfa_offset 16
+ 873 0004 00AF     		add	r7, sp, #0
+ 874              		.cfi_def_cfa_register 7
+ 875 0006 0346     		mov	r3, r0
+ 876 0008 FB80     		strh	r3, [r7, #6]	@ movhi
+ 694:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     ADC_SAR_Seq_1_SAR_countsPer10Volt = (int32)adcGain * 10;
+ 877              		.loc 1 694 0
+ 878 000a B7F90620 		ldrsh	r2, [r7, #6]
+ 879 000e 1346     		mov	r3, r2
+ 880 0010 9B00     		lsls	r3, r3, #2
+ 881 0012 1344     		add	r3, r3, r2
+ 882 0014 5B00     		lsls	r3, r3, #1
+ 883 0016 1A46     		mov	r2, r3
+ 884 0018 034B     		ldr	r3, .L61
+ 885 001a 1A60     		str	r2, [r3]
+ 695:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** }
+ 886              		.loc 1 695 0
+ 887 001c 00BF     		nop
+ 888 001e 0C37     		adds	r7, r7, #12
+ 889              		.cfi_def_cfa_offset 4
+ 890 0020 BD46     		mov	sp, r7
+ 891              		.cfi_def_cfa_register 13
+ 892              		@ sp needed
+ 893 0022 80BC     		pop	{r7}
+ 894              		.cfi_restore 7
+ 895              		.cfi_def_cfa_offset 0
+ 896 0024 7047     		bx	lr
+ 897              	.L62:
+ 898 0026 00BF     		.align	2
+ 899              	.L61:
+ 900 0028 00000000 		.word	ADC_SAR_Seq_1_SAR_countsPer10Volt
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 29
+
+
+ 901              		.cfi_endproc
+ 902              	.LFE13:
+ 903              		.size	ADC_SAR_Seq_1_SAR_SetGain, .-ADC_SAR_Seq_1_SAR_SetGain
+ 904              		.section	.text.ADC_SAR_Seq_1_SAR_SetScaledGain,"ax",%progbits
+ 905              		.align	2
+ 906              		.global	ADC_SAR_Seq_1_SAR_SetScaledGain
+ 907              		.thumb
+ 908              		.thumb_func
+ 909              		.type	ADC_SAR_Seq_1_SAR_SetScaledGain, %function
+ 910              	ADC_SAR_Seq_1_SAR_SetScaledGain:
+ 911              	.LFB14:
+ 696:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 697:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 698:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** /*******************************************************************************
+ 699:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Function Name: ADC_SAR_Seq_1_SAR_SetScaledGain
+ 700:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** ********************************************************************************
+ 701:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 702:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Summary:
+ 703:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  Sets the ADC gain in counts per 10 volt for the voltage conversion functions
+ 704:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  that follow. This value is set by default by the reference and input range
+ 705:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  settings. It should only be used to further calibrate the ADC with a known
+ 706:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  input or if the ADC is using an external reference.
+ 707:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 708:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Parameters:
+ 709:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  int32 adcGain  counts per 10 volt
+ 710:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 711:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Return:
+ 712:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  None.
+ 713:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 714:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Global Variables:
+ 715:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  ADC_SAR_Seq_1_SAR_countsPer10Volt variable modified. This variable is used
+ 716:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  for gain calibration purpose.
+ 717:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 718:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *******************************************************************************/
+ 719:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** void ADC_SAR_Seq_1_SAR_SetScaledGain(int32 adcGain)
+ 720:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** {
+ 912              		.loc 1 720 0
+ 913              		.cfi_startproc
+ 914              		@ args = 0, pretend = 0, frame = 8
+ 915              		@ frame_needed = 1, uses_anonymous_args = 0
+ 916              		@ link register save eliminated.
+ 917 0000 80B4     		push	{r7}
+ 918              		.cfi_def_cfa_offset 4
+ 919              		.cfi_offset 7, -4
+ 920 0002 83B0     		sub	sp, sp, #12
+ 921              		.cfi_def_cfa_offset 16
+ 922 0004 00AF     		add	r7, sp, #0
+ 923              		.cfi_def_cfa_register 7
+ 924 0006 7860     		str	r0, [r7, #4]
+ 721:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     ADC_SAR_Seq_1_SAR_countsPer10Volt = adcGain;
+ 925              		.loc 1 721 0
+ 926 0008 034A     		ldr	r2, .L64
+ 927 000a 7B68     		ldr	r3, [r7, #4]
+ 928 000c 1360     		str	r3, [r2]
+ 722:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** }
+ 929              		.loc 1 722 0
+ 930 000e 00BF     		nop
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 30
+
+
+ 931 0010 0C37     		adds	r7, r7, #12
+ 932              		.cfi_def_cfa_offset 4
+ 933 0012 BD46     		mov	sp, r7
+ 934              		.cfi_def_cfa_register 13
+ 935              		@ sp needed
+ 936 0014 80BC     		pop	{r7}
+ 937              		.cfi_restore 7
+ 938              		.cfi_def_cfa_offset 0
+ 939 0016 7047     		bx	lr
+ 940              	.L65:
+ 941              		.align	2
+ 942              	.L64:
+ 943 0018 00000000 		.word	ADC_SAR_Seq_1_SAR_countsPer10Volt
+ 944              		.cfi_endproc
+ 945              	.LFE14:
+ 946              		.size	ADC_SAR_Seq_1_SAR_SetScaledGain, .-ADC_SAR_Seq_1_SAR_SetScaledGain
+ 947              		.section	.text.ADC_SAR_Seq_1_SAR_CountsTo_mVolts,"ax",%progbits
+ 948              		.align	2
+ 949              		.global	ADC_SAR_Seq_1_SAR_CountsTo_mVolts
+ 950              		.thumb
+ 951              		.thumb_func
+ 952              		.type	ADC_SAR_Seq_1_SAR_CountsTo_mVolts, %function
+ 953              	ADC_SAR_Seq_1_SAR_CountsTo_mVolts:
+ 954              	.LFB15:
+ 723:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 724:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 725:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** /*******************************************************************************
+ 726:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Function Name: ADC_SAR_Seq_1_SAR_CountsTo_mVolts
+ 727:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** ********************************************************************************
+ 728:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 729:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Summary:
+ 730:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  Converts the ADC output to millivolts as a 16-bit integer.
+ 731:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 732:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Parameters:
+ 733:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  int16 adcCounts:  Result from the ADC conversion
+ 734:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 735:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Return:
+ 736:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  int16 Result in mVolts
+ 737:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 738:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Global Variables:
+ 739:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  ADC_SAR_Seq_1_SAR_offset variable used.
+ 740:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  ADC_SAR_Seq_1_SAR_countsPer10Volt variable used.
+ 741:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 742:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *******************************************************************************/
+ 743:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** int16 ADC_SAR_Seq_1_SAR_CountsTo_mVolts(int16 adcCounts)
+ 744:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** {
+ 955              		.loc 1 744 0
+ 956              		.cfi_startproc
+ 957              		@ args = 0, pretend = 0, frame = 16
+ 958              		@ frame_needed = 1, uses_anonymous_args = 0
+ 959              		@ link register save eliminated.
+ 960 0000 80B4     		push	{r7}
+ 961              		.cfi_def_cfa_offset 4
+ 962              		.cfi_offset 7, -4
+ 963 0002 85B0     		sub	sp, sp, #20
+ 964              		.cfi_def_cfa_offset 24
+ 965 0004 00AF     		add	r7, sp, #0
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 31
+
+
+ 966              		.cfi_def_cfa_register 7
+ 967 0006 0346     		mov	r3, r0
+ 968 0008 FB80     		strh	r3, [r7, #6]	@ movhi
+ 745:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     int16 mVolts;
+ 746:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     int32 countsPer10Volt;
+ 747:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 748:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     if(ADC_SAR_Seq_1_SAR_countsPerVolt != 0)
+ 969              		.loc 1 748 0
+ 970 000a 1D4B     		ldr	r3, .L72
+ 971 000c 1B88     		ldrh	r3, [r3]	@ movhi
+ 972 000e 1BB2     		sxth	r3, r3
+ 973 0010 002B     		cmp	r3, #0
+ 974 0012 09D0     		beq	.L67
+ 749:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     {   /* Support obsolete method */
+ 750:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         countsPer10Volt = (int32)ADC_SAR_Seq_1_SAR_countsPerVolt * 10;
+ 975              		.loc 1 750 0
+ 976 0014 1A4B     		ldr	r3, .L72
+ 977 0016 1B88     		ldrh	r3, [r3]	@ movhi
+ 978 0018 1BB2     		sxth	r3, r3
+ 979 001a 1A46     		mov	r2, r3
+ 980 001c 1346     		mov	r3, r2
+ 981 001e 9B00     		lsls	r3, r3, #2
+ 982 0020 1344     		add	r3, r3, r2
+ 983 0022 5B00     		lsls	r3, r3, #1
+ 984 0024 FB60     		str	r3, [r7, #12]
+ 985 0026 02E0     		b	.L68
+ 986              	.L67:
+ 751:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     }
+ 752:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     else
+ 753:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     {
+ 754:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         countsPer10Volt = ADC_SAR_Seq_1_SAR_countsPer10Volt;
+ 987              		.loc 1 754 0
+ 988 0028 164B     		ldr	r3, .L72+4
+ 989 002a 1B68     		ldr	r3, [r3]
+ 990 002c FB60     		str	r3, [r7, #12]
+ 991              	.L68:
+ 755:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     }
+ 756:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 757:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     /* Subtract ADC offset */
+ 758:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     adcCounts -= ADC_SAR_Seq_1_SAR_offset;
+ 992              		.loc 1 758 0
+ 993 002e 164B     		ldr	r3, .L72+8
+ 994 0030 1B88     		ldrh	r3, [r3]	@ movhi
+ 995 0032 1BB2     		sxth	r3, r3
+ 996 0034 FA88     		ldrh	r2, [r7, #6]
+ 997 0036 9BB2     		uxth	r3, r3
+ 998 0038 D31A     		subs	r3, r2, r3
+ 999 003a 9BB2     		uxth	r3, r3
+ 1000 003c FB80     		strh	r3, [r7, #6]	@ movhi
+ 759:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     /* Convert to millivolts with rounding */
+ 760:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     mVolts = (int16)( (( (int32)adcCounts * ADC_SAR_Seq_1_SAR_10MV_COUNTS ) + ( (adcCounts > 0) ?
+ 1001              		.loc 1 760 0
+ 1002 003e B7F90630 		ldrsh	r3, [r7, #6]
+ 1003 0042 42F21072 		movw	r2, #10000
+ 1004 0046 02FB03F2 		mul	r2, r2, r3
+ 761:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****                        (countsPer10Volt / 2) : (-(countsPer10Volt / 2)) )) / countsPer10Volt);
+ 1005              		.loc 1 761 0
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 32
+
+
+ 1006 004a B7F90630 		ldrsh	r3, [r7, #6]
+ 1007 004e 002B     		cmp	r3, #0
+ 1008 0050 04DD     		ble	.L69
+ 1009              		.loc 1 761 0 is_stmt 0 discriminator 1
+ 1010 0052 FB68     		ldr	r3, [r7, #12]
+ 1011 0054 D90F     		lsrs	r1, r3, #31
+ 1012 0056 0B44     		add	r3, r3, r1
+ 1013 0058 5B10     		asrs	r3, r3, #1
+ 1014 005a 04E0     		b	.L70
+ 1015              	.L69:
+ 1016              		.loc 1 761 0 discriminator 2
+ 1017 005c FB68     		ldr	r3, [r7, #12]
+ 1018 005e D90F     		lsrs	r1, r3, #31
+ 1019 0060 0B44     		add	r3, r3, r1
+ 1020 0062 5B10     		asrs	r3, r3, #1
+ 1021 0064 5B42     		negs	r3, r3
+ 1022              	.L70:
+ 760:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****                        (countsPer10Volt / 2) : (-(countsPer10Volt / 2)) )) / countsPer10Volt);
+ 1023              		.loc 1 760 0 is_stmt 1
+ 1024 0066 1A44     		add	r2, r2, r3
+ 1025              		.loc 1 761 0
+ 1026 0068 FB68     		ldr	r3, [r7, #12]
+ 1027 006a 92FBF3F3 		sdiv	r3, r2, r3
+ 760:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****                        (countsPer10Volt / 2) : (-(countsPer10Volt / 2)) )) / countsPer10Volt);
+ 1028              		.loc 1 760 0
+ 1029 006e 7B81     		strh	r3, [r7, #10]	@ movhi
+ 762:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 763:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     return( mVolts );
+ 1030              		.loc 1 763 0
+ 1031 0070 B7F90A30 		ldrsh	r3, [r7, #10]
+ 764:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** }
+ 1032              		.loc 1 764 0
+ 1033 0074 1846     		mov	r0, r3
+ 1034 0076 1437     		adds	r7, r7, #20
+ 1035              		.cfi_def_cfa_offset 4
+ 1036 0078 BD46     		mov	sp, r7
+ 1037              		.cfi_def_cfa_register 13
+ 1038              		@ sp needed
+ 1039 007a 80BC     		pop	{r7}
+ 1040              		.cfi_restore 7
+ 1041              		.cfi_def_cfa_offset 0
+ 1042 007c 7047     		bx	lr
+ 1043              	.L73:
+ 1044 007e 00BF     		.align	2
+ 1045              	.L72:
+ 1046 0080 00000000 		.word	ADC_SAR_Seq_1_SAR_countsPerVolt
+ 1047 0084 00000000 		.word	ADC_SAR_Seq_1_SAR_countsPer10Volt
+ 1048 0088 00000000 		.word	ADC_SAR_Seq_1_SAR_offset
+ 1049              		.cfi_endproc
+ 1050              	.LFE15:
+ 1051              		.size	ADC_SAR_Seq_1_SAR_CountsTo_mVolts, .-ADC_SAR_Seq_1_SAR_CountsTo_mVolts
+ 1052              		.global	__aeabi_ldivmod
+ 1053              		.section	.text.ADC_SAR_Seq_1_SAR_CountsTo_uVolts,"ax",%progbits
+ 1054              		.align	2
+ 1055              		.global	ADC_SAR_Seq_1_SAR_CountsTo_uVolts
+ 1056              		.thumb
+ 1057              		.thumb_func
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 33
+
+
+ 1058              		.type	ADC_SAR_Seq_1_SAR_CountsTo_uVolts, %function
+ 1059              	ADC_SAR_Seq_1_SAR_CountsTo_uVolts:
+ 1060              	.LFB16:
+ 765:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 766:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 767:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** /*******************************************************************************
+ 768:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Function Name: ADC_SAR_Seq_1_SAR_CountsTo_uVolts
+ 769:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** ********************************************************************************
+ 770:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 771:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Summary:
+ 772:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  Converts the ADC output to microvolts as a 32-bit integer.
+ 773:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 774:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Parameters:
+ 775:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  int16 adcCounts: Result from the ADC conversion
+ 776:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 777:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Return:
+ 778:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  int32 Result in micro Volts
+ 779:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 780:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Global Variables:
+ 781:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  ADC_SAR_Seq_1_SAR_offset variable used.
+ 782:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  ADC_SAR_Seq_1_SAR_countsPer10Volt used to convert ADC counts to uVolts.
+ 783:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 784:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *******************************************************************************/
+ 785:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** int32 ADC_SAR_Seq_1_SAR_CountsTo_uVolts(int16 adcCounts)
+ 786:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** {
+ 1061              		.loc 1 786 0
+ 1062              		.cfi_startproc
+ 1063              		@ args = 0, pretend = 0, frame = 24
+ 1064              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1065 0000 90B5     		push	{r4, r7, lr}
+ 1066              		.cfi_def_cfa_offset 12
+ 1067              		.cfi_offset 4, -12
+ 1068              		.cfi_offset 7, -8
+ 1069              		.cfi_offset 14, -4
+ 1070 0002 87B0     		sub	sp, sp, #28
+ 1071              		.cfi_def_cfa_offset 40
+ 1072 0004 00AF     		add	r7, sp, #0
+ 1073              		.cfi_def_cfa_register 7
+ 1074 0006 0346     		mov	r3, r0
+ 1075 0008 FB80     		strh	r3, [r7, #6]	@ movhi
+ 787:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 788:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     int64 uVolts;
+ 789:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     int32 countsPer10Volt;
+ 790:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 791:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     if(ADC_SAR_Seq_1_SAR_countsPerVolt != 0)
+ 1076              		.loc 1 791 0
+ 1077 000a 1D4B     		ldr	r3, .L78
+ 1078 000c 1B88     		ldrh	r3, [r3]	@ movhi
+ 1079 000e 1BB2     		sxth	r3, r3
+ 1080 0010 002B     		cmp	r3, #0
+ 1081 0012 09D0     		beq	.L75
+ 792:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     {   /* Support obsolete method */
+ 793:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         countsPer10Volt = (int32)ADC_SAR_Seq_1_SAR_countsPerVolt * 10;
+ 1082              		.loc 1 793 0
+ 1083 0014 1A4B     		ldr	r3, .L78
+ 1084 0016 1B88     		ldrh	r3, [r3]	@ movhi
+ 1085 0018 1BB2     		sxth	r3, r3
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 34
+
+
+ 1086 001a 1A46     		mov	r2, r3
+ 1087 001c 1346     		mov	r3, r2
+ 1088 001e 9B00     		lsls	r3, r3, #2
+ 1089 0020 1344     		add	r3, r3, r2
+ 1090 0022 5B00     		lsls	r3, r3, #1
+ 1091 0024 7B61     		str	r3, [r7, #20]
+ 1092 0026 02E0     		b	.L76
+ 1093              	.L75:
+ 794:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     }
+ 795:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     else
+ 796:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     {
+ 797:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         countsPer10Volt = ADC_SAR_Seq_1_SAR_countsPer10Volt;
+ 1094              		.loc 1 797 0
+ 1095 0028 164B     		ldr	r3, .L78+4
+ 1096 002a 1B68     		ldr	r3, [r3]
+ 1097 002c 7B61     		str	r3, [r7, #20]
+ 1098              	.L76:
+ 798:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     }
+ 799:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 800:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     /* Subtract ADC offset */
+ 801:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     adcCounts -= ADC_SAR_Seq_1_SAR_offset;
+ 1099              		.loc 1 801 0
+ 1100 002e 164B     		ldr	r3, .L78+8
+ 1101 0030 1B88     		ldrh	r3, [r3]	@ movhi
+ 1102 0032 1BB2     		sxth	r3, r3
+ 1103 0034 FA88     		ldrh	r2, [r7, #6]
+ 1104 0036 9BB2     		uxth	r3, r3
+ 1105 0038 D31A     		subs	r3, r2, r3
+ 1106 003a 9BB2     		uxth	r3, r3
+ 1107 003c FB80     		strh	r3, [r7, #6]	@ movhi
+ 802:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     /* To convert adcCounts to microVolts it is required to be multiplied
+ 803:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     *  on 10 million and later divide on gain in counts per 10V.
+ 804:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     */
+ 805:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     uVolts = (( (int64)adcCounts * ADC_SAR_Seq_1_SAR_10UV_COUNTS ) / countsPer10Volt);
+ 1108              		.loc 1 805 0
+ 1109 003e B7F90630 		ldrsh	r3, [r7, #6]
+ 1110 0042 4FEAE374 		asr	r4, r3, #31
+ 1111 0046 114A     		ldr	r2, .L78+12
+ 1112 0048 02FB04F1 		mul	r1, r2, r4
+ 1113 004c 0022     		movs	r2, #0
+ 1114 004e 02FB03F2 		mul	r2, r2, r3
+ 1115 0052 0A44     		add	r2, r2, r1
+ 1116 0054 0D49     		ldr	r1, .L78+12
+ 1117 0056 A3FB0101 		umull	r0, r1, r3, r1
+ 1118 005a 5318     		adds	r3, r2, r1
+ 1119 005c 1946     		mov	r1, r3
+ 1120 005e 7B69     		ldr	r3, [r7, #20]
+ 1121 0060 4FEAE374 		asr	r4, r3, #31
+ 1122 0064 1A46     		mov	r2, r3
+ 1123 0066 2346     		mov	r3, r4
+ 1124 0068 FFF7FEFF 		bl	__aeabi_ldivmod
+ 1125 006c 0346     		mov	r3, r0
+ 1126 006e 0C46     		mov	r4, r1
+ 1127 0070 C7E90234 		strd	r3, [r7, #8]
+ 806:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 807:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     return((int32) uVolts );
+ 1128              		.loc 1 807 0
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 35
+
+
+ 1129 0074 BB68     		ldr	r3, [r7, #8]
+ 808:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** }
+ 1130              		.loc 1 808 0
+ 1131 0076 1846     		mov	r0, r3
+ 1132 0078 1C37     		adds	r7, r7, #28
+ 1133              		.cfi_def_cfa_offset 12
+ 1134 007a BD46     		mov	sp, r7
+ 1135              		.cfi_def_cfa_register 13
+ 1136              		@ sp needed
+ 1137 007c 90BD     		pop	{r4, r7, pc}
+ 1138              	.L79:
+ 1139 007e 00BF     		.align	2
+ 1140              	.L78:
+ 1141 0080 00000000 		.word	ADC_SAR_Seq_1_SAR_countsPerVolt
+ 1142 0084 00000000 		.word	ADC_SAR_Seq_1_SAR_countsPer10Volt
+ 1143 0088 00000000 		.word	ADC_SAR_Seq_1_SAR_offset
+ 1144 008c 80969800 		.word	10000000
+ 1145              		.cfi_endproc
+ 1146              	.LFE16:
+ 1147              		.size	ADC_SAR_Seq_1_SAR_CountsTo_uVolts, .-ADC_SAR_Seq_1_SAR_CountsTo_uVolts
+ 1148              		.global	__aeabi_i2f
+ 1149              		.global	__aeabi_fmul
+ 1150              		.global	__aeabi_fdiv
+ 1151              		.section	.text.ADC_SAR_Seq_1_SAR_CountsTo_Volts,"ax",%progbits
+ 1152              		.align	2
+ 1153              		.global	ADC_SAR_Seq_1_SAR_CountsTo_Volts
+ 1154              		.thumb
+ 1155              		.thumb_func
+ 1156              		.type	ADC_SAR_Seq_1_SAR_CountsTo_Volts, %function
+ 1157              	ADC_SAR_Seq_1_SAR_CountsTo_Volts:
+ 1158              	.LFB17:
+ 809:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 810:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 811:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** /*******************************************************************************
+ 812:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Function Name: ADC_SAR_Seq_1_SAR_CountsTo_Volts
+ 813:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** ********************************************************************************
+ 814:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 815:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Summary:
+ 816:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  Converts the ADC output to volts as a floating-point number.
+ 817:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 818:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Parameters:
+ 819:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  int16 adcCounts: Result from the ADC conversion
+ 820:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 821:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Return:
+ 822:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  float Result in Volts
+ 823:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 824:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** * Global Variables:
+ 825:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  ADC_SAR_Seq_1_SAR_offset variable used.
+ 826:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *  ADC_SAR_Seq_1_SAR_countsPer10Volt used to convert ADC counts to Volts.
+ 827:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *
+ 828:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** *******************************************************************************/
+ 829:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** float32 ADC_SAR_Seq_1_SAR_CountsTo_Volts(int16 adcCounts)
+ 830:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** {
+ 1159              		.loc 1 830 0
+ 1160              		.cfi_startproc
+ 1161              		@ args = 0, pretend = 0, frame = 16
+ 1162              		@ frame_needed = 1, uses_anonymous_args = 0
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 36
+
+
+ 1163 0000 90B5     		push	{r4, r7, lr}
+ 1164              		.cfi_def_cfa_offset 12
+ 1165              		.cfi_offset 4, -12
+ 1166              		.cfi_offset 7, -8
+ 1167              		.cfi_offset 14, -4
+ 1168 0002 85B0     		sub	sp, sp, #20
+ 1169              		.cfi_def_cfa_offset 32
+ 1170 0004 00AF     		add	r7, sp, #0
+ 1171              		.cfi_def_cfa_register 7
+ 1172 0006 0346     		mov	r3, r0
+ 1173 0008 FB80     		strh	r3, [r7, #6]	@ movhi
+ 831:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     float32 volts;
+ 832:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     int32 countsPer10Volt;
+ 833:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 834:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     if(ADC_SAR_Seq_1_SAR_countsPerVolt != 0)
+ 1174              		.loc 1 834 0
+ 1175 000a 1A4B     		ldr	r3, .L84
+ 1176 000c 1B88     		ldrh	r3, [r3]	@ movhi
+ 1177 000e 1BB2     		sxth	r3, r3
+ 1178 0010 002B     		cmp	r3, #0
+ 1179 0012 09D0     		beq	.L81
+ 835:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     {   /* Support obsolete method */
+ 836:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         countsPer10Volt = (int32)ADC_SAR_Seq_1_SAR_countsPerVolt * 10;
+ 1180              		.loc 1 836 0
+ 1181 0014 174B     		ldr	r3, .L84
+ 1182 0016 1B88     		ldrh	r3, [r3]	@ movhi
+ 1183 0018 1BB2     		sxth	r3, r3
+ 1184 001a 1A46     		mov	r2, r3
+ 1185 001c 1346     		mov	r3, r2
+ 1186 001e 9B00     		lsls	r3, r3, #2
+ 1187 0020 1344     		add	r3, r3, r2
+ 1188 0022 5B00     		lsls	r3, r3, #1
+ 1189 0024 FB60     		str	r3, [r7, #12]
+ 1190 0026 02E0     		b	.L82
+ 1191              	.L81:
+ 837:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     }
+ 838:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     else
+ 839:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     {
+ 840:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****         countsPer10Volt = ADC_SAR_Seq_1_SAR_countsPer10Volt;
+ 1192              		.loc 1 840 0
+ 1193 0028 134B     		ldr	r3, .L84+4
+ 1194 002a 1B68     		ldr	r3, [r3]
+ 1195 002c FB60     		str	r3, [r7, #12]
+ 1196              	.L82:
+ 841:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     }
+ 842:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 843:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     /* Subtract ADC offset */
+ 844:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     adcCounts -= ADC_SAR_Seq_1_SAR_offset;
+ 1197              		.loc 1 844 0
+ 1198 002e 134B     		ldr	r3, .L84+8
+ 1199 0030 1B88     		ldrh	r3, [r3]	@ movhi
+ 1200 0032 1BB2     		sxth	r3, r3
+ 1201 0034 FA88     		ldrh	r2, [r7, #6]
+ 1202 0036 9BB2     		uxth	r3, r3
+ 1203 0038 D31A     		subs	r3, r2, r3
+ 1204 003a 9BB2     		uxth	r3, r3
+ 1205 003c FB80     		strh	r3, [r7, #6]	@ movhi
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 37
+
+
+ 845:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 846:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     volts = ((float32)adcCounts * ADC_SAR_Seq_1_SAR_10V_COUNTS) / (float32)countsPer10Volt;
+ 1206              		.loc 1 846 0
+ 1207 003e B7F90630 		ldrsh	r3, [r7, #6]
+ 1208 0042 1846     		mov	r0, r3
+ 1209 0044 FFF7FEFF 		bl	__aeabi_i2f
+ 1210 0048 0346     		mov	r3, r0
+ 1211 004a 0D49     		ldr	r1, .L84+12
+ 1212 004c 1846     		mov	r0, r3
+ 1213 004e FFF7FEFF 		bl	__aeabi_fmul
+ 1214 0052 0346     		mov	r3, r0
+ 1215 0054 1C46     		mov	r4, r3
+ 1216 0056 F868     		ldr	r0, [r7, #12]
+ 1217 0058 FFF7FEFF 		bl	__aeabi_i2f
+ 1218 005c 0346     		mov	r3, r0
+ 1219 005e 1946     		mov	r1, r3
+ 1220 0060 2046     		mov	r0, r4
+ 1221 0062 FFF7FEFF 		bl	__aeabi_fdiv
+ 1222 0066 0346     		mov	r3, r0
+ 1223 0068 BB60     		str	r3, [r7, #8]	@ float
+ 847:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** 
+ 848:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c ****     return( volts );
+ 1224              		.loc 1 848 0
+ 1225 006a BB68     		ldr	r3, [r7, #8]	@ float
+ 849:Generated_Source\PSoC5/ADC_SAR_Seq_1_SAR.c **** }
+ 1226              		.loc 1 849 0
+ 1227 006c 1846     		mov	r0, r3
+ 1228 006e 1437     		adds	r7, r7, #20
+ 1229              		.cfi_def_cfa_offset 12
+ 1230 0070 BD46     		mov	sp, r7
+ 1231              		.cfi_def_cfa_register 13
+ 1232              		@ sp needed
+ 1233 0072 90BD     		pop	{r4, r7, pc}
+ 1234              	.L85:
+ 1235              		.align	2
+ 1236              	.L84:
+ 1237 0074 00000000 		.word	ADC_SAR_Seq_1_SAR_countsPerVolt
+ 1238 0078 00000000 		.word	ADC_SAR_Seq_1_SAR_countsPer10Volt
+ 1239 007c 00000000 		.word	ADC_SAR_Seq_1_SAR_offset
+ 1240 0080 00002041 		.word	1092616192
+ 1241              		.cfi_endproc
+ 1242              	.LFE17:
+ 1243              		.size	ADC_SAR_Seq_1_SAR_CountsTo_Volts, .-ADC_SAR_Seq_1_SAR_CountsTo_Volts
+ 1244              		.text
+ 1245              	.Letext0:
+ 1246              		.file 2 "Generated_Source\\PSoC5\\cytypes.h"
+ 1247              		.section	.debug_info,"",%progbits
+ 1248              	.Ldebug_info0:
+ 1249 0000 5E040000 		.4byte	0x45e
+ 1250 0004 0400     		.2byte	0x4
+ 1251 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 1252 000a 04       		.byte	0x4
+ 1253 000b 01       		.uleb128 0x1
+ 1254 000c 6D000000 		.4byte	.LASF58
+ 1255 0010 0C       		.byte	0xc
+ 1256 0011 4E030000 		.4byte	.LASF59
+ 1257 0015 E8010000 		.4byte	.LASF60
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 38
+
+
+ 1258 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 1259 001d 00000000 		.4byte	0
+ 1260 0021 00000000 		.4byte	.Ldebug_line0
+ 1261 0025 02       		.uleb128 0x2
+ 1262 0026 04       		.byte	0x4
+ 1263 0027 05       		.byte	0x5
+ 1264 0028 696E7400 		.ascii	"int\000"
+ 1265 002c 03       		.uleb128 0x3
+ 1266 002d 04       		.byte	0x4
+ 1267 002e 07       		.byte	0x7
+ 1268 002f 7A020000 		.4byte	.LASF0
+ 1269 0033 03       		.uleb128 0x3
+ 1270 0034 08       		.byte	0x8
+ 1271 0035 05       		.byte	0x5
+ 1272 0036 12010000 		.4byte	.LASF1
+ 1273 003a 03       		.uleb128 0x3
+ 1274 003b 08       		.byte	0x8
+ 1275 003c 04       		.byte	0x4
+ 1276 003d 29030000 		.4byte	.LASF2
+ 1277 0041 03       		.uleb128 0x3
+ 1278 0042 01       		.byte	0x1
+ 1279 0043 06       		.byte	0x6
+ 1280 0044 20010000 		.4byte	.LASF3
+ 1281 0048 03       		.uleb128 0x3
+ 1282 0049 01       		.byte	0x1
+ 1283 004a 08       		.byte	0x8
+ 1284 004b DF030000 		.4byte	.LASF4
+ 1285 004f 03       		.uleb128 0x3
+ 1286 0050 02       		.byte	0x2
+ 1287 0051 05       		.byte	0x5
+ 1288 0052 0D040000 		.4byte	.LASF5
+ 1289 0056 03       		.uleb128 0x3
+ 1290 0057 02       		.byte	0x2
+ 1291 0058 07       		.byte	0x7
+ 1292 0059 C0020000 		.4byte	.LASF6
+ 1293 005d 03       		.uleb128 0x3
+ 1294 005e 04       		.byte	0x4
+ 1295 005f 05       		.byte	0x5
+ 1296 0060 52010000 		.4byte	.LASF7
+ 1297 0064 03       		.uleb128 0x3
+ 1298 0065 04       		.byte	0x4
+ 1299 0066 07       		.byte	0x7
+ 1300 0067 A8020000 		.4byte	.LASF8
+ 1301 006b 03       		.uleb128 0x3
+ 1302 006c 08       		.byte	0x8
+ 1303 006d 07       		.byte	0x7
+ 1304 006e FB000000 		.4byte	.LASF9
+ 1305 0072 03       		.uleb128 0x3
+ 1306 0073 04       		.byte	0x4
+ 1307 0074 07       		.byte	0x7
+ 1308 0075 20030000 		.4byte	.LASF10
+ 1309 0079 03       		.uleb128 0x3
+ 1310 007a 01       		.byte	0x1
+ 1311 007b 08       		.byte	0x8
+ 1312 007c 77040000 		.4byte	.LASF11
+ 1313 0080 04       		.uleb128 0x4
+ 1314 0081 80010000 		.4byte	.LASF12
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 39
+
+
+ 1315 0085 02       		.byte	0x2
+ 1316 0086 E901     		.2byte	0x1e9
+ 1317 0088 48000000 		.4byte	0x48
+ 1318 008c 04       		.uleb128 0x4
+ 1319 008d 00000000 		.4byte	.LASF13
+ 1320 0091 02       		.byte	0x2
+ 1321 0092 EA01     		.2byte	0x1ea
+ 1322 0094 56000000 		.4byte	0x56
+ 1323 0098 04       		.uleb128 0x4
+ 1324 0099 D3020000 		.4byte	.LASF14
+ 1325 009d 02       		.byte	0x2
+ 1326 009e EC01     		.2byte	0x1ec
+ 1327 00a0 41000000 		.4byte	0x41
+ 1328 00a4 04       		.uleb128 0x4
+ 1329 00a5 D1040000 		.4byte	.LASF15
+ 1330 00a9 02       		.byte	0x2
+ 1331 00aa ED01     		.2byte	0x1ed
+ 1332 00ac 4F000000 		.4byte	0x4f
+ 1333 00b0 04       		.uleb128 0x4
+ 1334 00b1 2C010000 		.4byte	.LASF16
+ 1335 00b5 02       		.byte	0x2
+ 1336 00b6 EE01     		.2byte	0x1ee
+ 1337 00b8 5D000000 		.4byte	0x5d
+ 1338 00bc 04       		.uleb128 0x4
+ 1339 00bd 18030000 		.4byte	.LASF17
+ 1340 00c1 02       		.byte	0x2
+ 1341 00c2 EF01     		.2byte	0x1ef
+ 1342 00c4 C8000000 		.4byte	0xc8
+ 1343 00c8 03       		.uleb128 0x3
+ 1344 00c9 04       		.byte	0x4
+ 1345 00ca 04       		.byte	0x4
+ 1346 00cb 7F030000 		.4byte	.LASF18
+ 1347 00cf 03       		.uleb128 0x3
+ 1348 00d0 08       		.byte	0x8
+ 1349 00d1 04       		.byte	0x4
+ 1350 00d2 86010000 		.4byte	.LASF19
+ 1351 00d6 04       		.uleb128 0x4
+ 1352 00d7 79030000 		.4byte	.LASF20
+ 1353 00db 02       		.byte	0x2
+ 1354 00dc F401     		.2byte	0x1f4
+ 1355 00de 33000000 		.4byte	0x33
+ 1356 00e2 04       		.uleb128 0x4
+ 1357 00e3 C0030000 		.4byte	.LASF21
+ 1358 00e7 02       		.byte	0x2
+ 1359 00e8 9302     		.2byte	0x293
+ 1360 00ea EE000000 		.4byte	0xee
+ 1361 00ee 05       		.uleb128 0x5
+ 1362 00ef 80000000 		.4byte	0x80
+ 1363 00f3 04       		.uleb128 0x4
+ 1364 00f4 7A010000 		.4byte	.LASF22
+ 1365 00f8 02       		.byte	0x2
+ 1366 00f9 9402     		.2byte	0x294
+ 1367 00fb FF000000 		.4byte	0xff
+ 1368 00ff 05       		.uleb128 0x5
+ 1369 0100 8C000000 		.4byte	0x8c
+ 1370 0104 06       		.uleb128 0x6
+ 1371 0105 DF020000 		.4byte	.LASF23
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 40
+
+
+ 1372 0109 01       		.byte	0x1
+ 1373 010a 4A       		.byte	0x4a
+ 1374 010b 00000000 		.4byte	.LFB0
+ 1375 010f 24000000 		.4byte	.LFE0-.LFB0
+ 1376 0113 01       		.uleb128 0x1
+ 1377 0114 9C       		.byte	0x9c
+ 1378 0115 06       		.uleb128 0x6
+ 1379 0116 16000000 		.4byte	.LASF24
+ 1380 011a 01       		.byte	0x1
+ 1381 011b 6A       		.byte	0x6a
+ 1382 011c 00000000 		.4byte	.LFB1
+ 1383 0120 2C000000 		.4byte	.LFE1-.LFB1
+ 1384 0124 01       		.uleb128 0x1
+ 1385 0125 9C       		.byte	0x9c
+ 1386 0126 07       		.uleb128 0x7
+ 1387 0127 37040000 		.4byte	.LASF27
+ 1388 012b 01       		.byte	0x1
+ 1389 012c 8F       		.byte	0x8f
+ 1390 012d 00000000 		.4byte	.LFB2
+ 1391 0131 C4000000 		.4byte	.LFE2-.LFB2
+ 1392 0135 01       		.uleb128 0x1
+ 1393 0136 9C       		.byte	0x9c
+ 1394 0137 58010000 		.4byte	0x158
+ 1395 013b 08       		.uleb128 0x8
+ 1396 013c 31050000 		.4byte	.LASF25
+ 1397 0140 01       		.byte	0x1
+ 1398 0141 91       		.byte	0x91
+ 1399 0142 80000000 		.4byte	0x80
+ 1400 0146 02       		.uleb128 0x2
+ 1401 0147 91       		.byte	0x91
+ 1402 0148 76       		.sleb128 -10
+ 1403 0149 08       		.uleb128 0x8
+ 1404 014a A1040000 		.4byte	.LASF26
+ 1405 014e 01       		.byte	0x1
+ 1406 014f 92       		.byte	0x92
+ 1407 0150 80000000 		.4byte	0x80
+ 1408 0154 02       		.uleb128 0x2
+ 1409 0155 91       		.byte	0x91
+ 1410 0156 77       		.sleb128 -9
+ 1411 0157 00       		.byte	0
+ 1412 0158 07       		.uleb128 0x7
+ 1413 0159 85030000 		.4byte	.LASF28
+ 1414 015d 01       		.byte	0x1
+ 1415 015e F8       		.byte	0xf8
+ 1416 015f 00000000 		.4byte	.LFB3
+ 1417 0163 5C000000 		.4byte	.LFE3-.LFB3
+ 1418 0167 01       		.uleb128 0x1
+ 1419 0168 9C       		.byte	0x9c
+ 1420 0169 7C010000 		.4byte	0x17c
+ 1421 016d 08       		.uleb128 0x8
+ 1422 016e A1040000 		.4byte	.LASF26
+ 1423 0172 01       		.byte	0x1
+ 1424 0173 FA       		.byte	0xfa
+ 1425 0174 80000000 		.4byte	0x80
+ 1426 0178 02       		.uleb128 0x2
+ 1427 0179 91       		.byte	0x91
+ 1428 017a 77       		.sleb128 -9
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 41
+
+
+ 1429 017b 00       		.byte	0
+ 1430 017c 09       		.uleb128 0x9
+ 1431 017d 7C040000 		.4byte	.LASF29
+ 1432 0181 01       		.byte	0x1
+ 1433 0182 2201     		.2byte	0x122
+ 1434 0184 00000000 		.4byte	.LFB4
+ 1435 0188 40000000 		.4byte	.LFE4-.LFB4
+ 1436 018c 01       		.uleb128 0x1
+ 1437 018d 9C       		.byte	0x9c
+ 1438 018e B1010000 		.4byte	0x1b1
+ 1439 0192 0A       		.uleb128 0xa
+ 1440 0193 9C030000 		.4byte	.LASF31
+ 1441 0197 01       		.byte	0x1
+ 1442 0198 2201     		.2byte	0x122
+ 1443 019a 80000000 		.4byte	0x80
+ 1444 019e 02       		.uleb128 0x2
+ 1445 019f 91       		.byte	0x91
+ 1446 01a0 6F       		.sleb128 -17
+ 1447 01a1 0B       		.uleb128 0xb
+ 1448 01a2 31050000 		.4byte	.LASF25
+ 1449 01a6 01       		.byte	0x1
+ 1450 01a7 2401     		.2byte	0x124
+ 1451 01a9 80000000 		.4byte	0x80
+ 1452 01ad 02       		.uleb128 0x2
+ 1453 01ae 91       		.byte	0x91
+ 1454 01af 77       		.sleb128 -9
+ 1455 01b0 00       		.byte	0
+ 1456 01b1 0C       		.uleb128 0xc
+ 1457 01b2 17040000 		.4byte	.LASF30
+ 1458 01b6 01       		.byte	0x1
+ 1459 01b7 5401     		.2byte	0x154
+ 1460 01b9 00000000 		.4byte	.LFB5
+ 1461 01bd 54000000 		.4byte	.LFE5-.LFB5
+ 1462 01c1 01       		.uleb128 0x1
+ 1463 01c2 9C       		.byte	0x9c
+ 1464 01c3 E6010000 		.4byte	0x1e6
+ 1465 01c7 0A       		.uleb128 0xa
+ 1466 01c8 50040000 		.4byte	.LASF32
+ 1467 01cc 01       		.byte	0x1
+ 1468 01cd 5401     		.2byte	0x154
+ 1469 01cf 80000000 		.4byte	0x80
+ 1470 01d3 02       		.uleb128 0x2
+ 1471 01d4 91       		.byte	0x91
+ 1472 01d5 6F       		.sleb128 -17
+ 1473 01d6 0B       		.uleb128 0xb
+ 1474 01d7 31050000 		.4byte	.LASF25
+ 1475 01db 01       		.byte	0x1
+ 1476 01dc 5601     		.2byte	0x156
+ 1477 01de 80000000 		.4byte	0x80
+ 1478 01e2 02       		.uleb128 0x2
+ 1479 01e3 91       		.byte	0x91
+ 1480 01e4 77       		.sleb128 -9
+ 1481 01e5 00       		.byte	0
+ 1482 01e6 0D       		.uleb128 0xd
+ 1483 01e7 5B010000 		.4byte	.LASF33
+ 1484 01eb 01       		.byte	0x1
+ 1485 01ec 9101     		.2byte	0x191
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 42
+
+
+ 1486 01ee 00000000 		.4byte	.LFB6
+ 1487 01f2 30000000 		.4byte	.LFE6-.LFB6
+ 1488 01f6 01       		.uleb128 0x1
+ 1489 01f7 9C       		.byte	0x9c
+ 1490 01f8 0D       		.uleb128 0xd
+ 1491 01f9 4F000000 		.4byte	.LASF34
+ 1492 01fd 01       		.byte	0x1
+ 1493 01fe B301     		.2byte	0x1b3
+ 1494 0200 00000000 		.4byte	.LFB7
+ 1495 0204 30000000 		.4byte	.LFE7-.LFB7
+ 1496 0208 01       		.uleb128 0x1
+ 1497 0209 9C       		.byte	0x9c
+ 1498 020a 0E       		.uleb128 0xe
+ 1499 020b 8D010000 		.4byte	.LASF37
+ 1500 020f 01       		.byte	0x1
+ 1501 0210 DB01     		.2byte	0x1db
+ 1502 0212 80000000 		.4byte	0x80
+ 1503 0216 00000000 		.4byte	.LFB8
+ 1504 021a 40000000 		.4byte	.LFE8-.LFB8
+ 1505 021e 01       		.uleb128 0x1
+ 1506 021f 9C       		.byte	0x9c
+ 1507 0220 43020000 		.4byte	0x243
+ 1508 0224 0A       		.uleb128 0xa
+ 1509 0225 72020000 		.4byte	.LASF35
+ 1510 0229 01       		.byte	0x1
+ 1511 022a DB01     		.2byte	0x1db
+ 1512 022c 80000000 		.4byte	0x80
+ 1513 0230 02       		.uleb128 0x2
+ 1514 0231 91       		.byte	0x91
+ 1515 0232 6F       		.sleb128 -17
+ 1516 0233 0B       		.uleb128 0xb
+ 1517 0234 B2040000 		.4byte	.LASF36
+ 1518 0238 01       		.byte	0x1
+ 1519 0239 DD01     		.2byte	0x1dd
+ 1520 023b 80000000 		.4byte	0x80
+ 1521 023f 02       		.uleb128 0x2
+ 1522 0240 91       		.byte	0x91
+ 1523 0241 77       		.sleb128 -9
+ 1524 0242 00       		.byte	0
+ 1525 0243 0F       		.uleb128 0xf
+ 1526 0244 F9040000 		.4byte	.LASF61
+ 1527 0248 01       		.byte	0x1
+ 1528 0249 0802     		.2byte	0x208
+ 1529 024b 98000000 		.4byte	0x98
+ 1530 024f 00000000 		.4byte	.LFB9
+ 1531 0253 28000000 		.4byte	.LFE9-.LFB9
+ 1532 0257 01       		.uleb128 0x1
+ 1533 0258 9C       		.byte	0x9c
+ 1534 0259 10       		.uleb128 0x10
+ 1535 025a A2030000 		.4byte	.LASF38
+ 1536 025e 01       		.byte	0x1
+ 1537 025f 2602     		.2byte	0x226
+ 1538 0261 A4000000 		.4byte	0xa4
+ 1539 0265 00000000 		.4byte	.LFB10
+ 1540 0269 30000000 		.4byte	.LFE10-.LFB10
+ 1541 026d 01       		.uleb128 0x1
+ 1542 026e 9C       		.byte	0x9c
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 43
+
+
+ 1543 026f 83020000 		.4byte	0x283
+ 1544 0273 11       		.uleb128 0x11
+ 1545 0274 72657300 		.ascii	"res\000"
+ 1546 0278 01       		.byte	0x1
+ 1547 0279 2802     		.2byte	0x228
+ 1548 027b 8C000000 		.4byte	0x8c
+ 1549 027f 02       		.uleb128 0x2
+ 1550 0280 91       		.byte	0x91
+ 1551 0281 76       		.sleb128 -10
+ 1552 0282 00       		.byte	0
+ 1553 0283 09       		.uleb128 0x9
+ 1554 0284 5B040000 		.4byte	.LASF39
+ 1555 0288 01       		.byte	0x1
+ 1556 0289 4902     		.2byte	0x249
+ 1557 028b 00000000 		.4byte	.LFB11
+ 1558 028f 20000000 		.4byte	.LFE11-.LFB11
+ 1559 0293 01       		.uleb128 0x1
+ 1560 0294 9C       		.byte	0x9c
+ 1561 0295 A9020000 		.4byte	0x2a9
+ 1562 0299 0A       		.uleb128 0xa
+ 1563 029a BF010000 		.4byte	.LASF40
+ 1564 029e 01       		.byte	0x1
+ 1565 029f 4902     		.2byte	0x249
+ 1566 02a1 A4000000 		.4byte	0xa4
+ 1567 02a5 02       		.uleb128 0x2
+ 1568 02a6 91       		.byte	0x91
+ 1569 02a7 76       		.sleb128 -10
+ 1570 02a8 00       		.byte	0
+ 1571 02a9 12       		.uleb128 0x12
+ 1572 02aa 16050000 		.4byte	.LASF62
+ 1573 02ae 01       		.byte	0x1
+ 1574 02af 6302     		.2byte	0x263
+ 1575 02b1 00000000 		.4byte	.LFB12
+ 1576 02b5 7C000000 		.4byte	.LFE12-.LFB12
+ 1577 02b9 01       		.uleb128 0x1
+ 1578 02ba 9C       		.byte	0x9c
+ 1579 02bb DE020000 		.4byte	0x2de
+ 1580 02bf 0A       		.uleb128 0xa
+ 1581 02c0 50040000 		.4byte	.LASF32
+ 1582 02c4 01       		.byte	0x1
+ 1583 02c5 6302     		.2byte	0x263
+ 1584 02c7 80000000 		.4byte	0x80
+ 1585 02cb 02       		.uleb128 0x2
+ 1586 02cc 91       		.byte	0x91
+ 1587 02cd 6F       		.sleb128 -17
+ 1588 02ce 0B       		.uleb128 0xb
+ 1589 02cf 0F000000 		.4byte	.LASF41
+ 1590 02d3 01       		.byte	0x1
+ 1591 02d4 6502     		.2byte	0x265
+ 1592 02d6 B0000000 		.4byte	0xb0
+ 1593 02da 02       		.uleb128 0x2
+ 1594 02db 91       		.byte	0x91
+ 1595 02dc 74       		.sleb128 -12
+ 1596 02dd 00       		.byte	0
+ 1597 02de 09       		.uleb128 0x9
+ 1598 02df C5030000 		.4byte	.LASF42
+ 1599 02e3 01       		.byte	0x1
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 44
+
+
+ 1600 02e4 B402     		.2byte	0x2b4
+ 1601 02e6 00000000 		.4byte	.LFB13
+ 1602 02ea 2C000000 		.4byte	.LFE13-.LFB13
+ 1603 02ee 01       		.uleb128 0x1
+ 1604 02ef 9C       		.byte	0x9c
+ 1605 02f0 04030000 		.4byte	0x304
+ 1606 02f4 0A       		.uleb128 0xa
+ 1607 02f5 07000000 		.4byte	.LASF43
+ 1608 02f9 01       		.byte	0x1
+ 1609 02fa B402     		.2byte	0x2b4
+ 1610 02fc A4000000 		.4byte	0xa4
+ 1611 0300 02       		.uleb128 0x2
+ 1612 0301 91       		.byte	0x91
+ 1613 0302 76       		.sleb128 -10
+ 1614 0303 00       		.byte	0
+ 1615 0304 09       		.uleb128 0x9
+ 1616 0305 32010000 		.4byte	.LASF44
+ 1617 0309 01       		.byte	0x1
+ 1618 030a CF02     		.2byte	0x2cf
+ 1619 030c 00000000 		.4byte	.LFB14
+ 1620 0310 1C000000 		.4byte	.LFE14-.LFB14
+ 1621 0314 01       		.uleb128 0x1
+ 1622 0315 9C       		.byte	0x9c
+ 1623 0316 2A030000 		.4byte	0x32a
+ 1624 031a 0A       		.uleb128 0xa
+ 1625 031b 07000000 		.4byte	.LASF43
+ 1626 031f 01       		.byte	0x1
+ 1627 0320 CF02     		.2byte	0x2cf
+ 1628 0322 B0000000 		.4byte	0xb0
+ 1629 0326 02       		.uleb128 0x2
+ 1630 0327 91       		.byte	0x91
+ 1631 0328 74       		.sleb128 -12
+ 1632 0329 00       		.byte	0
+ 1633 032a 10       		.uleb128 0x10
+ 1634 032b 2D000000 		.4byte	.LASF45
+ 1635 032f 01       		.byte	0x1
+ 1636 0330 E702     		.2byte	0x2e7
+ 1637 0332 A4000000 		.4byte	0xa4
+ 1638 0336 00000000 		.4byte	.LFB15
+ 1639 033a 8C000000 		.4byte	.LFE15-.LFB15
+ 1640 033e 01       		.uleb128 0x1
+ 1641 033f 9C       		.byte	0x9c
+ 1642 0340 72030000 		.4byte	0x372
+ 1643 0344 0A       		.uleb128 0xa
+ 1644 0345 97040000 		.4byte	.LASF46
+ 1645 0349 01       		.byte	0x1
+ 1646 034a E702     		.2byte	0x2e7
+ 1647 034c A4000000 		.4byte	0xa4
+ 1648 0350 02       		.uleb128 0x2
+ 1649 0351 91       		.byte	0x91
+ 1650 0352 6E       		.sleb128 -18
+ 1651 0353 0B       		.uleb128 0xb
+ 1652 0354 D8020000 		.4byte	.LASF47
+ 1653 0358 01       		.byte	0x1
+ 1654 0359 E902     		.2byte	0x2e9
+ 1655 035b A4000000 		.4byte	0xa4
+ 1656 035f 02       		.uleb128 0x2
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 45
+
+
+ 1657 0360 91       		.byte	0x91
+ 1658 0361 72       		.sleb128 -14
+ 1659 0362 0B       		.uleb128 0xb
+ 1660 0363 AF010000 		.4byte	.LASF48
+ 1661 0367 01       		.byte	0x1
+ 1662 0368 EA02     		.2byte	0x2ea
+ 1663 036a B0000000 		.4byte	0xb0
+ 1664 036e 02       		.uleb128 0x2
+ 1665 036f 91       		.byte	0x91
+ 1666 0370 74       		.sleb128 -12
+ 1667 0371 00       		.byte	0
+ 1668 0372 0E       		.uleb128 0xe
+ 1669 0373 D7040000 		.4byte	.LASF49
+ 1670 0377 01       		.byte	0x1
+ 1671 0378 1103     		.2byte	0x311
+ 1672 037a B0000000 		.4byte	0xb0
+ 1673 037e 00000000 		.4byte	.LFB16
+ 1674 0382 90000000 		.4byte	.LFE16-.LFB16
+ 1675 0386 01       		.uleb128 0x1
+ 1676 0387 9C       		.byte	0x9c
+ 1677 0388 BA030000 		.4byte	0x3ba
+ 1678 038c 0A       		.uleb128 0xa
+ 1679 038d 97040000 		.4byte	.LASF46
+ 1680 0391 01       		.byte	0x1
+ 1681 0392 1103     		.2byte	0x311
+ 1682 0394 A4000000 		.4byte	0xa4
+ 1683 0398 02       		.uleb128 0x2
+ 1684 0399 91       		.byte	0x91
+ 1685 039a 5E       		.sleb128 -34
+ 1686 039b 0B       		.uleb128 0xb
+ 1687 039c 87020000 		.4byte	.LASF50
+ 1688 03a0 01       		.byte	0x1
+ 1689 03a1 1403     		.2byte	0x314
+ 1690 03a3 D6000000 		.4byte	0xd6
+ 1691 03a7 02       		.uleb128 0x2
+ 1692 03a8 91       		.byte	0x91
+ 1693 03a9 60       		.sleb128 -32
+ 1694 03aa 0B       		.uleb128 0xb
+ 1695 03ab AF010000 		.4byte	.LASF48
+ 1696 03af 01       		.byte	0x1
+ 1697 03b0 1503     		.2byte	0x315
+ 1698 03b2 B0000000 		.4byte	0xb0
+ 1699 03b6 02       		.uleb128 0x2
+ 1700 03b7 91       		.byte	0x91
+ 1701 03b8 6C       		.sleb128 -20
+ 1702 03b9 00       		.byte	0
+ 1703 03ba 0E       		.uleb128 0xe
+ 1704 03bb F7020000 		.4byte	.LASF51
+ 1705 03bf 01       		.byte	0x1
+ 1706 03c0 3D03     		.2byte	0x33d
+ 1707 03c2 BC000000 		.4byte	0xbc
+ 1708 03c6 00000000 		.4byte	.LFB17
+ 1709 03ca 84000000 		.4byte	.LFE17-.LFB17
+ 1710 03ce 01       		.uleb128 0x1
+ 1711 03cf 9C       		.byte	0x9c
+ 1712 03d0 02040000 		.4byte	0x402
+ 1713 03d4 0A       		.uleb128 0xa
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 46
+
+
+ 1714 03d5 97040000 		.4byte	.LASF46
+ 1715 03d9 01       		.byte	0x1
+ 1716 03da 3D03     		.2byte	0x33d
+ 1717 03dc A4000000 		.4byte	0xa4
+ 1718 03e0 02       		.uleb128 0x2
+ 1719 03e1 91       		.byte	0x91
+ 1720 03e2 66       		.sleb128 -26
+ 1721 03e3 0B       		.uleb128 0xb
+ 1722 03e4 BA020000 		.4byte	.LASF52
+ 1723 03e8 01       		.byte	0x1
+ 1724 03e9 3F03     		.2byte	0x33f
+ 1725 03eb BC000000 		.4byte	0xbc
+ 1726 03ef 02       		.uleb128 0x2
+ 1727 03f0 91       		.byte	0x91
+ 1728 03f1 68       		.sleb128 -24
+ 1729 03f2 0B       		.uleb128 0xb
+ 1730 03f3 AF010000 		.4byte	.LASF48
+ 1731 03f7 01       		.byte	0x1
+ 1732 03f8 4003     		.2byte	0x340
+ 1733 03fa B0000000 		.4byte	0xb0
+ 1734 03fe 02       		.uleb128 0x2
+ 1735 03ff 91       		.byte	0x91
+ 1736 0400 6C       		.sleb128 -20
+ 1737 0401 00       		.byte	0
+ 1738 0402 13       		.uleb128 0x13
+ 1739 0403 8E020000 		.4byte	.LASF53
+ 1740 0407 01       		.byte	0x1
+ 1741 0408 23       		.byte	0x23
+ 1742 0409 80000000 		.4byte	0x80
+ 1743 040d 05       		.uleb128 0x5
+ 1744 040e 03       		.byte	0x3
+ 1745 040f 00000000 		.4byte	ADC_SAR_Seq_1_SAR_initVar
+ 1746 0413 13       		.uleb128 0x13
+ 1747 0414 35030000 		.4byte	.LASF54
+ 1748 0418 01       		.byte	0x1
+ 1749 0419 24       		.byte	0x24
+ 1750 041a 24040000 		.4byte	0x424
+ 1751 041e 05       		.uleb128 0x5
+ 1752 041f 03       		.byte	0x3
+ 1753 0420 00000000 		.4byte	ADC_SAR_Seq_1_SAR_offset
+ 1754 0424 05       		.uleb128 0x5
+ 1755 0425 A4000000 		.4byte	0xa4
+ 1756 0429 13       		.uleb128 0x13
+ 1757 042a ED030000 		.4byte	.LASF55
+ 1758 042e 01       		.byte	0x1
+ 1759 042f 25       		.byte	0x25
+ 1760 0430 24040000 		.4byte	0x424
+ 1761 0434 05       		.uleb128 0x5
+ 1762 0435 03       		.byte	0x3
+ 1763 0436 00000000 		.4byte	ADC_SAR_Seq_1_SAR_countsPerVolt
+ 1764 043a 13       		.uleb128 0x13
+ 1765 043b C6010000 		.4byte	.LASF56
+ 1766 043f 01       		.byte	0x1
+ 1767 0440 26       		.byte	0x26
+ 1768 0441 4B040000 		.4byte	0x44b
+ 1769 0445 05       		.uleb128 0x5
+ 1770 0446 03       		.byte	0x3
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 47
+
+
+ 1771 0447 00000000 		.4byte	ADC_SAR_Seq_1_SAR_countsPer10Volt
+ 1772 044b 05       		.uleb128 0x5
+ 1773 044c B0000000 		.4byte	0xb0
+ 1774 0450 13       		.uleb128 0x13
+ 1775 0451 B9040000 		.4byte	.LASF57
+ 1776 0455 01       		.byte	0x1
+ 1777 0456 27       		.byte	0x27
+ 1778 0457 24040000 		.4byte	0x424
+ 1779 045b 05       		.uleb128 0x5
+ 1780 045c 03       		.byte	0x3
+ 1781 045d 00000000 		.4byte	ADC_SAR_Seq_1_SAR_shift
+ 1782 0461 00       		.byte	0
+ 1783              		.section	.debug_abbrev,"",%progbits
+ 1784              	.Ldebug_abbrev0:
+ 1785 0000 01       		.uleb128 0x1
+ 1786 0001 11       		.uleb128 0x11
+ 1787 0002 01       		.byte	0x1
+ 1788 0003 25       		.uleb128 0x25
+ 1789 0004 0E       		.uleb128 0xe
+ 1790 0005 13       		.uleb128 0x13
+ 1791 0006 0B       		.uleb128 0xb
+ 1792 0007 03       		.uleb128 0x3
+ 1793 0008 0E       		.uleb128 0xe
+ 1794 0009 1B       		.uleb128 0x1b
+ 1795 000a 0E       		.uleb128 0xe
+ 1796 000b 55       		.uleb128 0x55
+ 1797 000c 17       		.uleb128 0x17
+ 1798 000d 11       		.uleb128 0x11
+ 1799 000e 01       		.uleb128 0x1
+ 1800 000f 10       		.uleb128 0x10
+ 1801 0010 17       		.uleb128 0x17
+ 1802 0011 00       		.byte	0
+ 1803 0012 00       		.byte	0
+ 1804 0013 02       		.uleb128 0x2
+ 1805 0014 24       		.uleb128 0x24
+ 1806 0015 00       		.byte	0
+ 1807 0016 0B       		.uleb128 0xb
+ 1808 0017 0B       		.uleb128 0xb
+ 1809 0018 3E       		.uleb128 0x3e
+ 1810 0019 0B       		.uleb128 0xb
+ 1811 001a 03       		.uleb128 0x3
+ 1812 001b 08       		.uleb128 0x8
+ 1813 001c 00       		.byte	0
+ 1814 001d 00       		.byte	0
+ 1815 001e 03       		.uleb128 0x3
+ 1816 001f 24       		.uleb128 0x24
+ 1817 0020 00       		.byte	0
+ 1818 0021 0B       		.uleb128 0xb
+ 1819 0022 0B       		.uleb128 0xb
+ 1820 0023 3E       		.uleb128 0x3e
+ 1821 0024 0B       		.uleb128 0xb
+ 1822 0025 03       		.uleb128 0x3
+ 1823 0026 0E       		.uleb128 0xe
+ 1824 0027 00       		.byte	0
+ 1825 0028 00       		.byte	0
+ 1826 0029 04       		.uleb128 0x4
+ 1827 002a 16       		.uleb128 0x16
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 48
+
+
+ 1828 002b 00       		.byte	0
+ 1829 002c 03       		.uleb128 0x3
+ 1830 002d 0E       		.uleb128 0xe
+ 1831 002e 3A       		.uleb128 0x3a
+ 1832 002f 0B       		.uleb128 0xb
+ 1833 0030 3B       		.uleb128 0x3b
+ 1834 0031 05       		.uleb128 0x5
+ 1835 0032 49       		.uleb128 0x49
+ 1836 0033 13       		.uleb128 0x13
+ 1837 0034 00       		.byte	0
+ 1838 0035 00       		.byte	0
+ 1839 0036 05       		.uleb128 0x5
+ 1840 0037 35       		.uleb128 0x35
+ 1841 0038 00       		.byte	0
+ 1842 0039 49       		.uleb128 0x49
+ 1843 003a 13       		.uleb128 0x13
+ 1844 003b 00       		.byte	0
+ 1845 003c 00       		.byte	0
+ 1846 003d 06       		.uleb128 0x6
+ 1847 003e 2E       		.uleb128 0x2e
+ 1848 003f 00       		.byte	0
+ 1849 0040 3F       		.uleb128 0x3f
+ 1850 0041 19       		.uleb128 0x19
+ 1851 0042 03       		.uleb128 0x3
+ 1852 0043 0E       		.uleb128 0xe
+ 1853 0044 3A       		.uleb128 0x3a
+ 1854 0045 0B       		.uleb128 0xb
+ 1855 0046 3B       		.uleb128 0x3b
+ 1856 0047 0B       		.uleb128 0xb
+ 1857 0048 27       		.uleb128 0x27
+ 1858 0049 19       		.uleb128 0x19
+ 1859 004a 11       		.uleb128 0x11
+ 1860 004b 01       		.uleb128 0x1
+ 1861 004c 12       		.uleb128 0x12
+ 1862 004d 06       		.uleb128 0x6
+ 1863 004e 40       		.uleb128 0x40
+ 1864 004f 18       		.uleb128 0x18
+ 1865 0050 9642     		.uleb128 0x2116
+ 1866 0052 19       		.uleb128 0x19
+ 1867 0053 00       		.byte	0
+ 1868 0054 00       		.byte	0
+ 1869 0055 07       		.uleb128 0x7
+ 1870 0056 2E       		.uleb128 0x2e
+ 1871 0057 01       		.byte	0x1
+ 1872 0058 3F       		.uleb128 0x3f
+ 1873 0059 19       		.uleb128 0x19
+ 1874 005a 03       		.uleb128 0x3
+ 1875 005b 0E       		.uleb128 0xe
+ 1876 005c 3A       		.uleb128 0x3a
+ 1877 005d 0B       		.uleb128 0xb
+ 1878 005e 3B       		.uleb128 0x3b
+ 1879 005f 0B       		.uleb128 0xb
+ 1880 0060 27       		.uleb128 0x27
+ 1881 0061 19       		.uleb128 0x19
+ 1882 0062 11       		.uleb128 0x11
+ 1883 0063 01       		.uleb128 0x1
+ 1884 0064 12       		.uleb128 0x12
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 49
+
+
+ 1885 0065 06       		.uleb128 0x6
+ 1886 0066 40       		.uleb128 0x40
+ 1887 0067 18       		.uleb128 0x18
+ 1888 0068 9642     		.uleb128 0x2116
+ 1889 006a 19       		.uleb128 0x19
+ 1890 006b 01       		.uleb128 0x1
+ 1891 006c 13       		.uleb128 0x13
+ 1892 006d 00       		.byte	0
+ 1893 006e 00       		.byte	0
+ 1894 006f 08       		.uleb128 0x8
+ 1895 0070 34       		.uleb128 0x34
+ 1896 0071 00       		.byte	0
+ 1897 0072 03       		.uleb128 0x3
+ 1898 0073 0E       		.uleb128 0xe
+ 1899 0074 3A       		.uleb128 0x3a
+ 1900 0075 0B       		.uleb128 0xb
+ 1901 0076 3B       		.uleb128 0x3b
+ 1902 0077 0B       		.uleb128 0xb
+ 1903 0078 49       		.uleb128 0x49
+ 1904 0079 13       		.uleb128 0x13
+ 1905 007a 02       		.uleb128 0x2
+ 1906 007b 18       		.uleb128 0x18
+ 1907 007c 00       		.byte	0
+ 1908 007d 00       		.byte	0
+ 1909 007e 09       		.uleb128 0x9
+ 1910 007f 2E       		.uleb128 0x2e
+ 1911 0080 01       		.byte	0x1
+ 1912 0081 3F       		.uleb128 0x3f
+ 1913 0082 19       		.uleb128 0x19
+ 1914 0083 03       		.uleb128 0x3
+ 1915 0084 0E       		.uleb128 0xe
+ 1916 0085 3A       		.uleb128 0x3a
+ 1917 0086 0B       		.uleb128 0xb
+ 1918 0087 3B       		.uleb128 0x3b
+ 1919 0088 05       		.uleb128 0x5
+ 1920 0089 27       		.uleb128 0x27
+ 1921 008a 19       		.uleb128 0x19
+ 1922 008b 11       		.uleb128 0x11
+ 1923 008c 01       		.uleb128 0x1
+ 1924 008d 12       		.uleb128 0x12
+ 1925 008e 06       		.uleb128 0x6
+ 1926 008f 40       		.uleb128 0x40
+ 1927 0090 18       		.uleb128 0x18
+ 1928 0091 9742     		.uleb128 0x2117
+ 1929 0093 19       		.uleb128 0x19
+ 1930 0094 01       		.uleb128 0x1
+ 1931 0095 13       		.uleb128 0x13
+ 1932 0096 00       		.byte	0
+ 1933 0097 00       		.byte	0
+ 1934 0098 0A       		.uleb128 0xa
+ 1935 0099 05       		.uleb128 0x5
+ 1936 009a 00       		.byte	0
+ 1937 009b 03       		.uleb128 0x3
+ 1938 009c 0E       		.uleb128 0xe
+ 1939 009d 3A       		.uleb128 0x3a
+ 1940 009e 0B       		.uleb128 0xb
+ 1941 009f 3B       		.uleb128 0x3b
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 50
+
+
+ 1942 00a0 05       		.uleb128 0x5
+ 1943 00a1 49       		.uleb128 0x49
+ 1944 00a2 13       		.uleb128 0x13
+ 1945 00a3 02       		.uleb128 0x2
+ 1946 00a4 18       		.uleb128 0x18
+ 1947 00a5 00       		.byte	0
+ 1948 00a6 00       		.byte	0
+ 1949 00a7 0B       		.uleb128 0xb
+ 1950 00a8 34       		.uleb128 0x34
+ 1951 00a9 00       		.byte	0
+ 1952 00aa 03       		.uleb128 0x3
+ 1953 00ab 0E       		.uleb128 0xe
+ 1954 00ac 3A       		.uleb128 0x3a
+ 1955 00ad 0B       		.uleb128 0xb
+ 1956 00ae 3B       		.uleb128 0x3b
+ 1957 00af 05       		.uleb128 0x5
+ 1958 00b0 49       		.uleb128 0x49
+ 1959 00b1 13       		.uleb128 0x13
+ 1960 00b2 02       		.uleb128 0x2
+ 1961 00b3 18       		.uleb128 0x18
+ 1962 00b4 00       		.byte	0
+ 1963 00b5 00       		.byte	0
+ 1964 00b6 0C       		.uleb128 0xc
+ 1965 00b7 2E       		.uleb128 0x2e
+ 1966 00b8 01       		.byte	0x1
+ 1967 00b9 3F       		.uleb128 0x3f
+ 1968 00ba 19       		.uleb128 0x19
+ 1969 00bb 03       		.uleb128 0x3
+ 1970 00bc 0E       		.uleb128 0xe
+ 1971 00bd 3A       		.uleb128 0x3a
+ 1972 00be 0B       		.uleb128 0xb
+ 1973 00bf 3B       		.uleb128 0x3b
+ 1974 00c0 05       		.uleb128 0x5
+ 1975 00c1 27       		.uleb128 0x27
+ 1976 00c2 19       		.uleb128 0x19
+ 1977 00c3 11       		.uleb128 0x11
+ 1978 00c4 01       		.uleb128 0x1
+ 1979 00c5 12       		.uleb128 0x12
+ 1980 00c6 06       		.uleb128 0x6
+ 1981 00c7 40       		.uleb128 0x40
+ 1982 00c8 18       		.uleb128 0x18
+ 1983 00c9 9642     		.uleb128 0x2116
+ 1984 00cb 19       		.uleb128 0x19
+ 1985 00cc 01       		.uleb128 0x1
+ 1986 00cd 13       		.uleb128 0x13
+ 1987 00ce 00       		.byte	0
+ 1988 00cf 00       		.byte	0
+ 1989 00d0 0D       		.uleb128 0xd
+ 1990 00d1 2E       		.uleb128 0x2e
+ 1991 00d2 00       		.byte	0
+ 1992 00d3 3F       		.uleb128 0x3f
+ 1993 00d4 19       		.uleb128 0x19
+ 1994 00d5 03       		.uleb128 0x3
+ 1995 00d6 0E       		.uleb128 0xe
+ 1996 00d7 3A       		.uleb128 0x3a
+ 1997 00d8 0B       		.uleb128 0xb
+ 1998 00d9 3B       		.uleb128 0x3b
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 51
+
+
+ 1999 00da 05       		.uleb128 0x5
+ 2000 00db 27       		.uleb128 0x27
+ 2001 00dc 19       		.uleb128 0x19
+ 2002 00dd 11       		.uleb128 0x11
+ 2003 00de 01       		.uleb128 0x1
+ 2004 00df 12       		.uleb128 0x12
+ 2005 00e0 06       		.uleb128 0x6
+ 2006 00e1 40       		.uleb128 0x40
+ 2007 00e2 18       		.uleb128 0x18
+ 2008 00e3 9742     		.uleb128 0x2117
+ 2009 00e5 19       		.uleb128 0x19
+ 2010 00e6 00       		.byte	0
+ 2011 00e7 00       		.byte	0
+ 2012 00e8 0E       		.uleb128 0xe
+ 2013 00e9 2E       		.uleb128 0x2e
+ 2014 00ea 01       		.byte	0x1
+ 2015 00eb 3F       		.uleb128 0x3f
+ 2016 00ec 19       		.uleb128 0x19
+ 2017 00ed 03       		.uleb128 0x3
+ 2018 00ee 0E       		.uleb128 0xe
+ 2019 00ef 3A       		.uleb128 0x3a
+ 2020 00f0 0B       		.uleb128 0xb
+ 2021 00f1 3B       		.uleb128 0x3b
+ 2022 00f2 05       		.uleb128 0x5
+ 2023 00f3 27       		.uleb128 0x27
+ 2024 00f4 19       		.uleb128 0x19
+ 2025 00f5 49       		.uleb128 0x49
+ 2026 00f6 13       		.uleb128 0x13
+ 2027 00f7 11       		.uleb128 0x11
+ 2028 00f8 01       		.uleb128 0x1
+ 2029 00f9 12       		.uleb128 0x12
+ 2030 00fa 06       		.uleb128 0x6
+ 2031 00fb 40       		.uleb128 0x40
+ 2032 00fc 18       		.uleb128 0x18
+ 2033 00fd 9642     		.uleb128 0x2116
+ 2034 00ff 19       		.uleb128 0x19
+ 2035 0100 01       		.uleb128 0x1
+ 2036 0101 13       		.uleb128 0x13
+ 2037 0102 00       		.byte	0
+ 2038 0103 00       		.byte	0
+ 2039 0104 0F       		.uleb128 0xf
+ 2040 0105 2E       		.uleb128 0x2e
+ 2041 0106 00       		.byte	0
+ 2042 0107 3F       		.uleb128 0x3f
+ 2043 0108 19       		.uleb128 0x19
+ 2044 0109 03       		.uleb128 0x3
+ 2045 010a 0E       		.uleb128 0xe
+ 2046 010b 3A       		.uleb128 0x3a
+ 2047 010c 0B       		.uleb128 0xb
+ 2048 010d 3B       		.uleb128 0x3b
+ 2049 010e 05       		.uleb128 0x5
+ 2050 010f 27       		.uleb128 0x27
+ 2051 0110 19       		.uleb128 0x19
+ 2052 0111 49       		.uleb128 0x49
+ 2053 0112 13       		.uleb128 0x13
+ 2054 0113 11       		.uleb128 0x11
+ 2055 0114 01       		.uleb128 0x1
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 52
+
+
+ 2056 0115 12       		.uleb128 0x12
+ 2057 0116 06       		.uleb128 0x6
+ 2058 0117 40       		.uleb128 0x40
+ 2059 0118 18       		.uleb128 0x18
+ 2060 0119 9742     		.uleb128 0x2117
+ 2061 011b 19       		.uleb128 0x19
+ 2062 011c 00       		.byte	0
+ 2063 011d 00       		.byte	0
+ 2064 011e 10       		.uleb128 0x10
+ 2065 011f 2E       		.uleb128 0x2e
+ 2066 0120 01       		.byte	0x1
+ 2067 0121 3F       		.uleb128 0x3f
+ 2068 0122 19       		.uleb128 0x19
+ 2069 0123 03       		.uleb128 0x3
+ 2070 0124 0E       		.uleb128 0xe
+ 2071 0125 3A       		.uleb128 0x3a
+ 2072 0126 0B       		.uleb128 0xb
+ 2073 0127 3B       		.uleb128 0x3b
+ 2074 0128 05       		.uleb128 0x5
+ 2075 0129 27       		.uleb128 0x27
+ 2076 012a 19       		.uleb128 0x19
+ 2077 012b 49       		.uleb128 0x49
+ 2078 012c 13       		.uleb128 0x13
+ 2079 012d 11       		.uleb128 0x11
+ 2080 012e 01       		.uleb128 0x1
+ 2081 012f 12       		.uleb128 0x12
+ 2082 0130 06       		.uleb128 0x6
+ 2083 0131 40       		.uleb128 0x40
+ 2084 0132 18       		.uleb128 0x18
+ 2085 0133 9742     		.uleb128 0x2117
+ 2086 0135 19       		.uleb128 0x19
+ 2087 0136 01       		.uleb128 0x1
+ 2088 0137 13       		.uleb128 0x13
+ 2089 0138 00       		.byte	0
+ 2090 0139 00       		.byte	0
+ 2091 013a 11       		.uleb128 0x11
+ 2092 013b 34       		.uleb128 0x34
+ 2093 013c 00       		.byte	0
+ 2094 013d 03       		.uleb128 0x3
+ 2095 013e 08       		.uleb128 0x8
+ 2096 013f 3A       		.uleb128 0x3a
+ 2097 0140 0B       		.uleb128 0xb
+ 2098 0141 3B       		.uleb128 0x3b
+ 2099 0142 05       		.uleb128 0x5
+ 2100 0143 49       		.uleb128 0x49
+ 2101 0144 13       		.uleb128 0x13
+ 2102 0145 02       		.uleb128 0x2
+ 2103 0146 18       		.uleb128 0x18
+ 2104 0147 00       		.byte	0
+ 2105 0148 00       		.byte	0
+ 2106 0149 12       		.uleb128 0x12
+ 2107 014a 2E       		.uleb128 0x2e
+ 2108 014b 01       		.byte	0x1
+ 2109 014c 03       		.uleb128 0x3
+ 2110 014d 0E       		.uleb128 0xe
+ 2111 014e 3A       		.uleb128 0x3a
+ 2112 014f 0B       		.uleb128 0xb
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 53
+
+
+ 2113 0150 3B       		.uleb128 0x3b
+ 2114 0151 05       		.uleb128 0x5
+ 2115 0152 27       		.uleb128 0x27
+ 2116 0153 19       		.uleb128 0x19
+ 2117 0154 11       		.uleb128 0x11
+ 2118 0155 01       		.uleb128 0x1
+ 2119 0156 12       		.uleb128 0x12
+ 2120 0157 06       		.uleb128 0x6
+ 2121 0158 40       		.uleb128 0x40
+ 2122 0159 18       		.uleb128 0x18
+ 2123 015a 9642     		.uleb128 0x2116
+ 2124 015c 19       		.uleb128 0x19
+ 2125 015d 01       		.uleb128 0x1
+ 2126 015e 13       		.uleb128 0x13
+ 2127 015f 00       		.byte	0
+ 2128 0160 00       		.byte	0
+ 2129 0161 13       		.uleb128 0x13
+ 2130 0162 34       		.uleb128 0x34
+ 2131 0163 00       		.byte	0
+ 2132 0164 03       		.uleb128 0x3
+ 2133 0165 0E       		.uleb128 0xe
+ 2134 0166 3A       		.uleb128 0x3a
+ 2135 0167 0B       		.uleb128 0xb
+ 2136 0168 3B       		.uleb128 0x3b
+ 2137 0169 0B       		.uleb128 0xb
+ 2138 016a 49       		.uleb128 0x49
+ 2139 016b 13       		.uleb128 0x13
+ 2140 016c 3F       		.uleb128 0x3f
+ 2141 016d 19       		.uleb128 0x19
+ 2142 016e 02       		.uleb128 0x2
+ 2143 016f 18       		.uleb128 0x18
+ 2144 0170 00       		.byte	0
+ 2145 0171 00       		.byte	0
+ 2146 0172 00       		.byte	0
+ 2147              		.section	.debug_aranges,"",%progbits
+ 2148 0000 A4000000 		.4byte	0xa4
+ 2149 0004 0200     		.2byte	0x2
+ 2150 0006 00000000 		.4byte	.Ldebug_info0
+ 2151 000a 04       		.byte	0x4
+ 2152 000b 00       		.byte	0
+ 2153 000c 0000     		.2byte	0
+ 2154 000e 0000     		.2byte	0
+ 2155 0010 00000000 		.4byte	.LFB0
+ 2156 0014 24000000 		.4byte	.LFE0-.LFB0
+ 2157 0018 00000000 		.4byte	.LFB1
+ 2158 001c 2C000000 		.4byte	.LFE1-.LFB1
+ 2159 0020 00000000 		.4byte	.LFB2
+ 2160 0024 C4000000 		.4byte	.LFE2-.LFB2
+ 2161 0028 00000000 		.4byte	.LFB3
+ 2162 002c 5C000000 		.4byte	.LFE3-.LFB3
+ 2163 0030 00000000 		.4byte	.LFB4
+ 2164 0034 40000000 		.4byte	.LFE4-.LFB4
+ 2165 0038 00000000 		.4byte	.LFB5
+ 2166 003c 54000000 		.4byte	.LFE5-.LFB5
+ 2167 0040 00000000 		.4byte	.LFB6
+ 2168 0044 30000000 		.4byte	.LFE6-.LFB6
+ 2169 0048 00000000 		.4byte	.LFB7
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 54
+
+
+ 2170 004c 30000000 		.4byte	.LFE7-.LFB7
+ 2171 0050 00000000 		.4byte	.LFB8
+ 2172 0054 40000000 		.4byte	.LFE8-.LFB8
+ 2173 0058 00000000 		.4byte	.LFB9
+ 2174 005c 28000000 		.4byte	.LFE9-.LFB9
+ 2175 0060 00000000 		.4byte	.LFB10
+ 2176 0064 30000000 		.4byte	.LFE10-.LFB10
+ 2177 0068 00000000 		.4byte	.LFB11
+ 2178 006c 20000000 		.4byte	.LFE11-.LFB11
+ 2179 0070 00000000 		.4byte	.LFB12
+ 2180 0074 7C000000 		.4byte	.LFE12-.LFB12
+ 2181 0078 00000000 		.4byte	.LFB13
+ 2182 007c 2C000000 		.4byte	.LFE13-.LFB13
+ 2183 0080 00000000 		.4byte	.LFB14
+ 2184 0084 1C000000 		.4byte	.LFE14-.LFB14
+ 2185 0088 00000000 		.4byte	.LFB15
+ 2186 008c 8C000000 		.4byte	.LFE15-.LFB15
+ 2187 0090 00000000 		.4byte	.LFB16
+ 2188 0094 90000000 		.4byte	.LFE16-.LFB16
+ 2189 0098 00000000 		.4byte	.LFB17
+ 2190 009c 84000000 		.4byte	.LFE17-.LFB17
+ 2191 00a0 00000000 		.4byte	0
+ 2192 00a4 00000000 		.4byte	0
+ 2193              		.section	.debug_ranges,"",%progbits
+ 2194              	.Ldebug_ranges0:
+ 2195 0000 00000000 		.4byte	.LFB0
+ 2196 0004 24000000 		.4byte	.LFE0
+ 2197 0008 00000000 		.4byte	.LFB1
+ 2198 000c 2C000000 		.4byte	.LFE1
+ 2199 0010 00000000 		.4byte	.LFB2
+ 2200 0014 C4000000 		.4byte	.LFE2
+ 2201 0018 00000000 		.4byte	.LFB3
+ 2202 001c 5C000000 		.4byte	.LFE3
+ 2203 0020 00000000 		.4byte	.LFB4
+ 2204 0024 40000000 		.4byte	.LFE4
+ 2205 0028 00000000 		.4byte	.LFB5
+ 2206 002c 54000000 		.4byte	.LFE5
+ 2207 0030 00000000 		.4byte	.LFB6
+ 2208 0034 30000000 		.4byte	.LFE6
+ 2209 0038 00000000 		.4byte	.LFB7
+ 2210 003c 30000000 		.4byte	.LFE7
+ 2211 0040 00000000 		.4byte	.LFB8
+ 2212 0044 40000000 		.4byte	.LFE8
+ 2213 0048 00000000 		.4byte	.LFB9
+ 2214 004c 28000000 		.4byte	.LFE9
+ 2215 0050 00000000 		.4byte	.LFB10
+ 2216 0054 30000000 		.4byte	.LFE10
+ 2217 0058 00000000 		.4byte	.LFB11
+ 2218 005c 20000000 		.4byte	.LFE11
+ 2219 0060 00000000 		.4byte	.LFB12
+ 2220 0064 7C000000 		.4byte	.LFE12
+ 2221 0068 00000000 		.4byte	.LFB13
+ 2222 006c 2C000000 		.4byte	.LFE13
+ 2223 0070 00000000 		.4byte	.LFB14
+ 2224 0074 1C000000 		.4byte	.LFE14
+ 2225 0078 00000000 		.4byte	.LFB15
+ 2226 007c 8C000000 		.4byte	.LFE15
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 55
+
+
+ 2227 0080 00000000 		.4byte	.LFB16
+ 2228 0084 90000000 		.4byte	.LFE16
+ 2229 0088 00000000 		.4byte	.LFB17
+ 2230 008c 84000000 		.4byte	.LFE17
+ 2231 0090 00000000 		.4byte	0
+ 2232 0094 00000000 		.4byte	0
+ 2233              		.section	.debug_line,"",%progbits
+ 2234              	.Ldebug_line0:
+ 2235 0000 0F020000 		.section	.debug_str,"MS",%progbits,1
+ 2235      02004E00 
+ 2235      00000201 
+ 2235      FB0E0D00 
+ 2235      01010101 
+ 2236              	.LASF13:
+ 2237 0000 75696E74 		.ascii	"uint16\000"
+ 2237      313600
+ 2238              	.LASF43:
+ 2239 0007 61646347 		.ascii	"adcGain\000"
+ 2239      61696E00 
+ 2240              	.LASF41:
+ 2241 000f 636F756E 		.ascii	"counts\000"
+ 2241      747300
+ 2242              	.LASF24:
+ 2243 0016 4144435F 		.ascii	"ADC_SAR_Seq_1_SAR_Init\000"
+ 2243      5341525F 
+ 2243      5365715F 
+ 2243      315F5341 
+ 2243      525F496E 
+ 2244              	.LASF45:
+ 2245 002d 4144435F 		.ascii	"ADC_SAR_Seq_1_SAR_CountsTo_mVolts\000"
+ 2245      5341525F 
+ 2245      5365715F 
+ 2245      315F5341 
+ 2245      525F436F 
+ 2246              	.LASF34:
+ 2247 004f 4144435F 		.ascii	"ADC_SAR_Seq_1_SAR_StopConvert\000"
+ 2247      5341525F 
+ 2247      5365715F 
+ 2247      315F5341 
+ 2247      525F5374 
+ 2248              	.LASF58:
+ 2249 006d 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 2249      43313120 
+ 2249      352E342E 
+ 2249      31203230 
+ 2249      31363036 
+ 2250 00a0 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 2250      20726576 
+ 2250      6973696F 
+ 2250      6E203233 
+ 2250      37373135 
+ 2251 00d3 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 2251      66756E63 
+ 2251      74696F6E 
+ 2251      2D736563 
+ 2251      74696F6E 
+ 2252              	.LASF9:
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 56
+
+
+ 2253 00fb 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 2253      206C6F6E 
+ 2253      6720756E 
+ 2253      7369676E 
+ 2253      65642069 
+ 2254              	.LASF1:
+ 2255 0112 6C6F6E67 		.ascii	"long long int\000"
+ 2255      206C6F6E 
+ 2255      6720696E 
+ 2255      7400
+ 2256              	.LASF3:
+ 2257 0120 7369676E 		.ascii	"signed char\000"
+ 2257      65642063 
+ 2257      68617200 
+ 2258              	.LASF16:
+ 2259 012c 696E7433 		.ascii	"int32\000"
+ 2259      3200
+ 2260              	.LASF44:
+ 2261 0132 4144435F 		.ascii	"ADC_SAR_Seq_1_SAR_SetScaledGain\000"
+ 2261      5341525F 
+ 2261      5365715F 
+ 2261      315F5341 
+ 2261      525F5365 
+ 2262              	.LASF7:
+ 2263 0152 6C6F6E67 		.ascii	"long int\000"
+ 2263      20696E74 
+ 2263      00
+ 2264              	.LASF33:
+ 2265 015b 4144435F 		.ascii	"ADC_SAR_Seq_1_SAR_StartConvert\000"
+ 2265      5341525F 
+ 2265      5365715F 
+ 2265      315F5341 
+ 2265      525F5374 
+ 2266              	.LASF22:
+ 2267 017a 72656731 		.ascii	"reg16\000"
+ 2267      3600
+ 2268              	.LASF12:
+ 2269 0180 75696E74 		.ascii	"uint8\000"
+ 2269      3800
+ 2270              	.LASF19:
+ 2271 0186 646F7562 		.ascii	"double\000"
+ 2271      6C6500
+ 2272              	.LASF37:
+ 2273 018d 4144435F 		.ascii	"ADC_SAR_Seq_1_SAR_IsEndConversion\000"
+ 2273      5341525F 
+ 2273      5365715F 
+ 2273      315F5341 
+ 2273      525F4973 
+ 2274              	.LASF48:
+ 2275 01af 636F756E 		.ascii	"countsPer10Volt\000"
+ 2275      74735065 
+ 2275      72313056 
+ 2275      6F6C7400 
+ 2276              	.LASF40:
+ 2277 01bf 6F666673 		.ascii	"offset\000"
+ 2277      657400
+ 2278              	.LASF56:
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 57
+
+
+ 2279 01c6 4144435F 		.ascii	"ADC_SAR_Seq_1_SAR_countsPer10Volt\000"
+ 2279      5341525F 
+ 2279      5365715F 
+ 2279      315F5341 
+ 2279      525F636F 
+ 2280              	.LASF60:
+ 2281 01e8 433A5C55 		.ascii	"C:\\Users\\JeffSnyder\\dev\\Electrosteel_embedded\\"
+ 2281      73657273 
+ 2281      5C4A6566 
+ 2281      66536E79 
+ 2281      6465725C 
+ 2282 0216 50534F43 		.ascii	"PSOC5_electrosteel_stringsensors_newpcbtryingglitch"
+ 2282      355F656C 
+ 2282      65637472 
+ 2282      6F737465 
+ 2282      656C5F73 
+ 2283 0249 64657465 		.ascii	"detect\\CE210514_PSOC3_5_Thermistor.cydsn\000"
+ 2283      63745C43 
+ 2283      45323130 
+ 2283      3531345F 
+ 2283      50534F43 
+ 2284              	.LASF35:
+ 2285 0272 7265744D 		.ascii	"retMode\000"
+ 2285      6F646500 
+ 2286              	.LASF0:
+ 2287 027a 756E7369 		.ascii	"unsigned int\000"
+ 2287      676E6564 
+ 2287      20696E74 
+ 2287      00
+ 2288              	.LASF50:
+ 2289 0287 75566F6C 		.ascii	"uVolts\000"
+ 2289      747300
+ 2290              	.LASF53:
+ 2291 028e 4144435F 		.ascii	"ADC_SAR_Seq_1_SAR_initVar\000"
+ 2291      5341525F 
+ 2291      5365715F 
+ 2291      315F5341 
+ 2291      525F696E 
+ 2292              	.LASF8:
+ 2293 02a8 6C6F6E67 		.ascii	"long unsigned int\000"
+ 2293      20756E73 
+ 2293      69676E65 
+ 2293      6420696E 
+ 2293      7400
+ 2294              	.LASF52:
+ 2295 02ba 766F6C74 		.ascii	"volts\000"
+ 2295      7300
+ 2296              	.LASF6:
+ 2297 02c0 73686F72 		.ascii	"short unsigned int\000"
+ 2297      7420756E 
+ 2297      7369676E 
+ 2297      65642069 
+ 2297      6E7400
+ 2298              	.LASF14:
+ 2299 02d3 696E7438 		.ascii	"int8\000"
+ 2299      00
+ 2300              	.LASF47:
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 58
+
+
+ 2301 02d8 6D566F6C 		.ascii	"mVolts\000"
+ 2301      747300
+ 2302              	.LASF23:
+ 2303 02df 4144435F 		.ascii	"ADC_SAR_Seq_1_SAR_Start\000"
+ 2303      5341525F 
+ 2303      5365715F 
+ 2303      315F5341 
+ 2303      525F5374 
+ 2304              	.LASF51:
+ 2305 02f7 4144435F 		.ascii	"ADC_SAR_Seq_1_SAR_CountsTo_Volts\000"
+ 2305      5341525F 
+ 2305      5365715F 
+ 2305      315F5341 
+ 2305      525F436F 
+ 2306              	.LASF17:
+ 2307 0318 666C6F61 		.ascii	"float32\000"
+ 2307      74333200 
+ 2308              	.LASF10:
+ 2309 0320 73697A65 		.ascii	"sizetype\000"
+ 2309      74797065 
+ 2309      00
+ 2310              	.LASF2:
+ 2311 0329 6C6F6E67 		.ascii	"long double\000"
+ 2311      20646F75 
+ 2311      626C6500 
+ 2312              	.LASF54:
+ 2313 0335 4144435F 		.ascii	"ADC_SAR_Seq_1_SAR_offset\000"
+ 2313      5341525F 
+ 2313      5365715F 
+ 2313      315F5341 
+ 2313      525F6F66 
+ 2314              	.LASF59:
+ 2315 034e 47656E65 		.ascii	"Generated_Source\\PSoC5\\ADC_SAR_Seq_1_SAR.c\000"
+ 2315      72617465 
+ 2315      645F536F 
+ 2315      75726365 
+ 2315      5C50536F 
+ 2316              	.LASF20:
+ 2317 0379 696E7436 		.ascii	"int64\000"
+ 2317      3400
+ 2318              	.LASF18:
+ 2319 037f 666C6F61 		.ascii	"float\000"
+ 2319      7400
+ 2320              	.LASF28:
+ 2321 0385 4144435F 		.ascii	"ADC_SAR_Seq_1_SAR_Stop\000"
+ 2321      5341525F 
+ 2321      5365715F 
+ 2321      315F5341 
+ 2321      525F5374 
+ 2322              	.LASF31:
+ 2323 039c 706F7765 		.ascii	"power\000"
+ 2323      7200
+ 2324              	.LASF38:
+ 2325 03a2 4144435F 		.ascii	"ADC_SAR_Seq_1_SAR_GetResult16\000"
+ 2325      5341525F 
+ 2325      5365715F 
+ 2325      315F5341 
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 59
+
+
+ 2325      525F4765 
+ 2326              	.LASF21:
+ 2327 03c0 72656738 		.ascii	"reg8\000"
+ 2327      00
+ 2328              	.LASF42:
+ 2329 03c5 4144435F 		.ascii	"ADC_SAR_Seq_1_SAR_SetGain\000"
+ 2329      5341525F 
+ 2329      5365715F 
+ 2329      315F5341 
+ 2329      525F5365 
+ 2330              	.LASF4:
+ 2331 03df 756E7369 		.ascii	"unsigned char\000"
+ 2331      676E6564 
+ 2331      20636861 
+ 2331      7200
+ 2332              	.LASF55:
+ 2333 03ed 4144435F 		.ascii	"ADC_SAR_Seq_1_SAR_countsPerVolt\000"
+ 2333      5341525F 
+ 2333      5365715F 
+ 2333      315F5341 
+ 2333      525F636F 
+ 2334              	.LASF5:
+ 2335 040d 73686F72 		.ascii	"short int\000"
+ 2335      7420696E 
+ 2335      7400
+ 2336              	.LASF30:
+ 2337 0417 4144435F 		.ascii	"ADC_SAR_Seq_1_SAR_SetResolution\000"
+ 2337      5341525F 
+ 2337      5365715F 
+ 2337      315F5341 
+ 2337      525F5365 
+ 2338              	.LASF27:
+ 2339 0437 4144435F 		.ascii	"ADC_SAR_Seq_1_SAR_Enable\000"
+ 2339      5341525F 
+ 2339      5365715F 
+ 2339      315F5341 
+ 2339      525F456E 
+ 2340              	.LASF32:
+ 2341 0450 7265736F 		.ascii	"resolution\000"
+ 2341      6C757469 
+ 2341      6F6E00
+ 2342              	.LASF39:
+ 2343 045b 4144435F 		.ascii	"ADC_SAR_Seq_1_SAR_SetOffset\000"
+ 2343      5341525F 
+ 2343      5365715F 
+ 2343      315F5341 
+ 2343      525F5365 
+ 2344              	.LASF11:
+ 2345 0477 63686172 		.ascii	"char\000"
+ 2345      00
+ 2346              	.LASF29:
+ 2347 047c 4144435F 		.ascii	"ADC_SAR_Seq_1_SAR_SetPower\000"
+ 2347      5341525F 
+ 2347      5365715F 
+ 2347      315F5341 
+ 2347      525F5365 
+ 2348              	.LASF46:
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccuhjQR3.s 			page 60
+
+
+ 2349 0497 61646343 		.ascii	"adcCounts\000"
+ 2349      6F756E74 
+ 2349      7300
+ 2350              	.LASF26:
+ 2351 04a1 656E6162 		.ascii	"enableInterrupts\000"
+ 2351      6C65496E 
+ 2351      74657272 
+ 2351      75707473 
+ 2351      00
+ 2352              	.LASF36:
+ 2353 04b2 73746174 		.ascii	"status\000"
+ 2353      757300
+ 2354              	.LASF57:
+ 2355 04b9 4144435F 		.ascii	"ADC_SAR_Seq_1_SAR_shift\000"
+ 2355      5341525F 
+ 2355      5365715F 
+ 2355      315F5341 
+ 2355      525F7368 
+ 2356              	.LASF15:
+ 2357 04d1 696E7431 		.ascii	"int16\000"
+ 2357      3600
+ 2358              	.LASF49:
+ 2359 04d7 4144435F 		.ascii	"ADC_SAR_Seq_1_SAR_CountsTo_uVolts\000"
+ 2359      5341525F 
+ 2359      5365715F 
+ 2359      315F5341 
+ 2359      525F436F 
+ 2360              	.LASF61:
+ 2361 04f9 4144435F 		.ascii	"ADC_SAR_Seq_1_SAR_GetResult8\000"
+ 2361      5341525F 
+ 2361      5365715F 
+ 2361      315F5341 
+ 2361      525F4765 
+ 2362              	.LASF62:
+ 2363 0516 4144435F 		.ascii	"ADC_SAR_Seq_1_SAR_CalcGain\000"
+ 2363      5341525F 
+ 2363      5365715F 
+ 2363      315F5341 
+ 2363      525F4361 
+ 2364              	.LASF25:
+ 2365 0531 746D7052 		.ascii	"tmpReg\000"
+ 2365      656700
+ 2366              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

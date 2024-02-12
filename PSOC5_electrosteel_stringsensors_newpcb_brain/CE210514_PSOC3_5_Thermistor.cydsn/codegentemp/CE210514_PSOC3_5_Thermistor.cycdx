@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <blockRegMap version="1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cypress.com/xsd/cyblockregmap cyblockregmap.xsd" xmlns="http://cypress.com/xsd/cyblockregmap">
-  <block name="button1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="button2" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-  <block name="LED_red2" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+  <block name="button3" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="LED_green2" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-  <block name="Clock_1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+  <block name="button1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="Decoder_1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false">
     <block name="isrDtr" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
     <block name="VirtualMux_1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
     <block name="PINS2" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   </block>
-  <block name="button3" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+  <block name="encoder_button" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="button4" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+  <block name="Clock_1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+  <block name="LED_red2" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="LED_green1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="LED_amber1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="DMA_1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
@@ -20,7 +21,6 @@
   <block name="LED_red1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="LED_amber2" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="LED_amber3" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-  <block name="encoder_button" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="knobPanelButton2" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="knobPanelButton1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="Status_Reg_1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false">
@@ -58,18 +58,17 @@
   <block name="Em_EEPROM_Dynamic" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="knobPanelLight1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="knobPanelLight2" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+  <block name="Clock_2" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="shift_button" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="edit_button" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="neck1_button" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="neck2_button" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="DMA_4" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-  <block name="Clock_2" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+  <block name="Bootloadable" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="EEPROM" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="DMA_3" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-  <block name="DMA_2" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-  <block name="SCL_1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="SDA_1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-  <block name="SS_2" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+  <block name="joy_y" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="USB" BASE="0x0" SIZE="0x0" desc="USBFS" visible="true" hidden="false">
     <block name="ep_2" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
     <block name="ZeroTerminal_4" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
@@ -956,7 +955,7 @@
       <field name="RA9" from="0" to="0" access="RW" resetVal="" desc="Read Address for EP MSB." hidden="false" />
     </register>
   </block>
-  <block name="SS_3" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+  <block name="SCL_1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="ADC_SAR_Seq_1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false">
     <block name="or_internal" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
     <block name="BusClock" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
@@ -1009,8 +1008,10 @@
     <block name="VirtualMux_4" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
     <block name="bSAR_SEQ" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   </block>
-  <block name="joy_y" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+  <block name="SCLK_3" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="joy_x" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+  <block name="SS_3" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+  <block name="SS_2" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="MISO_3" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="SCLK_1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="MISO_1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
@@ -1026,35 +1027,7 @@
     <block name="IntClock" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
     <block name="BSPIM" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   </block>
-  <block name="SCLK_3" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-  <block name="SPIS_1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false">
-    <block name="VirtualMux_1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-    <block name="not_1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-    <block name="IntClock" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-    <block name="VirtualMux_2" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-    <block name="BSPIS" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-    <register name="SPIS_1_RX_DATA" address="0x40006407" bitWidth="8" desc="SPIS RX Data" hidden="false" />
-    <register name="SPIS_1_TX_DATA" address="0x40006407" bitWidth="8" desc="SPIS TX Data" hidden="false" />
-    <register name="SPIS_1_TXSTATUS" address="0x40006463" bitWidth="8" desc="SPIS TX Status Register" hidden="false">
-      <field name="SPI_Done" from="0" to="0" access="R" resetVal="" desc="Set when all of the data in the transmit FIFO has been sent. Set when Byte/Word Complete                           has been set and TX Data FIFO is empty" hidden="false" />
-      <field name="TX_FIFO_Not_Full" from="1" to="1" access="R" resetVal="" desc="Set when the TX Data FIFO is not full" hidden="false" />
-      <field name="TX_FIFO_Empty" from="2" to="2" access="R" resetVal="" desc="Set when the TX Data FIFO is empty" hidden="false" />
-      <field name="Byte_Word_Complete" from="6" to="6" access="R" resetVal="" desc="Set when a byte/word transmit has completed" hidden="false" />
-      <field name="Interrupt" from="7" to="7" access="R" resetVal="" desc="Set when interrupt occurs" hidden="false" />
-    </register>
-    <register name="SPIS_1_RXSTATUS" address="0x40006565" bitWidth="8" desc="SPIS RX Status Register" hidden="false">
-      <field name="RX_FIFO_Not_Empty" from="3" to="3" access="R" resetVal="" desc="Set when the RX Data FIFO is not empty. That is, at least one byte/word is in the RX FIFO" hidden="false" />
-      <field name="RX_FIFO_Empty" from="4" to="4" access="R" resetVal="" desc="Set when the RX Data FIFO is empty" hidden="false" />
-      <field name="RX_Buf_Overrun" from="5" to="5" access="R" resetVal="" desc="Set when RX Data has overrun the 4 byte/word FIFO without being moved to the RX buffer                           cmemory array (if one exists)" hidden="false" />
-      <field name="RX_FIFO_Full" from="6" to="6" access="R" resetVal="" desc="Set when the RX Data FIFO is full" hidden="false" />
-      <field name="Interrupt" from="7" to="7" access="R" resetVal="" desc="Set when interrupt occurs" hidden="false" />
-    </register>
-  </block>
   <block name="oct2" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-  <block name="isr_SPI2_ss" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-  <block name="oct1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-  <block name="oct4" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-  <block name="isr_SPI1_ss" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="I2C_1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false">
     <block name="or_udb" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
     <block name="ZeroTerminal_2" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
@@ -1105,7 +1078,35 @@
       <field name="byte_complete" from="0" to="0" access="RW" resetVal="" desc="Enables interrupt from the corresponding bit in status register." hidden="false" />
     </register>
   </block>
+  <block name="oct1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+  <block name="SPIS_1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false">
+    <block name="VirtualMux_1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+    <block name="not_1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+    <block name="IntClock" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+    <block name="VirtualMux_2" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+    <block name="BSPIS" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+    <register name="SPIS_1_RX_DATA" address="0x40006407" bitWidth="8" desc="SPIS RX Data" hidden="false" />
+    <register name="SPIS_1_TX_DATA" address="0x40006407" bitWidth="8" desc="SPIS TX Data" hidden="false" />
+    <register name="SPIS_1_TXSTATUS" address="0x40006463" bitWidth="8" desc="SPIS TX Status Register" hidden="false">
+      <field name="SPI_Done" from="0" to="0" access="R" resetVal="" desc="Set when all of the data in the transmit FIFO has been sent. Set when Byte/Word Complete                           has been set and TX Data FIFO is empty" hidden="false" />
+      <field name="TX_FIFO_Not_Full" from="1" to="1" access="R" resetVal="" desc="Set when the TX Data FIFO is not full" hidden="false" />
+      <field name="TX_FIFO_Empty" from="2" to="2" access="R" resetVal="" desc="Set when the TX Data FIFO is empty" hidden="false" />
+      <field name="Byte_Word_Complete" from="6" to="6" access="R" resetVal="" desc="Set when a byte/word transmit has completed" hidden="false" />
+      <field name="Interrupt" from="7" to="7" access="R" resetVal="" desc="Set when interrupt occurs" hidden="false" />
+    </register>
+    <register name="SPIS_1_RXSTATUS" address="0x40006565" bitWidth="8" desc="SPIS RX Status Register" hidden="false">
+      <field name="RX_FIFO_Not_Empty" from="3" to="3" access="R" resetVal="" desc="Set when the RX Data FIFO is not empty. That is, at least one byte/word is in the RX FIFO" hidden="false" />
+      <field name="RX_FIFO_Empty" from="4" to="4" access="R" resetVal="" desc="Set when the RX Data FIFO is empty" hidden="false" />
+      <field name="RX_Buf_Overrun" from="5" to="5" access="R" resetVal="" desc="Set when RX Data has overrun the 4 byte/word FIFO without being moved to the RX buffer                           cmemory array (if one exists)" hidden="false" />
+      <field name="RX_FIFO_Full" from="6" to="6" access="R" resetVal="" desc="Set when the RX Data FIFO is full" hidden="false" />
+      <field name="Interrupt" from="7" to="7" access="R" resetVal="" desc="Set when interrupt occurs" hidden="false" />
+    </register>
+  </block>
+  <block name="isr_SPI1_ss" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+  <block name="DMA_2" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="oct3" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+  <block name="oct4" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+  <block name="isr_SPI2_ss" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="knob2" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="knob1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="MOSI_3" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />

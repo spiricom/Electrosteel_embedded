@@ -1,0 +1,3981 @@
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"SPIS_1.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.global	SPIS_1_initVar
+  20              		.bss
+  21              		.type	SPIS_1_initVar, %object
+  22              		.size	SPIS_1_initVar, 1
+  23              	SPIS_1_initVar:
+  24 0000 00       		.space	1
+  25              		.comm	SPIS_1_swStatusTx,1,1
+  26              		.comm	SPIS_1_swStatusRx,1,1
+  27              		.section	.text.SPIS_1_Init,"ax",%progbits
+  28              		.align	2
+  29              		.global	SPIS_1_Init
+  30              		.thumb
+  31              		.thumb_func
+  32              		.type	SPIS_1_Init, %function
+  33              	SPIS_1_Init:
+  34              	.LFB0:
+  35              		.file 1 "Generated_Source\\PSoC5\\SPIS_1.c"
+   1:Generated_Source\PSoC5/SPIS_1.c **** /*******************************************************************************
+   2:Generated_Source\PSoC5/SPIS_1.c **** * File Name: SPIS_1.c
+   3:Generated_Source\PSoC5/SPIS_1.c **** * Version 2.70
+   4:Generated_Source\PSoC5/SPIS_1.c **** *
+   5:Generated_Source\PSoC5/SPIS_1.c **** * Description:
+   6:Generated_Source\PSoC5/SPIS_1.c **** *  This file provides all API functionality of the SPI Slave component.
+   7:Generated_Source\PSoC5/SPIS_1.c **** *
+   8:Generated_Source\PSoC5/SPIS_1.c **** * Note:
+   9:Generated_Source\PSoC5/SPIS_1.c **** *  None.
+  10:Generated_Source\PSoC5/SPIS_1.c **** *
+  11:Generated_Source\PSoC5/SPIS_1.c **** ********************************************************************************
+  12:Generated_Source\PSoC5/SPIS_1.c **** * Copyright 2008-2015, Cypress Semiconductor Corporation.  All rights reserved.
+  13:Generated_Source\PSoC5/SPIS_1.c **** * You may use this file only in accordance with the license, terms, conditions,
+  14:Generated_Source\PSoC5/SPIS_1.c **** * disclaimers, and limitations in the end user license agreement accompanying
+  15:Generated_Source\PSoC5/SPIS_1.c **** * the software package with which this file was provided.
+  16:Generated_Source\PSoC5/SPIS_1.c **** *******************************************************************************/
+  17:Generated_Source\PSoC5/SPIS_1.c **** 
+  18:Generated_Source\PSoC5/SPIS_1.c **** #include "SPIS_1_PVT.h"
+  19:Generated_Source\PSoC5/SPIS_1.c **** 
+  20:Generated_Source\PSoC5/SPIS_1.c **** #if (SPIS_1_TX_SOFTWARE_BUF_ENABLED)
+  21:Generated_Source\PSoC5/SPIS_1.c **** 
+  22:Generated_Source\PSoC5/SPIS_1.c ****     volatile uint8 SPIS_1_txBuffer[SPIS_1_TX_BUFFER_SIZE];
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 2
+
+
+  23:Generated_Source\PSoC5/SPIS_1.c ****     volatile uint8 SPIS_1_txBufferRead;
+  24:Generated_Source\PSoC5/SPIS_1.c ****     volatile uint8 SPIS_1_txBufferWrite;
+  25:Generated_Source\PSoC5/SPIS_1.c ****     volatile uint8 SPIS_1_txBufferFull;
+  26:Generated_Source\PSoC5/SPIS_1.c **** 
+  27:Generated_Source\PSoC5/SPIS_1.c **** #endif /* SPIS_1_TX_SOFTWARE_BUF_ENABLED*/
+  28:Generated_Source\PSoC5/SPIS_1.c **** 
+  29:Generated_Source\PSoC5/SPIS_1.c **** #if (SPIS_1_RX_SOFTWARE_BUF_ENABLED)
+  30:Generated_Source\PSoC5/SPIS_1.c **** 
+  31:Generated_Source\PSoC5/SPIS_1.c ****     volatile uint8 SPIS_1_rxBuffer[SPIS_1_RX_BUFFER_SIZE];
+  32:Generated_Source\PSoC5/SPIS_1.c ****     volatile uint8 SPIS_1_rxBufferRead;
+  33:Generated_Source\PSoC5/SPIS_1.c ****     volatile uint8 SPIS_1_rxBufferWrite;
+  34:Generated_Source\PSoC5/SPIS_1.c ****     volatile uint8 SPIS_1_rxBufferFull;
+  35:Generated_Source\PSoC5/SPIS_1.c **** 
+  36:Generated_Source\PSoC5/SPIS_1.c **** #endif /* SPIS_1_RX_SOFTWARE_BUF_ENABLED */
+  37:Generated_Source\PSoC5/SPIS_1.c **** 
+  38:Generated_Source\PSoC5/SPIS_1.c **** uint8 SPIS_1_initVar = 0u;
+  39:Generated_Source\PSoC5/SPIS_1.c **** 
+  40:Generated_Source\PSoC5/SPIS_1.c **** volatile uint8 SPIS_1_swStatusTx;
+  41:Generated_Source\PSoC5/SPIS_1.c **** volatile uint8 SPIS_1_swStatusRx;
+  42:Generated_Source\PSoC5/SPIS_1.c **** 
+  43:Generated_Source\PSoC5/SPIS_1.c **** 
+  44:Generated_Source\PSoC5/SPIS_1.c **** /*******************************************************************************
+  45:Generated_Source\PSoC5/SPIS_1.c **** * Function Name: SPIS_1_Init
+  46:Generated_Source\PSoC5/SPIS_1.c **** ********************************************************************************
+  47:Generated_Source\PSoC5/SPIS_1.c **** *
+  48:Generated_Source\PSoC5/SPIS_1.c **** * Summary:
+  49:Generated_Source\PSoC5/SPIS_1.c **** *  Inits/Restores default SPIS configuration provided with customizer.
+  50:Generated_Source\PSoC5/SPIS_1.c **** *
+  51:Generated_Source\PSoC5/SPIS_1.c **** * Parameters:
+  52:Generated_Source\PSoC5/SPIS_1.c **** *  None.
+  53:Generated_Source\PSoC5/SPIS_1.c **** *
+  54:Generated_Source\PSoC5/SPIS_1.c **** * Return:
+  55:Generated_Source\PSoC5/SPIS_1.c **** *  None.
+  56:Generated_Source\PSoC5/SPIS_1.c **** *
+  57:Generated_Source\PSoC5/SPIS_1.c **** * Side Effects:
+  58:Generated_Source\PSoC5/SPIS_1.c **** *  When this function is called it initializes all of the necessary parameters
+  59:Generated_Source\PSoC5/SPIS_1.c **** *  for execution. i.e. setting the initial interrupt mask, configuring the
+  60:Generated_Source\PSoC5/SPIS_1.c **** *  interrupt service routine, configuring the bit-counter parameters and
+  61:Generated_Source\PSoC5/SPIS_1.c **** *  clearing the FIFO and Status Register.
+  62:Generated_Source\PSoC5/SPIS_1.c **** *
+  63:Generated_Source\PSoC5/SPIS_1.c **** * Reentrant:
+  64:Generated_Source\PSoC5/SPIS_1.c **** *  No.
+  65:Generated_Source\PSoC5/SPIS_1.c **** *
+  66:Generated_Source\PSoC5/SPIS_1.c **** *******************************************************************************/
+  67:Generated_Source\PSoC5/SPIS_1.c **** void SPIS_1_Init(void) 
+  68:Generated_Source\PSoC5/SPIS_1.c **** {
+  36              		.loc 1 68 0
+  37              		.cfi_startproc
+  38              		@ args = 0, pretend = 0, frame = 0
+  39              		@ frame_needed = 1, uses_anonymous_args = 0
+  40 0000 80B5     		push	{r7, lr}
+  41              		.cfi_def_cfa_offset 8
+  42              		.cfi_offset 7, -8
+  43              		.cfi_offset 14, -4
+  44 0002 00AF     		add	r7, sp, #0
+  45              		.cfi_def_cfa_register 7
+  69:Generated_Source\PSoC5/SPIS_1.c ****     /*Initialize the Bit counter */
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 3
+
+
+  70:Generated_Source\PSoC5/SPIS_1.c ****     SPIS_1_COUNTER_PERIOD_REG = SPIS_1_BITCTR_INIT;
+  46              		.loc 1 70 0
+  47 0004 0D4B     		ldr	r3, .L2
+  48 0006 0722     		movs	r2, #7
+  49 0008 1A70     		strb	r2, [r3]
+  71:Generated_Source\PSoC5/SPIS_1.c **** 
+  72:Generated_Source\PSoC5/SPIS_1.c ****     /* ISR initialization */
+  73:Generated_Source\PSoC5/SPIS_1.c ****     #if(SPIS_1_INTERNAL_TX_INT_ENABLED)
+  74:Generated_Source\PSoC5/SPIS_1.c **** 
+  75:Generated_Source\PSoC5/SPIS_1.c ****         CyIntDisable(SPIS_1_TX_ISR_NUMBER);
+  76:Generated_Source\PSoC5/SPIS_1.c **** 
+  77:Generated_Source\PSoC5/SPIS_1.c ****         /* Set the ISR to point to the SPIS_1_isr Interrupt. */
+  78:Generated_Source\PSoC5/SPIS_1.c ****         (void)CyIntSetVector(SPIS_1_TX_ISR_NUMBER, &SPIS_1_TX_ISR);
+  79:Generated_Source\PSoC5/SPIS_1.c **** 
+  80:Generated_Source\PSoC5/SPIS_1.c ****         /* Set the priority. */
+  81:Generated_Source\PSoC5/SPIS_1.c ****         CyIntSetPriority(SPIS_1_TX_ISR_NUMBER, SPIS_1_TX_ISR_PRIORITY);
+  82:Generated_Source\PSoC5/SPIS_1.c **** 
+  83:Generated_Source\PSoC5/SPIS_1.c ****     #endif /* SPIS_1_INTERNAL_TX_INT_ENABLED */
+  84:Generated_Source\PSoC5/SPIS_1.c **** 
+  85:Generated_Source\PSoC5/SPIS_1.c ****     #if(SPIS_1_INTERNAL_RX_INT_ENABLED)
+  86:Generated_Source\PSoC5/SPIS_1.c **** 
+  87:Generated_Source\PSoC5/SPIS_1.c ****         CyIntDisable(SPIS_1_RX_ISR_NUMBER);
+  50              		.loc 1 87 0
+  51 000a 0D4B     		ldr	r3, .L2+4
+  52 000c 0422     		movs	r2, #4
+  53 000e 1A60     		str	r2, [r3]
+  88:Generated_Source\PSoC5/SPIS_1.c **** 
+  89:Generated_Source\PSoC5/SPIS_1.c ****         /* Set the ISR to point to the SPIS_1_isr Interrupt. */
+  90:Generated_Source\PSoC5/SPIS_1.c ****         (void)CyIntSetVector(SPIS_1_RX_ISR_NUMBER, &SPIS_1_RX_ISR);
+  54              		.loc 1 90 0
+  55 0010 0C49     		ldr	r1, .L2+8
+  56 0012 0220     		movs	r0, #2
+  57 0014 FFF7FEFF 		bl	CyIntSetVector
+  91:Generated_Source\PSoC5/SPIS_1.c **** 
+  92:Generated_Source\PSoC5/SPIS_1.c ****         /* Set the priority. */
+  93:Generated_Source\PSoC5/SPIS_1.c ****         CyIntSetPriority(SPIS_1_RX_ISR_NUMBER, SPIS_1_RX_ISR_PRIORITY);
+  58              		.loc 1 93 0
+  59 0018 0721     		movs	r1, #7
+  60 001a 0220     		movs	r0, #2
+  61 001c FFF7FEFF 		bl	CyIntSetPriority
+  94:Generated_Source\PSoC5/SPIS_1.c **** 
+  95:Generated_Source\PSoC5/SPIS_1.c ****     #endif /* SPIS_1_INTERNAL_RX_INT_ENABLED */
+  96:Generated_Source\PSoC5/SPIS_1.c **** 
+  97:Generated_Source\PSoC5/SPIS_1.c ****     /* Clear any stray data from the RX and TX FIFO */
+  98:Generated_Source\PSoC5/SPIS_1.c ****     SPIS_1_ClearFIFO();
+  62              		.loc 1 98 0
+  63 0020 FFF7FEFF 		bl	SPIS_1_ClearFIFO
+  99:Generated_Source\PSoC5/SPIS_1.c **** 
+ 100:Generated_Source\PSoC5/SPIS_1.c ****     #if(SPIS_1_RX_SOFTWARE_BUF_ENABLED)
+ 101:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_rxBufferFull = 0u;
+ 102:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_rxBufferRead = 0u;
+ 103:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_rxBufferWrite = 0u;
+ 104:Generated_Source\PSoC5/SPIS_1.c ****     #endif /* SPIS_1_RX_SOFTWARE_BUF_ENABLED */
+ 105:Generated_Source\PSoC5/SPIS_1.c **** 
+ 106:Generated_Source\PSoC5/SPIS_1.c ****     #if(SPIS_1_TX_SOFTWARE_BUF_ENABLED)
+ 107:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_txBufferFull = 0u;
+ 108:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_txBufferRead = 0u;
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 4
+
+
+ 109:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_txBufferWrite = 0u;
+ 110:Generated_Source\PSoC5/SPIS_1.c ****     #endif /* SPIS_1_TX_SOFTWARE_BUF_ENABLED */
+ 111:Generated_Source\PSoC5/SPIS_1.c **** 
+ 112:Generated_Source\PSoC5/SPIS_1.c ****     (void) SPIS_1_ReadTxStatus(); /* Clear any pending status bits */
+  64              		.loc 1 112 0
+  65 0024 FFF7FEFF 		bl	SPIS_1_ReadTxStatus
+ 113:Generated_Source\PSoC5/SPIS_1.c ****     (void) SPIS_1_ReadRxStatus(); /* Clear any pending status bits */
+  66              		.loc 1 113 0
+  67 0028 FFF7FEFF 		bl	SPIS_1_ReadRxStatus
+ 114:Generated_Source\PSoC5/SPIS_1.c **** 
+ 115:Generated_Source\PSoC5/SPIS_1.c **** 
+ 116:Generated_Source\PSoC5/SPIS_1.c ****     /* Configure the Initial interrupt mask */
+ 117:Generated_Source\PSoC5/SPIS_1.c ****     #if (SPIS_1_TX_SOFTWARE_BUF_ENABLED)
+ 118:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_TX_STATUS_MASK_REG  = (SPIS_1_TX_INIT_INTERRUPTS_MASK &
+ 119:Generated_Source\PSoC5/SPIS_1.c ****                                                 (uint8)~SPIS_1_STS_TX_FIFO_NOT_FULL);
+ 120:Generated_Source\PSoC5/SPIS_1.c ****     #else /* SPIS_1_TX_SOFTWARE_BUF_ENABLED */
+ 121:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_TX_STATUS_MASK_REG  = SPIS_1_TX_INIT_INTERRUPTS_MASK;
+  68              		.loc 1 121 0
+  69 002c 064B     		ldr	r3, .L2+12
+  70 002e 0122     		movs	r2, #1
+  71 0030 1A70     		strb	r2, [r3]
+ 122:Generated_Source\PSoC5/SPIS_1.c ****     #endif /* SPIS_1_TX_SOFTWARE_BUF_ENABLED */
+ 123:Generated_Source\PSoC5/SPIS_1.c **** 
+ 124:Generated_Source\PSoC5/SPIS_1.c ****     SPIS_1_RX_STATUS_MASK_REG  = SPIS_1_RX_INIT_INTERRUPTS_MASK;
+  72              		.loc 1 124 0
+  73 0032 064B     		ldr	r3, .L2+16
+  74 0034 4022     		movs	r2, #64
+  75 0036 1A70     		strb	r2, [r3]
+ 125:Generated_Source\PSoC5/SPIS_1.c **** }
+  76              		.loc 1 125 0
+  77 0038 00BF     		nop
+  78 003a 80BD     		pop	{r7, pc}
+  79              	.L3:
+  80              		.align	2
+  81              	.L2:
+  82 003c 84650040 		.word	1073767812
+  83 0040 80E100E0 		.word	-536813184
+  84 0044 00000000 		.word	SPIS_1_RX_ISR
+  85 0048 86650040 		.word	1073767814
+  86 004c 87640040 		.word	1073767559
+  87              		.cfi_endproc
+  88              	.LFE0:
+  89              		.size	SPIS_1_Init, .-SPIS_1_Init
+  90              		.section	.text.SPIS_1_Enable,"ax",%progbits
+  91              		.align	2
+  92              		.global	SPIS_1_Enable
+  93              		.thumb
+  94              		.thumb_func
+  95              		.type	SPIS_1_Enable, %function
+  96              	SPIS_1_Enable:
+  97              	.LFB1:
+ 126:Generated_Source\PSoC5/SPIS_1.c **** 
+ 127:Generated_Source\PSoC5/SPIS_1.c **** 
+ 128:Generated_Source\PSoC5/SPIS_1.c **** /*******************************************************************************
+ 129:Generated_Source\PSoC5/SPIS_1.c **** * Function Name: SPIS_1_Enable
+ 130:Generated_Source\PSoC5/SPIS_1.c **** ********************************************************************************
+ 131:Generated_Source\PSoC5/SPIS_1.c **** *
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 5
+
+
+ 132:Generated_Source\PSoC5/SPIS_1.c **** * Summary:
+ 133:Generated_Source\PSoC5/SPIS_1.c **** *  Enable SPIS component.
+ 134:Generated_Source\PSoC5/SPIS_1.c **** *
+ 135:Generated_Source\PSoC5/SPIS_1.c **** * Parameters:
+ 136:Generated_Source\PSoC5/SPIS_1.c **** *  None.
+ 137:Generated_Source\PSoC5/SPIS_1.c **** *
+ 138:Generated_Source\PSoC5/SPIS_1.c **** * Return:
+ 139:Generated_Source\PSoC5/SPIS_1.c **** *  None.
+ 140:Generated_Source\PSoC5/SPIS_1.c **** *
+ 141:Generated_Source\PSoC5/SPIS_1.c **** *******************************************************************************/
+ 142:Generated_Source\PSoC5/SPIS_1.c **** void SPIS_1_Enable(void) 
+ 143:Generated_Source\PSoC5/SPIS_1.c **** {
+  98              		.loc 1 143 0
+  99              		.cfi_startproc
+ 100              		@ args = 0, pretend = 0, frame = 8
+ 101              		@ frame_needed = 1, uses_anonymous_args = 0
+ 102 0000 80B5     		push	{r7, lr}
+ 103              		.cfi_def_cfa_offset 8
+ 104              		.cfi_offset 7, -8
+ 105              		.cfi_offset 14, -4
+ 106 0002 82B0     		sub	sp, sp, #8
+ 107              		.cfi_def_cfa_offset 16
+ 108 0004 00AF     		add	r7, sp, #0
+ 109              		.cfi_def_cfa_register 7
+ 144:Generated_Source\PSoC5/SPIS_1.c ****     uint8 enableInterrupts;
+ 145:Generated_Source\PSoC5/SPIS_1.c ****     enableInterrupts = CyEnterCriticalSection();
+ 110              		.loc 1 145 0
+ 111 0006 FFF7FEFF 		bl	CyEnterCriticalSection
+ 112 000a 0346     		mov	r3, r0
+ 113 000c FB71     		strb	r3, [r7, #7]
+ 146:Generated_Source\PSoC5/SPIS_1.c **** 
+ 147:Generated_Source\PSoC5/SPIS_1.c ****     SPIS_1_COUNTER_CONTROL_REG |= SPIS_1_CNTR_ENABLE;
+ 114              		.loc 1 147 0
+ 115 000e 114A     		ldr	r2, .L5
+ 116 0010 104B     		ldr	r3, .L5
+ 117 0012 1B78     		ldrb	r3, [r3]
+ 118 0014 DBB2     		uxtb	r3, r3
+ 119 0016 43F02003 		orr	r3, r3, #32
+ 120 001a DBB2     		uxtb	r3, r3
+ 121 001c 1370     		strb	r3, [r2]
+ 148:Generated_Source\PSoC5/SPIS_1.c ****     SPIS_1_TX_STATUS_ACTL_REG |= SPIS_1_INT_ENABLE;
+ 122              		.loc 1 148 0
+ 123 001e 0E4A     		ldr	r2, .L5+4
+ 124 0020 0D4B     		ldr	r3, .L5+4
+ 125 0022 1B78     		ldrb	r3, [r3]
+ 126 0024 DBB2     		uxtb	r3, r3
+ 127 0026 43F01003 		orr	r3, r3, #16
+ 128 002a DBB2     		uxtb	r3, r3
+ 129 002c 1370     		strb	r3, [r2]
+ 149:Generated_Source\PSoC5/SPIS_1.c ****     SPIS_1_RX_STATUS_ACTL_REG |= SPIS_1_INT_ENABLE;
+ 130              		.loc 1 149 0
+ 131 002e 0B4A     		ldr	r2, .L5+8
+ 132 0030 0A4B     		ldr	r3, .L5+8
+ 133 0032 1B78     		ldrb	r3, [r3]
+ 134 0034 DBB2     		uxtb	r3, r3
+ 135 0036 43F01003 		orr	r3, r3, #16
+ 136 003a DBB2     		uxtb	r3, r3
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 6
+
+
+ 137 003c 1370     		strb	r3, [r2]
+ 150:Generated_Source\PSoC5/SPIS_1.c **** 
+ 151:Generated_Source\PSoC5/SPIS_1.c ****     CyExitCriticalSection(enableInterrupts);
+ 138              		.loc 1 151 0
+ 139 003e FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 140 0040 1846     		mov	r0, r3
+ 141 0042 FFF7FEFF 		bl	CyExitCriticalSection
+ 152:Generated_Source\PSoC5/SPIS_1.c **** 
+ 153:Generated_Source\PSoC5/SPIS_1.c ****     #if(SPIS_1_INTERNAL_TX_INT_ENABLED)
+ 154:Generated_Source\PSoC5/SPIS_1.c ****         CyIntEnable(SPIS_1_TX_ISR_NUMBER);
+ 155:Generated_Source\PSoC5/SPIS_1.c ****     #endif /* SPIS_1_INTERNAL_TX_INT_ENABLED */
+ 156:Generated_Source\PSoC5/SPIS_1.c **** 
+ 157:Generated_Source\PSoC5/SPIS_1.c ****     #if(SPIS_1_INTERNAL_RX_INT_ENABLED)
+ 158:Generated_Source\PSoC5/SPIS_1.c ****         CyIntEnable(SPIS_1_RX_ISR_NUMBER);
+ 142              		.loc 1 158 0
+ 143 0046 064B     		ldr	r3, .L5+12
+ 144 0048 0422     		movs	r2, #4
+ 145 004a 1A60     		str	r2, [r3]
+ 159:Generated_Source\PSoC5/SPIS_1.c ****     #endif /* SPIS_1_INTERNAL_RX_INT_ENABLED */
+ 160:Generated_Source\PSoC5/SPIS_1.c **** }
+ 146              		.loc 1 160 0
+ 147 004c 00BF     		nop
+ 148 004e 0837     		adds	r7, r7, #8
+ 149              		.cfi_def_cfa_offset 8
+ 150 0050 BD46     		mov	sp, r7
+ 151              		.cfi_def_cfa_register 13
+ 152              		@ sp needed
+ 153 0052 80BD     		pop	{r7, pc}
+ 154              	.L6:
+ 155              		.align	2
+ 156              	.L5:
+ 157 0054 94650040 		.word	1073767828
+ 158 0058 96650040 		.word	1073767830
+ 159 005c 97640040 		.word	1073767575
+ 160 0060 00E100E0 		.word	-536813312
+ 161              		.cfi_endproc
+ 162              	.LFE1:
+ 163              		.size	SPIS_1_Enable, .-SPIS_1_Enable
+ 164              		.section	.text.SPIS_1_Start,"ax",%progbits
+ 165              		.align	2
+ 166              		.global	SPIS_1_Start
+ 167              		.thumb
+ 168              		.thumb_func
+ 169              		.type	SPIS_1_Start, %function
+ 170              	SPIS_1_Start:
+ 171              	.LFB2:
+ 161:Generated_Source\PSoC5/SPIS_1.c **** 
+ 162:Generated_Source\PSoC5/SPIS_1.c **** 
+ 163:Generated_Source\PSoC5/SPIS_1.c **** /*******************************************************************************
+ 164:Generated_Source\PSoC5/SPIS_1.c **** * Function Name: SPIS_1_Start
+ 165:Generated_Source\PSoC5/SPIS_1.c **** ********************************************************************************
+ 166:Generated_Source\PSoC5/SPIS_1.c **** *
+ 167:Generated_Source\PSoC5/SPIS_1.c **** * Summary:
+ 168:Generated_Source\PSoC5/SPIS_1.c **** *  Initialize and Enable the SPI Slave component.
+ 169:Generated_Source\PSoC5/SPIS_1.c **** *
+ 170:Generated_Source\PSoC5/SPIS_1.c **** * Parameters:
+ 171:Generated_Source\PSoC5/SPIS_1.c **** *  None.
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 7
+
+
+ 172:Generated_Source\PSoC5/SPIS_1.c **** *
+ 173:Generated_Source\PSoC5/SPIS_1.c **** * Return:
+ 174:Generated_Source\PSoC5/SPIS_1.c **** *  None.
+ 175:Generated_Source\PSoC5/SPIS_1.c **** *
+ 176:Generated_Source\PSoC5/SPIS_1.c **** * Global variables:
+ 177:Generated_Source\PSoC5/SPIS_1.c **** *  SPIS_1_initVar - used to check initial configuration, modified on
+ 178:Generated_Source\PSoC5/SPIS_1.c **** *  first function call.
+ 179:Generated_Source\PSoC5/SPIS_1.c **** *
+ 180:Generated_Source\PSoC5/SPIS_1.c **** * Theory:
+ 181:Generated_Source\PSoC5/SPIS_1.c **** *  Enable the clock input to enable operation.
+ 182:Generated_Source\PSoC5/SPIS_1.c **** *
+ 183:Generated_Source\PSoC5/SPIS_1.c **** * Reentrant:
+ 184:Generated_Source\PSoC5/SPIS_1.c **** *  No.
+ 185:Generated_Source\PSoC5/SPIS_1.c **** *
+ 186:Generated_Source\PSoC5/SPIS_1.c **** *******************************************************************************/
+ 187:Generated_Source\PSoC5/SPIS_1.c **** void SPIS_1_Start(void) 
+ 188:Generated_Source\PSoC5/SPIS_1.c **** {
+ 172              		.loc 1 188 0
+ 173              		.cfi_startproc
+ 174              		@ args = 0, pretend = 0, frame = 0
+ 175              		@ frame_needed = 1, uses_anonymous_args = 0
+ 176 0000 80B5     		push	{r7, lr}
+ 177              		.cfi_def_cfa_offset 8
+ 178              		.cfi_offset 7, -8
+ 179              		.cfi_offset 14, -4
+ 180 0002 00AF     		add	r7, sp, #0
+ 181              		.cfi_def_cfa_register 7
+ 189:Generated_Source\PSoC5/SPIS_1.c ****     if(SPIS_1_initVar == 0u)
+ 182              		.loc 1 189 0
+ 183 0004 064B     		ldr	r3, .L9
+ 184 0006 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 185 0008 002B     		cmp	r3, #0
+ 186 000a 04D1     		bne	.L8
+ 190:Generated_Source\PSoC5/SPIS_1.c ****     {
+ 191:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_Init();
+ 187              		.loc 1 191 0
+ 188 000c FFF7FEFF 		bl	SPIS_1_Init
+ 192:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_initVar = 1u;
+ 189              		.loc 1 192 0
+ 190 0010 034B     		ldr	r3, .L9
+ 191 0012 0122     		movs	r2, #1
+ 192 0014 1A70     		strb	r2, [r3]
+ 193              	.L8:
+ 193:Generated_Source\PSoC5/SPIS_1.c ****     }
+ 194:Generated_Source\PSoC5/SPIS_1.c **** 
+ 195:Generated_Source\PSoC5/SPIS_1.c ****     SPIS_1_Enable();
+ 194              		.loc 1 195 0
+ 195 0016 FFF7FEFF 		bl	SPIS_1_Enable
+ 196:Generated_Source\PSoC5/SPIS_1.c **** }
+ 196              		.loc 1 196 0
+ 197 001a 00BF     		nop
+ 198 001c 80BD     		pop	{r7, pc}
+ 199              	.L10:
+ 200 001e 00BF     		.align	2
+ 201              	.L9:
+ 202 0020 00000000 		.word	SPIS_1_initVar
+ 203              		.cfi_endproc
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 8
+
+
+ 204              	.LFE2:
+ 205              		.size	SPIS_1_Start, .-SPIS_1_Start
+ 206              		.section	.text.SPIS_1_Stop,"ax",%progbits
+ 207              		.align	2
+ 208              		.global	SPIS_1_Stop
+ 209              		.thumb
+ 210              		.thumb_func
+ 211              		.type	SPIS_1_Stop, %function
+ 212              	SPIS_1_Stop:
+ 213              	.LFB3:
+ 197:Generated_Source\PSoC5/SPIS_1.c **** 
+ 198:Generated_Source\PSoC5/SPIS_1.c **** 
+ 199:Generated_Source\PSoC5/SPIS_1.c **** /*******************************************************************************
+ 200:Generated_Source\PSoC5/SPIS_1.c **** * Function Name: SPIS_1_Stop
+ 201:Generated_Source\PSoC5/SPIS_1.c **** ********************************************************************************
+ 202:Generated_Source\PSoC5/SPIS_1.c **** *
+ 203:Generated_Source\PSoC5/SPIS_1.c **** * Summary:
+ 204:Generated_Source\PSoC5/SPIS_1.c **** *  Disable the SPI Slave component.
+ 205:Generated_Source\PSoC5/SPIS_1.c **** *
+ 206:Generated_Source\PSoC5/SPIS_1.c **** * Parameters:
+ 207:Generated_Source\PSoC5/SPIS_1.c **** *  None.
+ 208:Generated_Source\PSoC5/SPIS_1.c **** *
+ 209:Generated_Source\PSoC5/SPIS_1.c **** * Return:
+ 210:Generated_Source\PSoC5/SPIS_1.c **** *  None.
+ 211:Generated_Source\PSoC5/SPIS_1.c **** *
+ 212:Generated_Source\PSoC5/SPIS_1.c **** * Theory:
+ 213:Generated_Source\PSoC5/SPIS_1.c **** *  Disable the internal interrupt if one is used.
+ 214:Generated_Source\PSoC5/SPIS_1.c **** *
+ 215:Generated_Source\PSoC5/SPIS_1.c **** *******************************************************************************/
+ 216:Generated_Source\PSoC5/SPIS_1.c **** void SPIS_1_Stop(void) 
+ 217:Generated_Source\PSoC5/SPIS_1.c **** {
+ 214              		.loc 1 217 0
+ 215              		.cfi_startproc
+ 216              		@ args = 0, pretend = 0, frame = 8
+ 217              		@ frame_needed = 1, uses_anonymous_args = 0
+ 218 0000 80B5     		push	{r7, lr}
+ 219              		.cfi_def_cfa_offset 8
+ 220              		.cfi_offset 7, -8
+ 221              		.cfi_offset 14, -4
+ 222 0002 82B0     		sub	sp, sp, #8
+ 223              		.cfi_def_cfa_offset 16
+ 224 0004 00AF     		add	r7, sp, #0
+ 225              		.cfi_def_cfa_register 7
+ 218:Generated_Source\PSoC5/SPIS_1.c ****     uint8 enableInterrupts;
+ 219:Generated_Source\PSoC5/SPIS_1.c ****     enableInterrupts = CyEnterCriticalSection();
+ 226              		.loc 1 219 0
+ 227 0006 FFF7FEFF 		bl	CyEnterCriticalSection
+ 228 000a 0346     		mov	r3, r0
+ 229 000c FB71     		strb	r3, [r7, #7]
+ 220:Generated_Source\PSoC5/SPIS_1.c **** 
+ 221:Generated_Source\PSoC5/SPIS_1.c ****     SPIS_1_TX_STATUS_ACTL_REG &= (uint8)~SPIS_1_INT_ENABLE;
+ 230              		.loc 1 221 0
+ 231 000e 0D4A     		ldr	r2, .L12
+ 232 0010 0C4B     		ldr	r3, .L12
+ 233 0012 1B78     		ldrb	r3, [r3]
+ 234 0014 DBB2     		uxtb	r3, r3
+ 235 0016 23F01003 		bic	r3, r3, #16
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 9
+
+
+ 236 001a DBB2     		uxtb	r3, r3
+ 237 001c 1370     		strb	r3, [r2]
+ 222:Generated_Source\PSoC5/SPIS_1.c ****     SPIS_1_RX_STATUS_ACTL_REG &= (uint8)~SPIS_1_INT_ENABLE;
+ 238              		.loc 1 222 0
+ 239 001e 0A4A     		ldr	r2, .L12+4
+ 240 0020 094B     		ldr	r3, .L12+4
+ 241 0022 1B78     		ldrb	r3, [r3]
+ 242 0024 DBB2     		uxtb	r3, r3
+ 243 0026 23F01003 		bic	r3, r3, #16
+ 244 002a DBB2     		uxtb	r3, r3
+ 245 002c 1370     		strb	r3, [r2]
+ 223:Generated_Source\PSoC5/SPIS_1.c **** 
+ 224:Generated_Source\PSoC5/SPIS_1.c ****     CyExitCriticalSection(enableInterrupts);
+ 246              		.loc 1 224 0
+ 247 002e FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 248 0030 1846     		mov	r0, r3
+ 249 0032 FFF7FEFF 		bl	CyExitCriticalSection
+ 225:Generated_Source\PSoC5/SPIS_1.c **** 
+ 226:Generated_Source\PSoC5/SPIS_1.c ****     #if(SPIS_1_INTERNAL_TX_INT_ENABLED)
+ 227:Generated_Source\PSoC5/SPIS_1.c ****         CyIntDisable(SPIS_1_TX_ISR_NUMBER);
+ 228:Generated_Source\PSoC5/SPIS_1.c ****     #endif /* SPIS_1_INTERNAL_TX_INT_ENABLED */
+ 229:Generated_Source\PSoC5/SPIS_1.c **** 
+ 230:Generated_Source\PSoC5/SPIS_1.c ****     #if(SPIS_1_INTERNAL_RX_INT_ENABLED)
+ 231:Generated_Source\PSoC5/SPIS_1.c ****         CyIntDisable(SPIS_1_RX_ISR_NUMBER);
+ 250              		.loc 1 231 0
+ 251 0036 054B     		ldr	r3, .L12+8
+ 252 0038 0422     		movs	r2, #4
+ 253 003a 1A60     		str	r2, [r3]
+ 232:Generated_Source\PSoC5/SPIS_1.c ****     #endif /* SPIS_1_INTERNAL_RX_INT_ENABLED */
+ 233:Generated_Source\PSoC5/SPIS_1.c **** }
+ 254              		.loc 1 233 0
+ 255 003c 00BF     		nop
+ 256 003e 0837     		adds	r7, r7, #8
+ 257              		.cfi_def_cfa_offset 8
+ 258 0040 BD46     		mov	sp, r7
+ 259              		.cfi_def_cfa_register 13
+ 260              		@ sp needed
+ 261 0042 80BD     		pop	{r7, pc}
+ 262              	.L13:
+ 263              		.align	2
+ 264              	.L12:
+ 265 0044 96650040 		.word	1073767830
+ 266 0048 97640040 		.word	1073767575
+ 267 004c 80E100E0 		.word	-536813184
+ 268              		.cfi_endproc
+ 269              	.LFE3:
+ 270              		.size	SPIS_1_Stop, .-SPIS_1_Stop
+ 271              		.section	.text.SPIS_1_EnableTxInt,"ax",%progbits
+ 272              		.align	2
+ 273              		.global	SPIS_1_EnableTxInt
+ 274              		.thumb
+ 275              		.thumb_func
+ 276              		.type	SPIS_1_EnableTxInt, %function
+ 277              	SPIS_1_EnableTxInt:
+ 278              	.LFB4:
+ 234:Generated_Source\PSoC5/SPIS_1.c **** 
+ 235:Generated_Source\PSoC5/SPIS_1.c **** 
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 10
+
+
+ 236:Generated_Source\PSoC5/SPIS_1.c **** /*******************************************************************************
+ 237:Generated_Source\PSoC5/SPIS_1.c **** * Function Name: SPIS_1_EnableTxInt
+ 238:Generated_Source\PSoC5/SPIS_1.c **** ********************************************************************************
+ 239:Generated_Source\PSoC5/SPIS_1.c **** *
+ 240:Generated_Source\PSoC5/SPIS_1.c **** * Summary:
+ 241:Generated_Source\PSoC5/SPIS_1.c **** *  Enable internal Tx interrupt generation.
+ 242:Generated_Source\PSoC5/SPIS_1.c **** *
+ 243:Generated_Source\PSoC5/SPIS_1.c **** * Parameters:
+ 244:Generated_Source\PSoC5/SPIS_1.c **** *  None.
+ 245:Generated_Source\PSoC5/SPIS_1.c **** *
+ 246:Generated_Source\PSoC5/SPIS_1.c **** * Return:
+ 247:Generated_Source\PSoC5/SPIS_1.c **** *  None.
+ 248:Generated_Source\PSoC5/SPIS_1.c **** *
+ 249:Generated_Source\PSoC5/SPIS_1.c **** * Theory:
+ 250:Generated_Source\PSoC5/SPIS_1.c **** *  Enable the internal Tx interrupt output -or- the interrupt component itself.
+ 251:Generated_Source\PSoC5/SPIS_1.c **** *
+ 252:Generated_Source\PSoC5/SPIS_1.c **** *******************************************************************************/
+ 253:Generated_Source\PSoC5/SPIS_1.c **** void SPIS_1_EnableTxInt(void) 
+ 254:Generated_Source\PSoC5/SPIS_1.c **** {
+ 279              		.loc 1 254 0
+ 280              		.cfi_startproc
+ 281              		@ args = 0, pretend = 0, frame = 0
+ 282              		@ frame_needed = 1, uses_anonymous_args = 0
+ 283              		@ link register save eliminated.
+ 284 0000 80B4     		push	{r7}
+ 285              		.cfi_def_cfa_offset 4
+ 286              		.cfi_offset 7, -4
+ 287 0002 00AF     		add	r7, sp, #0
+ 288              		.cfi_def_cfa_register 7
+ 255:Generated_Source\PSoC5/SPIS_1.c ****     #if(SPIS_1_INTERNAL_TX_INT_ENABLED)
+ 256:Generated_Source\PSoC5/SPIS_1.c ****         CyIntEnable(SPIS_1_TX_ISR_NUMBER);
+ 257:Generated_Source\PSoC5/SPIS_1.c ****     #endif /* SPIS_1_INTERNAL_TX_INT_ENABLED */
+ 258:Generated_Source\PSoC5/SPIS_1.c **** }
+ 289              		.loc 1 258 0
+ 290 0004 00BF     		nop
+ 291 0006 BD46     		mov	sp, r7
+ 292              		.cfi_def_cfa_register 13
+ 293              		@ sp needed
+ 294 0008 80BC     		pop	{r7}
+ 295              		.cfi_restore 7
+ 296              		.cfi_def_cfa_offset 0
+ 297 000a 7047     		bx	lr
+ 298              		.cfi_endproc
+ 299              	.LFE4:
+ 300              		.size	SPIS_1_EnableTxInt, .-SPIS_1_EnableTxInt
+ 301              		.section	.text.SPIS_1_EnableRxInt,"ax",%progbits
+ 302              		.align	2
+ 303              		.global	SPIS_1_EnableRxInt
+ 304              		.thumb
+ 305              		.thumb_func
+ 306              		.type	SPIS_1_EnableRxInt, %function
+ 307              	SPIS_1_EnableRxInt:
+ 308              	.LFB5:
+ 259:Generated_Source\PSoC5/SPIS_1.c **** 
+ 260:Generated_Source\PSoC5/SPIS_1.c **** 
+ 261:Generated_Source\PSoC5/SPIS_1.c **** /*******************************************************************************
+ 262:Generated_Source\PSoC5/SPIS_1.c **** * Function Name: SPIS_1_EnableRxInt
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 11
+
+
+ 263:Generated_Source\PSoC5/SPIS_1.c **** ********************************************************************************
+ 264:Generated_Source\PSoC5/SPIS_1.c **** *
+ 265:Generated_Source\PSoC5/SPIS_1.c **** * Summary:
+ 266:Generated_Source\PSoC5/SPIS_1.c **** *  Enable internal Rx interrupt generation.
+ 267:Generated_Source\PSoC5/SPIS_1.c **** *
+ 268:Generated_Source\PSoC5/SPIS_1.c **** * Parameters:
+ 269:Generated_Source\PSoC5/SPIS_1.c **** *  None.
+ 270:Generated_Source\PSoC5/SPIS_1.c **** *
+ 271:Generated_Source\PSoC5/SPIS_1.c **** * Return:
+ 272:Generated_Source\PSoC5/SPIS_1.c **** *  None.
+ 273:Generated_Source\PSoC5/SPIS_1.c **** *
+ 274:Generated_Source\PSoC5/SPIS_1.c **** * Theory:
+ 275:Generated_Source\PSoC5/SPIS_1.c **** *  Enable the internal Rx interrupt output -or- the interrupt component itself.
+ 276:Generated_Source\PSoC5/SPIS_1.c **** *
+ 277:Generated_Source\PSoC5/SPIS_1.c **** *******************************************************************************/
+ 278:Generated_Source\PSoC5/SPIS_1.c **** void SPIS_1_EnableRxInt(void) 
+ 279:Generated_Source\PSoC5/SPIS_1.c **** {
+ 309              		.loc 1 279 0
+ 310              		.cfi_startproc
+ 311              		@ args = 0, pretend = 0, frame = 0
+ 312              		@ frame_needed = 1, uses_anonymous_args = 0
+ 313              		@ link register save eliminated.
+ 314 0000 80B4     		push	{r7}
+ 315              		.cfi_def_cfa_offset 4
+ 316              		.cfi_offset 7, -4
+ 317 0002 00AF     		add	r7, sp, #0
+ 318              		.cfi_def_cfa_register 7
+ 280:Generated_Source\PSoC5/SPIS_1.c ****     #if(SPIS_1_INTERNAL_RX_INT_ENABLED)
+ 281:Generated_Source\PSoC5/SPIS_1.c ****         CyIntEnable(SPIS_1_RX_ISR_NUMBER);
+ 319              		.loc 1 281 0
+ 320 0004 034B     		ldr	r3, .L16
+ 321 0006 0422     		movs	r2, #4
+ 322 0008 1A60     		str	r2, [r3]
+ 282:Generated_Source\PSoC5/SPIS_1.c ****     #endif /* SPIS_1_INTERNAL_RX_INT_ENABLED */
+ 283:Generated_Source\PSoC5/SPIS_1.c **** }
+ 323              		.loc 1 283 0
+ 324 000a 00BF     		nop
+ 325 000c BD46     		mov	sp, r7
+ 326              		.cfi_def_cfa_register 13
+ 327              		@ sp needed
+ 328 000e 80BC     		pop	{r7}
+ 329              		.cfi_restore 7
+ 330              		.cfi_def_cfa_offset 0
+ 331 0010 7047     		bx	lr
+ 332              	.L17:
+ 333 0012 00BF     		.align	2
+ 334              	.L16:
+ 335 0014 00E100E0 		.word	-536813312
+ 336              		.cfi_endproc
+ 337              	.LFE5:
+ 338              		.size	SPIS_1_EnableRxInt, .-SPIS_1_EnableRxInt
+ 339              		.section	.text.SPIS_1_DisableTxInt,"ax",%progbits
+ 340              		.align	2
+ 341              		.global	SPIS_1_DisableTxInt
+ 342              		.thumb
+ 343              		.thumb_func
+ 344              		.type	SPIS_1_DisableTxInt, %function
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 12
+
+
+ 345              	SPIS_1_DisableTxInt:
+ 346              	.LFB6:
+ 284:Generated_Source\PSoC5/SPIS_1.c **** 
+ 285:Generated_Source\PSoC5/SPIS_1.c **** 
+ 286:Generated_Source\PSoC5/SPIS_1.c **** /*******************************************************************************
+ 287:Generated_Source\PSoC5/SPIS_1.c **** * Function Name: SPIS_1_DisableTxInt
+ 288:Generated_Source\PSoC5/SPIS_1.c **** ********************************************************************************
+ 289:Generated_Source\PSoC5/SPIS_1.c **** *
+ 290:Generated_Source\PSoC5/SPIS_1.c **** * Summary:
+ 291:Generated_Source\PSoC5/SPIS_1.c **** *  Disable internal Tx interrupt generation.
+ 292:Generated_Source\PSoC5/SPIS_1.c **** *
+ 293:Generated_Source\PSoC5/SPIS_1.c **** * Parameters:
+ 294:Generated_Source\PSoC5/SPIS_1.c **** *  None.
+ 295:Generated_Source\PSoC5/SPIS_1.c **** *
+ 296:Generated_Source\PSoC5/SPIS_1.c **** * Return:
+ 297:Generated_Source\PSoC5/SPIS_1.c **** *  None.
+ 298:Generated_Source\PSoC5/SPIS_1.c **** *
+ 299:Generated_Source\PSoC5/SPIS_1.c **** * Theory:
+ 300:Generated_Source\PSoC5/SPIS_1.c **** *  Disable the internal Tx interrupt output -or- the interrupt component itself.
+ 301:Generated_Source\PSoC5/SPIS_1.c **** *
+ 302:Generated_Source\PSoC5/SPIS_1.c **** *******************************************************************************/
+ 303:Generated_Source\PSoC5/SPIS_1.c **** void SPIS_1_DisableTxInt(void) 
+ 304:Generated_Source\PSoC5/SPIS_1.c **** {
+ 347              		.loc 1 304 0
+ 348              		.cfi_startproc
+ 349              		@ args = 0, pretend = 0, frame = 0
+ 350              		@ frame_needed = 1, uses_anonymous_args = 0
+ 351              		@ link register save eliminated.
+ 352 0000 80B4     		push	{r7}
+ 353              		.cfi_def_cfa_offset 4
+ 354              		.cfi_offset 7, -4
+ 355 0002 00AF     		add	r7, sp, #0
+ 356              		.cfi_def_cfa_register 7
+ 305:Generated_Source\PSoC5/SPIS_1.c ****     #if(SPIS_1_INTERNAL_TX_INT_ENABLED)
+ 306:Generated_Source\PSoC5/SPIS_1.c ****         CyIntDisable(SPIS_1_TX_ISR_NUMBER);
+ 307:Generated_Source\PSoC5/SPIS_1.c ****     #endif /* SPIS_1_INTERNAL_TX_INT_ENABLED */
+ 308:Generated_Source\PSoC5/SPIS_1.c **** }
+ 357              		.loc 1 308 0
+ 358 0004 00BF     		nop
+ 359 0006 BD46     		mov	sp, r7
+ 360              		.cfi_def_cfa_register 13
+ 361              		@ sp needed
+ 362 0008 80BC     		pop	{r7}
+ 363              		.cfi_restore 7
+ 364              		.cfi_def_cfa_offset 0
+ 365 000a 7047     		bx	lr
+ 366              		.cfi_endproc
+ 367              	.LFE6:
+ 368              		.size	SPIS_1_DisableTxInt, .-SPIS_1_DisableTxInt
+ 369              		.section	.text.SPIS_1_DisableRxInt,"ax",%progbits
+ 370              		.align	2
+ 371              		.global	SPIS_1_DisableRxInt
+ 372              		.thumb
+ 373              		.thumb_func
+ 374              		.type	SPIS_1_DisableRxInt, %function
+ 375              	SPIS_1_DisableRxInt:
+ 376              	.LFB7:
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 13
+
+
+ 309:Generated_Source\PSoC5/SPIS_1.c **** 
+ 310:Generated_Source\PSoC5/SPIS_1.c **** 
+ 311:Generated_Source\PSoC5/SPIS_1.c **** /*******************************************************************************
+ 312:Generated_Source\PSoC5/SPIS_1.c **** * Function Name: SPIS_1_DisableRxInt
+ 313:Generated_Source\PSoC5/SPIS_1.c **** ********************************************************************************
+ 314:Generated_Source\PSoC5/SPIS_1.c **** *
+ 315:Generated_Source\PSoC5/SPIS_1.c **** * Summary:
+ 316:Generated_Source\PSoC5/SPIS_1.c **** *  Disable internal Rx interrupt generation.
+ 317:Generated_Source\PSoC5/SPIS_1.c **** *
+ 318:Generated_Source\PSoC5/SPIS_1.c **** * Parameters:
+ 319:Generated_Source\PSoC5/SPIS_1.c **** *  None.
+ 320:Generated_Source\PSoC5/SPIS_1.c **** *
+ 321:Generated_Source\PSoC5/SPIS_1.c **** * Return:
+ 322:Generated_Source\PSoC5/SPIS_1.c **** *  None.
+ 323:Generated_Source\PSoC5/SPIS_1.c **** *
+ 324:Generated_Source\PSoC5/SPIS_1.c **** * Theory:
+ 325:Generated_Source\PSoC5/SPIS_1.c **** *  Disable the internal Rx interrupt output -or- the interrupt component itself.
+ 326:Generated_Source\PSoC5/SPIS_1.c **** *
+ 327:Generated_Source\PSoC5/SPIS_1.c **** *******************************************************************************/
+ 328:Generated_Source\PSoC5/SPIS_1.c **** void SPIS_1_DisableRxInt(void) 
+ 329:Generated_Source\PSoC5/SPIS_1.c **** {
+ 377              		.loc 1 329 0
+ 378              		.cfi_startproc
+ 379              		@ args = 0, pretend = 0, frame = 0
+ 380              		@ frame_needed = 1, uses_anonymous_args = 0
+ 381              		@ link register save eliminated.
+ 382 0000 80B4     		push	{r7}
+ 383              		.cfi_def_cfa_offset 4
+ 384              		.cfi_offset 7, -4
+ 385 0002 00AF     		add	r7, sp, #0
+ 386              		.cfi_def_cfa_register 7
+ 330:Generated_Source\PSoC5/SPIS_1.c ****     #if(SPIS_1_INTERNAL_RX_INT_ENABLED)
+ 331:Generated_Source\PSoC5/SPIS_1.c ****         CyIntDisable(SPIS_1_RX_ISR_NUMBER);
+ 387              		.loc 1 331 0
+ 388 0004 034B     		ldr	r3, .L20
+ 389 0006 0422     		movs	r2, #4
+ 390 0008 1A60     		str	r2, [r3]
+ 332:Generated_Source\PSoC5/SPIS_1.c ****     #endif /* SPIS_1_INTERNAL_RX_INT_ENABLED */
+ 333:Generated_Source\PSoC5/SPIS_1.c **** }
+ 391              		.loc 1 333 0
+ 392 000a 00BF     		nop
+ 393 000c BD46     		mov	sp, r7
+ 394              		.cfi_def_cfa_register 13
+ 395              		@ sp needed
+ 396 000e 80BC     		pop	{r7}
+ 397              		.cfi_restore 7
+ 398              		.cfi_def_cfa_offset 0
+ 399 0010 7047     		bx	lr
+ 400              	.L21:
+ 401 0012 00BF     		.align	2
+ 402              	.L20:
+ 403 0014 80E100E0 		.word	-536813184
+ 404              		.cfi_endproc
+ 405              	.LFE7:
+ 406              		.size	SPIS_1_DisableRxInt, .-SPIS_1_DisableRxInt
+ 407              		.section	.text.SPIS_1_SetTxInterruptMode,"ax",%progbits
+ 408              		.align	2
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 14
+
+
+ 409              		.global	SPIS_1_SetTxInterruptMode
+ 410              		.thumb
+ 411              		.thumb_func
+ 412              		.type	SPIS_1_SetTxInterruptMode, %function
+ 413              	SPIS_1_SetTxInterruptMode:
+ 414              	.LFB8:
+ 334:Generated_Source\PSoC5/SPIS_1.c **** 
+ 335:Generated_Source\PSoC5/SPIS_1.c **** 
+ 336:Generated_Source\PSoC5/SPIS_1.c **** /*******************************************************************************
+ 337:Generated_Source\PSoC5/SPIS_1.c **** * Function Name: SPIS_1_SetTxInterruptMode
+ 338:Generated_Source\PSoC5/SPIS_1.c **** ********************************************************************************
+ 339:Generated_Source\PSoC5/SPIS_1.c **** *
+ 340:Generated_Source\PSoC5/SPIS_1.c **** * Summary:
+ 341:Generated_Source\PSoC5/SPIS_1.c **** *  Configure which status bits trigger an interrupt event.
+ 342:Generated_Source\PSoC5/SPIS_1.c **** *
+ 343:Generated_Source\PSoC5/SPIS_1.c **** * Parameters:
+ 344:Generated_Source\PSoC5/SPIS_1.c **** *  intSrc: An or'd combination of the desired status bit masks (defined in the
+ 345:Generated_Source\PSoC5/SPIS_1.c **** *  header file).
+ 346:Generated_Source\PSoC5/SPIS_1.c **** *
+ 347:Generated_Source\PSoC5/SPIS_1.c **** * Return:
+ 348:Generated_Source\PSoC5/SPIS_1.c **** *  None.
+ 349:Generated_Source\PSoC5/SPIS_1.c **** *
+ 350:Generated_Source\PSoC5/SPIS_1.c **** * Theory:
+ 351:Generated_Source\PSoC5/SPIS_1.c **** *  Enables the output of specific status bits to the interrupt controller.
+ 352:Generated_Source\PSoC5/SPIS_1.c **** *
+ 353:Generated_Source\PSoC5/SPIS_1.c **** *******************************************************************************/
+ 354:Generated_Source\PSoC5/SPIS_1.c **** void SPIS_1_SetTxInterruptMode(uint8 intSrc) 
+ 355:Generated_Source\PSoC5/SPIS_1.c **** {
+ 415              		.loc 1 355 0
+ 416              		.cfi_startproc
+ 417              		@ args = 0, pretend = 0, frame = 8
+ 418              		@ frame_needed = 1, uses_anonymous_args = 0
+ 419              		@ link register save eliminated.
+ 420 0000 80B4     		push	{r7}
+ 421              		.cfi_def_cfa_offset 4
+ 422              		.cfi_offset 7, -4
+ 423 0002 83B0     		sub	sp, sp, #12
+ 424              		.cfi_def_cfa_offset 16
+ 425 0004 00AF     		add	r7, sp, #0
+ 426              		.cfi_def_cfa_register 7
+ 427 0006 0346     		mov	r3, r0
+ 428 0008 FB71     		strb	r3, [r7, #7]
+ 356:Generated_Source\PSoC5/SPIS_1.c ****     SPIS_1_TX_STATUS_MASK_REG  = intSrc;
+ 429              		.loc 1 356 0
+ 430 000a 044A     		ldr	r2, .L23
+ 431 000c FB79     		ldrb	r3, [r7, #7]
+ 432 000e 1370     		strb	r3, [r2]
+ 357:Generated_Source\PSoC5/SPIS_1.c **** }
+ 433              		.loc 1 357 0
+ 434 0010 00BF     		nop
+ 435 0012 0C37     		adds	r7, r7, #12
+ 436              		.cfi_def_cfa_offset 4
+ 437 0014 BD46     		mov	sp, r7
+ 438              		.cfi_def_cfa_register 13
+ 439              		@ sp needed
+ 440 0016 80BC     		pop	{r7}
+ 441              		.cfi_restore 7
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 15
+
+
+ 442              		.cfi_def_cfa_offset 0
+ 443 0018 7047     		bx	lr
+ 444              	.L24:
+ 445 001a 00BF     		.align	2
+ 446              	.L23:
+ 447 001c 86650040 		.word	1073767814
+ 448              		.cfi_endproc
+ 449              	.LFE8:
+ 450              		.size	SPIS_1_SetTxInterruptMode, .-SPIS_1_SetTxInterruptMode
+ 451              		.section	.text.SPIS_1_SetRxInterruptMode,"ax",%progbits
+ 452              		.align	2
+ 453              		.global	SPIS_1_SetRxInterruptMode
+ 454              		.thumb
+ 455              		.thumb_func
+ 456              		.type	SPIS_1_SetRxInterruptMode, %function
+ 457              	SPIS_1_SetRxInterruptMode:
+ 458              	.LFB9:
+ 358:Generated_Source\PSoC5/SPIS_1.c **** 
+ 359:Generated_Source\PSoC5/SPIS_1.c **** 
+ 360:Generated_Source\PSoC5/SPIS_1.c **** /*******************************************************************************
+ 361:Generated_Source\PSoC5/SPIS_1.c **** * Function Name: SPIS_1_SetRxInterruptMode
+ 362:Generated_Source\PSoC5/SPIS_1.c **** ********************************************************************************
+ 363:Generated_Source\PSoC5/SPIS_1.c **** *
+ 364:Generated_Source\PSoC5/SPIS_1.c **** * Summary:
+ 365:Generated_Source\PSoC5/SPIS_1.c **** *  Configure which status bits trigger an interrupt event.
+ 366:Generated_Source\PSoC5/SPIS_1.c **** *
+ 367:Generated_Source\PSoC5/SPIS_1.c **** * Parameters:
+ 368:Generated_Source\PSoC5/SPIS_1.c **** *  intSrc: An or'd combination of the desired status bit masks (defined in the
+ 369:Generated_Source\PSoC5/SPIS_1.c **** *  header file).
+ 370:Generated_Source\PSoC5/SPIS_1.c **** *
+ 371:Generated_Source\PSoC5/SPIS_1.c **** * Return:
+ 372:Generated_Source\PSoC5/SPIS_1.c **** *  None.
+ 373:Generated_Source\PSoC5/SPIS_1.c **** *
+ 374:Generated_Source\PSoC5/SPIS_1.c **** * Theory:
+ 375:Generated_Source\PSoC5/SPIS_1.c **** *  Enables the output of specific status bits to the interrupt controller.
+ 376:Generated_Source\PSoC5/SPIS_1.c **** *
+ 377:Generated_Source\PSoC5/SPIS_1.c **** *******************************************************************************/
+ 378:Generated_Source\PSoC5/SPIS_1.c **** void SPIS_1_SetRxInterruptMode(uint8 intSrc) 
+ 379:Generated_Source\PSoC5/SPIS_1.c **** {
+ 459              		.loc 1 379 0
+ 460              		.cfi_startproc
+ 461              		@ args = 0, pretend = 0, frame = 8
+ 462              		@ frame_needed = 1, uses_anonymous_args = 0
+ 463              		@ link register save eliminated.
+ 464 0000 80B4     		push	{r7}
+ 465              		.cfi_def_cfa_offset 4
+ 466              		.cfi_offset 7, -4
+ 467 0002 83B0     		sub	sp, sp, #12
+ 468              		.cfi_def_cfa_offset 16
+ 469 0004 00AF     		add	r7, sp, #0
+ 470              		.cfi_def_cfa_register 7
+ 471 0006 0346     		mov	r3, r0
+ 472 0008 FB71     		strb	r3, [r7, #7]
+ 380:Generated_Source\PSoC5/SPIS_1.c ****     SPIS_1_RX_STATUS_MASK_REG  = intSrc;
+ 473              		.loc 1 380 0
+ 474 000a 044A     		ldr	r2, .L26
+ 475 000c FB79     		ldrb	r3, [r7, #7]
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 16
+
+
+ 476 000e 1370     		strb	r3, [r2]
+ 381:Generated_Source\PSoC5/SPIS_1.c **** }
+ 477              		.loc 1 381 0
+ 478 0010 00BF     		nop
+ 479 0012 0C37     		adds	r7, r7, #12
+ 480              		.cfi_def_cfa_offset 4
+ 481 0014 BD46     		mov	sp, r7
+ 482              		.cfi_def_cfa_register 13
+ 483              		@ sp needed
+ 484 0016 80BC     		pop	{r7}
+ 485              		.cfi_restore 7
+ 486              		.cfi_def_cfa_offset 0
+ 487 0018 7047     		bx	lr
+ 488              	.L27:
+ 489 001a 00BF     		.align	2
+ 490              	.L26:
+ 491 001c 87640040 		.word	1073767559
+ 492              		.cfi_endproc
+ 493              	.LFE9:
+ 494              		.size	SPIS_1_SetRxInterruptMode, .-SPIS_1_SetRxInterruptMode
+ 495              		.section	.text.SPIS_1_ReadTxStatus,"ax",%progbits
+ 496              		.align	2
+ 497              		.global	SPIS_1_ReadTxStatus
+ 498              		.thumb
+ 499              		.thumb_func
+ 500              		.type	SPIS_1_ReadTxStatus, %function
+ 501              	SPIS_1_ReadTxStatus:
+ 502              	.LFB10:
+ 382:Generated_Source\PSoC5/SPIS_1.c **** 
+ 383:Generated_Source\PSoC5/SPIS_1.c **** 
+ 384:Generated_Source\PSoC5/SPIS_1.c **** /*******************************************************************************
+ 385:Generated_Source\PSoC5/SPIS_1.c **** * Function Name: SPIS_1_ReadTxStatus
+ 386:Generated_Source\PSoC5/SPIS_1.c **** ********************************************************************************
+ 387:Generated_Source\PSoC5/SPIS_1.c **** *
+ 388:Generated_Source\PSoC5/SPIS_1.c **** * Summary:
+ 389:Generated_Source\PSoC5/SPIS_1.c **** *  Read the Tx status register for the component.
+ 390:Generated_Source\PSoC5/SPIS_1.c **** *
+ 391:Generated_Source\PSoC5/SPIS_1.c **** * Parameters:
+ 392:Generated_Source\PSoC5/SPIS_1.c **** *  None.
+ 393:Generated_Source\PSoC5/SPIS_1.c **** *
+ 394:Generated_Source\PSoC5/SPIS_1.c **** * Return:
+ 395:Generated_Source\PSoC5/SPIS_1.c **** *  Contents of the Tx status register.
+ 396:Generated_Source\PSoC5/SPIS_1.c **** *
+ 397:Generated_Source\PSoC5/SPIS_1.c **** * Global variables:
+ 398:Generated_Source\PSoC5/SPIS_1.c **** *  SPIS_1_swStatusTx - used to store in software status register,
+ 399:Generated_Source\PSoC5/SPIS_1.c **** *  modified every function call - resets to zero.
+ 400:Generated_Source\PSoC5/SPIS_1.c **** *
+ 401:Generated_Source\PSoC5/SPIS_1.c **** * Theory:
+ 402:Generated_Source\PSoC5/SPIS_1.c **** *  Allows the user and the API to read the Tx status register for error
+ 403:Generated_Source\PSoC5/SPIS_1.c **** *  detection and flow control.
+ 404:Generated_Source\PSoC5/SPIS_1.c **** *
+ 405:Generated_Source\PSoC5/SPIS_1.c **** * Side Effects:
+ 406:Generated_Source\PSoC5/SPIS_1.c **** *  Clear Tx status register of the component.
+ 407:Generated_Source\PSoC5/SPIS_1.c **** *
+ 408:Generated_Source\PSoC5/SPIS_1.c **** * Reentrant:
+ 409:Generated_Source\PSoC5/SPIS_1.c **** *  No.
+ 410:Generated_Source\PSoC5/SPIS_1.c **** *
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 17
+
+
+ 411:Generated_Source\PSoC5/SPIS_1.c **** *******************************************************************************/
+ 412:Generated_Source\PSoC5/SPIS_1.c **** uint8 SPIS_1_ReadTxStatus(void) 
+ 413:Generated_Source\PSoC5/SPIS_1.c **** {
+ 503              		.loc 1 413 0
+ 504              		.cfi_startproc
+ 505              		@ args = 0, pretend = 0, frame = 8
+ 506              		@ frame_needed = 1, uses_anonymous_args = 0
+ 507              		@ link register save eliminated.
+ 508 0000 80B4     		push	{r7}
+ 509              		.cfi_def_cfa_offset 4
+ 510              		.cfi_offset 7, -4
+ 511 0002 83B0     		sub	sp, sp, #12
+ 512              		.cfi_def_cfa_offset 16
+ 513 0004 00AF     		add	r7, sp, #0
+ 514              		.cfi_def_cfa_register 7
+ 414:Generated_Source\PSoC5/SPIS_1.c ****     uint8 tmpStatus;
+ 415:Generated_Source\PSoC5/SPIS_1.c **** 
+ 416:Generated_Source\PSoC5/SPIS_1.c ****     #if (SPIS_1_TX_SOFTWARE_BUF_ENABLED)
+ 417:Generated_Source\PSoC5/SPIS_1.c **** 
+ 418:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_DisableTxInt();
+ 419:Generated_Source\PSoC5/SPIS_1.c **** 
+ 420:Generated_Source\PSoC5/SPIS_1.c ****         tmpStatus = SPIS_1_GET_STATUS_TX(SPIS_1_swStatusTx);
+ 421:Generated_Source\PSoC5/SPIS_1.c **** 
+ 422:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_swStatusTx = 0u;
+ 423:Generated_Source\PSoC5/SPIS_1.c **** 
+ 424:Generated_Source\PSoC5/SPIS_1.c ****         /* Enable Interrupts */
+ 425:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_EnableTxInt();
+ 426:Generated_Source\PSoC5/SPIS_1.c **** 
+ 427:Generated_Source\PSoC5/SPIS_1.c ****     #else /* !SPIS_1_TX_SOFTWARE_BUF_ENABLED */
+ 428:Generated_Source\PSoC5/SPIS_1.c **** 
+ 429:Generated_Source\PSoC5/SPIS_1.c ****         tmpStatus = SPIS_1_TX_STATUS_REG;
+ 515              		.loc 1 429 0
+ 516 0006 044B     		ldr	r3, .L30
+ 517 0008 1B78     		ldrb	r3, [r3]
+ 518 000a FB71     		strb	r3, [r7, #7]
+ 430:Generated_Source\PSoC5/SPIS_1.c **** 
+ 431:Generated_Source\PSoC5/SPIS_1.c ****     #endif /* SPIS_1_TX_SOFTWARE_BUF_ENABLED */
+ 432:Generated_Source\PSoC5/SPIS_1.c **** 
+ 433:Generated_Source\PSoC5/SPIS_1.c ****     return(tmpStatus);
+ 519              		.loc 1 433 0
+ 520 000c FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 434:Generated_Source\PSoC5/SPIS_1.c **** }
+ 521              		.loc 1 434 0
+ 522 000e 1846     		mov	r0, r3
+ 523 0010 0C37     		adds	r7, r7, #12
+ 524              		.cfi_def_cfa_offset 4
+ 525 0012 BD46     		mov	sp, r7
+ 526              		.cfi_def_cfa_register 13
+ 527              		@ sp needed
+ 528 0014 80BC     		pop	{r7}
+ 529              		.cfi_restore 7
+ 530              		.cfi_def_cfa_offset 0
+ 531 0016 7047     		bx	lr
+ 532              	.L31:
+ 533              		.align	2
+ 534              	.L30:
+ 535 0018 66650040 		.word	1073767782
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 18
+
+
+ 536              		.cfi_endproc
+ 537              	.LFE10:
+ 538              		.size	SPIS_1_ReadTxStatus, .-SPIS_1_ReadTxStatus
+ 539              		.section	.text.SPIS_1_ReadRxStatus,"ax",%progbits
+ 540              		.align	2
+ 541              		.global	SPIS_1_ReadRxStatus
+ 542              		.thumb
+ 543              		.thumb_func
+ 544              		.type	SPIS_1_ReadRxStatus, %function
+ 545              	SPIS_1_ReadRxStatus:
+ 546              	.LFB11:
+ 435:Generated_Source\PSoC5/SPIS_1.c **** 
+ 436:Generated_Source\PSoC5/SPIS_1.c **** 
+ 437:Generated_Source\PSoC5/SPIS_1.c **** /*******************************************************************************
+ 438:Generated_Source\PSoC5/SPIS_1.c **** * Function Name: SPIS_1_ReadRxStatus
+ 439:Generated_Source\PSoC5/SPIS_1.c **** ********************************************************************************
+ 440:Generated_Source\PSoC5/SPIS_1.c **** *
+ 441:Generated_Source\PSoC5/SPIS_1.c **** * Summary:
+ 442:Generated_Source\PSoC5/SPIS_1.c **** *  Read the Rx status register for the component.
+ 443:Generated_Source\PSoC5/SPIS_1.c **** *
+ 444:Generated_Source\PSoC5/SPIS_1.c **** * Parameters:
+ 445:Generated_Source\PSoC5/SPIS_1.c **** *  None.
+ 446:Generated_Source\PSoC5/SPIS_1.c **** *
+ 447:Generated_Source\PSoC5/SPIS_1.c **** * Return:
+ 448:Generated_Source\PSoC5/SPIS_1.c **** *  Contents of the Rx status register.
+ 449:Generated_Source\PSoC5/SPIS_1.c **** *
+ 450:Generated_Source\PSoC5/SPIS_1.c **** * Global variables:
+ 451:Generated_Source\PSoC5/SPIS_1.c **** *  SPIS_1_swStatusRx - used to store in software Rx status register,
+ 452:Generated_Source\PSoC5/SPIS_1.c **** *  modified every function call - resets to zero.
+ 453:Generated_Source\PSoC5/SPIS_1.c **** *
+ 454:Generated_Source\PSoC5/SPIS_1.c **** * Theory:
+ 455:Generated_Source\PSoC5/SPIS_1.c **** *  Allows the user and the API to read the Rx status register for error
+ 456:Generated_Source\PSoC5/SPIS_1.c **** *  detection and flow control.
+ 457:Generated_Source\PSoC5/SPIS_1.c **** *
+ 458:Generated_Source\PSoC5/SPIS_1.c **** * Side Effects:
+ 459:Generated_Source\PSoC5/SPIS_1.c **** *  Clear Rx status register of the component.
+ 460:Generated_Source\PSoC5/SPIS_1.c **** *
+ 461:Generated_Source\PSoC5/SPIS_1.c **** * Reentrant:
+ 462:Generated_Source\PSoC5/SPIS_1.c **** *  No.
+ 463:Generated_Source\PSoC5/SPIS_1.c **** *
+ 464:Generated_Source\PSoC5/SPIS_1.c **** *******************************************************************************/
+ 465:Generated_Source\PSoC5/SPIS_1.c **** uint8 SPIS_1_ReadRxStatus(void) 
+ 466:Generated_Source\PSoC5/SPIS_1.c **** {
+ 547              		.loc 1 466 0
+ 548              		.cfi_startproc
+ 549              		@ args = 0, pretend = 0, frame = 8
+ 550              		@ frame_needed = 1, uses_anonymous_args = 0
+ 551              		@ link register save eliminated.
+ 552 0000 80B4     		push	{r7}
+ 553              		.cfi_def_cfa_offset 4
+ 554              		.cfi_offset 7, -4
+ 555 0002 83B0     		sub	sp, sp, #12
+ 556              		.cfi_def_cfa_offset 16
+ 557 0004 00AF     		add	r7, sp, #0
+ 558              		.cfi_def_cfa_register 7
+ 467:Generated_Source\PSoC5/SPIS_1.c ****     uint8 tmpStatus;
+ 468:Generated_Source\PSoC5/SPIS_1.c **** 
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 19
+
+
+ 469:Generated_Source\PSoC5/SPIS_1.c ****     #if (SPIS_1_RX_SOFTWARE_BUF_ENABLED)
+ 470:Generated_Source\PSoC5/SPIS_1.c **** 
+ 471:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_DisableRxInt();
+ 472:Generated_Source\PSoC5/SPIS_1.c **** 
+ 473:Generated_Source\PSoC5/SPIS_1.c ****         tmpStatus = SPIS_1_GET_STATUS_RX(SPIS_1_swStatusRx);
+ 474:Generated_Source\PSoC5/SPIS_1.c **** 
+ 475:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_swStatusRx = 0u;
+ 476:Generated_Source\PSoC5/SPIS_1.c **** 
+ 477:Generated_Source\PSoC5/SPIS_1.c ****         /* Enable Interrupts */
+ 478:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_EnableRxInt();
+ 479:Generated_Source\PSoC5/SPIS_1.c **** 
+ 480:Generated_Source\PSoC5/SPIS_1.c ****     #else /* !SPIS_1_RX_SOFTWARE_BUF_ENABLED */
+ 481:Generated_Source\PSoC5/SPIS_1.c **** 
+ 482:Generated_Source\PSoC5/SPIS_1.c ****         tmpStatus = SPIS_1_RX_STATUS_REG;
+ 559              		.loc 1 482 0
+ 560 0006 044B     		ldr	r3, .L34
+ 561 0008 1B78     		ldrb	r3, [r3]
+ 562 000a FB71     		strb	r3, [r7, #7]
+ 483:Generated_Source\PSoC5/SPIS_1.c **** 
+ 484:Generated_Source\PSoC5/SPIS_1.c ****     #endif /* SPIS_1_RX_SOFTWARE_BUF_ENABLED */
+ 485:Generated_Source\PSoC5/SPIS_1.c **** 
+ 486:Generated_Source\PSoC5/SPIS_1.c ****     return(tmpStatus);
+ 563              		.loc 1 486 0
+ 564 000c FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 487:Generated_Source\PSoC5/SPIS_1.c **** }
+ 565              		.loc 1 487 0
+ 566 000e 1846     		mov	r0, r3
+ 567 0010 0C37     		adds	r7, r7, #12
+ 568              		.cfi_def_cfa_offset 4
+ 569 0012 BD46     		mov	sp, r7
+ 570              		.cfi_def_cfa_register 13
+ 571              		@ sp needed
+ 572 0014 80BC     		pop	{r7}
+ 573              		.cfi_restore 7
+ 574              		.cfi_def_cfa_offset 0
+ 575 0016 7047     		bx	lr
+ 576              	.L35:
+ 577              		.align	2
+ 578              	.L34:
+ 579 0018 67640040 		.word	1073767527
+ 580              		.cfi_endproc
+ 581              	.LFE11:
+ 582              		.size	SPIS_1_ReadRxStatus, .-SPIS_1_ReadRxStatus
+ 583              		.section	.text.SPIS_1_WriteTxData,"ax",%progbits
+ 584              		.align	2
+ 585              		.global	SPIS_1_WriteTxData
+ 586              		.thumb
+ 587              		.thumb_func
+ 588              		.type	SPIS_1_WriteTxData, %function
+ 589              	SPIS_1_WriteTxData:
+ 590              	.LFB12:
+ 488:Generated_Source\PSoC5/SPIS_1.c **** 
+ 489:Generated_Source\PSoC5/SPIS_1.c **** 
+ 490:Generated_Source\PSoC5/SPIS_1.c **** /*******************************************************************************
+ 491:Generated_Source\PSoC5/SPIS_1.c **** * Function Name: SPIS_1_WriteTxData
+ 492:Generated_Source\PSoC5/SPIS_1.c **** ********************************************************************************
+ 493:Generated_Source\PSoC5/SPIS_1.c **** *
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 20
+
+
+ 494:Generated_Source\PSoC5/SPIS_1.c **** * Summary:
+ 495:Generated_Source\PSoC5/SPIS_1.c **** *  Write a byte of data to be sent across the SPI.
+ 496:Generated_Source\PSoC5/SPIS_1.c **** *
+ 497:Generated_Source\PSoC5/SPIS_1.c **** * Parameters:
+ 498:Generated_Source\PSoC5/SPIS_1.c **** *  txDataByte: The data value to send across the SPI.
+ 499:Generated_Source\PSoC5/SPIS_1.c **** *
+ 500:Generated_Source\PSoC5/SPIS_1.c **** * Return:
+ 501:Generated_Source\PSoC5/SPIS_1.c **** *  None.
+ 502:Generated_Source\PSoC5/SPIS_1.c **** *
+ 503:Generated_Source\PSoC5/SPIS_1.c **** * Global variables:
+ 504:Generated_Source\PSoC5/SPIS_1.c **** *  SPIS_1_txBufferWrite - used for the account of the bytes which
+ 505:Generated_Source\PSoC5/SPIS_1.c **** *  have been written down in the TX software buffer, modified every function
+ 506:Generated_Source\PSoC5/SPIS_1.c **** *  call if TX Software Buffer is used.
+ 507:Generated_Source\PSoC5/SPIS_1.c **** *  SPIS_1_txBufferRead - used for the account of the bytes which
+ 508:Generated_Source\PSoC5/SPIS_1.c **** *  have been read from the TX software buffer.
+ 509:Generated_Source\PSoC5/SPIS_1.c **** *  SPIS_1_txBuffer[SPIS_1_TX_BUFFER_SIZE] - used to store
+ 510:Generated_Source\PSoC5/SPIS_1.c **** *  data to sending, modified every function call if TX Software Buffer is used.
+ 511:Generated_Source\PSoC5/SPIS_1.c **** *
+ 512:Generated_Source\PSoC5/SPIS_1.c **** * Theory:
+ 513:Generated_Source\PSoC5/SPIS_1.c **** *  Allows the user to transmit any byte of data in a single transfer.
+ 514:Generated_Source\PSoC5/SPIS_1.c **** *
+ 515:Generated_Source\PSoC5/SPIS_1.c **** * Side Effects:
+ 516:Generated_Source\PSoC5/SPIS_1.c **** *  If this function is called again before the previous byte is finished then
+ 517:Generated_Source\PSoC5/SPIS_1.c **** *  the next byte will be appended to the transfer with no time between
+ 518:Generated_Source\PSoC5/SPIS_1.c **** *  the byte transfers. Clear Tx status register of the component.
+ 519:Generated_Source\PSoC5/SPIS_1.c **** *
+ 520:Generated_Source\PSoC5/SPIS_1.c **** * Reentrant:
+ 521:Generated_Source\PSoC5/SPIS_1.c **** *  No.
+ 522:Generated_Source\PSoC5/SPIS_1.c **** *
+ 523:Generated_Source\PSoC5/SPIS_1.c **** *******************************************************************************/
+ 524:Generated_Source\PSoC5/SPIS_1.c **** void SPIS_1_WriteTxData(uint8 txData) 
+ 525:Generated_Source\PSoC5/SPIS_1.c **** {
+ 591              		.loc 1 525 0
+ 592              		.cfi_startproc
+ 593              		@ args = 0, pretend = 0, frame = 8
+ 594              		@ frame_needed = 1, uses_anonymous_args = 0
+ 595              		@ link register save eliminated.
+ 596 0000 80B4     		push	{r7}
+ 597              		.cfi_def_cfa_offset 4
+ 598              		.cfi_offset 7, -4
+ 599 0002 83B0     		sub	sp, sp, #12
+ 600              		.cfi_def_cfa_offset 16
+ 601 0004 00AF     		add	r7, sp, #0
+ 602              		.cfi_def_cfa_register 7
+ 603 0006 0346     		mov	r3, r0
+ 604 0008 FB71     		strb	r3, [r7, #7]
+ 526:Generated_Source\PSoC5/SPIS_1.c ****     #if(SPIS_1_TX_SOFTWARE_BUF_ENABLED)
+ 527:Generated_Source\PSoC5/SPIS_1.c **** 
+ 528:Generated_Source\PSoC5/SPIS_1.c ****         uint8 tempStatus;
+ 529:Generated_Source\PSoC5/SPIS_1.c ****         uint8 tmpTxBufferRead;
+ 530:Generated_Source\PSoC5/SPIS_1.c **** 
+ 531:Generated_Source\PSoC5/SPIS_1.c ****         /* Block if buffer is full, so we don't overwrite. */
+ 532:Generated_Source\PSoC5/SPIS_1.c ****         do
+ 533:Generated_Source\PSoC5/SPIS_1.c ****         {
+ 534:Generated_Source\PSoC5/SPIS_1.c ****             tmpTxBufferRead = SPIS_1_txBufferRead;
+ 535:Generated_Source\PSoC5/SPIS_1.c ****             if (0u == tmpTxBufferRead)
+ 536:Generated_Source\PSoC5/SPIS_1.c ****             {
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 21
+
+
+ 537:Generated_Source\PSoC5/SPIS_1.c ****                 tmpTxBufferRead = SPIS_1_TX_BUFFER_SIZE - 1u;
+ 538:Generated_Source\PSoC5/SPIS_1.c ****             }
+ 539:Generated_Source\PSoC5/SPIS_1.c ****             else
+ 540:Generated_Source\PSoC5/SPIS_1.c ****             {
+ 541:Generated_Source\PSoC5/SPIS_1.c ****                 tmpTxBufferRead--;
+ 542:Generated_Source\PSoC5/SPIS_1.c ****             }
+ 543:Generated_Source\PSoC5/SPIS_1.c **** 
+ 544:Generated_Source\PSoC5/SPIS_1.c ****         }
+ 545:Generated_Source\PSoC5/SPIS_1.c ****         while(tmpTxBufferRead == SPIS_1_txBufferWrite);
+ 546:Generated_Source\PSoC5/SPIS_1.c **** 
+ 547:Generated_Source\PSoC5/SPIS_1.c ****         /* Disable Interrupt to protect variables that could change on interrupt. */
+ 548:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_DisableTxInt();
+ 549:Generated_Source\PSoC5/SPIS_1.c **** 
+ 550:Generated_Source\PSoC5/SPIS_1.c ****         tempStatus = SPIS_1_GET_STATUS_TX(SPIS_1_swStatusTx);
+ 551:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_swStatusTx = tempStatus;
+ 552:Generated_Source\PSoC5/SPIS_1.c **** 
+ 553:Generated_Source\PSoC5/SPIS_1.c ****         if((SPIS_1_txBufferRead == SPIS_1_txBufferWrite) &&
+ 554:Generated_Source\PSoC5/SPIS_1.c ****             (0u != (SPIS_1_swStatusTx & SPIS_1_STS_TX_FIFO_NOT_FULL)))
+ 555:Generated_Source\PSoC5/SPIS_1.c ****         {
+ 556:Generated_Source\PSoC5/SPIS_1.c ****             /* Put data element into the TX FIFO */
+ 557:Generated_Source\PSoC5/SPIS_1.c ****             CY_SET_REG8(SPIS_1_TXDATA_PTR, txData);
+ 558:Generated_Source\PSoC5/SPIS_1.c ****         }
+ 559:Generated_Source\PSoC5/SPIS_1.c ****         else
+ 560:Generated_Source\PSoC5/SPIS_1.c ****         {
+ 561:Generated_Source\PSoC5/SPIS_1.c ****             /* Put data element into the software buffer */
+ 562:Generated_Source\PSoC5/SPIS_1.c ****             SPIS_1_txBufferWrite++;
+ 563:Generated_Source\PSoC5/SPIS_1.c ****             if(SPIS_1_txBufferWrite >= SPIS_1_TX_BUFFER_SIZE)
+ 564:Generated_Source\PSoC5/SPIS_1.c ****             {
+ 565:Generated_Source\PSoC5/SPIS_1.c ****                 SPIS_1_txBufferWrite = 0u;
+ 566:Generated_Source\PSoC5/SPIS_1.c ****             }
+ 567:Generated_Source\PSoC5/SPIS_1.c **** 
+ 568:Generated_Source\PSoC5/SPIS_1.c ****             if(SPIS_1_txBufferWrite == SPIS_1_txBufferRead)
+ 569:Generated_Source\PSoC5/SPIS_1.c ****             {
+ 570:Generated_Source\PSoC5/SPIS_1.c ****                 SPIS_1_txBufferRead++;
+ 571:Generated_Source\PSoC5/SPIS_1.c ****                 if(SPIS_1_txBufferRead >= SPIS_1_RX_BUFFER_SIZE)
+ 572:Generated_Source\PSoC5/SPIS_1.c ****                 {
+ 573:Generated_Source\PSoC5/SPIS_1.c ****                     SPIS_1_txBufferRead = 0u;
+ 574:Generated_Source\PSoC5/SPIS_1.c ****                 }
+ 575:Generated_Source\PSoC5/SPIS_1.c ****                 SPIS_1_txBufferFull = 1u;
+ 576:Generated_Source\PSoC5/SPIS_1.c ****             }
+ 577:Generated_Source\PSoC5/SPIS_1.c **** 
+ 578:Generated_Source\PSoC5/SPIS_1.c ****             SPIS_1_txBuffer[SPIS_1_txBufferWrite] = txData;
+ 579:Generated_Source\PSoC5/SPIS_1.c **** 
+ 580:Generated_Source\PSoC5/SPIS_1.c ****             SPIS_1_TX_STATUS_MASK_REG |= SPIS_1_STS_TX_FIFO_NOT_FULL;
+ 581:Generated_Source\PSoC5/SPIS_1.c ****         }
+ 582:Generated_Source\PSoC5/SPIS_1.c **** 
+ 583:Generated_Source\PSoC5/SPIS_1.c ****         /* Enable Interrupt. */
+ 584:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_EnableTxInt();
+ 585:Generated_Source\PSoC5/SPIS_1.c **** 
+ 586:Generated_Source\PSoC5/SPIS_1.c ****     #else /* !SPIS_1_TX_SOFTWARE_BUF_ENABLED */
+ 587:Generated_Source\PSoC5/SPIS_1.c ****         /* Wait until TX FIFO has a place */
+ 588:Generated_Source\PSoC5/SPIS_1.c ****         while(0u == (SPIS_1_TX_STATUS_REG & SPIS_1_STS_TX_FIFO_NOT_FULL))
+ 605              		.loc 1 588 0
+ 606 000a 00BF     		nop
+ 607              	.L37:
+ 608              		.loc 1 588 0 is_stmt 0 discriminator 1
+ 609 000c 074B     		ldr	r3, .L38
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 22
+
+
+ 610 000e 1B78     		ldrb	r3, [r3]
+ 611 0010 DBB2     		uxtb	r3, r3
+ 612 0012 03F00203 		and	r3, r3, #2
+ 613 0016 002B     		cmp	r3, #0
+ 614 0018 F8D0     		beq	.L37
+ 589:Generated_Source\PSoC5/SPIS_1.c ****         {
+ 590:Generated_Source\PSoC5/SPIS_1.c ****         }
+ 591:Generated_Source\PSoC5/SPIS_1.c **** 
+ 592:Generated_Source\PSoC5/SPIS_1.c ****         /* Put data element into the TX FIFO */
+ 593:Generated_Source\PSoC5/SPIS_1.c ****         CY_SET_REG8(SPIS_1_TXDATA_PTR, txData);
+ 615              		.loc 1 593 0 is_stmt 1
+ 616 001a 054A     		ldr	r2, .L38+4
+ 617 001c FB79     		ldrb	r3, [r7, #7]
+ 618 001e 1370     		strb	r3, [r2]
+ 594:Generated_Source\PSoC5/SPIS_1.c ****         
+ 595:Generated_Source\PSoC5/SPIS_1.c ****     #endif /* SPIS_1_TX_SOFTWARE_BUF_ENABLED */
+ 596:Generated_Source\PSoC5/SPIS_1.c **** }
+ 619              		.loc 1 596 0
+ 620 0020 00BF     		nop
+ 621 0022 0C37     		adds	r7, r7, #12
+ 622              		.cfi_def_cfa_offset 4
+ 623 0024 BD46     		mov	sp, r7
+ 624              		.cfi_def_cfa_register 13
+ 625              		@ sp needed
+ 626 0026 80BC     		pop	{r7}
+ 627              		.cfi_restore 7
+ 628              		.cfi_def_cfa_offset 0
+ 629 0028 7047     		bx	lr
+ 630              	.L39:
+ 631 002a 00BF     		.align	2
+ 632              	.L38:
+ 633 002c 66650040 		.word	1073767782
+ 634 0030 4B650040 		.word	1073767755
+ 635              		.cfi_endproc
+ 636              	.LFE12:
+ 637              		.size	SPIS_1_WriteTxData, .-SPIS_1_WriteTxData
+ 638              		.section	.text.SPIS_1_WriteTxDataZero,"ax",%progbits
+ 639              		.align	2
+ 640              		.global	SPIS_1_WriteTxDataZero
+ 641              		.thumb
+ 642              		.thumb_func
+ 643              		.type	SPIS_1_WriteTxDataZero, %function
+ 644              	SPIS_1_WriteTxDataZero:
+ 645              	.LFB13:
+ 597:Generated_Source\PSoC5/SPIS_1.c **** 
+ 598:Generated_Source\PSoC5/SPIS_1.c **** #if(SPIS_1_MODE_USE_ZERO != 0u)
+ 599:Generated_Source\PSoC5/SPIS_1.c **** 
+ 600:Generated_Source\PSoC5/SPIS_1.c ****     /*******************************************************************************
+ 601:Generated_Source\PSoC5/SPIS_1.c ****     * Function Name: SPIS_1_WriteTxDataZero
+ 602:Generated_Source\PSoC5/SPIS_1.c ****     ********************************************************************************
+ 603:Generated_Source\PSoC5/SPIS_1.c ****     *
+ 604:Generated_Source\PSoC5/SPIS_1.c ****     * Summary:
+ 605:Generated_Source\PSoC5/SPIS_1.c ****     *  Write a byte zero of data to be sent across the SPI. This must be used in
+ 606:Generated_Source\PSoC5/SPIS_1.c ****     *  Mode 00 and 01 if the FIFO is empty and data is not being sent.
+ 607:Generated_Source\PSoC5/SPIS_1.c ****     *
+ 608:Generated_Source\PSoC5/SPIS_1.c ****     * Parameters:
+ 609:Generated_Source\PSoC5/SPIS_1.c ****     *  txDataByte: The data value to send across the SPI.
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 23
+
+
+ 610:Generated_Source\PSoC5/SPIS_1.c ****     *
+ 611:Generated_Source\PSoC5/SPIS_1.c ****     * Return:
+ 612:Generated_Source\PSoC5/SPIS_1.c ****     *  None.
+ 613:Generated_Source\PSoC5/SPIS_1.c ****     *
+ 614:Generated_Source\PSoC5/SPIS_1.c ****     * Theory:
+ 615:Generated_Source\PSoC5/SPIS_1.c ****     *  Allows the user to transmit any byte of data in a single transfer. Clear
+ 616:Generated_Source\PSoC5/SPIS_1.c ****     *  status register of the component.
+ 617:Generated_Source\PSoC5/SPIS_1.c ****     *
+ 618:Generated_Source\PSoC5/SPIS_1.c ****     *******************************************************************************/
+ 619:Generated_Source\PSoC5/SPIS_1.c ****     void SPIS_1_WriteTxDataZero(uint8 txDataByte)
+ 620:Generated_Source\PSoC5/SPIS_1.c ****                                         
+ 621:Generated_Source\PSoC5/SPIS_1.c ****     {
+ 646              		.loc 1 621 0
+ 647              		.cfi_startproc
+ 648              		@ args = 0, pretend = 0, frame = 8
+ 649              		@ frame_needed = 1, uses_anonymous_args = 0
+ 650              		@ link register save eliminated.
+ 651 0000 80B4     		push	{r7}
+ 652              		.cfi_def_cfa_offset 4
+ 653              		.cfi_offset 7, -4
+ 654 0002 83B0     		sub	sp, sp, #12
+ 655              		.cfi_def_cfa_offset 16
+ 656 0004 00AF     		add	r7, sp, #0
+ 657              		.cfi_def_cfa_register 7
+ 658 0006 0346     		mov	r3, r0
+ 659 0008 FB71     		strb	r3, [r7, #7]
+ 622:Generated_Source\PSoC5/SPIS_1.c ****         CY_SET_REG8(SPIS_1_TXDATA_ZERO_PTR, txDataByte);
+ 660              		.loc 1 622 0
+ 661 000a 044A     		ldr	r2, .L41
+ 662 000c FB79     		ldrb	r3, [r7, #7]
+ 663 000e 1370     		strb	r3, [r2]
+ 623:Generated_Source\PSoC5/SPIS_1.c ****     }
+ 664              		.loc 1 623 0
+ 665 0010 00BF     		nop
+ 666 0012 0C37     		adds	r7, r7, #12
+ 667              		.cfi_def_cfa_offset 4
+ 668 0014 BD46     		mov	sp, r7
+ 669              		.cfi_def_cfa_register 13
+ 670              		@ sp needed
+ 671 0016 80BC     		pop	{r7}
+ 672              		.cfi_restore 7
+ 673              		.cfi_def_cfa_offset 0
+ 674 0018 7047     		bx	lr
+ 675              	.L42:
+ 676 001a 00BF     		.align	2
+ 677              	.L41:
+ 678 001c 0B650040 		.word	1073767691
+ 679              		.cfi_endproc
+ 680              	.LFE13:
+ 681              		.size	SPIS_1_WriteTxDataZero, .-SPIS_1_WriteTxDataZero
+ 682              		.section	.text.SPIS_1_ReadRxData,"ax",%progbits
+ 683              		.align	2
+ 684              		.global	SPIS_1_ReadRxData
+ 685              		.thumb
+ 686              		.thumb_func
+ 687              		.type	SPIS_1_ReadRxData, %function
+ 688              	SPIS_1_ReadRxData:
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 24
+
+
+ 689              	.LFB14:
+ 624:Generated_Source\PSoC5/SPIS_1.c **** 
+ 625:Generated_Source\PSoC5/SPIS_1.c **** #endif /* (SPIS_1_MODE_USE_ZERO != 0u) */
+ 626:Generated_Source\PSoC5/SPIS_1.c **** 
+ 627:Generated_Source\PSoC5/SPIS_1.c **** 
+ 628:Generated_Source\PSoC5/SPIS_1.c **** /*******************************************************************************
+ 629:Generated_Source\PSoC5/SPIS_1.c **** * Function Name: SPIS_1_ReadRxData
+ 630:Generated_Source\PSoC5/SPIS_1.c **** ********************************************************************************
+ 631:Generated_Source\PSoC5/SPIS_1.c **** *
+ 632:Generated_Source\PSoC5/SPIS_1.c **** * Summary:
+ 633:Generated_Source\PSoC5/SPIS_1.c **** *  Read the next byte of data received across the SPI.
+ 634:Generated_Source\PSoC5/SPIS_1.c **** *
+ 635:Generated_Source\PSoC5/SPIS_1.c **** * Parameters:
+ 636:Generated_Source\PSoC5/SPIS_1.c **** *  None.
+ 637:Generated_Source\PSoC5/SPIS_1.c **** *
+ 638:Generated_Source\PSoC5/SPIS_1.c **** * Return:
+ 639:Generated_Source\PSoC5/SPIS_1.c **** *  The next byte of data read from the FIFO.
+ 640:Generated_Source\PSoC5/SPIS_1.c **** *
+ 641:Generated_Source\PSoC5/SPIS_1.c **** * Global variables:
+ 642:Generated_Source\PSoC5/SPIS_1.c **** *  SPIS_1_rxBufferWrite - used for the account of the bytes which
+ 643:Generated_Source\PSoC5/SPIS_1.c **** *  have been written down in the RX software buffer.
+ 644:Generated_Source\PSoC5/SPIS_1.c **** *  SPIS_1_rxBufferRead - used for the account of the bytes which
+ 645:Generated_Source\PSoC5/SPIS_1.c **** *  have been read from the RX software buffer, modified every function
+ 646:Generated_Source\PSoC5/SPIS_1.c **** *  call if RX Software Buffer is used.
+ 647:Generated_Source\PSoC5/SPIS_1.c **** *  SPIS_1_rxBuffer[SPIS_1_RX_BUFFER_SIZE] - used to store
+ 648:Generated_Source\PSoC5/SPIS_1.c **** *  received data.
+ 649:Generated_Source\PSoC5/SPIS_1.c **** *
+ 650:Generated_Source\PSoC5/SPIS_1.c **** * Theory:
+ 651:Generated_Source\PSoC5/SPIS_1.c **** *  Allows the user to read a byte of data received.
+ 652:Generated_Source\PSoC5/SPIS_1.c **** *
+ 653:Generated_Source\PSoC5/SPIS_1.c **** * Side Effects:
+ 654:Generated_Source\PSoC5/SPIS_1.c **** *  Will return invalid data if the FIFO is empty.  User should poll for FIFO
+ 655:Generated_Source\PSoC5/SPIS_1.c **** *  empty status before calling Read function.
+ 656:Generated_Source\PSoC5/SPIS_1.c **** *
+ 657:Generated_Source\PSoC5/SPIS_1.c **** * Reentrant:
+ 658:Generated_Source\PSoC5/SPIS_1.c **** *  No.
+ 659:Generated_Source\PSoC5/SPIS_1.c **** *
+ 660:Generated_Source\PSoC5/SPIS_1.c **** *******************************************************************************/
+ 661:Generated_Source\PSoC5/SPIS_1.c **** uint8 SPIS_1_ReadRxData(void) 
+ 662:Generated_Source\PSoC5/SPIS_1.c **** {
+ 690              		.loc 1 662 0
+ 691              		.cfi_startproc
+ 692              		@ args = 0, pretend = 0, frame = 8
+ 693              		@ frame_needed = 1, uses_anonymous_args = 0
+ 694              		@ link register save eliminated.
+ 695 0000 80B4     		push	{r7}
+ 696              		.cfi_def_cfa_offset 4
+ 697              		.cfi_offset 7, -4
+ 698 0002 83B0     		sub	sp, sp, #12
+ 699              		.cfi_def_cfa_offset 16
+ 700 0004 00AF     		add	r7, sp, #0
+ 701              		.cfi_def_cfa_register 7
+ 663:Generated_Source\PSoC5/SPIS_1.c ****     uint8 rxData;
+ 664:Generated_Source\PSoC5/SPIS_1.c **** 
+ 665:Generated_Source\PSoC5/SPIS_1.c ****     #if(SPIS_1_RX_SOFTWARE_BUF_ENABLED)
+ 666:Generated_Source\PSoC5/SPIS_1.c **** 
+ 667:Generated_Source\PSoC5/SPIS_1.c ****         /* Disable Interrupt to protect variables that could change on interrupt. */
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 25
+
+
+ 668:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_DisableRxInt();
+ 669:Generated_Source\PSoC5/SPIS_1.c **** 
+ 670:Generated_Source\PSoC5/SPIS_1.c ****         if(SPIS_1_rxBufferRead != SPIS_1_rxBufferWrite)
+ 671:Generated_Source\PSoC5/SPIS_1.c ****         {
+ 672:Generated_Source\PSoC5/SPIS_1.c ****             if(SPIS_1_rxBufferFull == 0u)
+ 673:Generated_Source\PSoC5/SPIS_1.c ****             {
+ 674:Generated_Source\PSoC5/SPIS_1.c ****                 SPIS_1_rxBufferRead++;
+ 675:Generated_Source\PSoC5/SPIS_1.c ****                 if(SPIS_1_rxBufferRead >= SPIS_1_RX_BUFFER_SIZE)
+ 676:Generated_Source\PSoC5/SPIS_1.c ****                 {
+ 677:Generated_Source\PSoC5/SPIS_1.c ****                     SPIS_1_rxBufferRead = 0u;
+ 678:Generated_Source\PSoC5/SPIS_1.c ****                 }
+ 679:Generated_Source\PSoC5/SPIS_1.c ****             }
+ 680:Generated_Source\PSoC5/SPIS_1.c ****             else
+ 681:Generated_Source\PSoC5/SPIS_1.c ****             {
+ 682:Generated_Source\PSoC5/SPIS_1.c ****                 SPIS_1_rxBufferFull = 0u;
+ 683:Generated_Source\PSoC5/SPIS_1.c ****             }
+ 684:Generated_Source\PSoC5/SPIS_1.c ****         }
+ 685:Generated_Source\PSoC5/SPIS_1.c **** 
+ 686:Generated_Source\PSoC5/SPIS_1.c ****         rxData = SPIS_1_rxBuffer[SPIS_1_rxBufferRead];
+ 687:Generated_Source\PSoC5/SPIS_1.c **** 
+ 688:Generated_Source\PSoC5/SPIS_1.c ****         /* Enable Interrupt. */
+ 689:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_EnableRxInt();
+ 690:Generated_Source\PSoC5/SPIS_1.c **** 
+ 691:Generated_Source\PSoC5/SPIS_1.c ****     #else /* !SPIS_1_RX_SOFTWARE_BUF_ENABLED */
+ 692:Generated_Source\PSoC5/SPIS_1.c **** 
+ 693:Generated_Source\PSoC5/SPIS_1.c ****         rxData = CY_GET_REG8(SPIS_1_RXDATA_PTR);
+ 702              		.loc 1 693 0
+ 703 0006 044B     		ldr	r3, .L45
+ 704 0008 1B78     		ldrb	r3, [r3]
+ 705 000a FB71     		strb	r3, [r7, #7]
+ 694:Generated_Source\PSoC5/SPIS_1.c **** 
+ 695:Generated_Source\PSoC5/SPIS_1.c ****     #endif /* SPIS_1_RX_SOFTWARE_BUF_ENABLED */
+ 696:Generated_Source\PSoC5/SPIS_1.c **** 
+ 697:Generated_Source\PSoC5/SPIS_1.c ****     return (rxData);
+ 706              		.loc 1 697 0
+ 707 000c FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 698:Generated_Source\PSoC5/SPIS_1.c **** 
+ 699:Generated_Source\PSoC5/SPIS_1.c **** }
+ 708              		.loc 1 699 0
+ 709 000e 1846     		mov	r0, r3
+ 710 0010 0C37     		adds	r7, r7, #12
+ 711              		.cfi_def_cfa_offset 4
+ 712 0012 BD46     		mov	sp, r7
+ 713              		.cfi_def_cfa_register 13
+ 714              		@ sp needed
+ 715 0014 80BC     		pop	{r7}
+ 716              		.cfi_restore 7
+ 717              		.cfi_def_cfa_offset 0
+ 718 0016 7047     		bx	lr
+ 719              	.L46:
+ 720              		.align	2
+ 721              	.L45:
+ 722 0018 5B650040 		.word	1073767771
+ 723              		.cfi_endproc
+ 724              	.LFE14:
+ 725              		.size	SPIS_1_ReadRxData, .-SPIS_1_ReadRxData
+ 726              		.section	.text.SPIS_1_GetRxBufferSize,"ax",%progbits
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 26
+
+
+ 727              		.align	2
+ 728              		.global	SPIS_1_GetRxBufferSize
+ 729              		.thumb
+ 730              		.thumb_func
+ 731              		.type	SPIS_1_GetRxBufferSize, %function
+ 732              	SPIS_1_GetRxBufferSize:
+ 733              	.LFB15:
+ 700:Generated_Source\PSoC5/SPIS_1.c **** 
+ 701:Generated_Source\PSoC5/SPIS_1.c **** 
+ 702:Generated_Source\PSoC5/SPIS_1.c **** /*******************************************************************************
+ 703:Generated_Source\PSoC5/SPIS_1.c **** * Function Name: SPIS_1_GetRxBufferSize
+ 704:Generated_Source\PSoC5/SPIS_1.c **** ********************************************************************************
+ 705:Generated_Source\PSoC5/SPIS_1.c **** *
+ 706:Generated_Source\PSoC5/SPIS_1.c **** * Summary:
+ 707:Generated_Source\PSoC5/SPIS_1.c **** *  Returns the number of bytes/words of data currently held in the RX buffer.
+ 708:Generated_Source\PSoC5/SPIS_1.c **** *  If RX Software Buffer not used then function return 0 if FIFO empty or 1 if
+ 709:Generated_Source\PSoC5/SPIS_1.c **** *  FIFO not empty. In another case function return size of RX Software Buffer.
+ 710:Generated_Source\PSoC5/SPIS_1.c **** *
+ 711:Generated_Source\PSoC5/SPIS_1.c **** * Parameters:
+ 712:Generated_Source\PSoC5/SPIS_1.c **** *  None.
+ 713:Generated_Source\PSoC5/SPIS_1.c **** *
+ 714:Generated_Source\PSoC5/SPIS_1.c **** * Return:
+ 715:Generated_Source\PSoC5/SPIS_1.c **** *  Integer count of the number of bytes/words in the RX buffer.
+ 716:Generated_Source\PSoC5/SPIS_1.c **** *
+ 717:Generated_Source\PSoC5/SPIS_1.c **** * Global variables:
+ 718:Generated_Source\PSoC5/SPIS_1.c **** *  SPIS_1_rxBufferWrite - used for the account of the bytes which
+ 719:Generated_Source\PSoC5/SPIS_1.c **** *  have been written down in the RX software buffer.
+ 720:Generated_Source\PSoC5/SPIS_1.c **** *  SPIS_1_rxBufferRead - used for the account of the bytes which
+ 721:Generated_Source\PSoC5/SPIS_1.c **** *  have been read from the RX software buffer.
+ 722:Generated_Source\PSoC5/SPIS_1.c **** *
+ 723:Generated_Source\PSoC5/SPIS_1.c **** * Theory:
+ 724:Generated_Source\PSoC5/SPIS_1.c **** *  Allows the user to find out how full the RX Buffer is.
+ 725:Generated_Source\PSoC5/SPIS_1.c **** *
+ 726:Generated_Source\PSoC5/SPIS_1.c **** *******************************************************************************/
+ 727:Generated_Source\PSoC5/SPIS_1.c **** uint8 SPIS_1_GetRxBufferSize(void) 
+ 728:Generated_Source\PSoC5/SPIS_1.c **** {
+ 734              		.loc 1 728 0
+ 735              		.cfi_startproc
+ 736              		@ args = 0, pretend = 0, frame = 8
+ 737              		@ frame_needed = 1, uses_anonymous_args = 0
+ 738              		@ link register save eliminated.
+ 739 0000 80B4     		push	{r7}
+ 740              		.cfi_def_cfa_offset 4
+ 741              		.cfi_offset 7, -4
+ 742 0002 83B0     		sub	sp, sp, #12
+ 743              		.cfi_def_cfa_offset 16
+ 744 0004 00AF     		add	r7, sp, #0
+ 745              		.cfi_def_cfa_register 7
+ 729:Generated_Source\PSoC5/SPIS_1.c ****     uint8 size;
+ 730:Generated_Source\PSoC5/SPIS_1.c **** 
+ 731:Generated_Source\PSoC5/SPIS_1.c ****     #if(SPIS_1_RX_SOFTWARE_BUF_ENABLED)
+ 732:Generated_Source\PSoC5/SPIS_1.c **** 
+ 733:Generated_Source\PSoC5/SPIS_1.c ****         /* Disable Interrupt to protect variables that could change on interrupt. */
+ 734:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_DisableRxInt();
+ 735:Generated_Source\PSoC5/SPIS_1.c **** 
+ 736:Generated_Source\PSoC5/SPIS_1.c ****         if(SPIS_1_rxBufferRead == SPIS_1_rxBufferWrite)
+ 737:Generated_Source\PSoC5/SPIS_1.c ****         {
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 27
+
+
+ 738:Generated_Source\PSoC5/SPIS_1.c ****             size = 0u; /* No data in RX buffer */
+ 739:Generated_Source\PSoC5/SPIS_1.c ****         }
+ 740:Generated_Source\PSoC5/SPIS_1.c ****         else if(SPIS_1_rxBufferRead < SPIS_1_rxBufferWrite)
+ 741:Generated_Source\PSoC5/SPIS_1.c ****         {
+ 742:Generated_Source\PSoC5/SPIS_1.c ****             size = (SPIS_1_rxBufferWrite - SPIS_1_rxBufferRead);
+ 743:Generated_Source\PSoC5/SPIS_1.c ****         }
+ 744:Generated_Source\PSoC5/SPIS_1.c ****         else
+ 745:Generated_Source\PSoC5/SPIS_1.c ****         {
+ 746:Generated_Source\PSoC5/SPIS_1.c ****             size = (SPIS_1_RX_BUFFER_SIZE - SPIS_1_rxBufferRead) + SPIS_1_rxBufferWrite;
+ 747:Generated_Source\PSoC5/SPIS_1.c ****         }
+ 748:Generated_Source\PSoC5/SPIS_1.c **** 
+ 749:Generated_Source\PSoC5/SPIS_1.c ****         /* Enable interrupt. */
+ 750:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_EnableRxInt();
+ 751:Generated_Source\PSoC5/SPIS_1.c **** 
+ 752:Generated_Source\PSoC5/SPIS_1.c ****     #else /* !SPIS_1_RX_SOFTWARE_BUF_ENABLED*/
+ 753:Generated_Source\PSoC5/SPIS_1.c **** 
+ 754:Generated_Source\PSoC5/SPIS_1.c ****         /* We can only know if there is data in the fifo. */
+ 755:Generated_Source\PSoC5/SPIS_1.c ****         size = ((SPIS_1_RX_STATUS_REG & SPIS_1_STS_RX_FIFO_NOT_EMPTY) != 0u) ? 1u : 0u;
+ 746              		.loc 1 755 0
+ 747 0006 084B     		ldr	r3, .L51
+ 748 0008 1B78     		ldrb	r3, [r3]
+ 749 000a DBB2     		uxtb	r3, r3
+ 750 000c 03F00803 		and	r3, r3, #8
+ 751 0010 002B     		cmp	r3, #0
+ 752 0012 01D0     		beq	.L48
+ 753              		.loc 1 755 0 is_stmt 0 discriminator 1
+ 754 0014 0123     		movs	r3, #1
+ 755 0016 00E0     		b	.L49
+ 756              	.L48:
+ 757              		.loc 1 755 0 discriminator 2
+ 758 0018 0023     		movs	r3, #0
+ 759              	.L49:
+ 760              		.loc 1 755 0 discriminator 4
+ 761 001a FB71     		strb	r3, [r7, #7]
+ 756:Generated_Source\PSoC5/SPIS_1.c **** 
+ 757:Generated_Source\PSoC5/SPIS_1.c ****     #endif /* SPIS_1_RX_SOFTWARE_BUF_ENABLED */
+ 758:Generated_Source\PSoC5/SPIS_1.c **** 
+ 759:Generated_Source\PSoC5/SPIS_1.c ****     return (size);
+ 762              		.loc 1 759 0 is_stmt 1 discriminator 4
+ 763 001c FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 760:Generated_Source\PSoC5/SPIS_1.c **** }
+ 764              		.loc 1 760 0 discriminator 4
+ 765 001e 1846     		mov	r0, r3
+ 766 0020 0C37     		adds	r7, r7, #12
+ 767              		.cfi_def_cfa_offset 4
+ 768 0022 BD46     		mov	sp, r7
+ 769              		.cfi_def_cfa_register 13
+ 770              		@ sp needed
+ 771 0024 80BC     		pop	{r7}
+ 772              		.cfi_restore 7
+ 773              		.cfi_def_cfa_offset 0
+ 774 0026 7047     		bx	lr
+ 775              	.L52:
+ 776              		.align	2
+ 777              	.L51:
+ 778 0028 67640040 		.word	1073767527
+ 779              		.cfi_endproc
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 28
+
+
+ 780              	.LFE15:
+ 781              		.size	SPIS_1_GetRxBufferSize, .-SPIS_1_GetRxBufferSize
+ 782              		.section	.text.SPIS_1_GetTxBufferSize,"ax",%progbits
+ 783              		.align	2
+ 784              		.global	SPIS_1_GetTxBufferSize
+ 785              		.thumb
+ 786              		.thumb_func
+ 787              		.type	SPIS_1_GetTxBufferSize, %function
+ 788              	SPIS_1_GetTxBufferSize:
+ 789              	.LFB16:
+ 761:Generated_Source\PSoC5/SPIS_1.c **** 
+ 762:Generated_Source\PSoC5/SPIS_1.c **** 
+ 763:Generated_Source\PSoC5/SPIS_1.c **** /*******************************************************************************
+ 764:Generated_Source\PSoC5/SPIS_1.c **** * Function Name: SPIS_1_GetTxBufferSize
+ 765:Generated_Source\PSoC5/SPIS_1.c **** ********************************************************************************
+ 766:Generated_Source\PSoC5/SPIS_1.c **** *
+ 767:Generated_Source\PSoC5/SPIS_1.c **** * Summary:
+ 768:Generated_Source\PSoC5/SPIS_1.c **** *  Returns the number of bytes/words of data currently held in the TX buffer.
+ 769:Generated_Source\PSoC5/SPIS_1.c **** *  If TX Software Buffer not used then function return 0 - if FIFO empty, 1 - if
+ 770:Generated_Source\PSoC5/SPIS_1.c **** *  FIFO not full, 4 - if FIFO full. In another case function return size of TX
+ 771:Generated_Source\PSoC5/SPIS_1.c **** *  Software Buffer.
+ 772:Generated_Source\PSoC5/SPIS_1.c **** *
+ 773:Generated_Source\PSoC5/SPIS_1.c **** * Parameters:
+ 774:Generated_Source\PSoC5/SPIS_1.c **** *  None.
+ 775:Generated_Source\PSoC5/SPIS_1.c **** *
+ 776:Generated_Source\PSoC5/SPIS_1.c **** * Return:
+ 777:Generated_Source\PSoC5/SPIS_1.c **** *  Integer count of the number of bytes/words in the TX buffer.
+ 778:Generated_Source\PSoC5/SPIS_1.c **** *
+ 779:Generated_Source\PSoC5/SPIS_1.c **** * Global variables:
+ 780:Generated_Source\PSoC5/SPIS_1.c **** *  SPIS_1_txBufferWrite - used for the account of the bytes which
+ 781:Generated_Source\PSoC5/SPIS_1.c **** *  have been written down in the TX software buffer.
+ 782:Generated_Source\PSoC5/SPIS_1.c **** *  SPIS_1_txBufferRead - used for the account of the bytes which
+ 783:Generated_Source\PSoC5/SPIS_1.c **** *  have been read from the TX software buffer.
+ 784:Generated_Source\PSoC5/SPIS_1.c **** *
+ 785:Generated_Source\PSoC5/SPIS_1.c **** * Theory:
+ 786:Generated_Source\PSoC5/SPIS_1.c **** *  Allows the user to find out how full the TX Buffer is.
+ 787:Generated_Source\PSoC5/SPIS_1.c **** *
+ 788:Generated_Source\PSoC5/SPIS_1.c **** * Side Effects:
+ 789:Generated_Source\PSoC5/SPIS_1.c **** *  Clear status register of the component.
+ 790:Generated_Source\PSoC5/SPIS_1.c **** *
+ 791:Generated_Source\PSoC5/SPIS_1.c **** *******************************************************************************/
+ 792:Generated_Source\PSoC5/SPIS_1.c **** uint8  SPIS_1_GetTxBufferSize(void) 
+ 793:Generated_Source\PSoC5/SPIS_1.c **** {
+ 790              		.loc 1 793 0
+ 791              		.cfi_startproc
+ 792              		@ args = 0, pretend = 0, frame = 8
+ 793              		@ frame_needed = 1, uses_anonymous_args = 0
+ 794              		@ link register save eliminated.
+ 795 0000 80B4     		push	{r7}
+ 796              		.cfi_def_cfa_offset 4
+ 797              		.cfi_offset 7, -4
+ 798 0002 83B0     		sub	sp, sp, #12
+ 799              		.cfi_def_cfa_offset 16
+ 800 0004 00AF     		add	r7, sp, #0
+ 801              		.cfi_def_cfa_register 7
+ 794:Generated_Source\PSoC5/SPIS_1.c ****     uint8 size;
+ 795:Generated_Source\PSoC5/SPIS_1.c **** 
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 29
+
+
+ 796:Generated_Source\PSoC5/SPIS_1.c ****     #if(SPIS_1_TX_SOFTWARE_BUF_ENABLED)
+ 797:Generated_Source\PSoC5/SPIS_1.c **** 
+ 798:Generated_Source\PSoC5/SPIS_1.c ****         /* Disable Interrupt to protect variables that could change on interrupt. */
+ 799:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_DisableTxInt();
+ 800:Generated_Source\PSoC5/SPIS_1.c **** 
+ 801:Generated_Source\PSoC5/SPIS_1.c ****         if(SPIS_1_txBufferRead == SPIS_1_txBufferWrite)
+ 802:Generated_Source\PSoC5/SPIS_1.c ****         {
+ 803:Generated_Source\PSoC5/SPIS_1.c ****             size = 0u;
+ 804:Generated_Source\PSoC5/SPIS_1.c ****         }
+ 805:Generated_Source\PSoC5/SPIS_1.c ****         else if(SPIS_1_txBufferRead < SPIS_1_txBufferWrite)
+ 806:Generated_Source\PSoC5/SPIS_1.c ****         {
+ 807:Generated_Source\PSoC5/SPIS_1.c ****             size = (SPIS_1_txBufferWrite - SPIS_1_txBufferRead);
+ 808:Generated_Source\PSoC5/SPIS_1.c ****         }
+ 809:Generated_Source\PSoC5/SPIS_1.c ****         else
+ 810:Generated_Source\PSoC5/SPIS_1.c ****         {
+ 811:Generated_Source\PSoC5/SPIS_1.c ****             size = (SPIS_1_TX_BUFFER_SIZE - SPIS_1_txBufferRead) + SPIS_1_txBufferWrite;
+ 812:Generated_Source\PSoC5/SPIS_1.c ****         }
+ 813:Generated_Source\PSoC5/SPIS_1.c **** 
+ 814:Generated_Source\PSoC5/SPIS_1.c ****         /* Enable Interrupt. */
+ 815:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_EnableTxInt();
+ 816:Generated_Source\PSoC5/SPIS_1.c **** 
+ 817:Generated_Source\PSoC5/SPIS_1.c ****     #else /* !SPIS_1_TX_SOFTWARE_BUF_ENABLED */
+ 818:Generated_Source\PSoC5/SPIS_1.c **** 
+ 819:Generated_Source\PSoC5/SPIS_1.c ****         size = SPIS_1_TX_STATUS_REG;
+ 802              		.loc 1 819 0
+ 803 0006 0D4B     		ldr	r3, .L58
+ 804 0008 1B78     		ldrb	r3, [r3]
+ 805 000a FB71     		strb	r3, [r7, #7]
+ 820:Generated_Source\PSoC5/SPIS_1.c **** 
+ 821:Generated_Source\PSoC5/SPIS_1.c ****         /* Is the fifo is full. */
+ 822:Generated_Source\PSoC5/SPIS_1.c ****         if((size & SPIS_1_STS_TX_FIFO_EMPTY) != 0u)
+ 806              		.loc 1 822 0
+ 807 000c FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 808 000e 03F00403 		and	r3, r3, #4
+ 809 0012 002B     		cmp	r3, #0
+ 810 0014 02D0     		beq	.L54
+ 823:Generated_Source\PSoC5/SPIS_1.c ****         {
+ 824:Generated_Source\PSoC5/SPIS_1.c ****             size = 0u;
+ 811              		.loc 1 824 0
+ 812 0016 0023     		movs	r3, #0
+ 813 0018 FB71     		strb	r3, [r7, #7]
+ 814 001a 09E0     		b	.L55
+ 815              	.L54:
+ 825:Generated_Source\PSoC5/SPIS_1.c ****         }
+ 826:Generated_Source\PSoC5/SPIS_1.c ****         else if((size & SPIS_1_STS_TX_FIFO_NOT_FULL) != 0u)
+ 816              		.loc 1 826 0
+ 817 001c FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 818 001e 03F00203 		and	r3, r3, #2
+ 819 0022 002B     		cmp	r3, #0
+ 820 0024 02D0     		beq	.L56
+ 827:Generated_Source\PSoC5/SPIS_1.c ****         {
+ 828:Generated_Source\PSoC5/SPIS_1.c ****             size = 1u;
+ 821              		.loc 1 828 0
+ 822 0026 0123     		movs	r3, #1
+ 823 0028 FB71     		strb	r3, [r7, #7]
+ 824 002a 01E0     		b	.L55
+ 825              	.L56:
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 30
+
+
+ 829:Generated_Source\PSoC5/SPIS_1.c ****         }
+ 830:Generated_Source\PSoC5/SPIS_1.c ****         else
+ 831:Generated_Source\PSoC5/SPIS_1.c ****         {
+ 832:Generated_Source\PSoC5/SPIS_1.c ****             size = 4u;
+ 826              		.loc 1 832 0
+ 827 002c 0423     		movs	r3, #4
+ 828 002e FB71     		strb	r3, [r7, #7]
+ 829              	.L55:
+ 833:Generated_Source\PSoC5/SPIS_1.c ****         }
+ 834:Generated_Source\PSoC5/SPIS_1.c **** 
+ 835:Generated_Source\PSoC5/SPIS_1.c ****     #endif /* SPIS_1_TX_SOFTWARE_BUF_ENABLED */
+ 836:Generated_Source\PSoC5/SPIS_1.c **** 
+ 837:Generated_Source\PSoC5/SPIS_1.c ****     return (size);
+ 830              		.loc 1 837 0
+ 831 0030 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 838:Generated_Source\PSoC5/SPIS_1.c **** }
+ 832              		.loc 1 838 0
+ 833 0032 1846     		mov	r0, r3
+ 834 0034 0C37     		adds	r7, r7, #12
+ 835              		.cfi_def_cfa_offset 4
+ 836 0036 BD46     		mov	sp, r7
+ 837              		.cfi_def_cfa_register 13
+ 838              		@ sp needed
+ 839 0038 80BC     		pop	{r7}
+ 840              		.cfi_restore 7
+ 841              		.cfi_def_cfa_offset 0
+ 842 003a 7047     		bx	lr
+ 843              	.L59:
+ 844              		.align	2
+ 845              	.L58:
+ 846 003c 66650040 		.word	1073767782
+ 847              		.cfi_endproc
+ 848              	.LFE16:
+ 849              		.size	SPIS_1_GetTxBufferSize, .-SPIS_1_GetTxBufferSize
+ 850              		.section	.text.SPIS_1_ClearRxBuffer,"ax",%progbits
+ 851              		.align	2
+ 852              		.global	SPIS_1_ClearRxBuffer
+ 853              		.thumb
+ 854              		.thumb_func
+ 855              		.type	SPIS_1_ClearRxBuffer, %function
+ 856              	SPIS_1_ClearRxBuffer:
+ 857              	.LFB17:
+ 839:Generated_Source\PSoC5/SPIS_1.c **** 
+ 840:Generated_Source\PSoC5/SPIS_1.c **** 
+ 841:Generated_Source\PSoC5/SPIS_1.c **** /*******************************************************************************
+ 842:Generated_Source\PSoC5/SPIS_1.c **** * Function Name: SPIS_1_ClearRxBuffer
+ 843:Generated_Source\PSoC5/SPIS_1.c **** ********************************************************************************
+ 844:Generated_Source\PSoC5/SPIS_1.c **** *
+ 845:Generated_Source\PSoC5/SPIS_1.c **** * Summary:
+ 846:Generated_Source\PSoC5/SPIS_1.c **** *  Clear the RX RAM buffer by setting the read and write pointers both to zero.
+ 847:Generated_Source\PSoC5/SPIS_1.c **** *
+ 848:Generated_Source\PSoC5/SPIS_1.c **** * Parameters:
+ 849:Generated_Source\PSoC5/SPIS_1.c **** *  None.
+ 850:Generated_Source\PSoC5/SPIS_1.c **** *
+ 851:Generated_Source\PSoC5/SPIS_1.c **** * Return:
+ 852:Generated_Source\PSoC5/SPIS_1.c **** *  None.
+ 853:Generated_Source\PSoC5/SPIS_1.c **** *
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 31
+
+
+ 854:Generated_Source\PSoC5/SPIS_1.c **** * Global variables:
+ 855:Generated_Source\PSoC5/SPIS_1.c **** *  SPIS_1_rxBufferWrite - used for the account of the bytes which
+ 856:Generated_Source\PSoC5/SPIS_1.c **** *  have been written down in the RX software buffer, modified every function
+ 857:Generated_Source\PSoC5/SPIS_1.c **** *  call - resets to zero.
+ 858:Generated_Source\PSoC5/SPIS_1.c **** *  SPIS_1_rxBufferRead - used for the account of the bytes which
+ 859:Generated_Source\PSoC5/SPIS_1.c **** *  have been read from the RX software buffer, modified every function call -
+ 860:Generated_Source\PSoC5/SPIS_1.c **** *  resets to zero.
+ 861:Generated_Source\PSoC5/SPIS_1.c **** *
+ 862:Generated_Source\PSoC5/SPIS_1.c **** * Theory:
+ 863:Generated_Source\PSoC5/SPIS_1.c **** *  Setting the pointers to zero makes the system believe there is no data to
+ 864:Generated_Source\PSoC5/SPIS_1.c **** *  read and writing will resume at address 0 overwriting any data that may have
+ 865:Generated_Source\PSoC5/SPIS_1.c **** *  remained in the RAM.
+ 866:Generated_Source\PSoC5/SPIS_1.c **** *
+ 867:Generated_Source\PSoC5/SPIS_1.c **** * Side Effects:
+ 868:Generated_Source\PSoC5/SPIS_1.c **** *  Any received data not read from the RAM buffer will be lost when overwritten.
+ 869:Generated_Source\PSoC5/SPIS_1.c **** *
+ 870:Generated_Source\PSoC5/SPIS_1.c **** * Reentrant:
+ 871:Generated_Source\PSoC5/SPIS_1.c **** *  No.
+ 872:Generated_Source\PSoC5/SPIS_1.c **** *
+ 873:Generated_Source\PSoC5/SPIS_1.c **** *******************************************************************************/
+ 874:Generated_Source\PSoC5/SPIS_1.c **** void SPIS_1_ClearRxBuffer(void) 
+ 875:Generated_Source\PSoC5/SPIS_1.c **** {
+ 858              		.loc 1 875 0
+ 859              		.cfi_startproc
+ 860              		@ args = 0, pretend = 0, frame = 0
+ 861              		@ frame_needed = 1, uses_anonymous_args = 0
+ 862              		@ link register save eliminated.
+ 863 0000 80B4     		push	{r7}
+ 864              		.cfi_def_cfa_offset 4
+ 865              		.cfi_offset 7, -4
+ 866 0002 00AF     		add	r7, sp, #0
+ 867              		.cfi_def_cfa_register 7
+ 876:Generated_Source\PSoC5/SPIS_1.c ****     /* Clear Hardware RX FIFO */
+ 877:Generated_Source\PSoC5/SPIS_1.c ****     while((SPIS_1_RX_STATUS_REG & SPIS_1_STS_RX_FIFO_NOT_EMPTY) != 0u)
+ 868              		.loc 1 877 0
+ 869 0004 01E0     		b	.L61
+ 870              	.L62:
+ 878:Generated_Source\PSoC5/SPIS_1.c ****     {
+ 879:Generated_Source\PSoC5/SPIS_1.c ****         CY_GET_REG8(SPIS_1_RXDATA_PTR);
+ 871              		.loc 1 879 0
+ 872 0006 064B     		ldr	r3, .L63
+ 873 0008 1B78     		ldrb	r3, [r3]
+ 874              	.L61:
+ 877:Generated_Source\PSoC5/SPIS_1.c ****     {
+ 875              		.loc 1 877 0
+ 876 000a 064B     		ldr	r3, .L63+4
+ 877 000c 1B78     		ldrb	r3, [r3]
+ 878 000e DBB2     		uxtb	r3, r3
+ 879 0010 03F00803 		and	r3, r3, #8
+ 880 0014 002B     		cmp	r3, #0
+ 881 0016 F6D1     		bne	.L62
+ 880:Generated_Source\PSoC5/SPIS_1.c ****     }
+ 881:Generated_Source\PSoC5/SPIS_1.c **** 
+ 882:Generated_Source\PSoC5/SPIS_1.c ****     #if(SPIS_1_RX_SOFTWARE_BUF_ENABLED)
+ 883:Generated_Source\PSoC5/SPIS_1.c **** 
+ 884:Generated_Source\PSoC5/SPIS_1.c ****         /* Disable interrupt to protect variables that could change on interrupt. */
+ 885:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_DisableRxInt();
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 32
+
+
+ 886:Generated_Source\PSoC5/SPIS_1.c **** 
+ 887:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_rxBufferRead  = 0u;
+ 888:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_rxBufferWrite = 0u;
+ 889:Generated_Source\PSoC5/SPIS_1.c **** 		SPIS_1_rxBufferFull  = 0u;
+ 890:Generated_Source\PSoC5/SPIS_1.c ****         /* Enable interrupt. */
+ 891:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_EnableRxInt();
+ 892:Generated_Source\PSoC5/SPIS_1.c **** 
+ 893:Generated_Source\PSoC5/SPIS_1.c ****     #endif /* SPIS_1_RX_SOFTWARE_BUF_ENABLED */
+ 894:Generated_Source\PSoC5/SPIS_1.c **** }
+ 882              		.loc 1 894 0
+ 883 0018 00BF     		nop
+ 884 001a BD46     		mov	sp, r7
+ 885              		.cfi_def_cfa_register 13
+ 886              		@ sp needed
+ 887 001c 80BC     		pop	{r7}
+ 888              		.cfi_restore 7
+ 889              		.cfi_def_cfa_offset 0
+ 890 001e 7047     		bx	lr
+ 891              	.L64:
+ 892              		.align	2
+ 893              	.L63:
+ 894 0020 5B650040 		.word	1073767771
+ 895 0024 67640040 		.word	1073767527
+ 896              		.cfi_endproc
+ 897              	.LFE17:
+ 898              		.size	SPIS_1_ClearRxBuffer, .-SPIS_1_ClearRxBuffer
+ 899              		.section	.text.SPIS_1_ClearTxBuffer,"ax",%progbits
+ 900              		.align	2
+ 901              		.global	SPIS_1_ClearTxBuffer
+ 902              		.thumb
+ 903              		.thumb_func
+ 904              		.type	SPIS_1_ClearTxBuffer, %function
+ 905              	SPIS_1_ClearTxBuffer:
+ 906              	.LFB18:
+ 895:Generated_Source\PSoC5/SPIS_1.c **** 
+ 896:Generated_Source\PSoC5/SPIS_1.c **** 
+ 897:Generated_Source\PSoC5/SPIS_1.c **** /*******************************************************************************
+ 898:Generated_Source\PSoC5/SPIS_1.c **** * Function Name: SPIS_1_ClearTxBuffer
+ 899:Generated_Source\PSoC5/SPIS_1.c **** ********************************************************************************
+ 900:Generated_Source\PSoC5/SPIS_1.c **** *
+ 901:Generated_Source\PSoC5/SPIS_1.c **** * Summary:
+ 902:Generated_Source\PSoC5/SPIS_1.c **** *  Clear the TX RAM buffer by setting the read and write pointers both to zero.
+ 903:Generated_Source\PSoC5/SPIS_1.c **** *
+ 904:Generated_Source\PSoC5/SPIS_1.c **** * Parameters:
+ 905:Generated_Source\PSoC5/SPIS_1.c **** *  None.
+ 906:Generated_Source\PSoC5/SPIS_1.c **** *
+ 907:Generated_Source\PSoC5/SPIS_1.c **** * Return:
+ 908:Generated_Source\PSoC5/SPIS_1.c **** *  None.
+ 909:Generated_Source\PSoC5/SPIS_1.c **** *
+ 910:Generated_Source\PSoC5/SPIS_1.c **** * Global variables:
+ 911:Generated_Source\PSoC5/SPIS_1.c **** *  SPIS_1_txBufferWrite - used for the account of the bytes which
+ 912:Generated_Source\PSoC5/SPIS_1.c **** *  have been written down in the TX software buffer, modified every function
+ 913:Generated_Source\PSoC5/SPIS_1.c **** *  call - resets to zero.
+ 914:Generated_Source\PSoC5/SPIS_1.c **** *  SPIS_1_txBufferRead - used for the account of the bytes which
+ 915:Generated_Source\PSoC5/SPIS_1.c **** *  have been read from the TX software buffer, modified every function call -
+ 916:Generated_Source\PSoC5/SPIS_1.c **** *  resets to zero.
+ 917:Generated_Source\PSoC5/SPIS_1.c **** *
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 33
+
+
+ 918:Generated_Source\PSoC5/SPIS_1.c **** * Theory:
+ 919:Generated_Source\PSoC5/SPIS_1.c **** *  Setting the pointers to zero makes the system believe there is no data to
+ 920:Generated_Source\PSoC5/SPIS_1.c **** *  read and writing will resume at address 0 overwriting any data that may have
+ 921:Generated_Source\PSoC5/SPIS_1.c **** *  remained in the RAM.
+ 922:Generated_Source\PSoC5/SPIS_1.c **** *
+ 923:Generated_Source\PSoC5/SPIS_1.c **** * Side Effects:
+ 924:Generated_Source\PSoC5/SPIS_1.c **** *  Any data not yet transmitted from the RAM buffer will be lost when
+ 925:Generated_Source\PSoC5/SPIS_1.c **** *  overwritten.
+ 926:Generated_Source\PSoC5/SPIS_1.c **** *
+ 927:Generated_Source\PSoC5/SPIS_1.c **** * Reentrant:
+ 928:Generated_Source\PSoC5/SPIS_1.c **** *  No.
+ 929:Generated_Source\PSoC5/SPIS_1.c **** *
+ 930:Generated_Source\PSoC5/SPIS_1.c **** *******************************************************************************/
+ 931:Generated_Source\PSoC5/SPIS_1.c **** void SPIS_1_ClearTxBuffer(void) 
+ 932:Generated_Source\PSoC5/SPIS_1.c **** {
+ 907              		.loc 1 932 0
+ 908              		.cfi_startproc
+ 909              		@ args = 0, pretend = 0, frame = 8
+ 910              		@ frame_needed = 1, uses_anonymous_args = 0
+ 911 0000 80B5     		push	{r7, lr}
+ 912              		.cfi_def_cfa_offset 8
+ 913              		.cfi_offset 7, -8
+ 914              		.cfi_offset 14, -4
+ 915 0002 82B0     		sub	sp, sp, #8
+ 916              		.cfi_def_cfa_offset 16
+ 917 0004 00AF     		add	r7, sp, #0
+ 918              		.cfi_def_cfa_register 7
+ 933:Generated_Source\PSoC5/SPIS_1.c ****     uint8 enableInterrupts;
+ 934:Generated_Source\PSoC5/SPIS_1.c **** 
+ 935:Generated_Source\PSoC5/SPIS_1.c ****     /* Clear Hardware TX FIFO */
+ 936:Generated_Source\PSoC5/SPIS_1.c ****     enableInterrupts = CyEnterCriticalSection();
+ 919              		.loc 1 936 0
+ 920 0006 FFF7FEFF 		bl	CyEnterCriticalSection
+ 921 000a 0346     		mov	r3, r0
+ 922 000c FB71     		strb	r3, [r7, #7]
+ 937:Generated_Source\PSoC5/SPIS_1.c **** 
+ 938:Generated_Source\PSoC5/SPIS_1.c ****     #if(SPIS_1_DATA_WIDTH <= 8u)
+ 939:Generated_Source\PSoC5/SPIS_1.c **** 
+ 940:Generated_Source\PSoC5/SPIS_1.c ****         /* Clear TX FIFO */
+ 941:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_TX_AUX_CONTROL_DP0_REG |= (uint8)SPIS_1_FIFO_CLR;
+ 923              		.loc 1 941 0
+ 924 000e 0C4A     		ldr	r2, .L66
+ 925 0010 0B4B     		ldr	r3, .L66
+ 926 0012 1B78     		ldrb	r3, [r3]
+ 927 0014 DBB2     		uxtb	r3, r3
+ 928 0016 43F00303 		orr	r3, r3, #3
+ 929 001a DBB2     		uxtb	r3, r3
+ 930 001c 1370     		strb	r3, [r2]
+ 942:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_TX_AUX_CONTROL_DP0_REG &= (uint8)~SPIS_1_FIFO_CLR;
+ 931              		.loc 1 942 0
+ 932 001e 084A     		ldr	r2, .L66
+ 933 0020 074B     		ldr	r3, .L66
+ 934 0022 1B78     		ldrb	r3, [r3]
+ 935 0024 DBB2     		uxtb	r3, r3
+ 936 0026 23F00303 		bic	r3, r3, #3
+ 937 002a DBB2     		uxtb	r3, r3
+ 938 002c 1370     		strb	r3, [r2]
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 34
+
+
+ 943:Generated_Source\PSoC5/SPIS_1.c **** 
+ 944:Generated_Source\PSoC5/SPIS_1.c ****     #else
+ 945:Generated_Source\PSoC5/SPIS_1.c **** 
+ 946:Generated_Source\PSoC5/SPIS_1.c ****         /* Clear TX FIFO */
+ 947:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_TX_AUX_CONTROL_DP0_REG |= (uint8)SPIS_1_FIFO_CLR;
+ 948:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_TX_AUX_CONTROL_DP0_REG &= (uint8)~SPIS_1_FIFO_CLR;
+ 949:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_TX_AUX_CONTROL_DP1_REG |= (uint8)SPIS_1_FIFO_CLR;
+ 950:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_TX_AUX_CONTROL_DP1_REG &= (uint8)~SPIS_1_FIFO_CLR;
+ 951:Generated_Source\PSoC5/SPIS_1.c **** 
+ 952:Generated_Source\PSoC5/SPIS_1.c ****     #endif /* SPIS_1_DATA_WIDTH > 8u */
+ 953:Generated_Source\PSoC5/SPIS_1.c **** 
+ 954:Generated_Source\PSoC5/SPIS_1.c ****     CyExitCriticalSection(enableInterrupts);
+ 939              		.loc 1 954 0
+ 940 002e FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 941 0030 1846     		mov	r0, r3
+ 942 0032 FFF7FEFF 		bl	CyExitCriticalSection
+ 955:Generated_Source\PSoC5/SPIS_1.c **** 
+ 956:Generated_Source\PSoC5/SPIS_1.c ****     #if(SPIS_1_TX_SOFTWARE_BUF_ENABLED)
+ 957:Generated_Source\PSoC5/SPIS_1.c **** 
+ 958:Generated_Source\PSoC5/SPIS_1.c ****         /* Disable Interrupt to protect variables that could change on interrupt. */
+ 959:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_DisableTxInt();
+ 960:Generated_Source\PSoC5/SPIS_1.c **** 
+ 961:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_txBufferRead  = 0u;
+ 962:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_txBufferWrite = 0u;
+ 963:Generated_Source\PSoC5/SPIS_1.c **** 		SPIS_1_txBufferFull  = 0u;
+ 964:Generated_Source\PSoC5/SPIS_1.c **** 		
+ 965:Generated_Source\PSoC5/SPIS_1.c ****         /* If Buffer is empty then disable TX FIFO status interrupt */
+ 966:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_TX_STATUS_MASK_REG &= (uint8)~SPIS_1_STS_TX_FIFO_NOT_FULL;
+ 967:Generated_Source\PSoC5/SPIS_1.c **** 
+ 968:Generated_Source\PSoC5/SPIS_1.c ****         /* Enable Interrupt. */
+ 969:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_EnableTxInt();
+ 970:Generated_Source\PSoC5/SPIS_1.c **** 
+ 971:Generated_Source\PSoC5/SPIS_1.c ****     #endif /* SPIS_1_TX_SOFTWARE_BUF_ENABLED */
+ 972:Generated_Source\PSoC5/SPIS_1.c **** }
+ 943              		.loc 1 972 0
+ 944 0036 00BF     		nop
+ 945 0038 0837     		adds	r7, r7, #8
+ 946              		.cfi_def_cfa_offset 8
+ 947 003a BD46     		mov	sp, r7
+ 948              		.cfi_def_cfa_register 13
+ 949              		@ sp needed
+ 950 003c 80BD     		pop	{r7, pc}
+ 951              	.L67:
+ 952 003e 00BF     		.align	2
+ 953              	.L66:
+ 954 0040 9B650040 		.word	1073767835
+ 955              		.cfi_endproc
+ 956              	.LFE18:
+ 957              		.size	SPIS_1_ClearTxBuffer, .-SPIS_1_ClearTxBuffer
+ 958              		.section	.text.SPIS_1_PutArray,"ax",%progbits
+ 959              		.align	2
+ 960              		.global	SPIS_1_PutArray
+ 961              		.thumb
+ 962              		.thumb_func
+ 963              		.type	SPIS_1_PutArray, %function
+ 964              	SPIS_1_PutArray:
+ 965              	.LFB19:
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 35
+
+
+ 973:Generated_Source\PSoC5/SPIS_1.c **** 
+ 974:Generated_Source\PSoC5/SPIS_1.c **** 
+ 975:Generated_Source\PSoC5/SPIS_1.c **** #if (SPIS_1_BIDIRECTIONAL_MODE != 0u)
+ 976:Generated_Source\PSoC5/SPIS_1.c **** 
+ 977:Generated_Source\PSoC5/SPIS_1.c ****     /*******************************************************************************
+ 978:Generated_Source\PSoC5/SPIS_1.c ****     * Function Name: SPIS_1_TxEnable
+ 979:Generated_Source\PSoC5/SPIS_1.c ****     ********************************************************************************
+ 980:Generated_Source\PSoC5/SPIS_1.c ****     *
+ 981:Generated_Source\PSoC5/SPIS_1.c ****     * Summary:
+ 982:Generated_Source\PSoC5/SPIS_1.c ****     *  If the SPI Slave is configured to use a single bi-directional pin then this
+ 983:Generated_Source\PSoC5/SPIS_1.c ****     *  will set the bi-directional pin to transmit.
+ 984:Generated_Source\PSoC5/SPIS_1.c ****     *
+ 985:Generated_Source\PSoC5/SPIS_1.c ****     * Parameters:
+ 986:Generated_Source\PSoC5/SPIS_1.c ****     *  None.
+ 987:Generated_Source\PSoC5/SPIS_1.c ****     *
+ 988:Generated_Source\PSoC5/SPIS_1.c ****     * Return:
+ 989:Generated_Source\PSoC5/SPIS_1.c ****     *  None.
+ 990:Generated_Source\PSoC5/SPIS_1.c ****     *
+ 991:Generated_Source\PSoC5/SPIS_1.c ****     *******************************************************************************/
+ 992:Generated_Source\PSoC5/SPIS_1.c ****     void SPIS_1_TxEnable(void) 
+ 993:Generated_Source\PSoC5/SPIS_1.c ****     {
+ 994:Generated_Source\PSoC5/SPIS_1.c ****             SPIS_1_CONTROL_REG |= SPIS_1_CTRL_TX_SIGNAL_EN;
+ 995:Generated_Source\PSoC5/SPIS_1.c ****     }
+ 996:Generated_Source\PSoC5/SPIS_1.c **** 
+ 997:Generated_Source\PSoC5/SPIS_1.c **** 
+ 998:Generated_Source\PSoC5/SPIS_1.c ****     /*******************************************************************************
+ 999:Generated_Source\PSoC5/SPIS_1.c ****     * Function Name: SPIS_1_TxDisable
+1000:Generated_Source\PSoC5/SPIS_1.c ****     ********************************************************************************
+1001:Generated_Source\PSoC5/SPIS_1.c ****     *
+1002:Generated_Source\PSoC5/SPIS_1.c ****     * Summary:
+1003:Generated_Source\PSoC5/SPIS_1.c ****     *  If the SPI Slave is configured to use a single bi-directional pin then this
+1004:Generated_Source\PSoC5/SPIS_1.c ****     *  will set the bi-directional pin to receive.
+1005:Generated_Source\PSoC5/SPIS_1.c ****     *
+1006:Generated_Source\PSoC5/SPIS_1.c ****     * Parameters:
+1007:Generated_Source\PSoC5/SPIS_1.c ****     *  None.
+1008:Generated_Source\PSoC5/SPIS_1.c ****     *
+1009:Generated_Source\PSoC5/SPIS_1.c ****     * Return:
+1010:Generated_Source\PSoC5/SPIS_1.c ****     *  None.
+1011:Generated_Source\PSoC5/SPIS_1.c ****     *
+1012:Generated_Source\PSoC5/SPIS_1.c ****     *******************************************************************************/
+1013:Generated_Source\PSoC5/SPIS_1.c ****     void SPIS_1_TxDisable(void) 
+1014:Generated_Source\PSoC5/SPIS_1.c ****     {
+1015:Generated_Source\PSoC5/SPIS_1.c ****             SPIS_1_CONTROL_REG &= (uint8)~SPIS_1_CTRL_TX_SIGNAL_EN;
+1016:Generated_Source\PSoC5/SPIS_1.c ****     }
+1017:Generated_Source\PSoC5/SPIS_1.c **** 
+1018:Generated_Source\PSoC5/SPIS_1.c **** #endif /* SPIS_1_BIDIRECTIONAL_MODE != 0u */
+1019:Generated_Source\PSoC5/SPIS_1.c **** 
+1020:Generated_Source\PSoC5/SPIS_1.c **** 
+1021:Generated_Source\PSoC5/SPIS_1.c **** /*******************************************************************************
+1022:Generated_Source\PSoC5/SPIS_1.c **** * Function Name: SPIS_1_PutArray
+1023:Generated_Source\PSoC5/SPIS_1.c **** ********************************************************************************
+1024:Generated_Source\PSoC5/SPIS_1.c **** *
+1025:Generated_Source\PSoC5/SPIS_1.c **** * Summary:
+1026:Generated_Source\PSoC5/SPIS_1.c **** *  Write available data from RAM/ROM to the TX buffer while space is available
+1027:Generated_Source\PSoC5/SPIS_1.c **** *  in the TX buffer. Keep trying until all data is passed to the TX buffer. If
+1028:Generated_Source\PSoC5/SPIS_1.c **** *  used Mode 00 or 01 before PutArray() function should be called
+1029:Generated_Source\PSoC5/SPIS_1.c **** *  WriteTxDataZero() function.
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 36
+
+
+1030:Generated_Source\PSoC5/SPIS_1.c **** *
+1031:Generated_Source\PSoC5/SPIS_1.c **** * Parameters:
+1032:Generated_Source\PSoC5/SPIS_1.c **** *  *buffer: Pointer to the location in RAM containing the data to send
+1033:Generated_Source\PSoC5/SPIS_1.c **** *  byteCount: The number of bytes to move to the transmit buffer.
+1034:Generated_Source\PSoC5/SPIS_1.c **** *
+1035:Generated_Source\PSoC5/SPIS_1.c **** * Return:
+1036:Generated_Source\PSoC5/SPIS_1.c **** *  None.
+1037:Generated_Source\PSoC5/SPIS_1.c **** *
+1038:Generated_Source\PSoC5/SPIS_1.c **** * Side Effects:
+1039:Generated_Source\PSoC5/SPIS_1.c **** *  Will stay in this routine until all data has been sent.  May get locked in
+1040:Generated_Source\PSoC5/SPIS_1.c **** *  this loop if data is not being initiated by the master if there is not
+1041:Generated_Source\PSoC5/SPIS_1.c **** *  enough room in the TX FIFO.
+1042:Generated_Source\PSoC5/SPIS_1.c **** *
+1043:Generated_Source\PSoC5/SPIS_1.c **** * Reentrant:
+1044:Generated_Source\PSoC5/SPIS_1.c **** *  No.
+1045:Generated_Source\PSoC5/SPIS_1.c **** *
+1046:Generated_Source\PSoC5/SPIS_1.c **** *******************************************************************************/
+1047:Generated_Source\PSoC5/SPIS_1.c **** void SPIS_1_PutArray(const uint8 buffer[], uint8 byteCount)
+1048:Generated_Source\PSoC5/SPIS_1.c ****                                                                     
+1049:Generated_Source\PSoC5/SPIS_1.c **** {
+ 966              		.loc 1 1049 0
+ 967              		.cfi_startproc
+ 968              		@ args = 0, pretend = 0, frame = 16
+ 969              		@ frame_needed = 1, uses_anonymous_args = 0
+ 970 0000 80B5     		push	{r7, lr}
+ 971              		.cfi_def_cfa_offset 8
+ 972              		.cfi_offset 7, -8
+ 973              		.cfi_offset 14, -4
+ 974 0002 84B0     		sub	sp, sp, #16
+ 975              		.cfi_def_cfa_offset 24
+ 976 0004 00AF     		add	r7, sp, #0
+ 977              		.cfi_def_cfa_register 7
+ 978 0006 7860     		str	r0, [r7, #4]
+ 979 0008 0B46     		mov	r3, r1
+ 980 000a FB70     		strb	r3, [r7, #3]
+1050:Generated_Source\PSoC5/SPIS_1.c ****     uint8 bufIndex;
+1051:Generated_Source\PSoC5/SPIS_1.c ****     bufIndex = 0u;
+ 981              		.loc 1 1051 0
+ 982 000c 0023     		movs	r3, #0
+ 983 000e FB73     		strb	r3, [r7, #15]
+1052:Generated_Source\PSoC5/SPIS_1.c **** 
+1053:Generated_Source\PSoC5/SPIS_1.c ****     while(byteCount > 0u)
+ 984              		.loc 1 1053 0
+ 985 0010 0CE0     		b	.L69
+ 986              	.L70:
+1054:Generated_Source\PSoC5/SPIS_1.c ****     {
+1055:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_WriteTxData(buffer[bufIndex]);
+ 987              		.loc 1 1055 0
+ 988 0012 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 989 0014 7A68     		ldr	r2, [r7, #4]
+ 990 0016 1344     		add	r3, r3, r2
+ 991 0018 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 992 001a 1846     		mov	r0, r3
+ 993 001c FFF7FEFF 		bl	SPIS_1_WriteTxData
+1056:Generated_Source\PSoC5/SPIS_1.c ****         bufIndex++;
+ 994              		.loc 1 1056 0
+ 995 0020 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 37
+
+
+ 996 0022 0133     		adds	r3, r3, #1
+ 997 0024 FB73     		strb	r3, [r7, #15]
+1057:Generated_Source\PSoC5/SPIS_1.c ****         byteCount--;
+ 998              		.loc 1 1057 0
+ 999 0026 FB78     		ldrb	r3, [r7, #3]	@ zero_extendqisi2
+ 1000 0028 013B     		subs	r3, r3, #1
+ 1001 002a FB70     		strb	r3, [r7, #3]
+ 1002              	.L69:
+1053:Generated_Source\PSoC5/SPIS_1.c ****     {
+ 1003              		.loc 1 1053 0
+ 1004 002c FB78     		ldrb	r3, [r7, #3]	@ zero_extendqisi2
+ 1005 002e 002B     		cmp	r3, #0
+ 1006 0030 EFD1     		bne	.L70
+1058:Generated_Source\PSoC5/SPIS_1.c ****     }
+1059:Generated_Source\PSoC5/SPIS_1.c **** }
+ 1007              		.loc 1 1059 0
+ 1008 0032 00BF     		nop
+ 1009 0034 1037     		adds	r7, r7, #16
+ 1010              		.cfi_def_cfa_offset 8
+ 1011 0036 BD46     		mov	sp, r7
+ 1012              		.cfi_def_cfa_register 13
+ 1013              		@ sp needed
+ 1014 0038 80BD     		pop	{r7, pc}
+ 1015              		.cfi_endproc
+ 1016              	.LFE19:
+ 1017              		.size	SPIS_1_PutArray, .-SPIS_1_PutArray
+ 1018 003a 00BF     		.section	.text.SPIS_1_ClearFIFO,"ax",%progbits
+ 1019              		.align	2
+ 1020              		.global	SPIS_1_ClearFIFO
+ 1021              		.thumb
+ 1022              		.thumb_func
+ 1023              		.type	SPIS_1_ClearFIFO, %function
+ 1024              	SPIS_1_ClearFIFO:
+ 1025              	.LFB20:
+1060:Generated_Source\PSoC5/SPIS_1.c **** 
+1061:Generated_Source\PSoC5/SPIS_1.c **** 
+1062:Generated_Source\PSoC5/SPIS_1.c **** /*******************************************************************************
+1063:Generated_Source\PSoC5/SPIS_1.c **** * Function Name: SPIS_1_ClearFIFO
+1064:Generated_Source\PSoC5/SPIS_1.c **** ********************************************************************************
+1065:Generated_Source\PSoC5/SPIS_1.c **** *
+1066:Generated_Source\PSoC5/SPIS_1.c **** * Summary:
+1067:Generated_Source\PSoC5/SPIS_1.c **** *  Clear the RX and TX FIFO's of all data for a fresh start.
+1068:Generated_Source\PSoC5/SPIS_1.c **** *
+1069:Generated_Source\PSoC5/SPIS_1.c **** * Parameters:
+1070:Generated_Source\PSoC5/SPIS_1.c **** *  None.
+1071:Generated_Source\PSoC5/SPIS_1.c **** *
+1072:Generated_Source\PSoC5/SPIS_1.c **** * Return:
+1073:Generated_Source\PSoC5/SPIS_1.c **** *  None.
+1074:Generated_Source\PSoC5/SPIS_1.c **** *
+1075:Generated_Source\PSoC5/SPIS_1.c **** * Side Effects:
+1076:Generated_Source\PSoC5/SPIS_1.c **** *  Clear status register of the component.
+1077:Generated_Source\PSoC5/SPIS_1.c **** *
+1078:Generated_Source\PSoC5/SPIS_1.c **** *******************************************************************************/
+1079:Generated_Source\PSoC5/SPIS_1.c **** void SPIS_1_ClearFIFO(void) 
+1080:Generated_Source\PSoC5/SPIS_1.c **** {
+ 1026              		.loc 1 1080 0
+ 1027              		.cfi_startproc
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 38
+
+
+ 1028              		@ args = 0, pretend = 0, frame = 8
+ 1029              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1030 0000 80B5     		push	{r7, lr}
+ 1031              		.cfi_def_cfa_offset 8
+ 1032              		.cfi_offset 7, -8
+ 1033              		.cfi_offset 14, -4
+ 1034 0002 82B0     		sub	sp, sp, #8
+ 1035              		.cfi_def_cfa_offset 16
+ 1036 0004 00AF     		add	r7, sp, #0
+ 1037              		.cfi_def_cfa_register 7
+1081:Generated_Source\PSoC5/SPIS_1.c ****     uint8 enableInterrupts;
+1082:Generated_Source\PSoC5/SPIS_1.c **** 
+1083:Generated_Source\PSoC5/SPIS_1.c ****     while((SPIS_1_RX_STATUS_REG & SPIS_1_STS_RX_FIFO_NOT_EMPTY) != 0u)
+ 1038              		.loc 1 1083 0
+ 1039 0006 01E0     		b	.L72
+ 1040              	.L73:
+1084:Generated_Source\PSoC5/SPIS_1.c ****     {
+1085:Generated_Source\PSoC5/SPIS_1.c ****         CY_GET_REG8(SPIS_1_RXDATA_PTR);
+ 1041              		.loc 1 1085 0
+ 1042 0008 124B     		ldr	r3, .L74
+ 1043 000a 1B78     		ldrb	r3, [r3]
+ 1044              	.L72:
+1083:Generated_Source\PSoC5/SPIS_1.c ****     {
+ 1045              		.loc 1 1083 0
+ 1046 000c 124B     		ldr	r3, .L74+4
+ 1047 000e 1B78     		ldrb	r3, [r3]
+ 1048 0010 DBB2     		uxtb	r3, r3
+ 1049 0012 03F00803 		and	r3, r3, #8
+ 1050 0016 002B     		cmp	r3, #0
+ 1051 0018 F6D1     		bne	.L73
+1086:Generated_Source\PSoC5/SPIS_1.c ****     }
+1087:Generated_Source\PSoC5/SPIS_1.c **** 
+1088:Generated_Source\PSoC5/SPIS_1.c ****     enableInterrupts = CyEnterCriticalSection();
+ 1052              		.loc 1 1088 0
+ 1053 001a FFF7FEFF 		bl	CyEnterCriticalSection
+ 1054 001e 0346     		mov	r3, r0
+ 1055 0020 FB71     		strb	r3, [r7, #7]
+1089:Generated_Source\PSoC5/SPIS_1.c **** 
+1090:Generated_Source\PSoC5/SPIS_1.c ****     #if(SPIS_1_DATA_WIDTH <= 8u)
+1091:Generated_Source\PSoC5/SPIS_1.c **** 
+1092:Generated_Source\PSoC5/SPIS_1.c ****         /* Clear TX FIFO */
+1093:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_TX_AUX_CONTROL_DP0_REG |= (uint8)SPIS_1_FIFO_CLR;
+ 1056              		.loc 1 1093 0
+ 1057 0022 0E4A     		ldr	r2, .L74+8
+ 1058 0024 0D4B     		ldr	r3, .L74+8
+ 1059 0026 1B78     		ldrb	r3, [r3]
+ 1060 0028 DBB2     		uxtb	r3, r3
+ 1061 002a 43F00303 		orr	r3, r3, #3
+ 1062 002e DBB2     		uxtb	r3, r3
+ 1063 0030 1370     		strb	r3, [r2]
+1094:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_TX_AUX_CONTROL_DP0_REG &= (uint8)~SPIS_1_FIFO_CLR;
+ 1064              		.loc 1 1094 0
+ 1065 0032 0A4A     		ldr	r2, .L74+8
+ 1066 0034 094B     		ldr	r3, .L74+8
+ 1067 0036 1B78     		ldrb	r3, [r3]
+ 1068 0038 DBB2     		uxtb	r3, r3
+ 1069 003a 23F00303 		bic	r3, r3, #3
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 39
+
+
+ 1070 003e DBB2     		uxtb	r3, r3
+ 1071 0040 1370     		strb	r3, [r2]
+1095:Generated_Source\PSoC5/SPIS_1.c **** 
+1096:Generated_Source\PSoC5/SPIS_1.c ****     #else
+1097:Generated_Source\PSoC5/SPIS_1.c **** 
+1098:Generated_Source\PSoC5/SPIS_1.c ****         /* Clear TX FIFO */
+1099:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_TX_AUX_CONTROL_DP0_REG |= (uint8)SPIS_1_FIFO_CLR;
+1100:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_TX_AUX_CONTROL_DP0_REG &= (uint8)~SPIS_1_FIFO_CLR;
+1101:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_TX_AUX_CONTROL_DP1_REG |= (uint8)SPIS_1_FIFO_CLR;
+1102:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_TX_AUX_CONTROL_DP1_REG &= (uint8)~SPIS_1_FIFO_CLR;
+1103:Generated_Source\PSoC5/SPIS_1.c **** 
+1104:Generated_Source\PSoC5/SPIS_1.c ****     #endif /* SPIS_1_DATA_WIDTH <= 8u */
+1105:Generated_Source\PSoC5/SPIS_1.c **** 
+1106:Generated_Source\PSoC5/SPIS_1.c ****     CyExitCriticalSection(enableInterrupts);
+ 1072              		.loc 1 1106 0
+ 1073 0042 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 1074 0044 1846     		mov	r0, r3
+ 1075 0046 FFF7FEFF 		bl	CyExitCriticalSection
+1107:Generated_Source\PSoC5/SPIS_1.c **** }
+ 1076              		.loc 1 1107 0
+ 1077 004a 00BF     		nop
+ 1078 004c 0837     		adds	r7, r7, #8
+ 1079              		.cfi_def_cfa_offset 8
+ 1080 004e BD46     		mov	sp, r7
+ 1081              		.cfi_def_cfa_register 13
+ 1082              		@ sp needed
+ 1083 0050 80BD     		pop	{r7, pc}
+ 1084              	.L75:
+ 1085 0052 00BF     		.align	2
+ 1086              	.L74:
+ 1087 0054 5B650040 		.word	1073767771
+ 1088 0058 67640040 		.word	1073767527
+ 1089 005c 9B650040 		.word	1073767835
+ 1090              		.cfi_endproc
+ 1091              	.LFE20:
+ 1092              		.size	SPIS_1_ClearFIFO, .-SPIS_1_ClearFIFO
+ 1093              		.section	.text.SPIS_1_EnableInt,"ax",%progbits
+ 1094              		.align	2
+ 1095              		.global	SPIS_1_EnableInt
+ 1096              		.thumb
+ 1097              		.thumb_func
+ 1098              		.type	SPIS_1_EnableInt, %function
+ 1099              	SPIS_1_EnableInt:
+ 1100              	.LFB21:
+1108:Generated_Source\PSoC5/SPIS_1.c **** 
+1109:Generated_Source\PSoC5/SPIS_1.c **** 
+1110:Generated_Source\PSoC5/SPIS_1.c **** /* Following functions are for version Compatibility, they are obsolete.
+1111:Generated_Source\PSoC5/SPIS_1.c **** *  Please do not use it in new projects.
+1112:Generated_Source\PSoC5/SPIS_1.c **** */
+1113:Generated_Source\PSoC5/SPIS_1.c **** 
+1114:Generated_Source\PSoC5/SPIS_1.c **** 
+1115:Generated_Source\PSoC5/SPIS_1.c **** /*******************************************************************************
+1116:Generated_Source\PSoC5/SPIS_1.c **** * Function Name: SPIS_1_EnableInt
+1117:Generated_Source\PSoC5/SPIS_1.c **** ********************************************************************************
+1118:Generated_Source\PSoC5/SPIS_1.c **** *
+1119:Generated_Source\PSoC5/SPIS_1.c **** * Summary:
+1120:Generated_Source\PSoC5/SPIS_1.c **** *  Enable internal interrupt generation.
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 40
+
+
+1121:Generated_Source\PSoC5/SPIS_1.c **** *
+1122:Generated_Source\PSoC5/SPIS_1.c **** * Parameters:
+1123:Generated_Source\PSoC5/SPIS_1.c **** *  None.
+1124:Generated_Source\PSoC5/SPIS_1.c **** *
+1125:Generated_Source\PSoC5/SPIS_1.c **** * Return:
+1126:Generated_Source\PSoC5/SPIS_1.c **** *  None.
+1127:Generated_Source\PSoC5/SPIS_1.c **** *
+1128:Generated_Source\PSoC5/SPIS_1.c **** * Theory:
+1129:Generated_Source\PSoC5/SPIS_1.c **** *  Enable the internal interrupt output -or- the interrupt component itself.
+1130:Generated_Source\PSoC5/SPIS_1.c **** *
+1131:Generated_Source\PSoC5/SPIS_1.c **** *******************************************************************************/
+1132:Generated_Source\PSoC5/SPIS_1.c **** void SPIS_1_EnableInt(void) 
+1133:Generated_Source\PSoC5/SPIS_1.c **** {
+ 1101              		.loc 1 1133 0
+ 1102              		.cfi_startproc
+ 1103              		@ args = 0, pretend = 0, frame = 0
+ 1104              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1105              		@ link register save eliminated.
+ 1106 0000 80B4     		push	{r7}
+ 1107              		.cfi_def_cfa_offset 4
+ 1108              		.cfi_offset 7, -4
+ 1109 0002 00AF     		add	r7, sp, #0
+ 1110              		.cfi_def_cfa_register 7
+1134:Generated_Source\PSoC5/SPIS_1.c ****     #if(SPIS_1_INTERNAL_TX_INT_ENABLED)
+1135:Generated_Source\PSoC5/SPIS_1.c ****         CyIntEnable(SPIS_1_TX_ISR_NUMBER);
+1136:Generated_Source\PSoC5/SPIS_1.c ****     #endif /* SPIS_1_INTERNAL_TX_INT_ENABLED */
+1137:Generated_Source\PSoC5/SPIS_1.c **** 
+1138:Generated_Source\PSoC5/SPIS_1.c ****     #if(SPIS_1_INTERNAL_RX_INT_ENABLED)
+1139:Generated_Source\PSoC5/SPIS_1.c ****         CyIntEnable(SPIS_1_RX_ISR_NUMBER);
+ 1111              		.loc 1 1139 0
+ 1112 0004 034B     		ldr	r3, .L77
+ 1113 0006 0422     		movs	r2, #4
+ 1114 0008 1A60     		str	r2, [r3]
+1140:Generated_Source\PSoC5/SPIS_1.c ****     #endif /* SPIS_1_INTERNAL_RX_INT_ENABLED */
+1141:Generated_Source\PSoC5/SPIS_1.c **** }
+ 1115              		.loc 1 1141 0
+ 1116 000a 00BF     		nop
+ 1117 000c BD46     		mov	sp, r7
+ 1118              		.cfi_def_cfa_register 13
+ 1119              		@ sp needed
+ 1120 000e 80BC     		pop	{r7}
+ 1121              		.cfi_restore 7
+ 1122              		.cfi_def_cfa_offset 0
+ 1123 0010 7047     		bx	lr
+ 1124              	.L78:
+ 1125 0012 00BF     		.align	2
+ 1126              	.L77:
+ 1127 0014 00E100E0 		.word	-536813312
+ 1128              		.cfi_endproc
+ 1129              	.LFE21:
+ 1130              		.size	SPIS_1_EnableInt, .-SPIS_1_EnableInt
+ 1131              		.section	.text.SPIS_1_DisableInt,"ax",%progbits
+ 1132              		.align	2
+ 1133              		.global	SPIS_1_DisableInt
+ 1134              		.thumb
+ 1135              		.thumb_func
+ 1136              		.type	SPIS_1_DisableInt, %function
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 41
+
+
+ 1137              	SPIS_1_DisableInt:
+ 1138              	.LFB22:
+1142:Generated_Source\PSoC5/SPIS_1.c **** 
+1143:Generated_Source\PSoC5/SPIS_1.c **** 
+1144:Generated_Source\PSoC5/SPIS_1.c **** /*******************************************************************************
+1145:Generated_Source\PSoC5/SPIS_1.c **** * Function Name: SPIS_1_DisableInt
+1146:Generated_Source\PSoC5/SPIS_1.c **** ********************************************************************************
+1147:Generated_Source\PSoC5/SPIS_1.c **** *
+1148:Generated_Source\PSoC5/SPIS_1.c **** * Summary:
+1149:Generated_Source\PSoC5/SPIS_1.c **** *  Disable internal interrupt generation.
+1150:Generated_Source\PSoC5/SPIS_1.c **** *
+1151:Generated_Source\PSoC5/SPIS_1.c **** * Parameters:
+1152:Generated_Source\PSoC5/SPIS_1.c **** *  None.
+1153:Generated_Source\PSoC5/SPIS_1.c **** *
+1154:Generated_Source\PSoC5/SPIS_1.c **** * Return:
+1155:Generated_Source\PSoC5/SPIS_1.c **** *  None.
+1156:Generated_Source\PSoC5/SPIS_1.c **** *
+1157:Generated_Source\PSoC5/SPIS_1.c **** * Theory:
+1158:Generated_Source\PSoC5/SPIS_1.c **** *  Disable the internal interrupt output -or- the interrupt component itself.
+1159:Generated_Source\PSoC5/SPIS_1.c **** *
+1160:Generated_Source\PSoC5/SPIS_1.c **** *******************************************************************************/
+1161:Generated_Source\PSoC5/SPIS_1.c **** void SPIS_1_DisableInt(void) 
+1162:Generated_Source\PSoC5/SPIS_1.c **** {
+ 1139              		.loc 1 1162 0
+ 1140              		.cfi_startproc
+ 1141              		@ args = 0, pretend = 0, frame = 0
+ 1142              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1143              		@ link register save eliminated.
+ 1144 0000 80B4     		push	{r7}
+ 1145              		.cfi_def_cfa_offset 4
+ 1146              		.cfi_offset 7, -4
+ 1147 0002 00AF     		add	r7, sp, #0
+ 1148              		.cfi_def_cfa_register 7
+1163:Generated_Source\PSoC5/SPIS_1.c ****     #if(SPIS_1_INTERNAL_TX_INT_ENABLED)
+1164:Generated_Source\PSoC5/SPIS_1.c ****         CyIntDisable(SPIS_1_TX_ISR_NUMBER);
+1165:Generated_Source\PSoC5/SPIS_1.c ****     #endif /* SPIS_1_INTERNAL_TX_INT_ENABLED */
+1166:Generated_Source\PSoC5/SPIS_1.c **** 
+1167:Generated_Source\PSoC5/SPIS_1.c ****     #if(SPIS_1_INTERNAL_RX_INT_ENABLED)
+1168:Generated_Source\PSoC5/SPIS_1.c ****         CyIntDisable(SPIS_1_RX_ISR_NUMBER);
+ 1149              		.loc 1 1168 0
+ 1150 0004 034B     		ldr	r3, .L80
+ 1151 0006 0422     		movs	r2, #4
+ 1152 0008 1A60     		str	r2, [r3]
+1169:Generated_Source\PSoC5/SPIS_1.c ****     #endif /* SPIS_1_INTERNAL_RX_INT_ENABLED */
+1170:Generated_Source\PSoC5/SPIS_1.c **** }
+ 1153              		.loc 1 1170 0
+ 1154 000a 00BF     		nop
+ 1155 000c BD46     		mov	sp, r7
+ 1156              		.cfi_def_cfa_register 13
+ 1157              		@ sp needed
+ 1158 000e 80BC     		pop	{r7}
+ 1159              		.cfi_restore 7
+ 1160              		.cfi_def_cfa_offset 0
+ 1161 0010 7047     		bx	lr
+ 1162              	.L81:
+ 1163 0012 00BF     		.align	2
+ 1164              	.L80:
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 42
+
+
+ 1165 0014 80E100E0 		.word	-536813184
+ 1166              		.cfi_endproc
+ 1167              	.LFE22:
+ 1168              		.size	SPIS_1_DisableInt, .-SPIS_1_DisableInt
+ 1169              		.section	.text.SPIS_1_SetInterruptMode,"ax",%progbits
+ 1170              		.align	2
+ 1171              		.global	SPIS_1_SetInterruptMode
+ 1172              		.thumb
+ 1173              		.thumb_func
+ 1174              		.type	SPIS_1_SetInterruptMode, %function
+ 1175              	SPIS_1_SetInterruptMode:
+ 1176              	.LFB23:
+1171:Generated_Source\PSoC5/SPIS_1.c **** 
+1172:Generated_Source\PSoC5/SPIS_1.c **** 
+1173:Generated_Source\PSoC5/SPIS_1.c **** /*******************************************************************************
+1174:Generated_Source\PSoC5/SPIS_1.c **** * Function Name: SPIS_1_SetInterruptMode
+1175:Generated_Source\PSoC5/SPIS_1.c **** ********************************************************************************
+1176:Generated_Source\PSoC5/SPIS_1.c **** *
+1177:Generated_Source\PSoC5/SPIS_1.c **** * Summary:
+1178:Generated_Source\PSoC5/SPIS_1.c **** *  Configure which status bits trigger an interrupt event.
+1179:Generated_Source\PSoC5/SPIS_1.c **** *
+1180:Generated_Source\PSoC5/SPIS_1.c **** * Parameters:
+1181:Generated_Source\PSoC5/SPIS_1.c **** *  intSrc: An or'd combination of the desired status bit masks (defined in the
+1182:Generated_Source\PSoC5/SPIS_1.c **** *  header file).
+1183:Generated_Source\PSoC5/SPIS_1.c **** *
+1184:Generated_Source\PSoC5/SPIS_1.c **** * Return:
+1185:Generated_Source\PSoC5/SPIS_1.c **** *  None.
+1186:Generated_Source\PSoC5/SPIS_1.c **** *
+1187:Generated_Source\PSoC5/SPIS_1.c **** * Theory:
+1188:Generated_Source\PSoC5/SPIS_1.c **** *  Enables the output of specific status bits to the interrupt controller.
+1189:Generated_Source\PSoC5/SPIS_1.c **** *
+1190:Generated_Source\PSoC5/SPIS_1.c **** *******************************************************************************/
+1191:Generated_Source\PSoC5/SPIS_1.c **** void SPIS_1_SetInterruptMode(uint8 intSrc) 
+1192:Generated_Source\PSoC5/SPIS_1.c **** {
+ 1177              		.loc 1 1192 0
+ 1178              		.cfi_startproc
+ 1179              		@ args = 0, pretend = 0, frame = 8
+ 1180              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1181              		@ link register save eliminated.
+ 1182 0000 80B4     		push	{r7}
+ 1183              		.cfi_def_cfa_offset 4
+ 1184              		.cfi_offset 7, -4
+ 1185 0002 83B0     		sub	sp, sp, #12
+ 1186              		.cfi_def_cfa_offset 16
+ 1187 0004 00AF     		add	r7, sp, #0
+ 1188              		.cfi_def_cfa_register 7
+ 1189 0006 0346     		mov	r3, r0
+ 1190 0008 FB71     		strb	r3, [r7, #7]
+1193:Generated_Source\PSoC5/SPIS_1.c ****     SPIS_1_TX_STATUS_MASK_REG  = intSrc;
+ 1191              		.loc 1 1193 0
+ 1192 000a 054A     		ldr	r2, .L83
+ 1193 000c FB79     		ldrb	r3, [r7, #7]
+ 1194 000e 1370     		strb	r3, [r2]
+1194:Generated_Source\PSoC5/SPIS_1.c ****     SPIS_1_RX_STATUS_MASK_REG  = intSrc;
+ 1195              		.loc 1 1194 0
+ 1196 0010 044A     		ldr	r2, .L83+4
+ 1197 0012 FB79     		ldrb	r3, [r7, #7]
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 43
+
+
+ 1198 0014 1370     		strb	r3, [r2]
+1195:Generated_Source\PSoC5/SPIS_1.c **** }
+ 1199              		.loc 1 1195 0
+ 1200 0016 00BF     		nop
+ 1201 0018 0C37     		adds	r7, r7, #12
+ 1202              		.cfi_def_cfa_offset 4
+ 1203 001a BD46     		mov	sp, r7
+ 1204              		.cfi_def_cfa_register 13
+ 1205              		@ sp needed
+ 1206 001c 80BC     		pop	{r7}
+ 1207              		.cfi_restore 7
+ 1208              		.cfi_def_cfa_offset 0
+ 1209 001e 7047     		bx	lr
+ 1210              	.L84:
+ 1211              		.align	2
+ 1212              	.L83:
+ 1213 0020 86650040 		.word	1073767814
+ 1214 0024 87640040 		.word	1073767559
+ 1215              		.cfi_endproc
+ 1216              	.LFE23:
+ 1217              		.size	SPIS_1_SetInterruptMode, .-SPIS_1_SetInterruptMode
+ 1218              		.section	.text.SPIS_1_ReadStatus,"ax",%progbits
+ 1219              		.align	2
+ 1220              		.global	SPIS_1_ReadStatus
+ 1221              		.thumb
+ 1222              		.thumb_func
+ 1223              		.type	SPIS_1_ReadStatus, %function
+ 1224              	SPIS_1_ReadStatus:
+ 1225              	.LFB24:
+1196:Generated_Source\PSoC5/SPIS_1.c **** 
+1197:Generated_Source\PSoC5/SPIS_1.c **** 
+1198:Generated_Source\PSoC5/SPIS_1.c **** /*******************************************************************************
+1199:Generated_Source\PSoC5/SPIS_1.c **** * Function Name: SPIS_1_ReadStatus
+1200:Generated_Source\PSoC5/SPIS_1.c **** ********************************************************************************
+1201:Generated_Source\PSoC5/SPIS_1.c **** *
+1202:Generated_Source\PSoC5/SPIS_1.c **** * Summary:
+1203:Generated_Source\PSoC5/SPIS_1.c **** *  Read the status register for the component.
+1204:Generated_Source\PSoC5/SPIS_1.c **** *
+1205:Generated_Source\PSoC5/SPIS_1.c **** * Parameters:
+1206:Generated_Source\PSoC5/SPIS_1.c **** *  None.
+1207:Generated_Source\PSoC5/SPIS_1.c **** *
+1208:Generated_Source\PSoC5/SPIS_1.c **** * Return:
+1209:Generated_Source\PSoC5/SPIS_1.c **** *  Contents of the status register.
+1210:Generated_Source\PSoC5/SPIS_1.c **** *
+1211:Generated_Source\PSoC5/SPIS_1.c **** * Global variables:
+1212:Generated_Source\PSoC5/SPIS_1.c **** *  SPIS_1_swStatus - used to store in software status register,
+1213:Generated_Source\PSoC5/SPIS_1.c **** *  modified every function call - resets to zero.
+1214:Generated_Source\PSoC5/SPIS_1.c **** *
+1215:Generated_Source\PSoC5/SPIS_1.c **** * Theory:
+1216:Generated_Source\PSoC5/SPIS_1.c **** *  Allows the user and the API to read the status register for error detection
+1217:Generated_Source\PSoC5/SPIS_1.c **** *  and flow control.
+1218:Generated_Source\PSoC5/SPIS_1.c **** *
+1219:Generated_Source\PSoC5/SPIS_1.c **** * Side Effects:
+1220:Generated_Source\PSoC5/SPIS_1.c **** *  Clear status register of the component.
+1221:Generated_Source\PSoC5/SPIS_1.c **** *
+1222:Generated_Source\PSoC5/SPIS_1.c **** * Reentrant:
+1223:Generated_Source\PSoC5/SPIS_1.c **** *  No.
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 44
+
+
+1224:Generated_Source\PSoC5/SPIS_1.c **** *
+1225:Generated_Source\PSoC5/SPIS_1.c **** *******************************************************************************/
+1226:Generated_Source\PSoC5/SPIS_1.c **** uint8 SPIS_1_ReadStatus(void) 
+1227:Generated_Source\PSoC5/SPIS_1.c **** {
+ 1226              		.loc 1 1227 0
+ 1227              		.cfi_startproc
+ 1228              		@ args = 0, pretend = 0, frame = 8
+ 1229              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1230              		@ link register save eliminated.
+ 1231 0000 80B4     		push	{r7}
+ 1232              		.cfi_def_cfa_offset 4
+ 1233              		.cfi_offset 7, -4
+ 1234 0002 83B0     		sub	sp, sp, #12
+ 1235              		.cfi_def_cfa_offset 16
+ 1236 0004 00AF     		add	r7, sp, #0
+ 1237              		.cfi_def_cfa_register 7
+1228:Generated_Source\PSoC5/SPIS_1.c ****     uint8 tmpStatus;
+1229:Generated_Source\PSoC5/SPIS_1.c **** 
+1230:Generated_Source\PSoC5/SPIS_1.c ****     #if ((SPIS_1_TX_SOFTWARE_BUF_ENABLED) || (SPIS_1_RX_SOFTWARE_BUF_ENABLED))
+1231:Generated_Source\PSoC5/SPIS_1.c **** 
+1232:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_DisableInt();
+1233:Generated_Source\PSoC5/SPIS_1.c **** 
+1234:Generated_Source\PSoC5/SPIS_1.c ****         tmpStatus = SPIS_1_GET_STATUS_TX(SPIS_1_swStatusTx) |
+1235:Generated_Source\PSoC5/SPIS_1.c ****               (SPIS_1_GET_STATUS_RX(SPIS_1_swStatusRx) & (uint8)~SPIS_1_STS_RX_FIFO_FULL);
+1236:Generated_Source\PSoC5/SPIS_1.c **** 
+1237:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_swStatusTx = 0u;
+1238:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_swStatusRx = 0u;
+1239:Generated_Source\PSoC5/SPIS_1.c **** 
+1240:Generated_Source\PSoC5/SPIS_1.c ****         /* Enable Interrupts */
+1241:Generated_Source\PSoC5/SPIS_1.c ****         SPIS_1_EnableInt();
+1242:Generated_Source\PSoC5/SPIS_1.c **** 
+1243:Generated_Source\PSoC5/SPIS_1.c ****     #else /* !((SPIS_1_TX_SOFTWARE_BUF_ENABLED) || (SPIS_1_RX_SOFTWARE_BUF_ENABLED)) */
+1244:Generated_Source\PSoC5/SPIS_1.c **** 
+1245:Generated_Source\PSoC5/SPIS_1.c ****         tmpStatus = SPIS_1_TX_STATUS_REG | (SPIS_1_RX_STATUS_REG &
+ 1238              		.loc 1 1245 0
+ 1239 0006 0A4B     		ldr	r3, .L87
+ 1240 0008 1B78     		ldrb	r3, [r3]
+ 1241 000a DBB2     		uxtb	r3, r3
+ 1242 000c 5AB2     		sxtb	r2, r3
+ 1243 000e 094B     		ldr	r3, .L87+4
+ 1244 0010 1B78     		ldrb	r3, [r3]
+ 1245 0012 DBB2     		uxtb	r3, r3
+ 1246 0014 5BB2     		sxtb	r3, r3
+ 1247 0016 23F04003 		bic	r3, r3, #64
+ 1248 001a 5BB2     		sxtb	r3, r3
+ 1249 001c 1343     		orrs	r3, r3, r2
+ 1250 001e 5BB2     		sxtb	r3, r3
+ 1251 0020 FB71     		strb	r3, [r7, #7]
+1246:Generated_Source\PSoC5/SPIS_1.c ****                                                       (uint8)~SPIS_1_STS_RX_FIFO_FULL);
+1247:Generated_Source\PSoC5/SPIS_1.c **** 
+1248:Generated_Source\PSoC5/SPIS_1.c ****     #endif /* (SPIS_1_TX_SOFTWARE_BUF_ENABLED) || (SPIS_1_RX_SOFTWARE_BUF_ENABLED) */
+1249:Generated_Source\PSoC5/SPIS_1.c **** 
+1250:Generated_Source\PSoC5/SPIS_1.c ****     return(tmpStatus);
+ 1252              		.loc 1 1250 0
+ 1253 0022 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+1251:Generated_Source\PSoC5/SPIS_1.c **** }
+ 1254              		.loc 1 1251 0
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 45
+
+
+ 1255 0024 1846     		mov	r0, r3
+ 1256 0026 0C37     		adds	r7, r7, #12
+ 1257              		.cfi_def_cfa_offset 4
+ 1258 0028 BD46     		mov	sp, r7
+ 1259              		.cfi_def_cfa_register 13
+ 1260              		@ sp needed
+ 1261 002a 80BC     		pop	{r7}
+ 1262              		.cfi_restore 7
+ 1263              		.cfi_def_cfa_offset 0
+ 1264 002c 7047     		bx	lr
+ 1265              	.L88:
+ 1266 002e 00BF     		.align	2
+ 1267              	.L87:
+ 1268 0030 66650040 		.word	1073767782
+ 1269 0034 67640040 		.word	1073767527
+ 1270              		.cfi_endproc
+ 1271              	.LFE24:
+ 1272              		.size	SPIS_1_ReadStatus, .-SPIS_1_ReadStatus
+ 1273              		.text
+ 1274              	.Letext0:
+ 1275              		.file 2 "Generated_Source\\PSoC5\\cytypes.h"
+ 1276              		.section	.debug_info,"",%progbits
+ 1277              	.Ldebug_info0:
+ 1278 0000 34040000 		.4byte	0x434
+ 1279 0004 0400     		.2byte	0x4
+ 1280 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 1281 000a 04       		.byte	0x4
+ 1282 000b 01       		.uleb128 0x1
+ 1283 000c 28000000 		.4byte	.LASF56
+ 1284 0010 0C       		.byte	0xc
+ 1285 0011 1A010000 		.4byte	.LASF57
+ 1286 0015 3A010000 		.4byte	.LASF58
+ 1287 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 1288 001d 00000000 		.4byte	0
+ 1289 0021 00000000 		.4byte	.Ldebug_line0
+ 1290 0025 02       		.uleb128 0x2
+ 1291 0026 01       		.byte	0x1
+ 1292 0027 06       		.byte	0x6
+ 1293 0028 F7030000 		.4byte	.LASF0
+ 1294 002c 02       		.uleb128 0x2
+ 1295 002d 01       		.byte	0x1
+ 1296 002e 08       		.byte	0x8
+ 1297 002f 68020000 		.4byte	.LASF1
+ 1298 0033 02       		.uleb128 0x2
+ 1299 0034 02       		.byte	0x2
+ 1300 0035 05       		.byte	0x5
+ 1301 0036 BE030000 		.4byte	.LASF2
+ 1302 003a 02       		.uleb128 0x2
+ 1303 003b 02       		.byte	0x2
+ 1304 003c 07       		.byte	0x7
+ 1305 003d E4000000 		.4byte	.LASF3
+ 1306 0041 02       		.uleb128 0x2
+ 1307 0042 04       		.byte	0x4
+ 1308 0043 05       		.byte	0x5
+ 1309 0044 D2030000 		.4byte	.LASF4
+ 1310 0048 02       		.uleb128 0x2
+ 1311 0049 04       		.byte	0x4
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 46
+
+
+ 1312 004a 07       		.byte	0x7
+ 1313 004b 0E020000 		.4byte	.LASF5
+ 1314 004f 02       		.uleb128 0x2
+ 1315 0050 08       		.byte	0x8
+ 1316 0051 05       		.byte	0x5
+ 1317 0052 00000000 		.4byte	.LASF6
+ 1318 0056 02       		.uleb128 0x2
+ 1319 0057 08       		.byte	0x8
+ 1320 0058 07       		.byte	0x7
+ 1321 0059 EB020000 		.4byte	.LASF7
+ 1322 005d 03       		.uleb128 0x3
+ 1323 005e 04       		.byte	0x4
+ 1324 005f 05       		.byte	0x5
+ 1325 0060 696E7400 		.ascii	"int\000"
+ 1326 0064 02       		.uleb128 0x2
+ 1327 0065 04       		.byte	0x4
+ 1328 0066 07       		.byte	0x7
+ 1329 0067 C1020000 		.4byte	.LASF8
+ 1330 006b 04       		.uleb128 0x4
+ 1331 006c 20020000 		.4byte	.LASF9
+ 1332 0070 02       		.byte	0x2
+ 1333 0071 E401     		.2byte	0x1e4
+ 1334 0073 2C000000 		.4byte	0x2c
+ 1335 0077 04       		.uleb128 0x4
+ 1336 0078 A6020000 		.4byte	.LASF10
+ 1337 007c 02       		.byte	0x2
+ 1338 007d E601     		.2byte	0x1e6
+ 1339 007f 48000000 		.4byte	0x48
+ 1340 0083 02       		.uleb128 0x2
+ 1341 0084 04       		.byte	0x4
+ 1342 0085 04       		.byte	0x4
+ 1343 0086 B3010000 		.4byte	.LASF11
+ 1344 008a 02       		.uleb128 0x2
+ 1345 008b 08       		.byte	0x8
+ 1346 008c 04       		.byte	0x4
+ 1347 008d 76020000 		.4byte	.LASF12
+ 1348 0091 02       		.uleb128 0x2
+ 1349 0092 01       		.byte	0x1
+ 1350 0093 08       		.byte	0x8
+ 1351 0094 A7030000 		.4byte	.LASF13
+ 1352 0098 04       		.uleb128 0x4
+ 1353 0099 09020000 		.4byte	.LASF14
+ 1354 009d 02       		.byte	0x2
+ 1355 009e 8E02     		.2byte	0x28e
+ 1356 00a0 A4000000 		.4byte	0xa4
+ 1357 00a4 05       		.uleb128 0x5
+ 1358 00a5 6B000000 		.4byte	0x6b
+ 1359 00a9 04       		.uleb128 0x4
+ 1360 00aa 0E000000 		.4byte	.LASF15
+ 1361 00ae 02       		.byte	0x2
+ 1362 00af 9002     		.2byte	0x290
+ 1363 00b1 B5000000 		.4byte	0xb5
+ 1364 00b5 05       		.uleb128 0x5
+ 1365 00b6 77000000 		.4byte	0x77
+ 1366 00ba 02       		.uleb128 0x2
+ 1367 00bb 08       		.byte	0x8
+ 1368 00bc 04       		.byte	0x4
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 47
+
+
+ 1369 00bd 48030000 		.4byte	.LASF16
+ 1370 00c1 02       		.uleb128 0x2
+ 1371 00c2 04       		.byte	0x4
+ 1372 00c3 07       		.byte	0x7
+ 1373 00c4 54030000 		.4byte	.LASF17
+ 1374 00c8 06       		.uleb128 0x6
+ 1375 00c9 A7010000 		.4byte	.LASF18
+ 1376 00cd 01       		.byte	0x1
+ 1377 00ce 43       		.byte	0x43
+ 1378 00cf 00000000 		.4byte	.LFB0
+ 1379 00d3 50000000 		.4byte	.LFE0-.LFB0
+ 1380 00d7 01       		.uleb128 0x1
+ 1381 00d8 9C       		.byte	0x9c
+ 1382 00d9 07       		.uleb128 0x7
+ 1383 00da D6000000 		.4byte	.LASF20
+ 1384 00de 01       		.byte	0x1
+ 1385 00df 8E       		.byte	0x8e
+ 1386 00e0 00000000 		.4byte	.LFB1
+ 1387 00e4 64000000 		.4byte	.LFE1-.LFB1
+ 1388 00e8 01       		.uleb128 0x1
+ 1389 00e9 9C       		.byte	0x9c
+ 1390 00ea FD000000 		.4byte	0xfd
+ 1391 00ee 08       		.uleb128 0x8
+ 1392 00ef 57020000 		.4byte	.LASF22
+ 1393 00f3 01       		.byte	0x1
+ 1394 00f4 90       		.byte	0x90
+ 1395 00f5 6B000000 		.4byte	0x6b
+ 1396 00f9 02       		.uleb128 0x2
+ 1397 00fa 91       		.byte	0x91
+ 1398 00fb 77       		.sleb128 -9
+ 1399 00fc 00       		.byte	0
+ 1400 00fd 06       		.uleb128 0x6
+ 1401 00fe 26020000 		.4byte	.LASF19
+ 1402 0102 01       		.byte	0x1
+ 1403 0103 BB       		.byte	0xbb
+ 1404 0104 00000000 		.4byte	.LFB2
+ 1405 0108 24000000 		.4byte	.LFE2-.LFB2
+ 1406 010c 01       		.uleb128 0x1
+ 1407 010d 9C       		.byte	0x9c
+ 1408 010e 07       		.uleb128 0x7
+ 1409 010f DF020000 		.4byte	.LASF21
+ 1410 0113 01       		.byte	0x1
+ 1411 0114 D8       		.byte	0xd8
+ 1412 0115 00000000 		.4byte	.LFB3
+ 1413 0119 50000000 		.4byte	.LFE3-.LFB3
+ 1414 011d 01       		.uleb128 0x1
+ 1415 011e 9C       		.byte	0x9c
+ 1416 011f 32010000 		.4byte	0x132
+ 1417 0123 08       		.uleb128 0x8
+ 1418 0124 57020000 		.4byte	.LASF22
+ 1419 0128 01       		.byte	0x1
+ 1420 0129 DA       		.byte	0xda
+ 1421 012a 6B000000 		.4byte	0x6b
+ 1422 012e 02       		.uleb128 0x2
+ 1423 012f 91       		.byte	0x91
+ 1424 0130 77       		.sleb128 -9
+ 1425 0131 00       		.byte	0
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 48
+
+
+ 1426 0132 09       		.uleb128 0x9
+ 1427 0133 07010000 		.4byte	.LASF23
+ 1428 0137 01       		.byte	0x1
+ 1429 0138 FD       		.byte	0xfd
+ 1430 0139 00000000 		.4byte	.LFB4
+ 1431 013d 0C000000 		.4byte	.LFE4-.LFB4
+ 1432 0141 01       		.uleb128 0x1
+ 1433 0142 9C       		.byte	0x9c
+ 1434 0143 0A       		.uleb128 0xa
+ 1435 0144 74030000 		.4byte	.LASF24
+ 1436 0148 01       		.byte	0x1
+ 1437 0149 1601     		.2byte	0x116
+ 1438 014b 00000000 		.4byte	.LFB5
+ 1439 014f 18000000 		.4byte	.LFE5-.LFB5
+ 1440 0153 01       		.uleb128 0x1
+ 1441 0154 9C       		.byte	0x9c
+ 1442 0155 0A       		.uleb128 0xa
+ 1443 0156 14000000 		.4byte	.LASF25
+ 1444 015a 01       		.byte	0x1
+ 1445 015b 2F01     		.2byte	0x12f
+ 1446 015d 00000000 		.4byte	.LFB6
+ 1447 0161 0C000000 		.4byte	.LFE6-.LFB6
+ 1448 0165 01       		.uleb128 0x1
+ 1449 0166 9C       		.byte	0x9c
+ 1450 0167 0A       		.uleb128 0xa
+ 1451 0168 AD020000 		.4byte	.LASF26
+ 1452 016c 01       		.byte	0x1
+ 1453 016d 4801     		.2byte	0x148
+ 1454 016f 00000000 		.4byte	.LFB7
+ 1455 0173 18000000 		.4byte	.LFE7-.LFB7
+ 1456 0177 01       		.uleb128 0x1
+ 1457 0178 9C       		.byte	0x9c
+ 1458 0179 0B       		.uleb128 0xb
+ 1459 017a B9010000 		.4byte	.LASF27
+ 1460 017e 01       		.byte	0x1
+ 1461 017f 6201     		.2byte	0x162
+ 1462 0181 00000000 		.4byte	.LFB8
+ 1463 0185 20000000 		.4byte	.LFE8-.LFB8
+ 1464 0189 01       		.uleb128 0x1
+ 1465 018a 9C       		.byte	0x9c
+ 1466 018b 9F010000 		.4byte	0x19f
+ 1467 018f 0C       		.uleb128 0xc
+ 1468 0190 03040000 		.4byte	.LASF29
+ 1469 0194 01       		.byte	0x1
+ 1470 0195 6201     		.2byte	0x162
+ 1471 0197 6B000000 		.4byte	0x6b
+ 1472 019b 02       		.uleb128 0x2
+ 1473 019c 91       		.byte	0x91
+ 1474 019d 77       		.sleb128 -9
+ 1475 019e 00       		.byte	0
+ 1476 019f 0B       		.uleb128 0xb
+ 1477 01a0 D3010000 		.4byte	.LASF28
+ 1478 01a4 01       		.byte	0x1
+ 1479 01a5 7A01     		.2byte	0x17a
+ 1480 01a7 00000000 		.4byte	.LFB9
+ 1481 01ab 20000000 		.4byte	.LFE9-.LFB9
+ 1482 01af 01       		.uleb128 0x1
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 49
+
+
+ 1483 01b0 9C       		.byte	0x9c
+ 1484 01b1 C5010000 		.4byte	0x1c5
+ 1485 01b5 0C       		.uleb128 0xc
+ 1486 01b6 03040000 		.4byte	.LASF29
+ 1487 01ba 01       		.byte	0x1
+ 1488 01bb 7A01     		.2byte	0x17a
+ 1489 01bd 6B000000 		.4byte	0x6b
+ 1490 01c1 02       		.uleb128 0x2
+ 1491 01c2 91       		.byte	0x91
+ 1492 01c3 77       		.sleb128 -9
+ 1493 01c4 00       		.byte	0
+ 1494 01c5 0D       		.uleb128 0xd
+ 1495 01c6 02030000 		.4byte	.LASF31
+ 1496 01ca 01       		.byte	0x1
+ 1497 01cb 9C01     		.2byte	0x19c
+ 1498 01cd 6B000000 		.4byte	0x6b
+ 1499 01d1 00000000 		.4byte	.LFB10
+ 1500 01d5 1C000000 		.4byte	.LFE10-.LFB10
+ 1501 01d9 01       		.uleb128 0x1
+ 1502 01da 9C       		.byte	0x9c
+ 1503 01db EF010000 		.4byte	0x1ef
+ 1504 01df 0E       		.uleb128 0xe
+ 1505 01e0 DB030000 		.4byte	.LASF30
+ 1506 01e4 01       		.byte	0x1
+ 1507 01e5 9E01     		.2byte	0x19e
+ 1508 01e7 6B000000 		.4byte	0x6b
+ 1509 01eb 02       		.uleb128 0x2
+ 1510 01ec 91       		.byte	0x91
+ 1511 01ed 77       		.sleb128 -9
+ 1512 01ee 00       		.byte	0
+ 1513 01ef 0D       		.uleb128 0xd
+ 1514 01f0 1D040000 		.4byte	.LASF32
+ 1515 01f4 01       		.byte	0x1
+ 1516 01f5 D101     		.2byte	0x1d1
+ 1517 01f7 6B000000 		.4byte	0x6b
+ 1518 01fb 00000000 		.4byte	.LFB11
+ 1519 01ff 1C000000 		.4byte	.LFE11-.LFB11
+ 1520 0203 01       		.uleb128 0x1
+ 1521 0204 9C       		.byte	0x9c
+ 1522 0205 19020000 		.4byte	0x219
+ 1523 0209 0E       		.uleb128 0xe
+ 1524 020a DB030000 		.4byte	.LASF30
+ 1525 020e 01       		.byte	0x1
+ 1526 020f D301     		.2byte	0x1d3
+ 1527 0211 6B000000 		.4byte	0x6b
+ 1528 0215 02       		.uleb128 0x2
+ 1529 0216 91       		.byte	0x91
+ 1530 0217 77       		.sleb128 -9
+ 1531 0218 00       		.byte	0
+ 1532 0219 0B       		.uleb128 0xb
+ 1533 021a 0A040000 		.4byte	.LASF33
+ 1534 021e 01       		.byte	0x1
+ 1535 021f 0C02     		.2byte	0x20c
+ 1536 0221 00000000 		.4byte	.LFB12
+ 1537 0225 34000000 		.4byte	.LFE12-.LFB12
+ 1538 0229 01       		.uleb128 0x1
+ 1539 022a 9C       		.byte	0x9c
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 50
+
+
+ 1540 022b 3F020000 		.4byte	0x23f
+ 1541 022f 0C       		.uleb128 0xc
+ 1542 0230 CF000000 		.4byte	.LASF34
+ 1543 0234 01       		.byte	0x1
+ 1544 0235 0C02     		.2byte	0x20c
+ 1545 0237 6B000000 		.4byte	0x6b
+ 1546 023b 02       		.uleb128 0x2
+ 1547 023c 91       		.byte	0x91
+ 1548 023d 77       		.sleb128 -9
+ 1549 023e 00       		.byte	0
+ 1550 023f 0B       		.uleb128 0xb
+ 1551 0240 F2010000 		.4byte	.LASF35
+ 1552 0244 01       		.byte	0x1
+ 1553 0245 6B02     		.2byte	0x26b
+ 1554 0247 00000000 		.4byte	.LFB13
+ 1555 024b 20000000 		.4byte	.LFE13-.LFB13
+ 1556 024f 01       		.uleb128 0x1
+ 1557 0250 9C       		.byte	0x9c
+ 1558 0251 65020000 		.4byte	0x265
+ 1559 0255 0C       		.uleb128 0xc
+ 1560 0256 87030000 		.4byte	.LASF36
+ 1561 025a 01       		.byte	0x1
+ 1562 025b 6B02     		.2byte	0x26b
+ 1563 025d 6B000000 		.4byte	0x6b
+ 1564 0261 02       		.uleb128 0x2
+ 1565 0262 91       		.byte	0x91
+ 1566 0263 77       		.sleb128 -9
+ 1567 0264 00       		.byte	0
+ 1568 0265 0D       		.uleb128 0xd
+ 1569 0266 31040000 		.4byte	.LASF37
+ 1570 026a 01       		.byte	0x1
+ 1571 026b 9502     		.2byte	0x295
+ 1572 026d 6B000000 		.4byte	0x6b
+ 1573 0271 00000000 		.4byte	.LFB14
+ 1574 0275 1C000000 		.4byte	.LFE14-.LFB14
+ 1575 0279 01       		.uleb128 0x1
+ 1576 027a 9C       		.byte	0x9c
+ 1577 027b 8F020000 		.4byte	0x28f
+ 1578 027f 0E       		.uleb128 0xe
+ 1579 0280 A0010000 		.4byte	.LASF38
+ 1580 0284 01       		.byte	0x1
+ 1581 0285 9702     		.2byte	0x297
+ 1582 0287 6B000000 		.4byte	0x6b
+ 1583 028b 02       		.uleb128 0x2
+ 1584 028c 91       		.byte	0x91
+ 1585 028d 77       		.sleb128 -9
+ 1586 028e 00       		.byte	0
+ 1587 028f 0D       		.uleb128 0xd
+ 1588 0290 5D030000 		.4byte	.LASF39
+ 1589 0294 01       		.byte	0x1
+ 1590 0295 D702     		.2byte	0x2d7
+ 1591 0297 6B000000 		.4byte	0x6b
+ 1592 029b 00000000 		.4byte	.LFB15
+ 1593 029f 2C000000 		.4byte	.LFE15-.LFB15
+ 1594 02a3 01       		.uleb128 0x1
+ 1595 02a4 9C       		.byte	0x9c
+ 1596 02a5 B9020000 		.4byte	0x2b9
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 51
+
+
+ 1597 02a9 0E       		.uleb128 0xe
+ 1598 02aa ED010000 		.4byte	.LASF40
+ 1599 02ae 01       		.byte	0x1
+ 1600 02af D902     		.2byte	0x2d9
+ 1601 02b1 6B000000 		.4byte	0x6b
+ 1602 02b5 02       		.uleb128 0x2
+ 1603 02b6 91       		.byte	0x91
+ 1604 02b7 77       		.sleb128 -9
+ 1605 02b8 00       		.byte	0
+ 1606 02b9 0D       		.uleb128 0xd
+ 1607 02ba 31030000 		.4byte	.LASF41
+ 1608 02be 01       		.byte	0x1
+ 1609 02bf 1803     		.2byte	0x318
+ 1610 02c1 6B000000 		.4byte	0x6b
+ 1611 02c5 00000000 		.4byte	.LFB16
+ 1612 02c9 40000000 		.4byte	.LFE16-.LFB16
+ 1613 02cd 01       		.uleb128 0x1
+ 1614 02ce 9C       		.byte	0x9c
+ 1615 02cf E3020000 		.4byte	0x2e3
+ 1616 02d3 0E       		.uleb128 0xe
+ 1617 02d4 ED010000 		.4byte	.LASF40
+ 1618 02d8 01       		.byte	0x1
+ 1619 02d9 1A03     		.2byte	0x31a
+ 1620 02db 6B000000 		.4byte	0x6b
+ 1621 02df 02       		.uleb128 0x2
+ 1622 02e0 91       		.byte	0x91
+ 1623 02e1 77       		.sleb128 -9
+ 1624 02e2 00       		.byte	0
+ 1625 02e3 0A       		.uleb128 0xa
+ 1626 02e4 92030000 		.4byte	.LASF42
+ 1627 02e8 01       		.byte	0x1
+ 1628 02e9 6A03     		.2byte	0x36a
+ 1629 02eb 00000000 		.4byte	.LFB17
+ 1630 02ef 28000000 		.4byte	.LFE17-.LFB17
+ 1631 02f3 01       		.uleb128 0x1
+ 1632 02f4 9C       		.byte	0x9c
+ 1633 02f5 0F       		.uleb128 0xf
+ 1634 02f6 33020000 		.4byte	.LASF43
+ 1635 02fa 01       		.byte	0x1
+ 1636 02fb A303     		.2byte	0x3a3
+ 1637 02fd 00000000 		.4byte	.LFB18
+ 1638 0301 44000000 		.4byte	.LFE18-.LFB18
+ 1639 0305 01       		.uleb128 0x1
+ 1640 0306 9C       		.byte	0x9c
+ 1641 0307 1B030000 		.4byte	0x31b
+ 1642 030b 0E       		.uleb128 0xe
+ 1643 030c 57020000 		.4byte	.LASF22
+ 1644 0310 01       		.byte	0x1
+ 1645 0311 A503     		.2byte	0x3a5
+ 1646 0313 6B000000 		.4byte	0x6b
+ 1647 0317 02       		.uleb128 0x2
+ 1648 0318 91       		.byte	0x91
+ 1649 0319 77       		.sleb128 -9
+ 1650 031a 00       		.byte	0
+ 1651 031b 0F       		.uleb128 0xf
+ 1652 031c F7000000 		.4byte	.LASF44
+ 1653 0320 01       		.byte	0x1
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 52
+
+
+ 1654 0321 1704     		.2byte	0x417
+ 1655 0323 00000000 		.4byte	.LFB19
+ 1656 0327 3A000000 		.4byte	.LFE19-.LFB19
+ 1657 032b 01       		.uleb128 0x1
+ 1658 032c 9C       		.byte	0x9c
+ 1659 032d 5F030000 		.4byte	0x35f
+ 1660 0331 0C       		.uleb128 0xc
+ 1661 0332 B6000000 		.4byte	.LASF45
+ 1662 0336 01       		.byte	0x1
+ 1663 0337 1704     		.2byte	0x417
+ 1664 0339 5F030000 		.4byte	0x35f
+ 1665 033d 02       		.uleb128 0x2
+ 1666 033e 91       		.byte	0x91
+ 1667 033f 6C       		.sleb128 -20
+ 1668 0340 0C       		.uleb128 0xc
+ 1669 0341 C8030000 		.4byte	.LASF46
+ 1670 0345 01       		.byte	0x1
+ 1671 0346 1704     		.2byte	0x417
+ 1672 0348 6B000000 		.4byte	0x6b
+ 1673 034c 02       		.uleb128 0x2
+ 1674 034d 91       		.byte	0x91
+ 1675 034e 6B       		.sleb128 -21
+ 1676 034f 0E       		.uleb128 0xe
+ 1677 0350 28030000 		.4byte	.LASF47
+ 1678 0354 01       		.byte	0x1
+ 1679 0355 1A04     		.2byte	0x41a
+ 1680 0357 6B000000 		.4byte	0x6b
+ 1681 035b 02       		.uleb128 0x2
+ 1682 035c 91       		.byte	0x91
+ 1683 035d 77       		.sleb128 -9
+ 1684 035e 00       		.byte	0
+ 1685 035f 10       		.uleb128 0x10
+ 1686 0360 04       		.byte	0x4
+ 1687 0361 65030000 		.4byte	0x365
+ 1688 0365 11       		.uleb128 0x11
+ 1689 0366 6B000000 		.4byte	0x6b
+ 1690 036a 0F       		.uleb128 0xf
+ 1691 036b CE020000 		.4byte	.LASF48
+ 1692 036f 01       		.byte	0x1
+ 1693 0370 3704     		.2byte	0x437
+ 1694 0372 00000000 		.4byte	.LFB20
+ 1695 0376 60000000 		.4byte	.LFE20-.LFB20
+ 1696 037a 01       		.uleb128 0x1
+ 1697 037b 9C       		.byte	0x9c
+ 1698 037c 90030000 		.4byte	0x390
+ 1699 0380 0E       		.uleb128 0xe
+ 1700 0381 57020000 		.4byte	.LASF22
+ 1701 0385 01       		.byte	0x1
+ 1702 0386 3904     		.2byte	0x439
+ 1703 0388 6B000000 		.4byte	0x6b
+ 1704 038c 02       		.uleb128 0x2
+ 1705 038d 91       		.byte	0x91
+ 1706 038e 77       		.sleb128 -9
+ 1707 038f 00       		.byte	0
+ 1708 0390 0A       		.uleb128 0xa
+ 1709 0391 95020000 		.4byte	.LASF49
+ 1710 0395 01       		.byte	0x1
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 53
+
+
+ 1711 0396 6C04     		.2byte	0x46c
+ 1712 0398 00000000 		.4byte	.LFB21
+ 1713 039c 18000000 		.4byte	.LFE21-.LFB21
+ 1714 03a0 01       		.uleb128 0x1
+ 1715 03a1 9C       		.byte	0x9c
+ 1716 03a2 0A       		.uleb128 0xa
+ 1717 03a3 16030000 		.4byte	.LASF50
+ 1718 03a7 01       		.byte	0x1
+ 1719 03a8 8904     		.2byte	0x489
+ 1720 03aa 00000000 		.4byte	.LFB22
+ 1721 03ae 18000000 		.4byte	.LFE22-.LFB22
+ 1722 03b2 01       		.uleb128 0x1
+ 1723 03b3 9C       		.byte	0x9c
+ 1724 03b4 0B       		.uleb128 0xb
+ 1725 03b5 7D020000 		.4byte	.LASF51
+ 1726 03b9 01       		.byte	0x1
+ 1727 03ba A704     		.2byte	0x4a7
+ 1728 03bc 00000000 		.4byte	.LFB23
+ 1729 03c0 28000000 		.4byte	.LFE23-.LFB23
+ 1730 03c4 01       		.uleb128 0x1
+ 1731 03c5 9C       		.byte	0x9c
+ 1732 03c6 DA030000 		.4byte	0x3da
+ 1733 03ca 0C       		.uleb128 0xc
+ 1734 03cb 03040000 		.4byte	.LASF29
+ 1735 03cf 01       		.byte	0x1
+ 1736 03d0 A704     		.2byte	0x4a7
+ 1737 03d2 6B000000 		.4byte	0x6b
+ 1738 03d6 02       		.uleb128 0x2
+ 1739 03d7 91       		.byte	0x91
+ 1740 03d8 77       		.sleb128 -9
+ 1741 03d9 00       		.byte	0
+ 1742 03da 0D       		.uleb128 0xd
+ 1743 03db AC030000 		.4byte	.LASF52
+ 1744 03df 01       		.byte	0x1
+ 1745 03e0 CA04     		.2byte	0x4ca
+ 1746 03e2 6B000000 		.4byte	0x6b
+ 1747 03e6 00000000 		.4byte	.LFB24
+ 1748 03ea 38000000 		.4byte	.LFE24-.LFB24
+ 1749 03ee 01       		.uleb128 0x1
+ 1750 03ef 9C       		.byte	0x9c
+ 1751 03f0 04040000 		.4byte	0x404
+ 1752 03f4 0E       		.uleb128 0xe
+ 1753 03f5 DB030000 		.4byte	.LASF30
+ 1754 03f9 01       		.byte	0x1
+ 1755 03fa CC04     		.2byte	0x4cc
+ 1756 03fc 6B000000 		.4byte	0x6b
+ 1757 0400 02       		.uleb128 0x2
+ 1758 0401 91       		.byte	0x91
+ 1759 0402 77       		.sleb128 -9
+ 1760 0403 00       		.byte	0
+ 1761 0404 12       		.uleb128 0x12
+ 1762 0405 48020000 		.4byte	.LASF53
+ 1763 0409 01       		.byte	0x1
+ 1764 040a 26       		.byte	0x26
+ 1765 040b 6B000000 		.4byte	0x6b
+ 1766 040f 05       		.uleb128 0x5
+ 1767 0410 03       		.byte	0x3
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 54
+
+
+ 1768 0411 00000000 		.4byte	SPIS_1_initVar
+ 1769 0415 12       		.uleb128 0x12
+ 1770 0416 BD000000 		.4byte	.LASF54
+ 1771 041a 01       		.byte	0x1
+ 1772 041b 28       		.byte	0x28
+ 1773 041c A4000000 		.4byte	0xa4
+ 1774 0420 05       		.uleb128 0x5
+ 1775 0421 03       		.byte	0x3
+ 1776 0422 00000000 		.4byte	SPIS_1_swStatusTx
+ 1777 0426 12       		.uleb128 0x12
+ 1778 0427 E5030000 		.4byte	.LASF55
+ 1779 042b 01       		.byte	0x1
+ 1780 042c 29       		.byte	0x29
+ 1781 042d A4000000 		.4byte	0xa4
+ 1782 0431 05       		.uleb128 0x5
+ 1783 0432 03       		.byte	0x3
+ 1784 0433 00000000 		.4byte	SPIS_1_swStatusRx
+ 1785 0437 00       		.byte	0
+ 1786              		.section	.debug_abbrev,"",%progbits
+ 1787              	.Ldebug_abbrev0:
+ 1788 0000 01       		.uleb128 0x1
+ 1789 0001 11       		.uleb128 0x11
+ 1790 0002 01       		.byte	0x1
+ 1791 0003 25       		.uleb128 0x25
+ 1792 0004 0E       		.uleb128 0xe
+ 1793 0005 13       		.uleb128 0x13
+ 1794 0006 0B       		.uleb128 0xb
+ 1795 0007 03       		.uleb128 0x3
+ 1796 0008 0E       		.uleb128 0xe
+ 1797 0009 1B       		.uleb128 0x1b
+ 1798 000a 0E       		.uleb128 0xe
+ 1799 000b 55       		.uleb128 0x55
+ 1800 000c 17       		.uleb128 0x17
+ 1801 000d 11       		.uleb128 0x11
+ 1802 000e 01       		.uleb128 0x1
+ 1803 000f 10       		.uleb128 0x10
+ 1804 0010 17       		.uleb128 0x17
+ 1805 0011 00       		.byte	0
+ 1806 0012 00       		.byte	0
+ 1807 0013 02       		.uleb128 0x2
+ 1808 0014 24       		.uleb128 0x24
+ 1809 0015 00       		.byte	0
+ 1810 0016 0B       		.uleb128 0xb
+ 1811 0017 0B       		.uleb128 0xb
+ 1812 0018 3E       		.uleb128 0x3e
+ 1813 0019 0B       		.uleb128 0xb
+ 1814 001a 03       		.uleb128 0x3
+ 1815 001b 0E       		.uleb128 0xe
+ 1816 001c 00       		.byte	0
+ 1817 001d 00       		.byte	0
+ 1818 001e 03       		.uleb128 0x3
+ 1819 001f 24       		.uleb128 0x24
+ 1820 0020 00       		.byte	0
+ 1821 0021 0B       		.uleb128 0xb
+ 1822 0022 0B       		.uleb128 0xb
+ 1823 0023 3E       		.uleb128 0x3e
+ 1824 0024 0B       		.uleb128 0xb
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 55
+
+
+ 1825 0025 03       		.uleb128 0x3
+ 1826 0026 08       		.uleb128 0x8
+ 1827 0027 00       		.byte	0
+ 1828 0028 00       		.byte	0
+ 1829 0029 04       		.uleb128 0x4
+ 1830 002a 16       		.uleb128 0x16
+ 1831 002b 00       		.byte	0
+ 1832 002c 03       		.uleb128 0x3
+ 1833 002d 0E       		.uleb128 0xe
+ 1834 002e 3A       		.uleb128 0x3a
+ 1835 002f 0B       		.uleb128 0xb
+ 1836 0030 3B       		.uleb128 0x3b
+ 1837 0031 05       		.uleb128 0x5
+ 1838 0032 49       		.uleb128 0x49
+ 1839 0033 13       		.uleb128 0x13
+ 1840 0034 00       		.byte	0
+ 1841 0035 00       		.byte	0
+ 1842 0036 05       		.uleb128 0x5
+ 1843 0037 35       		.uleb128 0x35
+ 1844 0038 00       		.byte	0
+ 1845 0039 49       		.uleb128 0x49
+ 1846 003a 13       		.uleb128 0x13
+ 1847 003b 00       		.byte	0
+ 1848 003c 00       		.byte	0
+ 1849 003d 06       		.uleb128 0x6
+ 1850 003e 2E       		.uleb128 0x2e
+ 1851 003f 00       		.byte	0
+ 1852 0040 3F       		.uleb128 0x3f
+ 1853 0041 19       		.uleb128 0x19
+ 1854 0042 03       		.uleb128 0x3
+ 1855 0043 0E       		.uleb128 0xe
+ 1856 0044 3A       		.uleb128 0x3a
+ 1857 0045 0B       		.uleb128 0xb
+ 1858 0046 3B       		.uleb128 0x3b
+ 1859 0047 0B       		.uleb128 0xb
+ 1860 0048 27       		.uleb128 0x27
+ 1861 0049 19       		.uleb128 0x19
+ 1862 004a 11       		.uleb128 0x11
+ 1863 004b 01       		.uleb128 0x1
+ 1864 004c 12       		.uleb128 0x12
+ 1865 004d 06       		.uleb128 0x6
+ 1866 004e 40       		.uleb128 0x40
+ 1867 004f 18       		.uleb128 0x18
+ 1868 0050 9642     		.uleb128 0x2116
+ 1869 0052 19       		.uleb128 0x19
+ 1870 0053 00       		.byte	0
+ 1871 0054 00       		.byte	0
+ 1872 0055 07       		.uleb128 0x7
+ 1873 0056 2E       		.uleb128 0x2e
+ 1874 0057 01       		.byte	0x1
+ 1875 0058 3F       		.uleb128 0x3f
+ 1876 0059 19       		.uleb128 0x19
+ 1877 005a 03       		.uleb128 0x3
+ 1878 005b 0E       		.uleb128 0xe
+ 1879 005c 3A       		.uleb128 0x3a
+ 1880 005d 0B       		.uleb128 0xb
+ 1881 005e 3B       		.uleb128 0x3b
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 56
+
+
+ 1882 005f 0B       		.uleb128 0xb
+ 1883 0060 27       		.uleb128 0x27
+ 1884 0061 19       		.uleb128 0x19
+ 1885 0062 11       		.uleb128 0x11
+ 1886 0063 01       		.uleb128 0x1
+ 1887 0064 12       		.uleb128 0x12
+ 1888 0065 06       		.uleb128 0x6
+ 1889 0066 40       		.uleb128 0x40
+ 1890 0067 18       		.uleb128 0x18
+ 1891 0068 9642     		.uleb128 0x2116
+ 1892 006a 19       		.uleb128 0x19
+ 1893 006b 01       		.uleb128 0x1
+ 1894 006c 13       		.uleb128 0x13
+ 1895 006d 00       		.byte	0
+ 1896 006e 00       		.byte	0
+ 1897 006f 08       		.uleb128 0x8
+ 1898 0070 34       		.uleb128 0x34
+ 1899 0071 00       		.byte	0
+ 1900 0072 03       		.uleb128 0x3
+ 1901 0073 0E       		.uleb128 0xe
+ 1902 0074 3A       		.uleb128 0x3a
+ 1903 0075 0B       		.uleb128 0xb
+ 1904 0076 3B       		.uleb128 0x3b
+ 1905 0077 0B       		.uleb128 0xb
+ 1906 0078 49       		.uleb128 0x49
+ 1907 0079 13       		.uleb128 0x13
+ 1908 007a 02       		.uleb128 0x2
+ 1909 007b 18       		.uleb128 0x18
+ 1910 007c 00       		.byte	0
+ 1911 007d 00       		.byte	0
+ 1912 007e 09       		.uleb128 0x9
+ 1913 007f 2E       		.uleb128 0x2e
+ 1914 0080 00       		.byte	0
+ 1915 0081 3F       		.uleb128 0x3f
+ 1916 0082 19       		.uleb128 0x19
+ 1917 0083 03       		.uleb128 0x3
+ 1918 0084 0E       		.uleb128 0xe
+ 1919 0085 3A       		.uleb128 0x3a
+ 1920 0086 0B       		.uleb128 0xb
+ 1921 0087 3B       		.uleb128 0x3b
+ 1922 0088 0B       		.uleb128 0xb
+ 1923 0089 27       		.uleb128 0x27
+ 1924 008a 19       		.uleb128 0x19
+ 1925 008b 11       		.uleb128 0x11
+ 1926 008c 01       		.uleb128 0x1
+ 1927 008d 12       		.uleb128 0x12
+ 1928 008e 06       		.uleb128 0x6
+ 1929 008f 40       		.uleb128 0x40
+ 1930 0090 18       		.uleb128 0x18
+ 1931 0091 9742     		.uleb128 0x2117
+ 1932 0093 19       		.uleb128 0x19
+ 1933 0094 00       		.byte	0
+ 1934 0095 00       		.byte	0
+ 1935 0096 0A       		.uleb128 0xa
+ 1936 0097 2E       		.uleb128 0x2e
+ 1937 0098 00       		.byte	0
+ 1938 0099 3F       		.uleb128 0x3f
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 57
+
+
+ 1939 009a 19       		.uleb128 0x19
+ 1940 009b 03       		.uleb128 0x3
+ 1941 009c 0E       		.uleb128 0xe
+ 1942 009d 3A       		.uleb128 0x3a
+ 1943 009e 0B       		.uleb128 0xb
+ 1944 009f 3B       		.uleb128 0x3b
+ 1945 00a0 05       		.uleb128 0x5
+ 1946 00a1 27       		.uleb128 0x27
+ 1947 00a2 19       		.uleb128 0x19
+ 1948 00a3 11       		.uleb128 0x11
+ 1949 00a4 01       		.uleb128 0x1
+ 1950 00a5 12       		.uleb128 0x12
+ 1951 00a6 06       		.uleb128 0x6
+ 1952 00a7 40       		.uleb128 0x40
+ 1953 00a8 18       		.uleb128 0x18
+ 1954 00a9 9742     		.uleb128 0x2117
+ 1955 00ab 19       		.uleb128 0x19
+ 1956 00ac 00       		.byte	0
+ 1957 00ad 00       		.byte	0
+ 1958 00ae 0B       		.uleb128 0xb
+ 1959 00af 2E       		.uleb128 0x2e
+ 1960 00b0 01       		.byte	0x1
+ 1961 00b1 3F       		.uleb128 0x3f
+ 1962 00b2 19       		.uleb128 0x19
+ 1963 00b3 03       		.uleb128 0x3
+ 1964 00b4 0E       		.uleb128 0xe
+ 1965 00b5 3A       		.uleb128 0x3a
+ 1966 00b6 0B       		.uleb128 0xb
+ 1967 00b7 3B       		.uleb128 0x3b
+ 1968 00b8 05       		.uleb128 0x5
+ 1969 00b9 27       		.uleb128 0x27
+ 1970 00ba 19       		.uleb128 0x19
+ 1971 00bb 11       		.uleb128 0x11
+ 1972 00bc 01       		.uleb128 0x1
+ 1973 00bd 12       		.uleb128 0x12
+ 1974 00be 06       		.uleb128 0x6
+ 1975 00bf 40       		.uleb128 0x40
+ 1976 00c0 18       		.uleb128 0x18
+ 1977 00c1 9742     		.uleb128 0x2117
+ 1978 00c3 19       		.uleb128 0x19
+ 1979 00c4 01       		.uleb128 0x1
+ 1980 00c5 13       		.uleb128 0x13
+ 1981 00c6 00       		.byte	0
+ 1982 00c7 00       		.byte	0
+ 1983 00c8 0C       		.uleb128 0xc
+ 1984 00c9 05       		.uleb128 0x5
+ 1985 00ca 00       		.byte	0
+ 1986 00cb 03       		.uleb128 0x3
+ 1987 00cc 0E       		.uleb128 0xe
+ 1988 00cd 3A       		.uleb128 0x3a
+ 1989 00ce 0B       		.uleb128 0xb
+ 1990 00cf 3B       		.uleb128 0x3b
+ 1991 00d0 05       		.uleb128 0x5
+ 1992 00d1 49       		.uleb128 0x49
+ 1993 00d2 13       		.uleb128 0x13
+ 1994 00d3 02       		.uleb128 0x2
+ 1995 00d4 18       		.uleb128 0x18
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 58
+
+
+ 1996 00d5 00       		.byte	0
+ 1997 00d6 00       		.byte	0
+ 1998 00d7 0D       		.uleb128 0xd
+ 1999 00d8 2E       		.uleb128 0x2e
+ 2000 00d9 01       		.byte	0x1
+ 2001 00da 3F       		.uleb128 0x3f
+ 2002 00db 19       		.uleb128 0x19
+ 2003 00dc 03       		.uleb128 0x3
+ 2004 00dd 0E       		.uleb128 0xe
+ 2005 00de 3A       		.uleb128 0x3a
+ 2006 00df 0B       		.uleb128 0xb
+ 2007 00e0 3B       		.uleb128 0x3b
+ 2008 00e1 05       		.uleb128 0x5
+ 2009 00e2 27       		.uleb128 0x27
+ 2010 00e3 19       		.uleb128 0x19
+ 2011 00e4 49       		.uleb128 0x49
+ 2012 00e5 13       		.uleb128 0x13
+ 2013 00e6 11       		.uleb128 0x11
+ 2014 00e7 01       		.uleb128 0x1
+ 2015 00e8 12       		.uleb128 0x12
+ 2016 00e9 06       		.uleb128 0x6
+ 2017 00ea 40       		.uleb128 0x40
+ 2018 00eb 18       		.uleb128 0x18
+ 2019 00ec 9742     		.uleb128 0x2117
+ 2020 00ee 19       		.uleb128 0x19
+ 2021 00ef 01       		.uleb128 0x1
+ 2022 00f0 13       		.uleb128 0x13
+ 2023 00f1 00       		.byte	0
+ 2024 00f2 00       		.byte	0
+ 2025 00f3 0E       		.uleb128 0xe
+ 2026 00f4 34       		.uleb128 0x34
+ 2027 00f5 00       		.byte	0
+ 2028 00f6 03       		.uleb128 0x3
+ 2029 00f7 0E       		.uleb128 0xe
+ 2030 00f8 3A       		.uleb128 0x3a
+ 2031 00f9 0B       		.uleb128 0xb
+ 2032 00fa 3B       		.uleb128 0x3b
+ 2033 00fb 05       		.uleb128 0x5
+ 2034 00fc 49       		.uleb128 0x49
+ 2035 00fd 13       		.uleb128 0x13
+ 2036 00fe 02       		.uleb128 0x2
+ 2037 00ff 18       		.uleb128 0x18
+ 2038 0100 00       		.byte	0
+ 2039 0101 00       		.byte	0
+ 2040 0102 0F       		.uleb128 0xf
+ 2041 0103 2E       		.uleb128 0x2e
+ 2042 0104 01       		.byte	0x1
+ 2043 0105 3F       		.uleb128 0x3f
+ 2044 0106 19       		.uleb128 0x19
+ 2045 0107 03       		.uleb128 0x3
+ 2046 0108 0E       		.uleb128 0xe
+ 2047 0109 3A       		.uleb128 0x3a
+ 2048 010a 0B       		.uleb128 0xb
+ 2049 010b 3B       		.uleb128 0x3b
+ 2050 010c 05       		.uleb128 0x5
+ 2051 010d 27       		.uleb128 0x27
+ 2052 010e 19       		.uleb128 0x19
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 59
+
+
+ 2053 010f 11       		.uleb128 0x11
+ 2054 0110 01       		.uleb128 0x1
+ 2055 0111 12       		.uleb128 0x12
+ 2056 0112 06       		.uleb128 0x6
+ 2057 0113 40       		.uleb128 0x40
+ 2058 0114 18       		.uleb128 0x18
+ 2059 0115 9642     		.uleb128 0x2116
+ 2060 0117 19       		.uleb128 0x19
+ 2061 0118 01       		.uleb128 0x1
+ 2062 0119 13       		.uleb128 0x13
+ 2063 011a 00       		.byte	0
+ 2064 011b 00       		.byte	0
+ 2065 011c 10       		.uleb128 0x10
+ 2066 011d 0F       		.uleb128 0xf
+ 2067 011e 00       		.byte	0
+ 2068 011f 0B       		.uleb128 0xb
+ 2069 0120 0B       		.uleb128 0xb
+ 2070 0121 49       		.uleb128 0x49
+ 2071 0122 13       		.uleb128 0x13
+ 2072 0123 00       		.byte	0
+ 2073 0124 00       		.byte	0
+ 2074 0125 11       		.uleb128 0x11
+ 2075 0126 26       		.uleb128 0x26
+ 2076 0127 00       		.byte	0
+ 2077 0128 49       		.uleb128 0x49
+ 2078 0129 13       		.uleb128 0x13
+ 2079 012a 00       		.byte	0
+ 2080 012b 00       		.byte	0
+ 2081 012c 12       		.uleb128 0x12
+ 2082 012d 34       		.uleb128 0x34
+ 2083 012e 00       		.byte	0
+ 2084 012f 03       		.uleb128 0x3
+ 2085 0130 0E       		.uleb128 0xe
+ 2086 0131 3A       		.uleb128 0x3a
+ 2087 0132 0B       		.uleb128 0xb
+ 2088 0133 3B       		.uleb128 0x3b
+ 2089 0134 0B       		.uleb128 0xb
+ 2090 0135 49       		.uleb128 0x49
+ 2091 0136 13       		.uleb128 0x13
+ 2092 0137 3F       		.uleb128 0x3f
+ 2093 0138 19       		.uleb128 0x19
+ 2094 0139 02       		.uleb128 0x2
+ 2095 013a 18       		.uleb128 0x18
+ 2096 013b 00       		.byte	0
+ 2097 013c 00       		.byte	0
+ 2098 013d 00       		.byte	0
+ 2099              		.section	.debug_aranges,"",%progbits
+ 2100 0000 DC000000 		.4byte	0xdc
+ 2101 0004 0200     		.2byte	0x2
+ 2102 0006 00000000 		.4byte	.Ldebug_info0
+ 2103 000a 04       		.byte	0x4
+ 2104 000b 00       		.byte	0
+ 2105 000c 0000     		.2byte	0
+ 2106 000e 0000     		.2byte	0
+ 2107 0010 00000000 		.4byte	.LFB0
+ 2108 0014 50000000 		.4byte	.LFE0-.LFB0
+ 2109 0018 00000000 		.4byte	.LFB1
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 60
+
+
+ 2110 001c 64000000 		.4byte	.LFE1-.LFB1
+ 2111 0020 00000000 		.4byte	.LFB2
+ 2112 0024 24000000 		.4byte	.LFE2-.LFB2
+ 2113 0028 00000000 		.4byte	.LFB3
+ 2114 002c 50000000 		.4byte	.LFE3-.LFB3
+ 2115 0030 00000000 		.4byte	.LFB4
+ 2116 0034 0C000000 		.4byte	.LFE4-.LFB4
+ 2117 0038 00000000 		.4byte	.LFB5
+ 2118 003c 18000000 		.4byte	.LFE5-.LFB5
+ 2119 0040 00000000 		.4byte	.LFB6
+ 2120 0044 0C000000 		.4byte	.LFE6-.LFB6
+ 2121 0048 00000000 		.4byte	.LFB7
+ 2122 004c 18000000 		.4byte	.LFE7-.LFB7
+ 2123 0050 00000000 		.4byte	.LFB8
+ 2124 0054 20000000 		.4byte	.LFE8-.LFB8
+ 2125 0058 00000000 		.4byte	.LFB9
+ 2126 005c 20000000 		.4byte	.LFE9-.LFB9
+ 2127 0060 00000000 		.4byte	.LFB10
+ 2128 0064 1C000000 		.4byte	.LFE10-.LFB10
+ 2129 0068 00000000 		.4byte	.LFB11
+ 2130 006c 1C000000 		.4byte	.LFE11-.LFB11
+ 2131 0070 00000000 		.4byte	.LFB12
+ 2132 0074 34000000 		.4byte	.LFE12-.LFB12
+ 2133 0078 00000000 		.4byte	.LFB13
+ 2134 007c 20000000 		.4byte	.LFE13-.LFB13
+ 2135 0080 00000000 		.4byte	.LFB14
+ 2136 0084 1C000000 		.4byte	.LFE14-.LFB14
+ 2137 0088 00000000 		.4byte	.LFB15
+ 2138 008c 2C000000 		.4byte	.LFE15-.LFB15
+ 2139 0090 00000000 		.4byte	.LFB16
+ 2140 0094 40000000 		.4byte	.LFE16-.LFB16
+ 2141 0098 00000000 		.4byte	.LFB17
+ 2142 009c 28000000 		.4byte	.LFE17-.LFB17
+ 2143 00a0 00000000 		.4byte	.LFB18
+ 2144 00a4 44000000 		.4byte	.LFE18-.LFB18
+ 2145 00a8 00000000 		.4byte	.LFB19
+ 2146 00ac 3A000000 		.4byte	.LFE19-.LFB19
+ 2147 00b0 00000000 		.4byte	.LFB20
+ 2148 00b4 60000000 		.4byte	.LFE20-.LFB20
+ 2149 00b8 00000000 		.4byte	.LFB21
+ 2150 00bc 18000000 		.4byte	.LFE21-.LFB21
+ 2151 00c0 00000000 		.4byte	.LFB22
+ 2152 00c4 18000000 		.4byte	.LFE22-.LFB22
+ 2153 00c8 00000000 		.4byte	.LFB23
+ 2154 00cc 28000000 		.4byte	.LFE23-.LFB23
+ 2155 00d0 00000000 		.4byte	.LFB24
+ 2156 00d4 38000000 		.4byte	.LFE24-.LFB24
+ 2157 00d8 00000000 		.4byte	0
+ 2158 00dc 00000000 		.4byte	0
+ 2159              		.section	.debug_ranges,"",%progbits
+ 2160              	.Ldebug_ranges0:
+ 2161 0000 00000000 		.4byte	.LFB0
+ 2162 0004 50000000 		.4byte	.LFE0
+ 2163 0008 00000000 		.4byte	.LFB1
+ 2164 000c 64000000 		.4byte	.LFE1
+ 2165 0010 00000000 		.4byte	.LFB2
+ 2166 0014 24000000 		.4byte	.LFE2
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 61
+
+
+ 2167 0018 00000000 		.4byte	.LFB3
+ 2168 001c 50000000 		.4byte	.LFE3
+ 2169 0020 00000000 		.4byte	.LFB4
+ 2170 0024 0C000000 		.4byte	.LFE4
+ 2171 0028 00000000 		.4byte	.LFB5
+ 2172 002c 18000000 		.4byte	.LFE5
+ 2173 0030 00000000 		.4byte	.LFB6
+ 2174 0034 0C000000 		.4byte	.LFE6
+ 2175 0038 00000000 		.4byte	.LFB7
+ 2176 003c 18000000 		.4byte	.LFE7
+ 2177 0040 00000000 		.4byte	.LFB8
+ 2178 0044 20000000 		.4byte	.LFE8
+ 2179 0048 00000000 		.4byte	.LFB9
+ 2180 004c 20000000 		.4byte	.LFE9
+ 2181 0050 00000000 		.4byte	.LFB10
+ 2182 0054 1C000000 		.4byte	.LFE10
+ 2183 0058 00000000 		.4byte	.LFB11
+ 2184 005c 1C000000 		.4byte	.LFE11
+ 2185 0060 00000000 		.4byte	.LFB12
+ 2186 0064 34000000 		.4byte	.LFE12
+ 2187 0068 00000000 		.4byte	.LFB13
+ 2188 006c 20000000 		.4byte	.LFE13
+ 2189 0070 00000000 		.4byte	.LFB14
+ 2190 0074 1C000000 		.4byte	.LFE14
+ 2191 0078 00000000 		.4byte	.LFB15
+ 2192 007c 2C000000 		.4byte	.LFE15
+ 2193 0080 00000000 		.4byte	.LFB16
+ 2194 0084 40000000 		.4byte	.LFE16
+ 2195 0088 00000000 		.4byte	.LFB17
+ 2196 008c 28000000 		.4byte	.LFE17
+ 2197 0090 00000000 		.4byte	.LFB18
+ 2198 0094 44000000 		.4byte	.LFE18
+ 2199 0098 00000000 		.4byte	.LFB19
+ 2200 009c 3A000000 		.4byte	.LFE19
+ 2201 00a0 00000000 		.4byte	.LFB20
+ 2202 00a4 60000000 		.4byte	.LFE20
+ 2203 00a8 00000000 		.4byte	.LFB21
+ 2204 00ac 18000000 		.4byte	.LFE21
+ 2205 00b0 00000000 		.4byte	.LFB22
+ 2206 00b4 18000000 		.4byte	.LFE22
+ 2207 00b8 00000000 		.4byte	.LFB23
+ 2208 00bc 28000000 		.4byte	.LFE23
+ 2209 00c0 00000000 		.4byte	.LFB24
+ 2210 00c4 38000000 		.4byte	.LFE24
+ 2211 00c8 00000000 		.4byte	0
+ 2212 00cc 00000000 		.4byte	0
+ 2213              		.section	.debug_line,"",%progbits
+ 2214              	.Ldebug_line0:
+ 2215 0000 74020000 		.section	.debug_str,"MS",%progbits,1
+ 2215      02004300 
+ 2215      00000201 
+ 2215      FB0E0D00 
+ 2215      01010101 
+ 2216              	.LASF6:
+ 2217 0000 6C6F6E67 		.ascii	"long long int\000"
+ 2217      206C6F6E 
+ 2217      6720696E 
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 62
+
+
+ 2217      7400
+ 2218              	.LASF15:
+ 2219 000e 72656733 		.ascii	"reg32\000"
+ 2219      3200
+ 2220              	.LASF25:
+ 2221 0014 53504953 		.ascii	"SPIS_1_DisableTxInt\000"
+ 2221      5F315F44 
+ 2221      69736162 
+ 2221      6C655478 
+ 2221      496E7400 
+ 2222              	.LASF56:
+ 2223 0028 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 2223      43313120 
+ 2223      352E342E 
+ 2223      31203230 
+ 2223      31363036 
+ 2224 005b 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 2224      20726576 
+ 2224      6973696F 
+ 2224      6E203233 
+ 2224      37373135 
+ 2225 008e 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 2225      66756E63 
+ 2225      74696F6E 
+ 2225      2D736563 
+ 2225      74696F6E 
+ 2226              	.LASF45:
+ 2227 00b6 62756666 		.ascii	"buffer\000"
+ 2227      657200
+ 2228              	.LASF54:
+ 2229 00bd 53504953 		.ascii	"SPIS_1_swStatusTx\000"
+ 2229      5F315F73 
+ 2229      77537461 
+ 2229      74757354 
+ 2229      7800
+ 2230              	.LASF34:
+ 2231 00cf 74784461 		.ascii	"txData\000"
+ 2231      746100
+ 2232              	.LASF20:
+ 2233 00d6 53504953 		.ascii	"SPIS_1_Enable\000"
+ 2233      5F315F45 
+ 2233      6E61626C 
+ 2233      6500
+ 2234              	.LASF3:
+ 2235 00e4 73686F72 		.ascii	"short unsigned int\000"
+ 2235      7420756E 
+ 2235      7369676E 
+ 2235      65642069 
+ 2235      6E7400
+ 2236              	.LASF44:
+ 2237 00f7 53504953 		.ascii	"SPIS_1_PutArray\000"
+ 2237      5F315F50 
+ 2237      75744172 
+ 2237      72617900 
+ 2238              	.LASF23:
+ 2239 0107 53504953 		.ascii	"SPIS_1_EnableTxInt\000"
+ 2239      5F315F45 
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 63
+
+
+ 2239      6E61626C 
+ 2239      65547849 
+ 2239      6E7400
+ 2240              	.LASF57:
+ 2241 011a 47656E65 		.ascii	"Generated_Source\\PSoC5\\SPIS_1.c\000"
+ 2241      72617465 
+ 2241      645F536F 
+ 2241      75726365 
+ 2241      5C50536F 
+ 2242              	.LASF58:
+ 2243 013a 433A5C55 		.ascii	"C:\\Users\\JeffSnyder\\Desktop\\PSOC5_electrosteel_"
+ 2243      73657273 
+ 2243      5C4A6566 
+ 2243      66536E79 
+ 2243      6465725C 
+ 2244 0169 73747269 		.ascii	"stringsensors_newpcb\\CE210514_PSOC3_5_Thermistor.c"
+ 2244      6E677365 
+ 2244      6E736F72 
+ 2244      735F6E65 
+ 2244      77706362 
+ 2245 019b 7964736E 		.ascii	"ydsn\000"
+ 2245      00
+ 2246              	.LASF38:
+ 2247 01a0 72784461 		.ascii	"rxData\000"
+ 2247      746100
+ 2248              	.LASF18:
+ 2249 01a7 53504953 		.ascii	"SPIS_1_Init\000"
+ 2249      5F315F49 
+ 2249      6E697400 
+ 2250              	.LASF11:
+ 2251 01b3 666C6F61 		.ascii	"float\000"
+ 2251      7400
+ 2252              	.LASF27:
+ 2253 01b9 53504953 		.ascii	"SPIS_1_SetTxInterruptMode\000"
+ 2253      5F315F53 
+ 2253      65745478 
+ 2253      496E7465 
+ 2253      72727570 
+ 2254              	.LASF28:
+ 2255 01d3 53504953 		.ascii	"SPIS_1_SetRxInterruptMode\000"
+ 2255      5F315F53 
+ 2255      65745278 
+ 2255      496E7465 
+ 2255      72727570 
+ 2256              	.LASF40:
+ 2257 01ed 73697A65 		.ascii	"size\000"
+ 2257      00
+ 2258              	.LASF35:
+ 2259 01f2 53504953 		.ascii	"SPIS_1_WriteTxDataZero\000"
+ 2259      5F315F57 
+ 2259      72697465 
+ 2259      54784461 
+ 2259      74615A65 
+ 2260              	.LASF14:
+ 2261 0209 72656738 		.ascii	"reg8\000"
+ 2261      00
+ 2262              	.LASF5:
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 64
+
+
+ 2263 020e 6C6F6E67 		.ascii	"long unsigned int\000"
+ 2263      20756E73 
+ 2263      69676E65 
+ 2263      6420696E 
+ 2263      7400
+ 2264              	.LASF9:
+ 2265 0220 75696E74 		.ascii	"uint8\000"
+ 2265      3800
+ 2266              	.LASF19:
+ 2267 0226 53504953 		.ascii	"SPIS_1_Start\000"
+ 2267      5F315F53 
+ 2267      74617274 
+ 2267      00
+ 2268              	.LASF43:
+ 2269 0233 53504953 		.ascii	"SPIS_1_ClearTxBuffer\000"
+ 2269      5F315F43 
+ 2269      6C656172 
+ 2269      54784275 
+ 2269      66666572 
+ 2270              	.LASF53:
+ 2271 0248 53504953 		.ascii	"SPIS_1_initVar\000"
+ 2271      5F315F69 
+ 2271      6E697456 
+ 2271      617200
+ 2272              	.LASF22:
+ 2273 0257 656E6162 		.ascii	"enableInterrupts\000"
+ 2273      6C65496E 
+ 2273      74657272 
+ 2273      75707473 
+ 2273      00
+ 2274              	.LASF1:
+ 2275 0268 756E7369 		.ascii	"unsigned char\000"
+ 2275      676E6564 
+ 2275      20636861 
+ 2275      7200
+ 2276              	.LASF12:
+ 2277 0276 646F7562 		.ascii	"double\000"
+ 2277      6C6500
+ 2278              	.LASF51:
+ 2279 027d 53504953 		.ascii	"SPIS_1_SetInterruptMode\000"
+ 2279      5F315F53 
+ 2279      6574496E 
+ 2279      74657272 
+ 2279      7570744D 
+ 2280              	.LASF49:
+ 2281 0295 53504953 		.ascii	"SPIS_1_EnableInt\000"
+ 2281      5F315F45 
+ 2281      6E61626C 
+ 2281      65496E74 
+ 2281      00
+ 2282              	.LASF10:
+ 2283 02a6 75696E74 		.ascii	"uint32\000"
+ 2283      333200
+ 2284              	.LASF26:
+ 2285 02ad 53504953 		.ascii	"SPIS_1_DisableRxInt\000"
+ 2285      5F315F44 
+ 2285      69736162 
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 65
+
+
+ 2285      6C655278 
+ 2285      496E7400 
+ 2286              	.LASF8:
+ 2287 02c1 756E7369 		.ascii	"unsigned int\000"
+ 2287      676E6564 
+ 2287      20696E74 
+ 2287      00
+ 2288              	.LASF48:
+ 2289 02ce 53504953 		.ascii	"SPIS_1_ClearFIFO\000"
+ 2289      5F315F43 
+ 2289      6C656172 
+ 2289      4649464F 
+ 2289      00
+ 2290              	.LASF21:
+ 2291 02df 53504953 		.ascii	"SPIS_1_Stop\000"
+ 2291      5F315F53 
+ 2291      746F7000 
+ 2292              	.LASF7:
+ 2293 02eb 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 2293      206C6F6E 
+ 2293      6720756E 
+ 2293      7369676E 
+ 2293      65642069 
+ 2294              	.LASF31:
+ 2295 0302 53504953 		.ascii	"SPIS_1_ReadTxStatus\000"
+ 2295      5F315F52 
+ 2295      65616454 
+ 2295      78537461 
+ 2295      74757300 
+ 2296              	.LASF50:
+ 2297 0316 53504953 		.ascii	"SPIS_1_DisableInt\000"
+ 2297      5F315F44 
+ 2297      69736162 
+ 2297      6C65496E 
+ 2297      7400
+ 2298              	.LASF47:
+ 2299 0328 62756649 		.ascii	"bufIndex\000"
+ 2299      6E646578 
+ 2299      00
+ 2300              	.LASF41:
+ 2301 0331 53504953 		.ascii	"SPIS_1_GetTxBufferSize\000"
+ 2301      5F315F47 
+ 2301      65745478 
+ 2301      42756666 
+ 2301      65725369 
+ 2302              	.LASF16:
+ 2303 0348 6C6F6E67 		.ascii	"long double\000"
+ 2303      20646F75 
+ 2303      626C6500 
+ 2304              	.LASF17:
+ 2305 0354 73697A65 		.ascii	"sizetype\000"
+ 2305      74797065 
+ 2305      00
+ 2306              	.LASF39:
+ 2307 035d 53504953 		.ascii	"SPIS_1_GetRxBufferSize\000"
+ 2307      5F315F47 
+ 2307      65745278 
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 66
+
+
+ 2307      42756666 
+ 2307      65725369 
+ 2308              	.LASF24:
+ 2309 0374 53504953 		.ascii	"SPIS_1_EnableRxInt\000"
+ 2309      5F315F45 
+ 2309      6E61626C 
+ 2309      65527849 
+ 2309      6E7400
+ 2310              	.LASF36:
+ 2311 0387 74784461 		.ascii	"txDataByte\000"
+ 2311      74614279 
+ 2311      746500
+ 2312              	.LASF42:
+ 2313 0392 53504953 		.ascii	"SPIS_1_ClearRxBuffer\000"
+ 2313      5F315F43 
+ 2313      6C656172 
+ 2313      52784275 
+ 2313      66666572 
+ 2314              	.LASF13:
+ 2315 03a7 63686172 		.ascii	"char\000"
+ 2315      00
+ 2316              	.LASF52:
+ 2317 03ac 53504953 		.ascii	"SPIS_1_ReadStatus\000"
+ 2317      5F315F52 
+ 2317      65616453 
+ 2317      74617475 
+ 2317      7300
+ 2318              	.LASF2:
+ 2319 03be 73686F72 		.ascii	"short int\000"
+ 2319      7420696E 
+ 2319      7400
+ 2320              	.LASF46:
+ 2321 03c8 62797465 		.ascii	"byteCount\000"
+ 2321      436F756E 
+ 2321      7400
+ 2322              	.LASF4:
+ 2323 03d2 6C6F6E67 		.ascii	"long int\000"
+ 2323      20696E74 
+ 2323      00
+ 2324              	.LASF30:
+ 2325 03db 746D7053 		.ascii	"tmpStatus\000"
+ 2325      74617475 
+ 2325      7300
+ 2326              	.LASF55:
+ 2327 03e5 53504953 		.ascii	"SPIS_1_swStatusRx\000"
+ 2327      5F315F73 
+ 2327      77537461 
+ 2327      74757352 
+ 2327      7800
+ 2328              	.LASF0:
+ 2329 03f7 7369676E 		.ascii	"signed char\000"
+ 2329      65642063 
+ 2329      68617200 
+ 2330              	.LASF29:
+ 2331 0403 696E7453 		.ascii	"intSrc\000"
+ 2331      726300
+ 2332              	.LASF33:
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccmhv5Uc.s 			page 67
+
+
+ 2333 040a 53504953 		.ascii	"SPIS_1_WriteTxData\000"
+ 2333      5F315F57 
+ 2333      72697465 
+ 2333      54784461 
+ 2333      746100
+ 2334              	.LASF32:
+ 2335 041d 53504953 		.ascii	"SPIS_1_ReadRxStatus\000"
+ 2335      5F315F52 
+ 2335      65616452 
+ 2335      78537461 
+ 2335      74757300 
+ 2336              	.LASF37:
+ 2337 0431 53504953 		.ascii	"SPIS_1_ReadRxData\000"
+ 2337      5F315F52 
+ 2337      65616452 
+ 2337      78446174 
+ 2337      6100
+ 2338              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

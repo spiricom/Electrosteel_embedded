@@ -35,11 +35,11 @@
 #define OCTAVE_ACTION_SIZE_IN_BYTES 1
 #define EEPROM_DEADZONES_OFFSET EEPROM_OCTAVE_ACTION_OFFSET + OCTAVE_ACTION_SIZE_IN_BYTES
 #define DEADZONES_SIZE_IN_BYTES 1
-#define EEPROM_PITCHSMOOTHING_OFFSET EEPROM_DEADZONES_OFFSET + DEADZONES_SIZE_IN_BYTES
-#define PITCHSMOOTHING_SIZE_IN_BYTES 1
-#define EEPROM_CONTROLSMOOTHING_OFFSET EEPROM_PITCHSMOOTHING_OFFSET + PITCHSMOOTHING_SIZE_IN_BYTES
-#define CONTROLSMOOTHING_SIZE_IN_BYTES 1
-#define EEPROM_MIDI_SEND_OFFSET EEPROM_CONTROLSMOOTHING_OFFSET + CONTROLSMOOTHING_SIZE_IN_BYTES
+#define EEPROM_NECK_PRESETS_OFFSET EEPROM_DEADZONES_OFFSET + DEADZONES_SIZE_IN_BYTES
+#define NECK_PRESETS_SIZE_IN_BYTES 2
+#define EEPROM_PEDALSUM_OFFSET EEPROM_NECK_PRESETS_OFFSET + NECK_PRESETS_SIZE_IN_BYTES
+#define PEDALSUM_SIZE_IN_BYTES 1
+#define EEPROM_MIDI_SEND_OFFSET EEPROM_PEDALSUM_OFFSET + PEDALSUM_SIZE_IN_BYTES
 #define MIDI_SEND_SIZE_IN_BYTES 1
 #define EEPROM_PEDAL_INVERTED_OFFSET EEPROM_MIDI_SEND_OFFSET + MIDI_SEND_SIZE_IN_BYTES
 #define PEDAL_INVERTED_SIZE_IN_BYTES 2
@@ -96,6 +96,7 @@ extern volatile uint8_t I2Cbuff1[256];
 extern int octave;
 extern uint8_t currentNeck;
 extern uint8_t currentCopedent;
+extern uint8_t traditionalPedalAdd;
 extern uint8_t mainOLEDWaitingToSend;
 extern uint8_t volumeWaitingToSend;
 extern uint8_t macroOLEDWaitingToSend;
@@ -133,9 +134,12 @@ extern uint8_t midiBarSendOn;
 extern uint8_t sendFirmwareUpdateRequest;
 extern uint8_t knobFrozen[NUM_MACROS*NUM_MACRO_PAGES];
 extern int16_t prevMacroKnobValues[NUM_MACROS*NUM_MACRO_PAGES];
-extern uint8_t presetNumberToStore;
+extern int8_t presetNumberToStore;
 extern uint8_t sendLocalPresetStoreCommand;
 extern char newPresetName[14];
+extern uint8_t knobPanelLightActive;
+extern uint8_t neckPreset[2];
+extern uint8_t neckPresetsByte;
 
 typedef enum _MenuModes
 {
@@ -149,6 +153,7 @@ typedef enum _MenuModes
     OctaveActionMenu,
     DeadzonesMenu,
     SliderRepMenu,
+    TraditionalPedalSumMenu,
     MidiSendMenu,
     VolumeMenu,
     FirmwareUpdateMenu,

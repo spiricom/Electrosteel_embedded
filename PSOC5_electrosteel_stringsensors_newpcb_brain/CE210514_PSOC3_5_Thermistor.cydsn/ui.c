@@ -43,30 +43,36 @@ void scanUI(void)
 {
     if (!knobPanelButton1_Read())
     {
-        knobPanelLight1_Write(1);
-        knobPanelLight2_Write(0);
-        whichMacroPageIsActive = 0;
-        macroOLEDWaitingToSend = 1;
-        for (int i = 0; i < NUM_MACROS; i++)
+        if (knobPanelLightActive)
         {
-            knobFrozen[i] = 1;
-            prevMacroKnobValues[i] = prevMacroKnobValues[i+8];
+            knobPanelLight1_Write(1);
+            knobPanelLight2_Write(0);
+            whichMacroPageIsActive = 0;
+            macroOLEDWaitingToSend = 1;
+            for (int i = 0; i < NUM_MACROS; i++)
+            {
+                knobFrozen[i] = 1;
+                prevMacroKnobValues[i] = prevMacroKnobValues[i+8];
+            }
+            whichMacro = 0;
         }
-        whichMacro = 0;
         
     }
     if (!knobPanelButton2_Read())
     {
-        knobPanelLight1_Write(0);
-        knobPanelLight2_Write(1);
-        whichMacroPageIsActive = 8;
-        macroOLEDWaitingToSend = 1;
-        for (int i = 0; i < NUM_MACROS; i++)
+        if (knobPanelLightActive)
         {
-            knobFrozen[i] = 1;
-            prevMacroKnobValues[i+8] = prevMacroKnobValues[i];
+            knobPanelLight1_Write(0);
+            knobPanelLight2_Write(1);
+            whichMacroPageIsActive = 8;
+            macroOLEDWaitingToSend = 1;
+            for (int i = 0; i < NUM_MACROS; i++)
+            {
+                knobFrozen[i+8] = 1;
+                prevMacroKnobValues[i+8] = prevMacroKnobValues[i];
+            }
+            whichMacro = 0;
         }
-        whichMacro = 0;
     }
     
     
@@ -140,6 +146,9 @@ void scanUI(void)
         currentCopedent = necks[currentNeck];
         neckByte = (necks[0]<<5) + (necks[1]<<2) + currentNeck;
         EEPROM_WriteByte(neckByte, EEPROM_NECKS_OFFSET);
+        patchNum = neckPreset[currentNeck];
+        EEPROM_WriteByte(patchNum, EEPROM_NECK_PRESETS_OFFSET + currentNeck);
+        EEPROM_WriteByte(patchNum, EEPROM_CURRENT_PRESET_OFFSET);
         LED_red1_Write(0);
         LED_green2_Write(1);
         if (!editMode)
@@ -157,6 +166,9 @@ void scanUI(void)
         currentCopedent = necks[currentNeck];    
         neckByte = (necks[0]<<5) + (necks[1]<<2) + currentNeck;
         EEPROM_WriteByte(neckByte, EEPROM_NECKS_OFFSET);
+        patchNum = neckPreset[currentNeck];
+        EEPROM_WriteByte(patchNum, EEPROM_NECK_PRESETS_OFFSET + currentNeck);
+        EEPROM_WriteByte(patchNum, EEPROM_CURRENT_PRESET_OFFSET);
         LED_red1_Write(1);
         LED_green2_Write(0);          
         if (!editMode)
@@ -269,6 +281,14 @@ void scanUI(void)
 
                         myGFX_setFont(1);
                         presetNumberToStore = presetNumberToStore - (Decoder_1_GetPosition());
+                        if (presetNumberToStore < 0)
+                        {
+                            presetNumberToStore += 59;
+                        }
+                        if (presetNumberToStore > 58)
+                        {
+                            presetNumberToStore -= 59;
+                        }
                         Decoder_1_SetPosition(0);
                         
                         
@@ -517,7 +537,7 @@ void scanUI(void)
 
 const char* const calibrationNames[] = { "  SET LEVERS ", "  SET FRETS  ", 0 }; 
 const char* const mainMenuNames[] =    {"  STORE_PRESET ", "  CALIBRATION", "  SETTINGS   ", 0 }; 
-const char* const settingsNames[] =   { "  TRANSPOSE  ", "  OCTAVE ACTION", "  DEADZONES    ", "  SLIDER REPR ", "  SMOOTHING   ", "  MIDI SEND  ", "  VOLUME      ", "  FIRMWARE UPDT",0 }; 
+const char* const settingsNames[] =   { "  TRANSPOSE  ", "  OCTAVE ACTION", "  DEADZONES    ", "  SLIDER REPR ", "  PEDAL SUM   ", "  MIDI SEND  ", "  VOLUME      ", "  FIRMWARE UPDT",0 }; 
 uint8_t numMainMenuItems = 3;
 uint8_t numCalibrationItems = 2;
 uint8_t numSettingsItems = 8;
@@ -577,6 +597,10 @@ void exitEditModeMenu(void)
         uint8_t tempByte = ((stringRepresentation[0] & 15) << 4) + (stringRepresentation[1] & 15);
         EEPROM_WriteByte(tempByte,EEPROM_STRING_REP_OFFSET);
         calculateStringRepDivider();
+    }
+    if (menuPosition[0][0] == TraditionalPedalSumMenu)
+    {
+        EEPROM_WriteByte(traditionalPedalAdd,EEPROM_PEDALSUM_OFFSET);
     }
     if (menuPosition[0][0] == MidiSendMenu)
     {
@@ -765,6 +789,21 @@ void menuAction(enum direction action)
                 mainOLEDWaitingToSend = 1;
                 editingSliderRepString = 0;
             }
+            else if (menuPosition[2][1] == 4)
+            {
+                //dead zone setting
+                menuPosition[0][0] = TraditionalPedalSumMenu;
+                whatToDraw = 0;
+                OLEDclear(128, 64);
+                myGFX_setFont(2);
+                OLEDtextColor(1, 0);
+                OLEDwriteString("PEDAL SUM MODE:", 15, 0, FirstLine);
+                OLEDtextColor(traditionalPedalAdd, !traditionalPedalAdd);
+                OLEDwriteString("SIMPLE ADD     ", 15, 0, SecondLine);
+                OLEDtextColor(!traditionalPedalAdd, traditionalPedalAdd);
+                OLEDwriteString("TRADITIONAL    ", 15, 0, ThirdLine);
+                mainOLEDWaitingToSend = 1;
+            }
             else if (menuPosition[2][1] == 5)
             {
                 //midi send setting
@@ -842,8 +881,8 @@ void menuAction(enum direction action)
                 myGFX_setFont(2);
                 OLEDtextColor(whichFirmwareUpdateSelected, !whichFirmwareUpdateSelected);
                 OLEDwriteString("UPDATE BRAIN", 12, 0, FirstLine);
-                OLEDtextColor(!whichFirmwareUpdateSelected, whichFirmwareUpdateSelected);
-                OLEDwriteString("UPDATE PLUCK", 12, 0, SecondLine);
+               // OLEDtextColor(!whichFirmwareUpdateSelected, whichFirmwareUpdateSelected);
+                //OLEDwriteString("UPDATE PLUCK", 12, 0, SecondLine);
                 OLEDtextColor(1, 0);
                 mainOLEDWaitingToSend = 1;
             }
@@ -949,6 +988,41 @@ void menuAction(enum direction action)
             prevEncoderVal = 127;
         }
     }
+    else if (menuPosition[0][0] == TraditionalPedalSumMenu) //we are in pedal sum menu
+    {
+       
+        if (action == Up)
+        {
+            traditionalPedalAdd = (traditionalPedalAdd+1)&1;
+            OLEDclearLine(SecondLine);
+            OLEDclearLine(ThirdLine);
+            OLEDtextColor(traditionalPedalAdd, !traditionalPedalAdd);
+            OLEDwriteString("SIMPLE ADD     ", 15, 0, SecondLine);
+            OLEDtextColor(!traditionalPedalAdd, traditionalPedalAdd);
+            OLEDwriteString("TRADITIONAL    ", 15, 0, ThirdLine);
+            OLEDtextColor(1, 0);
+            mainOLEDWaitingToSend = 1;
+        }
+        else if (action == Down)
+        {
+            traditionalPedalAdd = (traditionalPedalAdd-1)&1;
+            OLEDclearLine(SecondLine);
+            OLEDclearLine(ThirdLine);
+            OLEDtextColor(traditionalPedalAdd, !traditionalPedalAdd);
+            OLEDwriteString("SIMPLE ADD     ", 15, 0, SecondLine);
+            OLEDtextColor(!traditionalPedalAdd, traditionalPedalAdd);
+            OLEDwriteString("TRADITIONAL    ", 15, 0, ThirdLine);
+            OLEDtextColor(1, 0);
+            mainOLEDWaitingToSend = 1;
+        }
+        else if (action == Left) 
+        {
+            //go back to main menu
+            menuPosition[0][0] = SettingsMenu;
+            whatToDraw = 1;
+        }
+    }
+               
     else if (menuPosition[0][0] == MidiSendMenu) //we are in midisend menu
     {
         
@@ -1016,7 +1090,7 @@ void menuAction(enum direction action)
                 
     }
     
-     else if (menuPosition[0][0] == FirmwareUpdateMenu) //we are in midisend menu
+     else if (menuPosition[0][0] == FirmwareUpdateMenu) //we are in firmware update menu
     {
         
         if (action == Right)
@@ -1025,29 +1099,31 @@ void menuAction(enum direction action)
         }
         else if (action == Left)
         {
-  
+              //go back to main menu
+            menuPosition[0][0] = MainMenu;
+            whatToDraw = 1;
         }
         else if (action == Up)
         {
-            whichFirmwareUpdateSelected = (whichFirmwareUpdateSelected+1)&1;
+           // whichFirmwareUpdateSelected = (whichFirmwareUpdateSelected+1)&1;
             OLEDclear(128, 64);
             myGFX_setFont(2);
             OLEDtextColor(whichFirmwareUpdateSelected, !whichFirmwareUpdateSelected);
             OLEDwriteString("UPDATE BRAIN", 12, 0, FirstLine);
-            OLEDtextColor(!whichFirmwareUpdateSelected, whichFirmwareUpdateSelected);
-            OLEDwriteString("UPDATE PLUCK", 12, 0, SecondLine);
+            //OLEDtextColor(!whichFirmwareUpdateSelected, whichFirmwareUpdateSelected);
+            //OLEDwriteString("UPDATE PLUCK", 12, 0, SecondLine);
             OLEDtextColor(1, 0);
             mainOLEDWaitingToSend = 1;
         }
         else if (action == Down)
         {
-            whichFirmwareUpdateSelected = (whichFirmwareUpdateSelected-1)&1;
+           // whichFirmwareUpdateSelected = (whichFirmwareUpdateSelected-1)&1;
             OLEDclear(128, 64);
             myGFX_setFont(2);
             OLEDtextColor(whichFirmwareUpdateSelected, !whichFirmwareUpdateSelected);
             OLEDwriteString("UPDATE BRAIN", 12, 0, FirstLine);
-            OLEDtextColor(!whichFirmwareUpdateSelected, whichFirmwareUpdateSelected);
-            OLEDwriteString("UPDATE PLUCK", 12, 0, SecondLine);
+            //OLEDtextColor(!whichFirmwareUpdateSelected, whichFirmwareUpdateSelected);
+            //OLEDwriteString("UPDATE PLUCK", 12, 0, SecondLine);
             OLEDtextColor(1, 0);
             mainOLEDWaitingToSend = 1;
         }
@@ -1118,7 +1194,6 @@ void menuAction(enum direction action)
     }
     else if (whatToDraw == 2)
     {
-        
         //store preset
         if (presetStoreStage == 0)
         {
@@ -1148,6 +1223,11 @@ void menuAction(enum direction action)
         {
             whatToDraw = 0;
             OLEDclear(128, 64);
+            newPresetName[0] = 'A';
+            for (int i = 1; i < 14; i++)
+            {
+                newPresetName[i] = 32;
+            }
             myGFX_setFont(2);
             OLEDtextColor(1, 0);
             OLEDwriteString("USE VALUE KNOB",14 , 0, FirstLine);
@@ -1155,6 +1235,7 @@ void menuAction(enum direction action)
             OLEDtextColor(1, 0);
             myGFX_setFont(0);
             GFXsetCursor(&theGFX, 0,50);
+            
             OLEDwriteString(newPresetName, 14, 0, ThirdLine);
             mainOLEDWaitingToSend = 1;
         }
@@ -1165,6 +1246,7 @@ void menuAction(enum direction action)
             myGFX_setFont(0);
             GFXsetCursor(&theGFX, 0,50);
             OLEDwriteString(newPresetName, 14, 0, ThirdLine);
+            newPresetName[presetStoreStage-1] = 'A' - 1;
             mainOLEDWaitingToSend = 1;
         }
     }
@@ -1282,6 +1364,10 @@ void downPressed()
         patchNum -= 1;
         patchNum &= 63;
         EEPROM_WriteByte(patchNum, EEPROM_CURRENT_PRESET_OFFSET);
+        
+        neckPreset[currentNeck] = patchNum;
+        EEPROM_WriteByte(patchNum, EEPROM_NECK_PRESETS_OFFSET + currentNeck);
+        
         displayCurrentPresetNameAndCopedent();
     }
     else
@@ -1297,6 +1383,10 @@ void upPressed()
         patchNum += 1;
         patchNum &= 63;
         EEPROM_WriteByte(patchNum, EEPROM_CURRENT_PRESET_OFFSET);
+        
+        neckPreset[currentNeck] = patchNum;
+        EEPROM_WriteByte(patchNum, EEPROM_NECK_PRESETS_OFFSET + currentNeck);
+        
         displayCurrentPresetNameAndCopedent();
     }
     else
@@ -1415,19 +1505,21 @@ void exitPresetStoreMenu(void)
 {
     presetStoreStage = 0;
     sendLocalPresetStoreCommand = 1;
+   // patchNum = presetNumberToStore;
     exitEditModeMenu();
 }
 
 void displayCurrentPresetNameAndCopedent(void)
 {
     int macroCheck = 0;
-    for (int i = 0; i < NUM_MACROS; i++)
+    for (int i = 0; i < NUM_MACROS*NUM_MACRO_PAGES; i++)
     {
         if (macroNamesArray[patchNum][i][0] == 255)
         {
             macroCheck = 1;
         }  
     }
+    
     if (macroCheck == 0) //don't display if the name data still hasn't been retrieved by the SPI bus (255 is invalid initial data)
     {
         OLEDclear(128, 64);
@@ -1446,6 +1538,28 @@ void displayCurrentPresetNameAndCopedent(void)
         whichMacro = 0;
         macroOLEDWaitingToSend = 1;
         volumeWaitingToSend = 1;
+        
+        if ((macroNamesArray[patchNum][8][0] == 32) || (macroNamesArray[patchNum][8][0] == 0))
+        {
+            knobPanelLightActive = 0;
+            knobPanelLight1_Write(0);
+            knobPanelLight2_Write(0);
+            whichMacroPageIsActive = 0;
+        }  
+        else
+        {
+            knobPanelLightActive = 1;
+            if (whichMacroPageIsActive == 0)
+            {
+                knobPanelLight1_Write(1);
+                knobPanelLight2_Write(0);
+            }
+            else
+            {
+                knobPanelLight1_Write(0);
+                knobPanelLight2_Write(1);
+            }
+        }
     }
     controlsDisplayed = 0;
 }

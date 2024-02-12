@@ -1,0 +1,785 @@
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb2kxKi.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"AMuxSeq_1.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.global	AMuxSeq_1_initVar
+  20              		.bss
+  21              		.type	AMuxSeq_1_initVar, %object
+  22              		.size	AMuxSeq_1_initVar, 1
+  23              	AMuxSeq_1_initVar:
+  24 0000 00       		.space	1
+  25              		.section	.text.AMuxSeq_1_Start,"ax",%progbits
+  26              		.align	2
+  27              		.global	AMuxSeq_1_Start
+  28              		.thumb
+  29              		.thumb_func
+  30              		.type	AMuxSeq_1_Start, %function
+  31              	AMuxSeq_1_Start:
+  32              	.LFB0:
+  33              		.file 1 "Generated_Source\\PSoC5\\AMuxSeq_1.c"
+   1:Generated_Source\PSoC5/AMuxSeq_1.c **** /*******************************************************************************
+   2:Generated_Source\PSoC5/AMuxSeq_1.c **** * File Name: AMuxSeq_1.c
+   3:Generated_Source\PSoC5/AMuxSeq_1.c **** * Version 1.80
+   4:Generated_Source\PSoC5/AMuxSeq_1.c **** *
+   5:Generated_Source\PSoC5/AMuxSeq_1.c **** *  Description:
+   6:Generated_Source\PSoC5/AMuxSeq_1.c **** *    This file contains functions for the AMuxSeq.
+   7:Generated_Source\PSoC5/AMuxSeq_1.c **** *
+   8:Generated_Source\PSoC5/AMuxSeq_1.c **** *   Note:
+   9:Generated_Source\PSoC5/AMuxSeq_1.c **** *
+  10:Generated_Source\PSoC5/AMuxSeq_1.c **** *******************************************************************************
+  11:Generated_Source\PSoC5/AMuxSeq_1.c **** * Copyright 2008-2010, Cypress Semiconductor Corporation.  All rights reserved.
+  12:Generated_Source\PSoC5/AMuxSeq_1.c **** * You may use this file only in accordance with the license, terms, conditions, 
+  13:Generated_Source\PSoC5/AMuxSeq_1.c **** * disclaimers, and limitations in the end user license agreement accompanying 
+  14:Generated_Source\PSoC5/AMuxSeq_1.c **** * the software package with which this file was provided.
+  15:Generated_Source\PSoC5/AMuxSeq_1.c **** ********************************************************************************/
+  16:Generated_Source\PSoC5/AMuxSeq_1.c **** 
+  17:Generated_Source\PSoC5/AMuxSeq_1.c **** #include "AMuxSeq_1.h"
+  18:Generated_Source\PSoC5/AMuxSeq_1.c **** 
+  19:Generated_Source\PSoC5/AMuxSeq_1.c **** uint8 AMuxSeq_1_initVar = 0u;
+  20:Generated_Source\PSoC5/AMuxSeq_1.c **** 
+  21:Generated_Source\PSoC5/AMuxSeq_1.c **** 
+  22:Generated_Source\PSoC5/AMuxSeq_1.c **** /*******************************************************************************
+  23:Generated_Source\PSoC5/AMuxSeq_1.c **** * Function Name: AMuxSeq_1_Start
+  24:Generated_Source\PSoC5/AMuxSeq_1.c **** ********************************************************************************
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb2kxKi.s 			page 2
+
+
+  25:Generated_Source\PSoC5/AMuxSeq_1.c **** * Summary:
+  26:Generated_Source\PSoC5/AMuxSeq_1.c **** *  Disconnect all channels. The next time Next is called, channel 0 will be
+  27:Generated_Source\PSoC5/AMuxSeq_1.c **** *  connected.
+  28:Generated_Source\PSoC5/AMuxSeq_1.c **** *
+  29:Generated_Source\PSoC5/AMuxSeq_1.c **** * Parameters:
+  30:Generated_Source\PSoC5/AMuxSeq_1.c **** *  void
+  31:Generated_Source\PSoC5/AMuxSeq_1.c **** *
+  32:Generated_Source\PSoC5/AMuxSeq_1.c **** * Return:
+  33:Generated_Source\PSoC5/AMuxSeq_1.c **** *  void
+  34:Generated_Source\PSoC5/AMuxSeq_1.c **** *
+  35:Generated_Source\PSoC5/AMuxSeq_1.c **** *******************************************************************************/
+  36:Generated_Source\PSoC5/AMuxSeq_1.c **** void AMuxSeq_1_Start(void)
+  37:Generated_Source\PSoC5/AMuxSeq_1.c **** {
+  34              		.loc 1 37 0
+  35              		.cfi_startproc
+  36              		@ args = 0, pretend = 0, frame = 0
+  37              		@ frame_needed = 1, uses_anonymous_args = 0
+  38 0000 80B5     		push	{r7, lr}
+  39              		.cfi_def_cfa_offset 8
+  40              		.cfi_offset 7, -8
+  41              		.cfi_offset 14, -4
+  42 0002 00AF     		add	r7, sp, #0
+  43              		.cfi_def_cfa_register 7
+  38:Generated_Source\PSoC5/AMuxSeq_1.c ****     AMuxSeq_1_DisconnectAll();
+  44              		.loc 1 38 0
+  45 0004 FFF7FEFF 		bl	AMuxSeq_1_DisconnectAll
+  39:Generated_Source\PSoC5/AMuxSeq_1.c ****     AMuxSeq_1_initVar = 1u;
+  46              		.loc 1 39 0
+  47 0008 024B     		ldr	r3, .L2
+  48 000a 0122     		movs	r2, #1
+  49 000c 1A70     		strb	r2, [r3]
+  40:Generated_Source\PSoC5/AMuxSeq_1.c **** }
+  50              		.loc 1 40 0
+  51 000e 00BF     		nop
+  52 0010 80BD     		pop	{r7, pc}
+  53              	.L3:
+  54 0012 00BF     		.align	2
+  55              	.L2:
+  56 0014 00000000 		.word	AMuxSeq_1_initVar
+  57              		.cfi_endproc
+  58              	.LFE0:
+  59              		.size	AMuxSeq_1_Start, .-AMuxSeq_1_Start
+  60              		.section	.text.AMuxSeq_1_Init,"ax",%progbits
+  61              		.align	2
+  62              		.global	AMuxSeq_1_Init
+  63              		.thumb
+  64              		.thumb_func
+  65              		.type	AMuxSeq_1_Init, %function
+  66              	AMuxSeq_1_Init:
+  67              	.LFB1:
+  41:Generated_Source\PSoC5/AMuxSeq_1.c **** 
+  42:Generated_Source\PSoC5/AMuxSeq_1.c **** 
+  43:Generated_Source\PSoC5/AMuxSeq_1.c **** /*******************************************************************************
+  44:Generated_Source\PSoC5/AMuxSeq_1.c **** * Function Name: AMuxSeq_1_Init
+  45:Generated_Source\PSoC5/AMuxSeq_1.c **** ********************************************************************************
+  46:Generated_Source\PSoC5/AMuxSeq_1.c **** * Summary:
+  47:Generated_Source\PSoC5/AMuxSeq_1.c **** *  Disconnect all channels. The next time Next is called, channel 0 will be
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb2kxKi.s 			page 3
+
+
+  48:Generated_Source\PSoC5/AMuxSeq_1.c **** *  connected.
+  49:Generated_Source\PSoC5/AMuxSeq_1.c **** *
+  50:Generated_Source\PSoC5/AMuxSeq_1.c **** * Parameters:
+  51:Generated_Source\PSoC5/AMuxSeq_1.c **** *  void
+  52:Generated_Source\PSoC5/AMuxSeq_1.c **** *
+  53:Generated_Source\PSoC5/AMuxSeq_1.c **** * Return:
+  54:Generated_Source\PSoC5/AMuxSeq_1.c **** *  void
+  55:Generated_Source\PSoC5/AMuxSeq_1.c **** *
+  56:Generated_Source\PSoC5/AMuxSeq_1.c **** *******************************************************************************/
+  57:Generated_Source\PSoC5/AMuxSeq_1.c **** void AMuxSeq_1_Init(void)
+  58:Generated_Source\PSoC5/AMuxSeq_1.c **** {
+  68              		.loc 1 58 0
+  69              		.cfi_startproc
+  70              		@ args = 0, pretend = 0, frame = 0
+  71              		@ frame_needed = 1, uses_anonymous_args = 0
+  72 0000 80B5     		push	{r7, lr}
+  73              		.cfi_def_cfa_offset 8
+  74              		.cfi_offset 7, -8
+  75              		.cfi_offset 14, -4
+  76 0002 00AF     		add	r7, sp, #0
+  77              		.cfi_def_cfa_register 7
+  59:Generated_Source\PSoC5/AMuxSeq_1.c ****     AMuxSeq_1_DisconnectAll();
+  78              		.loc 1 59 0
+  79 0004 FFF7FEFF 		bl	AMuxSeq_1_DisconnectAll
+  60:Generated_Source\PSoC5/AMuxSeq_1.c **** }
+  80              		.loc 1 60 0
+  81 0008 00BF     		nop
+  82 000a 80BD     		pop	{r7, pc}
+  83              		.cfi_endproc
+  84              	.LFE1:
+  85              		.size	AMuxSeq_1_Init, .-AMuxSeq_1_Init
+  86              		.section	.text.AMuxSeq_1_Stop,"ax",%progbits
+  87              		.align	2
+  88              		.global	AMuxSeq_1_Stop
+  89              		.thumb
+  90              		.thumb_func
+  91              		.type	AMuxSeq_1_Stop, %function
+  92              	AMuxSeq_1_Stop:
+  93              	.LFB2:
+  61:Generated_Source\PSoC5/AMuxSeq_1.c **** 
+  62:Generated_Source\PSoC5/AMuxSeq_1.c **** 
+  63:Generated_Source\PSoC5/AMuxSeq_1.c **** /*******************************************************************************
+  64:Generated_Source\PSoC5/AMuxSeq_1.c **** * Function Name: AMuxSeq_1_Stop
+  65:Generated_Source\PSoC5/AMuxSeq_1.c **** ********************************************************************************
+  66:Generated_Source\PSoC5/AMuxSeq_1.c **** * Summary:
+  67:Generated_Source\PSoC5/AMuxSeq_1.c **** *  Disconnect all channels. The next time Next is called, channel 0 will be
+  68:Generated_Source\PSoC5/AMuxSeq_1.c **** *  connected.
+  69:Generated_Source\PSoC5/AMuxSeq_1.c **** *
+  70:Generated_Source\PSoC5/AMuxSeq_1.c **** * Parameters:
+  71:Generated_Source\PSoC5/AMuxSeq_1.c **** *  void
+  72:Generated_Source\PSoC5/AMuxSeq_1.c **** *
+  73:Generated_Source\PSoC5/AMuxSeq_1.c **** * Return:
+  74:Generated_Source\PSoC5/AMuxSeq_1.c **** *  void
+  75:Generated_Source\PSoC5/AMuxSeq_1.c **** *
+  76:Generated_Source\PSoC5/AMuxSeq_1.c **** *******************************************************************************/
+  77:Generated_Source\PSoC5/AMuxSeq_1.c **** void AMuxSeq_1_Stop(void)
+  78:Generated_Source\PSoC5/AMuxSeq_1.c **** {
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb2kxKi.s 			page 4
+
+
+  94              		.loc 1 78 0
+  95              		.cfi_startproc
+  96              		@ args = 0, pretend = 0, frame = 0
+  97              		@ frame_needed = 1, uses_anonymous_args = 0
+  98 0000 80B5     		push	{r7, lr}
+  99              		.cfi_def_cfa_offset 8
+ 100              		.cfi_offset 7, -8
+ 101              		.cfi_offset 14, -4
+ 102 0002 00AF     		add	r7, sp, #0
+ 103              		.cfi_def_cfa_register 7
+  79:Generated_Source\PSoC5/AMuxSeq_1.c ****     AMuxSeq_1_DisconnectAll();
+ 104              		.loc 1 79 0
+ 105 0004 FFF7FEFF 		bl	AMuxSeq_1_DisconnectAll
+  80:Generated_Source\PSoC5/AMuxSeq_1.c **** }
+ 106              		.loc 1 80 0
+ 107 0008 00BF     		nop
+ 108 000a 80BD     		pop	{r7, pc}
+ 109              		.cfi_endproc
+ 110              	.LFE2:
+ 111              		.size	AMuxSeq_1_Stop, .-AMuxSeq_1_Stop
+ 112              		.section	.text.AMuxSeq_1_GetChannel,"ax",%progbits
+ 113              		.align	2
+ 114              		.global	AMuxSeq_1_GetChannel
+ 115              		.thumb
+ 116              		.thumb_func
+ 117              		.type	AMuxSeq_1_GetChannel, %function
+ 118              	AMuxSeq_1_GetChannel:
+ 119              	.LFB3:
+  81:Generated_Source\PSoC5/AMuxSeq_1.c **** 
+  82:Generated_Source\PSoC5/AMuxSeq_1.c **** #if (AMuxSeq_1_MUXTYPE == AMuxSeq_1_MUX_DIFF)
+  83:Generated_Source\PSoC5/AMuxSeq_1.c **** 
+  84:Generated_Source\PSoC5/AMuxSeq_1.c **** /*******************************************************************************
+  85:Generated_Source\PSoC5/AMuxSeq_1.c **** * Function Name: AMuxSeq_1_Next
+  86:Generated_Source\PSoC5/AMuxSeq_1.c **** ********************************************************************************
+  87:Generated_Source\PSoC5/AMuxSeq_1.c **** * Summary:
+  88:Generated_Source\PSoC5/AMuxSeq_1.c **** *  Disconnects the previous channel and connects the next one in the sequence.
+  89:Generated_Source\PSoC5/AMuxSeq_1.c **** *  When Next is called for the first time after Init, Start, Enable, Stop, or
+  90:Generated_Source\PSoC5/AMuxSeq_1.c **** *  DisconnectAll, it connects channel 0.
+  91:Generated_Source\PSoC5/AMuxSeq_1.c **** *
+  92:Generated_Source\PSoC5/AMuxSeq_1.c **** * Parameters:
+  93:Generated_Source\PSoC5/AMuxSeq_1.c **** *  void
+  94:Generated_Source\PSoC5/AMuxSeq_1.c **** *
+  95:Generated_Source\PSoC5/AMuxSeq_1.c **** * Return:
+  96:Generated_Source\PSoC5/AMuxSeq_1.c **** *  void
+  97:Generated_Source\PSoC5/AMuxSeq_1.c **** *
+  98:Generated_Source\PSoC5/AMuxSeq_1.c **** *******************************************************************************/
+  99:Generated_Source\PSoC5/AMuxSeq_1.c **** void AMuxSeq_1_Next(void)
+ 100:Generated_Source\PSoC5/AMuxSeq_1.c **** {
+ 101:Generated_Source\PSoC5/AMuxSeq_1.c ****     AMuxSeq_1_CYAMUXSIDE_A_Next();
+ 102:Generated_Source\PSoC5/AMuxSeq_1.c ****     AMuxSeq_1_CYAMUXSIDE_B_Next();
+ 103:Generated_Source\PSoC5/AMuxSeq_1.c **** }
+ 104:Generated_Source\PSoC5/AMuxSeq_1.c **** 
+ 105:Generated_Source\PSoC5/AMuxSeq_1.c **** 
+ 106:Generated_Source\PSoC5/AMuxSeq_1.c **** /*******************************************************************************
+ 107:Generated_Source\PSoC5/AMuxSeq_1.c **** * Function Name: AMuxSeq_1_DisconnectAll
+ 108:Generated_Source\PSoC5/AMuxSeq_1.c **** ********************************************************************************
+ 109:Generated_Source\PSoC5/AMuxSeq_1.c **** * Summary:
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb2kxKi.s 			page 5
+
+
+ 110:Generated_Source\PSoC5/AMuxSeq_1.c **** *  This function disconnects all channels. The next time Next is called, channel
+ 111:Generated_Source\PSoC5/AMuxSeq_1.c **** *  0 will be connected.
+ 112:Generated_Source\PSoC5/AMuxSeq_1.c **** *
+ 113:Generated_Source\PSoC5/AMuxSeq_1.c **** * Parameters:
+ 114:Generated_Source\PSoC5/AMuxSeq_1.c **** *  void
+ 115:Generated_Source\PSoC5/AMuxSeq_1.c **** *
+ 116:Generated_Source\PSoC5/AMuxSeq_1.c **** * Return:
+ 117:Generated_Source\PSoC5/AMuxSeq_1.c **** *  void
+ 118:Generated_Source\PSoC5/AMuxSeq_1.c **** *
+ 119:Generated_Source\PSoC5/AMuxSeq_1.c **** *******************************************************************************/
+ 120:Generated_Source\PSoC5/AMuxSeq_1.c **** void AMuxSeq_1_DisconnectAll(void)
+ 121:Generated_Source\PSoC5/AMuxSeq_1.c **** {
+ 122:Generated_Source\PSoC5/AMuxSeq_1.c ****     AMuxSeq_1_CYAMUXSIDE_A_DisconnectAll();
+ 123:Generated_Source\PSoC5/AMuxSeq_1.c ****     AMuxSeq_1_CYAMUXSIDE_B_DisconnectAll();
+ 124:Generated_Source\PSoC5/AMuxSeq_1.c **** }
+ 125:Generated_Source\PSoC5/AMuxSeq_1.c **** 
+ 126:Generated_Source\PSoC5/AMuxSeq_1.c **** 
+ 127:Generated_Source\PSoC5/AMuxSeq_1.c **** /*******************************************************************************
+ 128:Generated_Source\PSoC5/AMuxSeq_1.c **** * Function Name: AMuxSeq_1_GetChannel
+ 129:Generated_Source\PSoC5/AMuxSeq_1.c **** ********************************************************************************
+ 130:Generated_Source\PSoC5/AMuxSeq_1.c **** * Summary:
+ 131:Generated_Source\PSoC5/AMuxSeq_1.c **** *  The currently connected channel is retuned. If no channel is connected
+ 132:Generated_Source\PSoC5/AMuxSeq_1.c **** *  returns -1.
+ 133:Generated_Source\PSoC5/AMuxSeq_1.c **** *
+ 134:Generated_Source\PSoC5/AMuxSeq_1.c **** * Parameters:
+ 135:Generated_Source\PSoC5/AMuxSeq_1.c **** *  void
+ 136:Generated_Source\PSoC5/AMuxSeq_1.c **** *
+ 137:Generated_Source\PSoC5/AMuxSeq_1.c **** * Return:
+ 138:Generated_Source\PSoC5/AMuxSeq_1.c **** *  The current channel or -1.
+ 139:Generated_Source\PSoC5/AMuxSeq_1.c **** *
+ 140:Generated_Source\PSoC5/AMuxSeq_1.c **** *******************************************************************************/
+ 141:Generated_Source\PSoC5/AMuxSeq_1.c **** int8 AMuxSeq_1_GetChannel(void)
+ 142:Generated_Source\PSoC5/AMuxSeq_1.c **** {
+ 143:Generated_Source\PSoC5/AMuxSeq_1.c ****     return AMuxSeq_1_CYAMUXSIDE_A_curChannel;
+ 144:Generated_Source\PSoC5/AMuxSeq_1.c **** }
+ 145:Generated_Source\PSoC5/AMuxSeq_1.c **** 
+ 146:Generated_Source\PSoC5/AMuxSeq_1.c **** #else
+ 147:Generated_Source\PSoC5/AMuxSeq_1.c **** 
+ 148:Generated_Source\PSoC5/AMuxSeq_1.c **** /*******************************************************************************
+ 149:Generated_Source\PSoC5/AMuxSeq_1.c **** * Function Name: AMuxSeq_1_GetChannel
+ 150:Generated_Source\PSoC5/AMuxSeq_1.c **** ********************************************************************************
+ 151:Generated_Source\PSoC5/AMuxSeq_1.c **** * Summary:
+ 152:Generated_Source\PSoC5/AMuxSeq_1.c **** *  The currently connected channel is retuned. If no channel is connected
+ 153:Generated_Source\PSoC5/AMuxSeq_1.c **** *  returns -1.
+ 154:Generated_Source\PSoC5/AMuxSeq_1.c **** *
+ 155:Generated_Source\PSoC5/AMuxSeq_1.c **** * Parameters:
+ 156:Generated_Source\PSoC5/AMuxSeq_1.c **** *  void
+ 157:Generated_Source\PSoC5/AMuxSeq_1.c **** *
+ 158:Generated_Source\PSoC5/AMuxSeq_1.c **** * Return:
+ 159:Generated_Source\PSoC5/AMuxSeq_1.c **** *  The current channel or -1.
+ 160:Generated_Source\PSoC5/AMuxSeq_1.c **** *
+ 161:Generated_Source\PSoC5/AMuxSeq_1.c **** *******************************************************************************/
+ 162:Generated_Source\PSoC5/AMuxSeq_1.c **** int8 AMuxSeq_1_GetChannel(void)
+ 163:Generated_Source\PSoC5/AMuxSeq_1.c **** {
+ 120              		.loc 1 163 0
+ 121              		.cfi_startproc
+ 122              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb2kxKi.s 			page 6
+
+
+ 123              		@ frame_needed = 1, uses_anonymous_args = 0
+ 124              		@ link register save eliminated.
+ 125 0000 80B4     		push	{r7}
+ 126              		.cfi_def_cfa_offset 4
+ 127              		.cfi_offset 7, -4
+ 128 0002 00AF     		add	r7, sp, #0
+ 129              		.cfi_def_cfa_register 7
+ 164:Generated_Source\PSoC5/AMuxSeq_1.c ****     return AMuxSeq_1_curChannel;
+ 130              		.loc 1 164 0
+ 131 0004 034B     		ldr	r3, .L8
+ 132 0006 93F90030 		ldrsb	r3, [r3]
+ 165:Generated_Source\PSoC5/AMuxSeq_1.c **** }
+ 133              		.loc 1 165 0
+ 134 000a 1846     		mov	r0, r3
+ 135 000c BD46     		mov	sp, r7
+ 136              		.cfi_def_cfa_register 13
+ 137              		@ sp needed
+ 138 000e 80BC     		pop	{r7}
+ 139              		.cfi_restore 7
+ 140              		.cfi_def_cfa_offset 0
+ 141 0010 7047     		bx	lr
+ 142              	.L9:
+ 143 0012 00BF     		.align	2
+ 144              	.L8:
+ 145 0014 00000000 		.word	AMuxSeq_1_curChannel
+ 146              		.cfi_endproc
+ 147              	.LFE3:
+ 148              		.size	AMuxSeq_1_GetChannel, .-AMuxSeq_1_GetChannel
+ 149              		.text
+ 150              	.Letext0:
+ 151              		.file 2 "Generated_Source\\PSoC5\\cytypes.h"
+ 152              		.file 3 "Generated_Source\\PSoC5\\cyfitter_cfg.h"
+ 153              		.section	.debug_info,"",%progbits
+ 154              	.Ldebug_info0:
+ 155 0000 F9000000 		.4byte	0xf9
+ 156 0004 0400     		.2byte	0x4
+ 157 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 158 000a 04       		.byte	0x4
+ 159 000b 01       		.uleb128 0x1
+ 160 000c 00000000 		.4byte	.LASF19
+ 161 0010 0C       		.byte	0xc
+ 162 0011 B2000000 		.4byte	.LASF20
+ 163 0015 BC010000 		.4byte	.LASF21
+ 164 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 165 001d 00000000 		.4byte	0
+ 166 0021 00000000 		.4byte	.Ldebug_line0
+ 167 0025 02       		.uleb128 0x2
+ 168 0026 01       		.byte	0x1
+ 169 0027 06       		.byte	0x6
+ 170 0028 B0010000 		.4byte	.LASF0
+ 171 002c 02       		.uleb128 0x2
+ 172 002d 01       		.byte	0x1
+ 173 002e 08       		.byte	0x8
+ 174 002f DB000000 		.4byte	.LASF1
+ 175 0033 02       		.uleb128 0x2
+ 176 0034 02       		.byte	0x2
+ 177 0035 05       		.byte	0x5
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb2kxKi.s 			page 7
+
+
+ 178 0036 97010000 		.4byte	.LASF2
+ 179 003a 02       		.uleb128 0x2
+ 180 003b 02       		.byte	0x2
+ 181 003c 07       		.byte	0x7
+ 182 003d FB000000 		.4byte	.LASF3
+ 183 0041 02       		.uleb128 0x2
+ 184 0042 04       		.byte	0x4
+ 185 0043 05       		.byte	0x5
+ 186 0044 A7010000 		.4byte	.LASF4
+ 187 0048 02       		.uleb128 0x2
+ 188 0049 04       		.byte	0x4
+ 189 004a 07       		.byte	0x7
+ 190 004b E9000000 		.4byte	.LASF5
+ 191 004f 02       		.uleb128 0x2
+ 192 0050 08       		.byte	0x8
+ 193 0051 05       		.byte	0x5
+ 194 0052 74010000 		.4byte	.LASF6
+ 195 0056 02       		.uleb128 0x2
+ 196 0057 08       		.byte	0x8
+ 197 0058 07       		.byte	0x7
+ 198 0059 5D010000 		.4byte	.LASF7
+ 199 005d 03       		.uleb128 0x3
+ 200 005e 04       		.byte	0x4
+ 201 005f 05       		.byte	0x5
+ 202 0060 696E7400 		.ascii	"int\000"
+ 203 0064 02       		.uleb128 0x2
+ 204 0065 04       		.byte	0x4
+ 205 0066 07       		.byte	0x7
+ 206 0067 50010000 		.4byte	.LASF8
+ 207 006b 04       		.uleb128 0x4
+ 208 006c A1010000 		.4byte	.LASF9
+ 209 0070 02       		.byte	0x2
+ 210 0071 E401     		.2byte	0x1e4
+ 211 0073 2C000000 		.4byte	0x2c
+ 212 0077 04       		.uleb128 0x4
+ 213 0078 36010000 		.4byte	.LASF10
+ 214 007c 02       		.byte	0x2
+ 215 007d E701     		.2byte	0x1e7
+ 216 007f 25000000 		.4byte	0x25
+ 217 0083 02       		.uleb128 0x2
+ 218 0084 04       		.byte	0x4
+ 219 0085 04       		.byte	0x4
+ 220 0086 D5000000 		.4byte	.LASF11
+ 221 008a 02       		.uleb128 0x2
+ 222 008b 08       		.byte	0x8
+ 223 008c 04       		.byte	0x4
+ 224 008d 20010000 		.4byte	.LASF12
+ 225 0091 02       		.uleb128 0x2
+ 226 0092 01       		.byte	0x1
+ 227 0093 08       		.byte	0x8
+ 228 0094 82010000 		.4byte	.LASF13
+ 229 0098 05       		.uleb128 0x5
+ 230 0099 87010000 		.4byte	.LASF14
+ 231 009d 01       		.byte	0x1
+ 232 009e 24       		.byte	0x24
+ 233 009f 00000000 		.4byte	.LFB0
+ 234 00a3 18000000 		.4byte	.LFE0-.LFB0
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb2kxKi.s 			page 8
+
+
+ 235 00a7 01       		.uleb128 0x1
+ 236 00a8 9C       		.byte	0x9c
+ 237 00a9 05       		.uleb128 0x5
+ 238 00aa A3000000 		.4byte	.LASF15
+ 239 00ae 01       		.byte	0x1
+ 240 00af 39       		.byte	0x39
+ 241 00b0 00000000 		.4byte	.LFB1
+ 242 00b4 0C000000 		.4byte	.LFE1-.LFB1
+ 243 00b8 01       		.uleb128 0x1
+ 244 00b9 9C       		.byte	0x9c
+ 245 00ba 05       		.uleb128 0x5
+ 246 00bb 27010000 		.4byte	.LASF16
+ 247 00bf 01       		.byte	0x1
+ 248 00c0 4D       		.byte	0x4d
+ 249 00c1 00000000 		.4byte	.LFB2
+ 250 00c5 0C000000 		.4byte	.LFE2-.LFB2
+ 251 00c9 01       		.uleb128 0x1
+ 252 00ca 9C       		.byte	0x9c
+ 253 00cb 06       		.uleb128 0x6
+ 254 00cc 3B010000 		.4byte	.LASF22
+ 255 00d0 01       		.byte	0x1
+ 256 00d1 A2       		.byte	0xa2
+ 257 00d2 77000000 		.4byte	0x77
+ 258 00d6 00000000 		.4byte	.LFB3
+ 259 00da 18000000 		.4byte	.LFE3-.LFB3
+ 260 00de 01       		.uleb128 0x1
+ 261 00df 9C       		.byte	0x9c
+ 262 00e0 07       		.uleb128 0x7
+ 263 00e1 8E000000 		.4byte	.LASF17
+ 264 00e5 03       		.byte	0x3
+ 265 00e6 30       		.byte	0x30
+ 266 00e7 77000000 		.4byte	0x77
+ 267 00eb 08       		.uleb128 0x8
+ 268 00ec 0E010000 		.4byte	.LASF18
+ 269 00f0 01       		.byte	0x1
+ 270 00f1 13       		.byte	0x13
+ 271 00f2 6B000000 		.4byte	0x6b
+ 272 00f6 05       		.uleb128 0x5
+ 273 00f7 03       		.byte	0x3
+ 274 00f8 00000000 		.4byte	AMuxSeq_1_initVar
+ 275 00fc 00       		.byte	0
+ 276              		.section	.debug_abbrev,"",%progbits
+ 277              	.Ldebug_abbrev0:
+ 278 0000 01       		.uleb128 0x1
+ 279 0001 11       		.uleb128 0x11
+ 280 0002 01       		.byte	0x1
+ 281 0003 25       		.uleb128 0x25
+ 282 0004 0E       		.uleb128 0xe
+ 283 0005 13       		.uleb128 0x13
+ 284 0006 0B       		.uleb128 0xb
+ 285 0007 03       		.uleb128 0x3
+ 286 0008 0E       		.uleb128 0xe
+ 287 0009 1B       		.uleb128 0x1b
+ 288 000a 0E       		.uleb128 0xe
+ 289 000b 55       		.uleb128 0x55
+ 290 000c 17       		.uleb128 0x17
+ 291 000d 11       		.uleb128 0x11
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb2kxKi.s 			page 9
+
+
+ 292 000e 01       		.uleb128 0x1
+ 293 000f 10       		.uleb128 0x10
+ 294 0010 17       		.uleb128 0x17
+ 295 0011 00       		.byte	0
+ 296 0012 00       		.byte	0
+ 297 0013 02       		.uleb128 0x2
+ 298 0014 24       		.uleb128 0x24
+ 299 0015 00       		.byte	0
+ 300 0016 0B       		.uleb128 0xb
+ 301 0017 0B       		.uleb128 0xb
+ 302 0018 3E       		.uleb128 0x3e
+ 303 0019 0B       		.uleb128 0xb
+ 304 001a 03       		.uleb128 0x3
+ 305 001b 0E       		.uleb128 0xe
+ 306 001c 00       		.byte	0
+ 307 001d 00       		.byte	0
+ 308 001e 03       		.uleb128 0x3
+ 309 001f 24       		.uleb128 0x24
+ 310 0020 00       		.byte	0
+ 311 0021 0B       		.uleb128 0xb
+ 312 0022 0B       		.uleb128 0xb
+ 313 0023 3E       		.uleb128 0x3e
+ 314 0024 0B       		.uleb128 0xb
+ 315 0025 03       		.uleb128 0x3
+ 316 0026 08       		.uleb128 0x8
+ 317 0027 00       		.byte	0
+ 318 0028 00       		.byte	0
+ 319 0029 04       		.uleb128 0x4
+ 320 002a 16       		.uleb128 0x16
+ 321 002b 00       		.byte	0
+ 322 002c 03       		.uleb128 0x3
+ 323 002d 0E       		.uleb128 0xe
+ 324 002e 3A       		.uleb128 0x3a
+ 325 002f 0B       		.uleb128 0xb
+ 326 0030 3B       		.uleb128 0x3b
+ 327 0031 05       		.uleb128 0x5
+ 328 0032 49       		.uleb128 0x49
+ 329 0033 13       		.uleb128 0x13
+ 330 0034 00       		.byte	0
+ 331 0035 00       		.byte	0
+ 332 0036 05       		.uleb128 0x5
+ 333 0037 2E       		.uleb128 0x2e
+ 334 0038 00       		.byte	0
+ 335 0039 3F       		.uleb128 0x3f
+ 336 003a 19       		.uleb128 0x19
+ 337 003b 03       		.uleb128 0x3
+ 338 003c 0E       		.uleb128 0xe
+ 339 003d 3A       		.uleb128 0x3a
+ 340 003e 0B       		.uleb128 0xb
+ 341 003f 3B       		.uleb128 0x3b
+ 342 0040 0B       		.uleb128 0xb
+ 343 0041 27       		.uleb128 0x27
+ 344 0042 19       		.uleb128 0x19
+ 345 0043 11       		.uleb128 0x11
+ 346 0044 01       		.uleb128 0x1
+ 347 0045 12       		.uleb128 0x12
+ 348 0046 06       		.uleb128 0x6
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb2kxKi.s 			page 10
+
+
+ 349 0047 40       		.uleb128 0x40
+ 350 0048 18       		.uleb128 0x18
+ 351 0049 9642     		.uleb128 0x2116
+ 352 004b 19       		.uleb128 0x19
+ 353 004c 00       		.byte	0
+ 354 004d 00       		.byte	0
+ 355 004e 06       		.uleb128 0x6
+ 356 004f 2E       		.uleb128 0x2e
+ 357 0050 00       		.byte	0
+ 358 0051 3F       		.uleb128 0x3f
+ 359 0052 19       		.uleb128 0x19
+ 360 0053 03       		.uleb128 0x3
+ 361 0054 0E       		.uleb128 0xe
+ 362 0055 3A       		.uleb128 0x3a
+ 363 0056 0B       		.uleb128 0xb
+ 364 0057 3B       		.uleb128 0x3b
+ 365 0058 0B       		.uleb128 0xb
+ 366 0059 27       		.uleb128 0x27
+ 367 005a 19       		.uleb128 0x19
+ 368 005b 49       		.uleb128 0x49
+ 369 005c 13       		.uleb128 0x13
+ 370 005d 11       		.uleb128 0x11
+ 371 005e 01       		.uleb128 0x1
+ 372 005f 12       		.uleb128 0x12
+ 373 0060 06       		.uleb128 0x6
+ 374 0061 40       		.uleb128 0x40
+ 375 0062 18       		.uleb128 0x18
+ 376 0063 9742     		.uleb128 0x2117
+ 377 0065 19       		.uleb128 0x19
+ 378 0066 00       		.byte	0
+ 379 0067 00       		.byte	0
+ 380 0068 07       		.uleb128 0x7
+ 381 0069 34       		.uleb128 0x34
+ 382 006a 00       		.byte	0
+ 383 006b 03       		.uleb128 0x3
+ 384 006c 0E       		.uleb128 0xe
+ 385 006d 3A       		.uleb128 0x3a
+ 386 006e 0B       		.uleb128 0xb
+ 387 006f 3B       		.uleb128 0x3b
+ 388 0070 0B       		.uleb128 0xb
+ 389 0071 49       		.uleb128 0x49
+ 390 0072 13       		.uleb128 0x13
+ 391 0073 3F       		.uleb128 0x3f
+ 392 0074 19       		.uleb128 0x19
+ 393 0075 3C       		.uleb128 0x3c
+ 394 0076 19       		.uleb128 0x19
+ 395 0077 00       		.byte	0
+ 396 0078 00       		.byte	0
+ 397 0079 08       		.uleb128 0x8
+ 398 007a 34       		.uleb128 0x34
+ 399 007b 00       		.byte	0
+ 400 007c 03       		.uleb128 0x3
+ 401 007d 0E       		.uleb128 0xe
+ 402 007e 3A       		.uleb128 0x3a
+ 403 007f 0B       		.uleb128 0xb
+ 404 0080 3B       		.uleb128 0x3b
+ 405 0081 0B       		.uleb128 0xb
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb2kxKi.s 			page 11
+
+
+ 406 0082 49       		.uleb128 0x49
+ 407 0083 13       		.uleb128 0x13
+ 408 0084 3F       		.uleb128 0x3f
+ 409 0085 19       		.uleb128 0x19
+ 410 0086 02       		.uleb128 0x2
+ 411 0087 18       		.uleb128 0x18
+ 412 0088 00       		.byte	0
+ 413 0089 00       		.byte	0
+ 414 008a 00       		.byte	0
+ 415              		.section	.debug_aranges,"",%progbits
+ 416 0000 34000000 		.4byte	0x34
+ 417 0004 0200     		.2byte	0x2
+ 418 0006 00000000 		.4byte	.Ldebug_info0
+ 419 000a 04       		.byte	0x4
+ 420 000b 00       		.byte	0
+ 421 000c 0000     		.2byte	0
+ 422 000e 0000     		.2byte	0
+ 423 0010 00000000 		.4byte	.LFB0
+ 424 0014 18000000 		.4byte	.LFE0-.LFB0
+ 425 0018 00000000 		.4byte	.LFB1
+ 426 001c 0C000000 		.4byte	.LFE1-.LFB1
+ 427 0020 00000000 		.4byte	.LFB2
+ 428 0024 0C000000 		.4byte	.LFE2-.LFB2
+ 429 0028 00000000 		.4byte	.LFB3
+ 430 002c 18000000 		.4byte	.LFE3-.LFB3
+ 431 0030 00000000 		.4byte	0
+ 432 0034 00000000 		.4byte	0
+ 433              		.section	.debug_ranges,"",%progbits
+ 434              	.Ldebug_ranges0:
+ 435 0000 00000000 		.4byte	.LFB0
+ 436 0004 18000000 		.4byte	.LFE0
+ 437 0008 00000000 		.4byte	.LFB1
+ 438 000c 0C000000 		.4byte	.LFE1
+ 439 0010 00000000 		.4byte	.LFB2
+ 440 0014 0C000000 		.4byte	.LFE2
+ 441 0018 00000000 		.4byte	.LFB3
+ 442 001c 18000000 		.4byte	.LFE3
+ 443 0020 00000000 		.4byte	0
+ 444 0024 00000000 		.4byte	0
+ 445              		.section	.debug_line,"",%progbits
+ 446              	.Ldebug_line0:
+ 447 0000 A5000000 		.section	.debug_str,"MS",%progbits,1
+ 447      02005800 
+ 447      00000201 
+ 447      FB0E0D00 
+ 447      01010101 
+ 448              	.LASF19:
+ 449 0000 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 449      43313120 
+ 449      352E342E 
+ 449      31203230 
+ 449      31363036 
+ 450 0033 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 450      20726576 
+ 450      6973696F 
+ 450      6E203233 
+ 450      37373135 
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb2kxKi.s 			page 12
+
+
+ 451 0066 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 451      66756E63 
+ 451      74696F6E 
+ 451      2D736563 
+ 451      74696F6E 
+ 452              	.LASF17:
+ 453 008e 414D7578 		.ascii	"AMuxSeq_1_curChannel\000"
+ 453      5365715F 
+ 453      315F6375 
+ 453      72436861 
+ 453      6E6E656C 
+ 454              	.LASF15:
+ 455 00a3 414D7578 		.ascii	"AMuxSeq_1_Init\000"
+ 455      5365715F 
+ 455      315F496E 
+ 455      697400
+ 456              	.LASF20:
+ 457 00b2 47656E65 		.ascii	"Generated_Source\\PSoC5\\AMuxSeq_1.c\000"
+ 457      72617465 
+ 457      645F536F 
+ 457      75726365 
+ 457      5C50536F 
+ 458              	.LASF11:
+ 459 00d5 666C6F61 		.ascii	"float\000"
+ 459      7400
+ 460              	.LASF1:
+ 461 00db 756E7369 		.ascii	"unsigned char\000"
+ 461      676E6564 
+ 461      20636861 
+ 461      7200
+ 462              	.LASF5:
+ 463 00e9 6C6F6E67 		.ascii	"long unsigned int\000"
+ 463      20756E73 
+ 463      69676E65 
+ 463      6420696E 
+ 463      7400
+ 464              	.LASF3:
+ 465 00fb 73686F72 		.ascii	"short unsigned int\000"
+ 465      7420756E 
+ 465      7369676E 
+ 465      65642069 
+ 465      6E7400
+ 466              	.LASF18:
+ 467 010e 414D7578 		.ascii	"AMuxSeq_1_initVar\000"
+ 467      5365715F 
+ 467      315F696E 
+ 467      69745661 
+ 467      7200
+ 468              	.LASF12:
+ 469 0120 646F7562 		.ascii	"double\000"
+ 469      6C6500
+ 470              	.LASF16:
+ 471 0127 414D7578 		.ascii	"AMuxSeq_1_Stop\000"
+ 471      5365715F 
+ 471      315F5374 
+ 471      6F7000
+ 472              	.LASF10:
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb2kxKi.s 			page 13
+
+
+ 473 0136 696E7438 		.ascii	"int8\000"
+ 473      00
+ 474              	.LASF22:
+ 475 013b 414D7578 		.ascii	"AMuxSeq_1_GetChannel\000"
+ 475      5365715F 
+ 475      315F4765 
+ 475      74436861 
+ 475      6E6E656C 
+ 476              	.LASF8:
+ 477 0150 756E7369 		.ascii	"unsigned int\000"
+ 477      676E6564 
+ 477      20696E74 
+ 477      00
+ 478              	.LASF7:
+ 479 015d 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 479      206C6F6E 
+ 479      6720756E 
+ 479      7369676E 
+ 479      65642069 
+ 480              	.LASF6:
+ 481 0174 6C6F6E67 		.ascii	"long long int\000"
+ 481      206C6F6E 
+ 481      6720696E 
+ 481      7400
+ 482              	.LASF13:
+ 483 0182 63686172 		.ascii	"char\000"
+ 483      00
+ 484              	.LASF14:
+ 485 0187 414D7578 		.ascii	"AMuxSeq_1_Start\000"
+ 485      5365715F 
+ 485      315F5374 
+ 485      61727400 
+ 486              	.LASF2:
+ 487 0197 73686F72 		.ascii	"short int\000"
+ 487      7420696E 
+ 487      7400
+ 488              	.LASF9:
+ 489 01a1 75696E74 		.ascii	"uint8\000"
+ 489      3800
+ 490              	.LASF4:
+ 491 01a7 6C6F6E67 		.ascii	"long int\000"
+ 491      20696E74 
+ 491      00
+ 492              	.LASF0:
+ 493 01b0 7369676E 		.ascii	"signed char\000"
+ 493      65642063 
+ 493      68617200 
+ 494              	.LASF21:
+ 495 01bc 433A5C55 		.ascii	"C:\\Users\\JeffSnyder\\Desktop\\PSOC5_electrosteel_"
+ 495      73657273 
+ 495      5C4A6566 
+ 495      66536E79 
+ 495      6465725C 
+ 496 01eb 73747269 		.ascii	"stringsensors\\CE210514_PSOC3_5_Thermistor.cydsn\000"
+ 496      6E677365 
+ 496      6E736F72 
+ 496      735C4345 
+ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccb2kxKi.s 			page 14
+
+
+ 496      32313035 
+ 497              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran
