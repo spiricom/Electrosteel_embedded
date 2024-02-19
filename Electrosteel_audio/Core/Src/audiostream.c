@@ -432,7 +432,7 @@ void __ATTR_ITCMRAM updateStateFromSPIMessage(uint8_t offset)
 
 
 
-inline void voiceChangeCheck(void)
+void voiceChangeCheck(void)
 {
 	if (voice != prevVoice)
 	{

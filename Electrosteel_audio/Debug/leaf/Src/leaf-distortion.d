@@ -5,9 +5,9 @@ leaf/Src/leaf-distortion.o: \
  /Users/jeffsnyder/dev/LEAF/leaf/Src/../Inc/leaf-mempool.h \
  /Users/jeffsnyder/dev/LEAF/leaf/Src/../Inc/../leaf-config.h \
  /Users/jeffsnyder/dev/LEAF/leaf/Src/../Inc/leaf-math.h \
+ /Users/jeffsnyder/dev/LEAF/leaf/Src/../Inc/leaf-tables.h \
  /Users/jeffsnyder/dev/LEAF/leaf/Src/../Inc/leaf-filters.h \
  /Users/jeffsnyder/dev/LEAF/leaf/Src/../Inc/leaf-delay.h \
- /Users/jeffsnyder/dev/LEAF/leaf/Src/../Inc/leaf-tables.h \
  /Users/jeffsnyder/dev/LEAF/leaf/Src/../Inc/leaf-tables.h \
  /Users/jeffsnyder/dev/LEAF/leaf/Src/../Inc/leaf-math.h \
  /Users/jeffsnyder/dev/LEAF/leaf/Src/../Inc/leaf-filters.h \
@@ -49,9 +49,9 @@ leaf/Src/leaf-distortion.o: \
 /Users/jeffsnyder/dev/LEAF/leaf/Src/../Inc/leaf-mempool.h:
 /Users/jeffsnyder/dev/LEAF/leaf/Src/../Inc/../leaf-config.h:
 /Users/jeffsnyder/dev/LEAF/leaf/Src/../Inc/leaf-math.h:
+/Users/jeffsnyder/dev/LEAF/leaf/Src/../Inc/leaf-tables.h:
 /Users/jeffsnyder/dev/LEAF/leaf/Src/../Inc/leaf-filters.h:
 /Users/jeffsnyder/dev/LEAF/leaf/Src/../Inc/leaf-delay.h:
-/Users/jeffsnyder/dev/LEAF/leaf/Src/../Inc/leaf-tables.h:
 /Users/jeffsnyder/dev/LEAF/leaf/Src/../Inc/leaf-tables.h:
 /Users/jeffsnyder/dev/LEAF/leaf/Src/../Inc/leaf-math.h:
 /Users/jeffsnyder/dev/LEAF/leaf/Src/../Inc/leaf-filters.h:
