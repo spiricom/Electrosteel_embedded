@@ -9,6 +9,7 @@
 
 #define BOOTLOAD_STYLE
 
+const float versionNumber = 1.15f;
 
 uint32_t prevLastBufferBegin[2];
 uint32_t lastBufferBegin[2];
@@ -51,6 +52,7 @@ int8_t volumeInt = 0;
 uint8_t volumeWaitingToSend = 0;
 uint8_t midiSendOn = 0;
 uint8_t midiBarSendOn = 0;
+uint8_t midiDebugSendOn = 0;
 uint8_t pitchSmoothing = 0;
 uint8_t controlSmoothing = 0;
 uint8_t octaveAction = 0;
@@ -64,6 +66,7 @@ uint16_t messageArraySendCount = 0;
 uint16_t messageArraySize = 0;
 
 uint8_t sysexMessageInProgress = 0;
+uint8_t pedalHiRes = 0;
 
 uint8_t bufCount = 0;
 volatile uint8_t sendingMessage = 0;
@@ -261,6 +264,7 @@ float pedals[NUM_PEDALS][NUM_STRINGS];
 uint8_t pedal_cc_assignments[NUM_PEDALS] = {0, 1, 2, 3, 4, 8, 9, 7, 6, 5};
 float openStringFrequencies[NUM_STRINGS];
 float stringMappedPositionsInRatios[NUM_SLIDERS];
+uint16_t stringMappedPositionsInRatiosInt[NUM_SLIDERS];
 float stringMappedPositionsInMIDI[NUM_SLIDERS];
 uint16_t barMidiOuterStrings[2];
 float stringFrequencies[NUM_STRINGS];
@@ -368,7 +372,7 @@ void burnInitialPedalZeroPositions()
         rawAngle = I2C_1_MasterReadByte(1) << 8;
         //I2C_1_MasterSendRestart(0x36, 1);
         rawAngle +=  I2C_1_MasterReadByte(0);
-         I2C_1_MasterSendStop(); 
+        I2C_1_MasterSendStop(); 
         
         CyDelay(1);
 
@@ -515,7 +519,7 @@ void loadEEPROMdefaults(void)
     EEPROM_WriteByte(0,EEPROM_PEDALSUM_OFFSET);
     EEPROM_WriteByte(64,EEPROM_DEADZONES_OFFSET);
     EEPROM_WriteByte(0,EEPROM_OCTAVE_ACTION_OFFSET);
-    EEPROM_WriteByte(114,EEPROM_STRING_REP_OFFSET);// (strings 3 and 8)
+    EEPROM_WriteByte(39,EEPROM_STRING_REP_OFFSET);// (strings 3 and 8)
     EEPROM_WriteByte(0,EEPROM_DUAL_SLIDER_OFFSET);
     EEPROM_WriteByte(64,EEPROM_VOLUME_OFFSET);
 }
@@ -542,7 +546,24 @@ int main(void)
     USB_SetPowerStatus(USB_DEVICE_STATUS_SELF_POWERED);
     my_Vbus_ISR_StartEx(Vbus_function);
     
-    CyDelay(4000);
+    
+        //set up for the OLED screen's first write
+    I2Cbuff1[0] = 1<<6;
+    status = I2C_MasterWriteBlocking(0x70, 1, I2C_1_MODE_COMPLETE_XFER);
+    myGFX_init(128, 64);
+    myGFX_setFont(0);
+    OLED_init(128, 64);
+    //OLEDwriteInt(currentCopedent , 2, 0,FourthLine);
+    OLEDwriteString("ELECTROSTEEL", 12, 0, FirstLine);
+    OLEDwriteFixedFloat(versionNumber, 3, 2, 16, SecondLine);
+    //OLEDwriteString((char *)&copedentNamesArray[currentCopedent][0], COPEDENT_NAME_CLIPPED_LENGTH, OLEDgetCursor(), FourthLine);
+    OLED_draw(128, 64);
+    
+    
+    I2Cbuff1[0] = 1<<2;
+    status = I2C_MasterWriteBlocking(0x70, 1, I2C_1_MODE_COMPLETE_XFER);
+    
+    CyDelay(500);
     //read from eeprom all the stored user settings
     
     //check if this is the first time it's ever booted up, in which case there will be no copedents loaded)
@@ -648,20 +669,7 @@ int main(void)
     currentCopedent = necks[currentNeck];
     CyDelay(10);
     
-    //set up for the OLED screen's first write
-    I2Cbuff1[0] = 1<<6;
-    status = I2C_MasterWriteBlocking(0x70, 1, I2C_1_MODE_COMPLETE_XFER);
-    myGFX_init(128, 64);
-    myGFX_setFont(0);
-    OLED_init(128, 64);
-    OLEDwriteInt(currentCopedent , 2, 0,FourthLine);
-    OLEDwriteString(" ", 1, OLEDgetCursor(), FourthLine);
-    OLEDwriteString((char *)&copedentNamesArray[currentCopedent][0], COPEDENT_NAME_CLIPPED_LENGTH, OLEDgetCursor(), FourthLine);
-    OLED_draw(128, 64);
-    
-    
-    I2Cbuff1[0] = 1<<2;
-    status = I2C_MasterWriteBlocking(0x70, 1, I2C_1_MODE_COMPLETE_XFER);
+
 
     for (int w = 0; w < 8; w++)
     {
@@ -691,7 +699,7 @@ int main(void)
     myArray[31] = 253;
 
     main_counter = 0;
-
+    //burnInitialPedalZeroPositions();
 	for(;;)
     {
         
@@ -940,16 +948,33 @@ int main(void)
             }
             if (midiSendOn)
             {
-                u7bit_volumePedal = processed_volumePedal >> 5;
-                if ( u7bit_volumePedal != prev_7bit_volumePedal)
+                if (!pedalHiRes)
                 {
-                    //uint16_t tempPedal = processed_volumePedal;
-                    
-                    sendMIDIControlChange(13, u7bit_volumePedal, 0);
-                    //sendMIDIControlChange(22, ( tempPedal & 127), 0);
+                    u7bit_volumePedal = processed_volumePedal >> 5;
+                    if ( u7bit_volumePedal != prev_7bit_volumePedal)
+                    {
+                        uint16_t tempPedal = processed_volumePedal;
+                        
+                        sendMIDIControlChange(13, u7bit_volumePedal, 0);
+                        //sendMIDIControlChange(24, (tempPedal & 32), 0); //remaining 5 bits for 4096 resolution
+                    }
+                     //prev_processed_volumePedal = processed_volumePedal;
+                    prev_7bit_volumePedal = u7bit_volumePedal;
                 }
-                 //prev_processed_volumePedal = processed_volumePedal;
-                prev_7bit_volumePedal = u7bit_volumePedal;
+                else
+                {
+                    
+                    if ( processed_volumePedal != prev_processed_volumePedal)
+                    {
+                        u7bit_volumePedal = processed_volumePedal >> 5;
+                        uint8_t tempPedal = ((uint16_t)processed_volumePedal) & 32;
+                        
+                        sendMIDIControlChange(13, u7bit_volumePedal, 0);
+                        sendMIDIControlChange(24, tempPedal, 0); //remaining 5 bits for 4096 resolution
+                    }
+                    prev_processed_volumePedal = processed_volumePedal;
+                    //prev_7bit_volumePedal = u7bit_volumePedal;
+                }
             }
         }
         
@@ -971,7 +996,12 @@ int main(void)
                 //
                 if(bar[i] != prevBar[i])
                 {
-    				
+    				if (midiDebugSendOn)
+                    {
+                        sendMIDIControlChange(34+(i*3), bar[i] & 127, 1);
+                        sendMIDIControlChange(33+(i*3), (bar[i] >> 7) & 127, 1);
+                        sendMIDIControlChange(32+(i*3), (bar[i] >> 14) & 127, 1);
+                    }
                     if ((bar[i] == 65535) || (bar[i] > fretMeasurements[i][0]))
     				{
     					stringMappedPositionsInRatios[i] = 1.0f;
@@ -983,6 +1013,10 @@ int main(void)
                             if ((bar[i] <=  fretMeasurements[i][j]) && (bar[i] >  fretMeasurements[i][j+1]))
                             {
                                 stringMappedPositionsInRatios[i] = map((float)bar[i], fretMeasurements[i][j], fretMeasurements[i][j+1], fretScalingInRatios[j], fretScalingInRatios[j + 1]);
+                                if (midiDebugSendOn)
+                                {
+                                    sendMIDIControlChange(44, j, 1);
+                                }
                                 break;
                             }
                         }
@@ -990,6 +1024,13 @@ int main(void)
                     else
                     {
                         stringMappedPositionsInRatios[i] = map((float)bar[i], fretMeasurements[i][NUM_FRET_MEASUREMENTS-2], fretMeasurements[i][NUM_FRET_MEASUREMENTS-1], fretScalingInRatios[NUM_FRET_MEASUREMENTS-2], fretScalingInRatios[NUM_FRET_MEASUREMENTS-1]);
+                    }
+                    stringMappedPositionsInRatiosInt[i] = stringMappedPositionsInRatios[i]*16384.0f;
+                    if (midiDebugSendOn)
+                    {
+                        sendMIDIControlChange(40+(i*3), stringMappedPositionsInRatiosInt[i] & 127, 1);
+                        sendMIDIControlChange(39+(i*3), (stringMappedPositionsInRatiosInt[i] >> 7) & 127, 1);
+                        sendMIDIControlChange(38+(i*3), (stringMappedPositionsInRatiosInt[i] >> 14) & 127, 1);
                     }
                 }
                 //
@@ -1074,6 +1115,16 @@ int main(void)
                         (copedent[currentCopedent][3][i] * pedals_float[7]) +
                         (copedent[currentCopedent][1][i] * pedals_float[8]) +
                         (copedent[currentCopedent][2][i] * pedals_float[9])) + transposeFloat;
+                if (i == 0)
+                {
+                    uint16_t pedalsMIDIInt = pedalsMIDI * 512.0f;
+                    if (midiDebugSendOn)
+                    {
+                        sendMIDIControlChange(47+(i*3), pedalsMIDIInt & 127, 1);
+                        sendMIDIControlChange(46+(i*3), (pedalsMIDIInt >> 7) & 127, 1);
+                        sendMIDIControlChange(45+(i*3), (pedalsMIDIInt >> 14) & 127, 1);
+                    }
+                }
             }
             else
             {
@@ -1125,6 +1176,24 @@ int main(void)
             
             float computerMIDIOffset = barMIDI + pedalsMIDI - openStringMIDI_Int[i];// + stringOctave[i];
             
+            if (midiDebugSendOn)
+            {
+                if (i == 0)
+                {
+                        uint16_t barMIDIInt = barMIDI * 512.0f;
+                        sendMIDIControlChange(50, barMIDIInt & 127, 1);
+                        sendMIDIControlChange(49, (barMIDIInt >> 7) & 127, 1);
+                        
+                        sendMIDIControlChange(48, (barMIDIInt >> 14) & 127, 1);
+                        uint16_t openStringMIDI_Int2 = openStringMIDI_Int[0] * 512.0f;
+                        sendMIDIControlChange(53, openStringMIDI_Int2 & 127, 1);
+                        sendMIDIControlChange(52, (openStringMIDI_Int2 >> 7) & 127, 1);
+                        sendMIDIControlChange(51, (openStringMIDI_Int2 >> 14) & 127, 1);
+                }
+            }
+            
+            
+            
             float pitchBendAmount = (computerMIDIOffset * 170.6666666666667f) + 8192.0f;  // 14bit number divide by 2 for signed, then divided by 48 for 48 semitones up/down range
             if (midiSendOn)
             {
@@ -1159,7 +1228,7 @@ int main(void)
         }
 
         
-        //make sure previous SPI2 transmission has completed before transferring the remaining midi date
+        //make sure previous SPI2 transmission has completed before transferring the remaining midi data
         while (0u == ((SPIM_1_ReadTxStatus() & SPIM_1_STS_SPI_DONE) || (SPIM_1_ReadTxStatus() & SPIM_1_STS_SPI_IDLE )))
         {
             ;
@@ -1274,6 +1343,7 @@ int main(void)
             EEPROM_WriteByte(patchNum, EEPROM_CURRENT_PRESET_OFFSET);
             neckPreset[currentNeck] = patchNum;
             EEPROM_WriteByte(patchNum, EEPROM_NECK_PRESETS_OFFSET + currentNeck);
+            presetAlreadyDisplayed[presetNumberToStore] = 0;
         }
         
         else if (sendKnobs)
@@ -2054,11 +2124,24 @@ void parseSysex(void)
     else if (sysexBuffer[sysexReadPointer & sysexPointerMask] == 2) //its a copedent
     {
         sysexMessageInProgress = 1; // set a flag that we've started a sysex preset transfer. May take multiple sysex parse calls on the chunks to complete
+        uint8_t ignore = 0;
         currentFloat = 0;
         copedentNumberToWrite = sysexBuffer[(messageStart+1) & sysexPointerMask];
-        currentCopedent = copedentNumberToWrite;
-        necks[currentNeck] = currentCopedent;
-
+        if (copedentNumberToWrite > 6)
+        {
+            //ignore, number is out of range
+            sysexMessageInProgress = 0;
+            // sysexPointer = 0;
+            sendingMessage = 0;
+            parseThatMF = 0;
+            ignore = 1;
+            
+        }
+        if (!ignore)
+        {
+            currentCopedent = copedentNumberToWrite;
+            necks[currentNeck] = currentCopedent;
+        }
               
         
         union breakFloat theVal;
@@ -2069,9 +2152,12 @@ void parseSysex(void)
         {
             //presetArray[i-2] = sysexBuffer[i] & 127; // pass on the first 14 elements as 8-bit bytes (they are the chars for the name string)
             uint8_t tempChar = sysexBuffer[sysexReadPointer & sysexPointerMask] & 127;
-            copedentNamesArray[copedentNumberToWrite][(i-2)] = tempChar;//not sure about the minus 2 part and mod
-            checkBase = EEPROM_COPEDENT_OFFSET + (COPEDENT_SIZE_IN_BYTES * copedentNumberToWrite);
-            checkStatus = EEPROM_WriteByte(tempChar, EEPROM_COPEDENT_OFFSET + (i - 2) + (COPEDENT_SIZE_IN_BYTES * copedentNumberToWrite));
+            if (!ignore)
+            {
+                copedentNamesArray[copedentNumberToWrite][(i-2)] = tempChar;//not sure about the minus 2 part and mod
+                checkBase = EEPROM_COPEDENT_OFFSET + (COPEDENT_SIZE_IN_BYTES * copedentNumberToWrite);
+                checkStatus = EEPROM_WriteByte(tempChar, EEPROM_COPEDENT_OFFSET + (i - 2) + (COPEDENT_SIZE_IN_BYTES * copedentNumberToWrite));
+            }
             sysexReadPointer++;
         }
         
@@ -2092,16 +2178,21 @@ void parseSysex(void)
                     theVal.u32 |= (sysexBuffer[(i+2) & sysexPointerMask] << 14);
                     theVal.u32 |= (sysexBuffer[(i+3) & sysexPointerMask] << 7);
                     theVal.u32 |= (sysexBuffer[(i+4) & sysexPointerMask] & 127);
-                    copedent[copedentNumberToWrite][pedalToWrite][stringChange] = theVal.f;
-                    uint16_t tempIntVersion = (uint16_t)((theVal.f * 256.0f) + 32768.0f);
-                    uint8_t tempHigh = tempIntVersion >> 8;
-                    uint8_t tempLow = tempIntVersion & 255;
+                    if (!ignore)
+                    {
+                        copedent[copedentNumberToWrite][pedalToWrite][stringChange] = theVal.f;
                     
                     
-                    uint16_t stringStartLoc = stringChange * 2;
-                    checkBase = EEPROM_COPEDENT_OFFSET + stringStartLoc + pedalStartLoc + (COPEDENT_SIZE_IN_BYTES * copedentNumberToWrite) + COPEDENT_NAME_LENGTH_IN_BYTES;
-                    checkStatus = EEPROM_WriteByte(tempHigh, checkBase);
-                    checkStatus = EEPROM_WriteByte(tempLow, checkBase + 1);
+                        uint16_t tempIntVersion = (uint16_t)((theVal.f * 256.0f) + 32768.0f);
+                        uint8_t tempHigh = tempIntVersion >> 8;
+                        uint8_t tempLow = tempIntVersion & 255;
+                    
+                    
+                        uint16_t stringStartLoc = stringChange * 2;
+                        checkBase = EEPROM_COPEDENT_OFFSET + stringStartLoc + pedalStartLoc + (COPEDENT_SIZE_IN_BYTES * copedentNumberToWrite) + COPEDENT_NAME_LENGTH_IN_BYTES;
+                        checkStatus = EEPROM_WriteByte(tempHigh, checkBase);
+                        checkStatus = EEPROM_WriteByte(tempLow, checkBase+1);
+                    }
                     currentFloat++;
                     i = (i+5);
                 }

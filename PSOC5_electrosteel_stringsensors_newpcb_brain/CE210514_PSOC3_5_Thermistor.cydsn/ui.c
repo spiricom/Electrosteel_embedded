@@ -29,7 +29,7 @@ uint8_t button3Up = 1;
 uint8_t button4Up = 1;
 uint8_t shiftUp = 1;
 uint8_t editingSliderRepString = 0;
-uint8_t whichMidiSendSelected = 0;
+int8_t whichMidiSendSelected = 0;
 uint8_t whichFirmwareUpdateSelected = 0;
 uint8_t controlsDisplayed = 0;
 
@@ -812,9 +812,10 @@ void menuAction(enum direction action)
                 OLEDclear(128, 64);
                 myGFX_setFont(2);
                 OLEDtextColor(1, 0);
-                OLEDwriteString("SEND MIDI ", 10, 0, FirstLine);
-                GFXfillRect(&theGFX, 76, 0, 37, 16, !whichMidiSendSelected);
-                OLEDtextColor(whichMidiSendSelected, !whichMidiSendSelected);
+                OLEDwriteString("SEND MIDI  ", 11, 0, FirstLine);
+                uint8_t midiselected= (whichMidiSendSelected==0);
+                GFXfillRect(&theGFX, 80, 0, 37, 16, midiselected);
+                OLEDtextColor(!midiselected,midiselected);
                 if (midiSendOn)
                 {
                     GFXwrite(&theGFX, 79);
@@ -826,13 +827,28 @@ void menuAction(enum direction action)
                     GFXwrite(&theGFX, 70);
                     GFXwrite(&theGFX, 70);
                 }
-                
                 OLEDtextColor(1, 0);
-                OLEDwriteString("SEND BAR  ", 10, 0, SecondLine);
-                
-                GFXfillRect(&theGFX, 76, 16, 37, 16, whichMidiSendSelected);
-                OLEDtextColor(!whichMidiSendSelected, whichMidiSendSelected);
+                OLEDwriteString("SEND BAR   ", 11, 0, SecondLine);
+                midiselected= (whichMidiSendSelected==1);
+                GFXfillRect(&theGFX, 80, 16, 37, 16, midiselected);
+                OLEDtextColor(!midiselected,midiselected);
                 if (midiBarSendOn)
+                {
+                    GFXwrite(&theGFX, 79);
+                    GFXwrite(&theGFX, 78);
+                }
+                else
+                {
+                    GFXwrite(&theGFX, 79);
+                    GFXwrite(&theGFX, 70);
+                    GFXwrite(&theGFX, 70);
+                }
+                OLEDtextColor(1, 0);
+                OLEDwriteString("SEND DEBUG ", 11, 0, ThirdLine);
+                midiselected= (whichMidiSendSelected==2);
+                GFXfillRect(&theGFX, 80, 32, 37, 16, midiselected);
+                OLEDtextColor(!midiselected,midiselected);
+                if (midiDebugSendOn)
                 {
                     GFXwrite(&theGFX, 79);
                     GFXwrite(&theGFX, 78);
@@ -916,6 +932,7 @@ void menuAction(enum direction action)
         if ((action == Right) || (action == Enter))
         {
             fretMeasurements[0][fretToCalibrate] = bar[0];
+            sendMIDIControlChange(64, bar[0]/512, 1);
             fretMeasurements[1][fretToCalibrate] = bar[1];
             fretToCalibrate++;
             if (fretToCalibrate == NUM_FRET_MEASUREMENTS)
@@ -1028,38 +1045,55 @@ void menuAction(enum direction action)
         
         if (action == Right)
         {
-            if (!whichMidiSendSelected)
+            if (whichMidiSendSelected ==0)
             {
                 midiSendOn = (midiSendOn+1)&1;
             }
-            else
+            else if (whichMidiSendSelected == 1)
             {
                 midiBarSendOn = (midiBarSendOn+1)&1;
+            }
+            else if (whichMidiSendSelected == 2)
+            {
+                midiDebugSendOn = (midiDebugSendOn+1)&1;
             }
         }
         else if (action == Left)
         {
-            if (!whichMidiSendSelected)
+            if (whichMidiSendSelected ==0)
             {
                 midiSendOn = (midiSendOn-1)&1;
             }
-            else
+            else if (whichMidiSendSelected == 1)
             {
                 midiBarSendOn = (midiBarSendOn-1)&1;
+            }
+            else if (whichMidiSendSelected == 2)
+            {
+                midiDebugSendOn = (midiDebugSendOn-1)&1;
             }
         }
         else if (action == Up)
         {
-            whichMidiSendSelected = (whichMidiSendSelected+1)&1;
+            whichMidiSendSelected = (whichMidiSendSelected-1);
         }
         else if (action == Down)
         {
-            whichMidiSendSelected = (whichMidiSendSelected-1)&1;
+            whichMidiSendSelected = (whichMidiSendSelected+1);
+        }
+        if (whichMidiSendSelected < 0)
+        {
+            whichMidiSendSelected = 2;
+        }
+        else if (whichMidiSendSelected > 2)
+        {
+            whichMidiSendSelected = 0;
         }
         OLEDtextColor(1, 0);
-        OLEDwriteString("SEND MIDI ", 10, 0, FirstLine);
-        GFXfillRect(&theGFX, 76, 0, 37, 16, !whichMidiSendSelected);
-        OLEDtextColor(whichMidiSendSelected, !whichMidiSendSelected);
+        OLEDwriteString("SEND MIDI  ", 11, 0, FirstLine);
+        uint8_t midiselected= (whichMidiSendSelected==0);
+        GFXfillRect(&theGFX, 80, 0, 37, 16, midiselected);
+        OLEDtextColor(!midiselected,midiselected);
         if (midiSendOn)
         {
             GFXwrite(&theGFX, 79);
@@ -1072,10 +1106,27 @@ void menuAction(enum direction action)
             GFXwrite(&theGFX, 70);
         }
         OLEDtextColor(1, 0);
-        OLEDwriteString("SEND BAR  ", 10, 0, SecondLine);
-        GFXfillRect(&theGFX, 76, 16, 37, 16, whichMidiSendSelected);
-        OLEDtextColor(!whichMidiSendSelected, whichMidiSendSelected);
+        OLEDwriteString("SEND BAR   ", 11, 0, SecondLine);
+        midiselected= (whichMidiSendSelected==1);
+        GFXfillRect(&theGFX, 80, 16, 37, 16, midiselected);
+        OLEDtextColor(!midiselected,midiselected);
         if (midiBarSendOn)
+        {
+            GFXwrite(&theGFX, 79);
+            GFXwrite(&theGFX, 78);
+        }
+        else
+        {
+            GFXwrite(&theGFX, 79);
+            GFXwrite(&theGFX, 70);
+            GFXwrite(&theGFX, 70);
+        }
+        OLEDtextColor(1, 0);
+        OLEDwriteString("SEND DEBUG ", 11, 0, ThirdLine);
+        midiselected= (whichMidiSendSelected==2);
+        GFXfillRect(&theGFX, 80, 32, 37, 16, midiselected);
+        OLEDtextColor(!midiselected,midiselected);
+        if (midiDebugSendOn)
         {
             GFXwrite(&theGFX, 79);
             GFXwrite(&theGFX, 78);
@@ -1442,7 +1493,17 @@ void exitLeverCalibrationMode(void)
     for (int i = 0; i < NUM_PEDALS; i++)
     {
         //if you are closer to pedal high than pedal low, then switch high and low, the sensor is reading backwards
-        if (angle[i] > (pedals_low[i]+20))
+        int distanceFromLow = (angle[i] - pedals_low[i]);
+        if (distanceFromLow < 0)
+        {
+            distanceFromLow *= -1;
+        }
+        int distanceFromHigh = (angle[i] - pedals_high[i]);
+        if (distanceFromHigh < 0)
+        {
+            distanceFromHigh *= -1;
+        }
+        if (distanceFromLow > distanceFromHigh)
         {
             pedal_inverted[i] = 1;
         }

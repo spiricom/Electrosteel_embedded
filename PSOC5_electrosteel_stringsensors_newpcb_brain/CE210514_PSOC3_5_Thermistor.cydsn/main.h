@@ -131,6 +131,7 @@ extern uint8_t stringRepresentation[NUM_SLIDERS];
 extern uint8_t octaveAction;
 extern uint8_t midiSendOn;
 extern uint8_t midiBarSendOn;
+extern uint8_t midiDebugSendOn;
 extern uint8_t sendFirmwareUpdateRequest;
 extern uint8_t knobFrozen[NUM_MACROS*NUM_MACRO_PAGES];
 extern int16_t prevMacroKnobValues[NUM_MACROS*NUM_MACRO_PAGES];
@@ -173,6 +174,6 @@ typedef enum _presetArraySectionState
 uint8 I2C_MasterWriteBlocking(uint8 i2CAddr, uint16 nbytes, uint8_t mode);
 void calculatePedalRatios(void);
 void calculateStringRepDivider(void);
-
+void sendMIDIControlChange(int CCnum, int CCval, int channel);
 
 /* [] END OF FILE */
