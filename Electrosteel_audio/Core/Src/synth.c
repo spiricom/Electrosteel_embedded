@@ -271,7 +271,7 @@ void audioInitSynth()
 			tVZFilterBell_init(&bell1[i][v], 1000.0f, 1.9f, 1.0f, &leaf);
 			tVZFilterBell_setSampleRate(&bell1[i][v], SAMPLE_RATE * OVERSAMPLE);
 			tCompressor_init(&comp[i][v], &leaf);
-			tCompressor_setTables(&comp[i][v], atoDbTable, dbtoATable, 0.00001f, 4.0f, -90.0f, 30.0f, ATODB_TABLE_SIZE, DBTOA_TABLE_SIZE);
+			tCompressor_setTables(&comp[i][v], atoDbTable, dbtoATable, 0.00001f, 4.0f, -90.0f, 50.0f, ATODB_TABLE_SIZE, DBTOA_TABLE_SIZE);
 			tCompressor_setSampleRate(&comp[i][v], SAMPLE_RATE * OVERSAMPLE);
 			tCycle_init(&mod1[i][v], &leaf);
 			tCycle_setSampleRate(&mod1[i][v], SAMPLE_RATE * OVERSAMPLE);
@@ -611,6 +611,17 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 					}
 				}
 			}
+			for (int j = 0; j < OVERSAMPLE; j++)
+			{
+				if (oversamplerArray[j] > 0.999999f)
+				{
+					oversamplerArray[j] = 0.999999f;
+				}
+				else if (oversamplerArray[j] < -0.999999f)
+				{
+					oversamplerArray[j] = -0.999999f;
+				}
+			}
 			//downsample to get back to normal sample rate
 			//arm_fir_decimate_f32(&osD[v], (float*)&oversamplerArray, &sample, 2);
 			sample = tOversampler_downsample(&os[v], oversamplerArray);
@@ -628,6 +639,16 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 
 				}
 			}
+
+			if (sample > 0.999999f)
+			{
+				sample = 0.999999f;
+			}
+			else if (sample < -0.999999f)
+			{
+				sample = -0.999999f;
+			}
+
 		}
 
 		timeOS = DWT->CYCCNT - tempCountOS;
@@ -670,7 +691,16 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 
 	timeTick = DWT->CYCCNT - tempCountTick;
 
-	return masterSample * audioMasterLevel * 0.98f * antiClickFade;
+	float tempOut = masterSample * audioMasterLevel * 0.98f * antiClickFade;
+	if (tempOut > 0.99999f)
+	{
+		tempOut = 0.99999f;
+	}
+	else if (tempOut < -0.99999f)
+	{
+		tempOut = -0.99999f;
+	}
+	return tempOut;
 }
 
 
@@ -1688,7 +1718,7 @@ float __ATTR_ITCMRAM bcTick(float sample, int v, int string)
 
 float __ATTR_ITCMRAM compressorTick(float sample, int v, int string)
 {
-    return tCompressor_tickWithTableHardKnee(&comp[v][string], sample);
+    return tCompressor_tick(&comp[v][string], sample);
 	//return tCompressor_tick(&comp[v][string], sample);
 }
 

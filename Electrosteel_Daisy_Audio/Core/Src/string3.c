@@ -36,7 +36,7 @@ float prevPuPos[NUM_STRINGS_PER_BOARD];
 float prevSquishedPuPos[NUM_STRINGS_PER_BOARD];
 float finalPuPos[NUM_STRINGS_PER_BOARD];
 
-float string3Defaults[12] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.3019f, 0.1764f, 0.7764f, 0.8155f};
+float string3Defaults[12] = {0.06f, 0.99f, 0.99f, 0.9f, 0.6f, 0.6f, 0.0f, 0.0f, 0.9f, 0.85f, 0.84f, 0.905f};
 
 void __ATTR_ITCMRAM audioInitString3()
 {

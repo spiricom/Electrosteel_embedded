@@ -598,6 +598,28 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 
 					}
 				}
+				for (int j = 0; j < OVERSAMPLE; j++)
+				{
+					if (oversamplerArray[j] > 0.999999f)
+					{
+						oversamplerArray[j] = 0.999999f;
+					}
+					else if (oversamplerArray[j] < -0.999999f)
+					{
+						oversamplerArray[j] = -0.999999f;
+					}
+				}
+			}
+			for (int j = 0; j < OVERSAMPLE; j++)
+			{
+				if (oversamplerArray[j] > 0.999999f)
+				{
+					oversamplerArray[j] = 0.999999f;
+				}
+				else if (oversamplerArray[j] < -0.999999f)
+				{
+					oversamplerArray[j] = -0.999999f;
+				}
 			}
 			//downsample to get back to normal sample rate
 			//arm_fir_decimate_f32(&osD[v], (float*)&oversamplerArray, &sample, 2);
@@ -615,6 +637,15 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 					sample *= fxPostGain[i][v];
 
 				}
+			}
+
+			if (sample > 0.999999f)
+			{
+				sample = 0.999999f;
+			}
+			else if (sample < -0.999999f)
+			{
+				sample = -0.999999f;
 			}
 		}
 
@@ -658,7 +689,16 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 
 	timeTick = DWT->CYCCNT - tempCountTick;
 
-	return masterSample * audioMasterLevel * 0.98f * antiClickFade;
+	float tempOut = masterSample * audioMasterLevel * 0.98f * antiClickFade;
+	if (tempOut > 0.99999f)
+	{
+		tempOut = 0.99999f;
+	}
+	else if (tempOut < -0.99999f)
+	{
+		tempOut = -0.99999f;
+	}
+	return tempOut;
 }
 
 
@@ -1676,8 +1716,7 @@ float __ATTR_ITCMRAM bcTick(float sample, int v, int string)
 
 float __ATTR_ITCMRAM compressorTick(float sample, int v, int string)
 {
-    return tCompressor_tickWithTableHardKnee(&comp[v][string], sample);
-	//return tCompressor_tick(&comp[v][string], sample);
+    return tCompressor_tick(&comp[v][string], sample);
 }
 
 float __ATTR_ITCMRAM  FXlowpassTick(float sample, int v, int string)
