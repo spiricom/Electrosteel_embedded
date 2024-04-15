@@ -2009,6 +2009,12 @@ void  handleSPI (uint8_t offset)
 					midiKeyDivisor = 1.0f / ((params[MIDIKeyMax].realVal[0]*127.0f) - (params[MIDIKeyMin].realVal[0]*127.0f));
 					midiKeySubtractor = (params[MIDIKeyMin].realVal[0] * 127.0f);
 				}
+				/*
+				if (whichParam == Transpose)
+				{
+					masterTranspose = params[Transpose].realVal[0];
+				}
+				*/
 				if (whichParam == FXOrder)
 				{
 					fxPre = params[FXOrder].realVal[0] > 0.5f;

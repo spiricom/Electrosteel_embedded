@@ -96,7 +96,7 @@ float stringFundamentals[3][3] =
 };
 
 
-float additiveDefaults[12] = {0.15f, 0.50f, 0.7f, 0.95f, 0.20f, 0.5f, 0.63f, 0.96f, 0.3f, 0.1764f, 0.7f, 0.5f};
+float additiveDefaults[12] = {0.1f, 0.50f, 0.5f, 0.95f, 0.0f, 0.1f, 0.2f, 0.96f, 0.3f, 0.1764f, 0.99f, 0.4f};
 
 
 void __ATTR_ITCMRAM audioInitAdditive()
@@ -436,7 +436,7 @@ float __ATTR_ITCMRAM audioTickAdditive(void)
 	float outVol = 0.006721744f + 0.4720157f*volumeSmoothed - 2.542849f*volumeSmoothed*volumeSmoothed + 6.332339f*volumeSmoothed*volumeSmoothed*volumeSmoothed - 3.271672f*volumeSmoothed*volumeSmoothed*volumeSmoothed*volumeSmoothed;
 
 
-	tempSamp *= 0.5f;
+	tempSamp *= 0.99f;
 	tempSamp *= outVol;
 	tempSamp *= masterVolFromBrain;
 	return tempSamp;

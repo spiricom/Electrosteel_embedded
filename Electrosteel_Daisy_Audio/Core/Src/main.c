@@ -2108,25 +2108,30 @@ void  handleSPI (uint8_t offset)
 						{
 							mappings[whichMapping].sourceSmoothed[whichSlot] = 0;
 						}
+
 						if ((source >= MACRO_SOURCE_OFFSET) && (source < (LFO_SOURCE_OFFSET)))
 						{
 							knobTicked[source-MACRO_SOURCE_OFFSET] = 1;
 						}
-						if ((source >= LFO_SOURCE_OFFSET) && (source < (LFO_SOURCE_OFFSET + NUM_LFOS)))
+						else if ((source >= LFO_SOURCE_OFFSET) && (source < (LFO_SOURCE_OFFSET + NUM_LFOS)))
 						{
 							lfoOn[source - LFO_SOURCE_OFFSET] = 1;
 						}
-						if ((source >= ENV_SOURCE_OFFSET) && (source < (ENV_SOURCE_OFFSET + NUM_ENV)))
+						else if ((source >= ENV_SOURCE_OFFSET) && (source < (ENV_SOURCE_OFFSET + NUM_ENV)))
 						{
 							envOn[source - ENV_SOURCE_OFFSET] = 1;
 						}
-						if ((source >= OSC_SOURCE_OFFSET) && (source < (OSC_SOURCE_OFFSET+NUM_OSC)))
+						else if ((source >= OSC_SOURCE_OFFSET) && (source < (OSC_SOURCE_OFFSET+NUM_OSC)))
 						{
 							oscOn[source - OSC_SOURCE_OFFSET] = 1;
 						}
-						if ((source >= NOISE_SOURCE_OFFSET) && (source < (NOISE_SOURCE_OFFSET+1)))
+						else if ((source >= NOISE_SOURCE_OFFSET) && (source < (NOISE_SOURCE_OFFSET+1)))
 						{
 							noiseOn = 1;
+						}
+						else if ((source >= PEDAL_SOURCE_OFFSET) && (source < (PEDAL_SOURCE_OFFSET + 10)))
+						{
+							pedalTicked[source-PEDAL_SOURCE_OFFSET] = 1;
 						}
 						mappings[whichMapping].amount[whichSlot] = 0.0f;
 					}
@@ -2151,21 +2156,25 @@ void  handleSPI (uint8_t offset)
 							{
 								knobTicked[scalar-MACRO_SOURCE_OFFSET] = 1;
 							}
-							if ((scalar >= LFO_SOURCE_OFFSET) && (scalar < (LFO_SOURCE_OFFSET + NUM_LFOS)))
+							else if ((scalar >= LFO_SOURCE_OFFSET) && (scalar < (LFO_SOURCE_OFFSET + NUM_LFOS)))
 							{
 								lfoOn[scalar - LFO_SOURCE_OFFSET] = 1;
 							}
-							if ((scalar >= ENV_SOURCE_OFFSET) && (scalar < (ENV_SOURCE_OFFSET + NUM_ENV)))
+							else if ((scalar >= ENV_SOURCE_OFFSET) && (scalar < (ENV_SOURCE_OFFSET + NUM_ENV)))
 							{
 								envOn[scalar - ENV_SOURCE_OFFSET] = 1;
 							}
-							if ((scalar >= OSC_SOURCE_OFFSET) && (scalar < (OSC_SOURCE_OFFSET + NUM_OSC)))
+							else if ((scalar >= OSC_SOURCE_OFFSET) && (scalar < (OSC_SOURCE_OFFSET + NUM_OSC)))
 							{
 								oscOn[scalar - OSC_SOURCE_OFFSET] = 1;
 							}
-							if ((scalar >= NOISE_SOURCE_OFFSET) && (scalar < (NOISE_SOURCE_OFFSET + 1)))
+							else if ((scalar >= NOISE_SOURCE_OFFSET) && (scalar < (NOISE_SOURCE_OFFSET + 1)))
 							{
 								noiseOn = 1;
+							}
+							else if((scalar >= PEDAL_SOURCE_OFFSET) && (scalar < (PEDAL_SOURCE_OFFSET + 10)))
+							{
+								pedalTicked[scalar-PEDAL_SOURCE_OFFSET] = 1;
 							}
 							//TODO: doesn't cleanly remove lfoOn settings during streaming data - after deleting an LFO used as a scalar it will keep computing the LFO. How should we remember what the source of the scalar was when removing it? -JS
 						}

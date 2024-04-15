@@ -66,6 +66,7 @@ void Error_Handler(void);
 float randomNumber(void);
 void CycleCounterInit( void );
 void __ATTR_ITCMRAM handleSPI (uint8_t offset);
+float __ATTR_ITCMRAM scaleFilterResonance(float input);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/

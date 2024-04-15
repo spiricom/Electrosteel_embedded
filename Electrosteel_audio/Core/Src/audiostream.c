@@ -281,10 +281,10 @@ void audioInit()
 	{
 		randomFactors[i] = (randomNumber() * 0.4f) + 0.8f;
 	}
-	LEAF_generate_atodb(atoDbTable, ATODB_TABLE_SIZE, 0.00001f, 1.0f);
+	LEAF_generate_atodb(atoDbTable, ATODB_TABLE_SIZE, 0.00001f, 4.0f);
 	LEAF_generate_dbtoa(dbtoATable, DBTOA_TABLE_SIZE, -90.0f, 50.0f);
 
-	atodbTableScalar = ATODB_TABLE_SIZE_MINUS_ONE/(1.0f-0.00001f);
+	atodbTableScalar = ATODB_TABLE_SIZE_MINUS_ONE/(4.0f-0.00001f);
 	atodbTableOffset = 0.00001f * atodbTableScalar;
 	dbtoaTableScalar = DBTOA_TABLE_SIZE_MINUS_ONE/(50.0f+90.0f);
 	dbtoaTableOffset = -90.0f * dbtoaTableScalar;
@@ -432,7 +432,7 @@ void __ATTR_ITCMRAM updateStateFromSPIMessage(uint8_t offset)
 
 
 
-inline void voiceChangeCheck(void)
+void voiceChangeCheck(void)
 {
 	if (voice != prevVoice)
 	{

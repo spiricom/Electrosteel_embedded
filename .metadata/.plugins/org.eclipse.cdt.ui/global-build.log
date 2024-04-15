@@ -1,7 +1,17 @@
-19:12:46 **** Incremental Build of configuration Debug for project Electrosteel_Daisy_Audio ****
+18:55:41 **** Incremental Build of configuration Debug for project Electrosteel_Daisy_Audio ****
 make -j7 all 
+arm-none-eabi-gcc "../Core/Src/additive.c" -mcpu=cortex-m7 -std=gnu11 -DDEBUG -DUSE_SPI_RELOAD_TRANSFER -DARM_MATH_LOOPUNROLL -DDHSE_VALUE=16000000 -DCORE_CM7 -DSTM32H750IB -DARM_MATH_CM7 -Dsram_layout -DDATA_IN_D2_SRAM -DBOOT_APP -DUSE_HAL_DRIVER -DSTM32H750xx -c -I"/Users/jeffsnyder/dev/CMSIS/Include" -I/Users/jeffsnyder/dev/LEAF/leaf -I../Core/Inc -I../FATFS/Target -I../FATFS/App -I../USB_DEVICE/App -I../USB_DEVICE/Target -I../Drivers/STM32H7xx_HAL_Driver/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Middlewares/Third_Party/FatFs/src -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -Ofast -ffunction-sections -fdata-sections -mslow-flash-data -fno-strict-aliasing -Wall -ggdb -fasm -Wno-stringop-overflow -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/additive.d" -MT"Core/Src/additive.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Core/Src/additive.o"
+arm-none-eabi-gcc -o "Electrosteel_Daisy_Audio.elf" @"objects.list"   -mcpu=cortex-m7 -T"/Users/jeffsnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/STM32H750IBKX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Electrosteel_Daisy_Audio.map" -Wl,--cref -Wl,--gc-sections -nodefaultlibs -static -lnosys --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: Electrosteel_Daisy_Audio.elf
+ 
 arm-none-eabi-size   Electrosteel_Daisy_Audio.elf 
+arm-none-eabi-objdump -h -S  Electrosteel_Daisy_Audio.elf  > "Electrosteel_Daisy_Audio.list"
+arm-none-eabi-objcopy  -O binary  Electrosteel_Daisy_Audio.elf  "Electrosteel_Daisy_Audio.bin"
    text	   data	    bss	    dec	    hex	filename
- 244056	   3260	34219692	34467008	20decc0	Electrosteel_Daisy_Audio.elf
+ 243904	   3260	34219656	34466820	20dec04	Electrosteel_Daisy_Audio.elf
 Finished building: default.size.stdout
+ 
+Finished building: Electrosteel_Daisy_Audio.bin
+ 
+Finished building: Electrosteel_Daisy_Audio.list
  
