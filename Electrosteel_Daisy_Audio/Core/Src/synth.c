@@ -14,7 +14,6 @@
 #include "spi.h"
 #include "parameters.h"
 #include "audiostream.h"
-#include <arm_math.h>
 #include "synth.h"
 #include "string1.h"
 #include "string2.h"
@@ -243,7 +242,7 @@ void audioInitSynth()
 		for (int i = 0; i < NUM_ENV; i++)
 		{
 			tADSRT_init(&envs[i][v], 0.1f,1000.f,0.5f,1.0f,decayExpBuffer, DECAY_EXP_BUFFER_SIZE, &leaf);
-			tADSRT_setLeakFactor(&envs[i][v], ((1.0f - 0.1f) * 0.00005f) + 0.99995f);
+			tADSRT_setLeakFactor(envs[i][v], ((1.0f - 0.1f) * 0.00005f) + 0.99995f);
 		}
 
 		//noise
@@ -254,45 +253,45 @@ void audioInitSynth()
 		{
 			tCrusher_init(&bc[i][v],&leaf);
 			tHighpass_init(&dcBlock1[i][v], 5.0f,&leaf);
-			tHighpass_setSampleRate(&dcBlock1[i][v], SAMPLE_RATE * OVERSAMPLE);
+			tHighpass_setSampleRate(dcBlock1[i][v], SAMPLE_RATE * OVERSAMPLE);
 			tHighpass_init(&dcBlock2[i][v], 5.0f,&leaf);
-			tHighpass_setSampleRate(&dcBlock2[i][v], SAMPLE_RATE * OVERSAMPLE);
+			tHighpass_setSampleRate(dcBlock2[i][v], SAMPLE_RATE * OVERSAMPLE);
 			tTiltFilter_init(&FXTilt[i][v],1000.0f, &leaf);
-			tTiltFilter_setSampleRate(&FXTilt[i][v], SAMPLE_RATE * OVERSAMPLE);
+			tTiltFilter_setSampleRate(FXTilt[i][v], SAMPLE_RATE * OVERSAMPLE);
 			tVZFilterBell_init(&bell1[i][v], 1000.0f, 1.9f, 1.0f, &leaf);
-			tVZFilterBell_setSampleRate(&bell1[i][v], SAMPLE_RATE * OVERSAMPLE);
+			tVZFilterBell_setSampleRate(bell1[i][v], SAMPLE_RATE * OVERSAMPLE);
 			tCompressor_init(&comp[i][v], &leaf);
-			tCompressor_setTables(&comp[i][v], atoDbTable, dbtoATable, 0.00001f, 4.0f, -90.0f, 30.0f, ATODB_TABLE_SIZE, DBTOA_TABLE_SIZE);
-			tCompressor_setSampleRate(&comp[i][v], SAMPLE_RATE * OVERSAMPLE);
+			tCompressor_setTables(comp[i][v], atoDbTable, dbtoATable, 0.00001f, 4.0f, -90.0f, 30.0f, ATODB_TABLE_SIZE, DBTOA_TABLE_SIZE);
+			tCompressor_setSampleRate(comp[i][v], SAMPLE_RATE * OVERSAMPLE);
 			tCycle_init(&mod1[i][v], &leaf);
-			tCycle_setSampleRate(&mod1[i][v], SAMPLE_RATE * OVERSAMPLE);
+			tCycle_setSampleRate(mod1[i][v], SAMPLE_RATE * OVERSAMPLE);
 			tCycle_init(&mod2[i][v], &leaf);
-			tCycle_setSampleRate(&mod2[i][v], SAMPLE_RATE * OVERSAMPLE);
-			tCycle_setFreq(&mod1[i][v], 0.2f);
-			tCycle_setFreq(&mod2[i][v], 0.22222222222f);
+			tCycle_setSampleRate(mod2[i][v], SAMPLE_RATE * OVERSAMPLE);
+			tCycle_setFreq(mod1[i][v], 0.2f);
+			tCycle_setFreq(mod2[i][v], 0.22222222222f);
 
 
 	        tFeedbackLeveler_init(&feedbackControl[i][v], .99f, 0.01f, 0.125f, 0, &leaf);
 
 			//filters
 			tSVF_init(&FXlowpass[i][v], SVFTypeLowpass, 2000.f, 0.7f, &leaf);
-			tSVF_setSampleRate(&FXlowpass[i][v],SAMPLE_RATE * OVERSAMPLE);
+			tSVF_setSampleRate(FXlowpass[i][v],SAMPLE_RATE * OVERSAMPLE);
 			tSVF_init(&FXhighpass[i][v], SVFTypeHighpass, 2000.f, 0.7f, &leaf);
-			tSVF_setSampleRate(&FXhighpass[i][v],SAMPLE_RATE * OVERSAMPLE);
+			tSVF_setSampleRate(FXhighpass[i][v],SAMPLE_RATE * OVERSAMPLE);
 			tSVF_init(&FXbandpass[i][v], SVFTypeBandpass, 2000.f, 0.7f, &leaf);
-			tSVF_setSampleRate(&FXbandpass[i][v],SAMPLE_RATE * OVERSAMPLE);
+			tSVF_setSampleRate(FXbandpass[i][v],SAMPLE_RATE * OVERSAMPLE);
 			tDiodeFilter_init(&FXdiodeFilters[i][v], 2000.f, 1.0f, &leaf);
-			tDiodeFilter_setSampleRate(&FXdiodeFilters[i][v], SAMPLE_RATE * OVERSAMPLE);
+			tDiodeFilter_setSampleRate(FXdiodeFilters[i][v], SAMPLE_RATE * OVERSAMPLE);
 			tVZFilterBell_init(&FXVZfilterPeak[i][v], 2000.f, 1.6f, 1.0f, &leaf);
-			tVZFilterBell_setSampleRate(&FXVZfilterPeak[i][v], SAMPLE_RATE * OVERSAMPLE);
+			tVZFilterBell_setSampleRate(FXVZfilterPeak[i][v], SAMPLE_RATE * OVERSAMPLE);
 			tVZFilterLS_init(&FXVZfilterLS[i][v], 2000.f, 0.6f, 1.0f, &leaf);
-			tVZFilterLS_setSampleRate(&FXVZfilterLS[i][v], SAMPLE_RATE * OVERSAMPLE);
+			tVZFilterLS_setSampleRate(FXVZfilterLS[i][v], SAMPLE_RATE * OVERSAMPLE);
 			tVZFilterHS_init(&FXVZfilterHS[i][v], 2000.f, 0.6f, 1.0f, &leaf);
-			tVZFilterHS_setSampleRate(&FXVZfilterHS[i][v], SAMPLE_RATE * OVERSAMPLE);
+			tVZFilterHS_setSampleRate(FXVZfilterHS[i][v], SAMPLE_RATE * OVERSAMPLE);
 			tVZFilterBR_init(&FXVZfilterBR[i][v], 2000.f, 1.0f, &leaf);
-			tVZFilterBR_setSampleRate(&FXVZfilterBR[i][v], SAMPLE_RATE * OVERSAMPLE);
+			tVZFilterBR_setSampleRate(FXVZfilterBR[i][v], SAMPLE_RATE * OVERSAMPLE);
 			tLadderFilter_init(&FXLadderfilter[i][v], 2000.f, 1.0f, &leaf);
-			tLadderFilter_setSampleRate(&FXLadderfilter[i][v], SAMPLE_RATE * OVERSAMPLE);
+			tLadderFilter_setSampleRate(FXLadderfilter[i][v], SAMPLE_RATE * OVERSAMPLE);
 		}
 
 		for (int i = 0; i < MAX_NUM_MAPPINGS; i++)
@@ -345,7 +344,7 @@ void  audioSwitchToSynth()
 	}
 	for (int i = 0; i < 20; i++)
 	{
-		tExpSmooth_setFactor(&knobSmoothers[i], 0.001f);
+		tExpSmooth_setFactor(knobSmoothers[i], 0.001f);
 		//tExpSmooth_setValAndDest(&knobSmoothers[i], string2Defaults[i]);
 		knobFrozen[i] = 1;
 	}
@@ -366,7 +365,7 @@ void __ATTR_ITCMRAM audioFrameSynth(uint16_t buffer_offset)
 			//note off
 			for (int v = 0; v < NUM_ENV; v++)
 			{
-				tADSRT_clear(&envs[v][i]);
+				tADSRT_clear(envs[v][i]);
 				previousStringInputs[i] = 0;
 			}
 		}
@@ -391,7 +390,7 @@ void __ATTR_ITCMRAM audioFrameSynth(uint16_t buffer_offset)
 						float useVelocity = envParams[EnvelopeVelocity].realVal[i];
 						float envVel = amplitz;
 						if (useVelocity == 0) envVel = 1.f;
-						tADSRT_on(&envs[v][i], envVel);
+						tADSRT_on(envs[v][i], envVel);
 						voiceSounding = 1;
 					}
 				}
@@ -419,7 +418,7 @@ void __ATTR_ITCMRAM audioFrameSynth(uint16_t buffer_offset)
 				{
 					if (envOn[v])
 					{
-						tADSRT_off(&envs[v][i]);
+						tADSRT_off(envs[v][i]);
 					}
 				}
 			}
@@ -483,13 +482,13 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 	timeMap = DWT->CYCCNT - tempCountMap;
 
 	uint32_t tempSmoothing = DWT->CYCCNT;
-	float volumeSmoothed = tExpSmooth_tick(&volumeSmoother);
+	float volumeSmoothed = tExpSmooth_tick(volumeSmoother);
 
 	for (int i = 0; i < 12; i++)
 	{
 		if (knobTicked[i])
 		{
-			knobScaled[i] = tExpSmooth_tick(&knobSmoothers[i]);
+			knobScaled[i] = tExpSmooth_tick(knobSmoothers[i]);
 			for (int v = 0; v < numStringsThisBoard; v++)
 			{
 				sourceValues[MACRO_SOURCE_OFFSET + i][v] = knobScaled[i];
@@ -501,7 +500,7 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 	{
 		if (pedalTicked[i])
 		{
-			pedalScaled[i] = tExpSmooth_tick(&pedalSmoothers[i]);
+			pedalScaled[i] = tExpSmooth_tick(pedalSmoothers[i]);
 			for (int v = 0; v < numStringsThisBoard; v++)
 			{
 				sourceValues[PEDAL_SOURCE_OFFSET + i][v] = pedalScaled[i];
@@ -582,7 +581,7 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 			//oversample for non-linear effects (distortion, etc)
 			//using the arm interpolation and decimation cuts 100 cycles off of the processing
 			//arm_fir_interpolate_f32(&osI[v], &sample, (float*)&oversamplerArray, 1);
-			tOversampler_upsample(&os[v], sample, oversamplerArray);
+			tOversampler_upsample(os[v], sample, oversamplerArray);
 
 
 			for (int i = 0; i < 4; i++)
@@ -623,7 +622,7 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 			}
 			//downsample to get back to normal sample rate
 			//arm_fir_decimate_f32(&osD[v], (float*)&oversamplerArray, &sample, 2);
-			sample = tOversampler_downsample(&os[v], oversamplerArray);
+			sample = tOversampler_downsample(os[v], oversamplerArray);
 		}
 		else
 		{
@@ -656,7 +655,7 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 			sample *= amplitude[v];
 		}
 
-		sample = tSVF_LP_tick(&finalLowpass[v], sample) * masterVolFromBrainForSynth;
+		sample = tSVF_LP_tick(finalLowpass[v], sample) * masterVolFromBrainForSynth;
 		masterSample += sample * finalMaster[v];
 	}
 	uint32_t tempVolumePoly = DWT->CYCCNT;
@@ -712,36 +711,36 @@ void changeOversampling(uint32_t newOS)
 		{
 			for (int i = 0; i < NUM_EFFECT; i++)
 			{
-				tHighpass_setSampleRate(&dcBlock1[i][v], osMult);
-				tHighpass_setSampleRate(&dcBlock2[i][v], osMult);
-				tTiltFilter_setSampleRate(&FXTilt[i][v], osMult);
+				tHighpass_setSampleRate(dcBlock1[i][v], osMult);
+				tHighpass_setSampleRate(dcBlock2[i][v], osMult);
+				tTiltFilter_setSampleRate(FXTilt[i][v], osMult);
 				//tVZFilterLS_setSampleRate(&shelf1[i][v], osMult);
 				//tVZFilterLS_setFreqFast(&shelf1[i][v], shelf1[i][v]->cutoffMIDI);
 				//tVZFilterHS_setSampleRate(&shelf2[i][v], osMult);
 				//tVZFilterHS_setFreqFast(&shelf2[i][v], shelf2[i][v]->cutoffMIDI);
-				tVZFilterBell_setSampleRate(&bell1[i][v], osMult);
-				tVZFilterBell_setFreqFast(&bell1[i][v], bell1[i][v]->cutoffMIDI);
-				tCompressor_setSampleRate(&comp[i][v], osMult);
-				tCycle_setSampleRate(&mod1[i][v], osMult);
-				tCycle_setSampleRate(&mod2[i][v], osMult);
-				tSVF_setSampleRate(&FXlowpass[i][v],osMult);
-				tSVF_setFreqFast(&FXlowpass[i][v], FXlowpass[i][v]->cutoffMIDI);
-				tSVF_setSampleRate(&FXhighpass[i][v],osMult);
-				tSVF_setFreqFast(&FXhighpass[i][v], FXhighpass[i][v]->cutoffMIDI);
-				tSVF_setSampleRate(&FXbandpass[i][v],osMult);
-				tSVF_setFreqFast(&FXbandpass[i][v], FXbandpass[i][v]->cutoffMIDI);
-				tDiodeFilter_setSampleRate(&FXdiodeFilters[i][v], osMult);
-				tDiodeFilter_setSampleRate(&FXdiodeFilters[i][v], FXdiodeFilters[i][v]->cutoffMIDI);
-				tVZFilterBell_setSampleRate(&FXVZfilterPeak[i][v], osMult);
-				tVZFilterBell_setFreqFast(&FXVZfilterPeak[i][v], FXVZfilterPeak[i][v]->cutoffMIDI);
-				tVZFilterLS_setSampleRate(&FXVZfilterLS[i][v], osMult);
-				tVZFilterLS_setFreqFast(&FXVZfilterLS[i][v], FXVZfilterLS[i][v]->cutoffMIDI);
-				tVZFilterHS_setSampleRate(&FXVZfilterHS[i][v], osMult);
-				tVZFilterHS_setFreqFast(&FXVZfilterHS[i][v], FXVZfilterHS[i][v]->cutoffMIDI);
-				tVZFilterBR_setSampleRate(&FXVZfilterBR[i][v], osMult);
-				tVZFilterBR_setFreqFast(&FXVZfilterBR[i][v], FXVZfilterBR[i][v]->cutoffMIDI);
-				tLadderFilter_setSampleRate(&FXLadderfilter[i][v], osMult);
-				tLadderFilter_setFreqFast(&FXLadderfilter[i][v], FXLadderfilter[i][v]->cutoffMIDI);
+				tVZFilterBell_setSampleRate(bell1[i][v], osMult);
+				tVZFilterBell_setFreqFast(bell1[i][v], bell1[i][v]->cutoffMIDI);
+				tCompressor_setSampleRate(comp[i][v], osMult);
+				tCycle_setSampleRate(mod1[i][v], osMult);
+				tCycle_setSampleRate(mod2[i][v], osMult);
+				tSVF_setSampleRate(FXlowpass[i][v],osMult);
+				tSVF_setFreqFast(FXlowpass[i][v], FXlowpass[i][v]->cutoffMIDI);
+				tSVF_setSampleRate(FXhighpass[i][v],osMult);
+				tSVF_setFreqFast(FXhighpass[i][v], FXhighpass[i][v]->cutoffMIDI);
+				tSVF_setSampleRate(FXbandpass[i][v],osMult);
+				tSVF_setFreqFast(FXbandpass[i][v], FXbandpass[i][v]->cutoffMIDI);
+				tDiodeFilter_setSampleRate(FXdiodeFilters[i][v], osMult);
+				tDiodeFilter_setSampleRate(FXdiodeFilters[i][v], FXdiodeFilters[i][v]->cutoffMIDI);
+				tVZFilterBell_setSampleRate(FXVZfilterPeak[i][v], osMult);
+				tVZFilterBell_setFreqFast(FXVZfilterPeak[i][v], FXVZfilterPeak[i][v]->cutoffMIDI);
+				tVZFilterLS_setSampleRate(FXVZfilterLS[i][v], osMult);
+				tVZFilterLS_setFreqFast(FXVZfilterLS[i][v], FXVZfilterLS[i][v]->cutoffMIDI);
+				tVZFilterHS_setSampleRate(FXVZfilterHS[i][v], osMult);
+				tVZFilterHS_setFreqFast(FXVZfilterHS[i][v], FXVZfilterHS[i][v]->cutoffMIDI);
+				tVZFilterBR_setSampleRate(FXVZfilterBR[i][v], osMult);
+				tVZFilterBR_setFreqFast(FXVZfilterBR[i][v], FXVZfilterBR[i][v]->cutoffMIDI);
+				tLadderFilter_setSampleRate(FXLadderfilter[i][v], osMult);
+				tLadderFilter_setFreqFast(FXLadderfilter[i][v], FXLadderfilter[i][v]->cutoffMIDI);
 			}
 		}
 	}
@@ -774,9 +773,9 @@ void __ATTR_ITCMRAM oscillator_tick(float note, int string)
 			float filterSend = oscParams[OscFilterSend].realVal[string];
 			//int sync = oscParams[OscisSync].realVal[string] > 0.5f; // probably faster than previous roundf version but haven't tested
 			float freqToSmooth = (note + (fine*0.01f));
-			tExpSmooth_setDest(&pitchSmoother[osc][string], freqToSmooth);
+			tExpSmooth_setDest(pitchSmoother[osc][string], freqToSmooth);
 
-			float tempMIDI = tExpSmooth_tick(&pitchSmoother[osc][string]) + midiAdd[osc][string];
+			float tempMIDI = tExpSmooth_tick(pitchSmoother[osc][string]) + midiAdd[osc][string];
 
 
 			float finalFreq = (mtofTableLookup(tempMIDI) * freqMult[osc][string]) + freqOffset;
@@ -803,63 +802,63 @@ void __ATTR_ITCMRAM oscillator_tick(float note, int string)
 
 void __ATTR_ITCMRAM  sawSquareTick(float* sample, int v, float freq, float shape, int sync, int string)
 {
-	tPBSawSquare_setFreq(&sawPaired[v][string], freq);
-	tPBSawSquare_setShape(&sawPaired[v][string], shape);
+	tPBSawSquare_setFreq(sawPaired[v][string], freq);
+	tPBSawSquare_setShape(sawPaired[v][string], shape);
     //if (sync)
     {
     	//tMBSawPulse_sync(&sawPaired[v][string], sourceValues[syncMap[OSC_SOURCE_OFFSET + v]][string]);
 
     }
-    *sample += tPBSawSquare_tick(&sawPaired[v][string]);
+    *sample += tPBSawSquare_tick(sawPaired[v][string]);
 }
 
 void __ATTR_ITCMRAM  sineTriTick(float* sample, int v, float freq, float shape, int sync, int string)
 {
-    tPBSineTriangle_setFreq(&sinePaired[v][string], freq);
-    tPBSineTriangle_setShape(&sinePaired[v][string],shape);
+    tPBSineTriangle_setFreq(sinePaired[v][string], freq);
+    tPBSineTriangle_setShape(sinePaired[v][string],shape);
    // if (sync)
    // {
    // 	tPBSineTriangle_sync(&sinePaired[v][string], sourceValues[syncMap[OSC_SOURCE_OFFSET + v]][string]);
    // }
-    *sample += tPBSineTriangle_tick(&sinePaired[v][string]);
+    *sample += tPBSineTriangle_tick(sinePaired[v][string]);
 }
 
 void __ATTR_ITCMRAM  sawTick(float* sample, int v, float freq, float shape, int sync, int string)
 {
-	tPBSaw_setFreq(&saw[v][string], freq);
+	tPBSaw_setFreq(saw[v][string], freq);
     //if (sync)
 	//{
 	//	tPBSaw_sync(&saw[v][string], sourceValues[syncMap[OSC_SOURCE_OFFSET + v]][string]);
 	//}
-    *sample += tPBSaw_tick(&saw[v][string]);
+    *sample += tPBSaw_tick(saw[v][string]);
 }
 
 void __ATTR_ITCMRAM  pulseTick(float* sample, int v, float freq, float shape, int sync, int string)
 {
-    tPBPulse_setFreq(&pulse[v][string], freq);
-    tPBPulse_setWidth(&pulse[v][string], shape);
+    tPBPulse_setFreq(pulse[v][string], freq);
+    tPBPulse_setWidth(pulse[v][string], shape);
     //if (sync)
 	//{
 	//	tPBPulse_sync(&pulse[v][string], sourceValues[syncMap[OSC_SOURCE_OFFSET + v]][string]);
 	//}
-    *sample += tPBPulse_tick(&pulse[v][string]);
+    *sample += tPBPulse_tick(pulse[v][string]);
 }
 
 void __ATTR_ITCMRAM  sineTick(float* sample, int v, float freq, float shape, int sync, int string)
 {
-    tCycle_setFreq(&sine[v][string], freq);
-    *sample += tCycle_tick(&sine[v][string]);
+    tCycle_setFreq(sine[v][string], freq);
+    *sample += tCycle_tick(sine[v][string]);
 }
 
 void __ATTR_ITCMRAM  triTick(float* sample, int v, float freq, float shape, int sync, int string)
 {
-    tPBTriangle_setFreq(&tri[v][string], freq);
-    tPBTriangle_setSkew(&tri[v][string], shape);
+    tPBTriangle_setFreq(tri[v][string], freq);
+    tPBTriangle_setSkew(tri[v][string], shape);
     //if (sync)
 	//{
 	//	tMBTriangle_sync(&tri[v][string], sourceValues[syncMap[OSC_SOURCE_OFFSET + v]][string]);
 	//}
-    *sample += tPBTriangle_tick(&tri[v][string]);
+    *sample += tPBTriangle_tick(tri[v][string]);
 }
 
 void __ATTR_ITCMRAM  userTick(float* sample, int v, float freq, float shape, int sync, int string)
@@ -911,59 +910,59 @@ float __ATTR_ITCMRAM filter_tick(float* samples, float note, int string)
 
 void __ATTR_ITCMRAM  lowpassTick(float* sample, int v, float cutoff, int string)
 {
-	tSVF_setFreqFast(&lowpass[v][string], cutoff);
-	*sample = tSVF_tickLP(&lowpass[v][string], *sample);
+	tSVF_setFreqFast(lowpass[v][string], cutoff);
+	*sample = tSVF_tickLP(lowpass[v][string], *sample);
     *sample *= filterGain[v][string];
 }
 
 void __ATTR_ITCMRAM  highpassTick(float* sample, int v, float cutoff, int string)
 {
-	tSVF_setFreqFast(&highpass[v][string], cutoff);
-	*sample = tSVF_tickHP(&highpass[v][string], *sample);
+	tSVF_setFreqFast(highpass[v][string], cutoff);
+	*sample = tSVF_tickHP(highpass[v][string], *sample);
     *sample *= filterGain[v][string];
 }
 
 void __ATTR_ITCMRAM  bandpassTick(float* sample, int v, float cutoff, int string)
 {
-	tSVF_setFreqFast(&bandpass[v][string], cutoff);
-	*sample = tSVF_tickBP(&bandpass[v][string], *sample);
+	tSVF_setFreqFast(bandpass[v][string], cutoff);
+	*sample = tSVF_tickBP(bandpass[v][string], *sample);
     *sample *= filterGain[v][string];
 }
 
 void __ATTR_ITCMRAM  diodeLowpassTick(float* sample, int v, float cutoff, int string)
 {
-	tDiodeFilter_setFreqFast(&diodeFilters[v][string], cutoff);
-	*sample = tDiodeFilter_tickEfficient(&diodeFilters[v][string], *sample);
+	tDiodeFilter_setFreqFast(diodeFilters[v][string], cutoff);
+	*sample = tDiodeFilter_tickEfficient(diodeFilters[v][string], *sample);
     *sample *= filterGain[v][string];
 }
 
 void __ATTR_ITCMRAM  VZpeakTick(float* sample, int v, float cutoff, int string)
 {
-	tVZFilterBell_setFreqFast(&VZfilterPeak[v][string], cutoff);
-	*sample = tVZFilterBell_tick(&VZfilterPeak[v][string], *sample);
+	tVZFilterBell_setFreqFast(VZfilterPeak[v][string], cutoff);
+	*sample = tVZFilterBell_tick(VZfilterPeak[v][string], *sample);
 }
 
 void __ATTR_ITCMRAM  VZlowshelfTick(float* sample, int v, float cutoff, int string)
 {
-	tVZFilterLS_setFreqFast(&VZfilterLS[v][string], cutoff);
-	*sample = tVZFilterLS_tick(&VZfilterLS[v][string], *sample);
+	tVZFilterLS_setFreqFast(VZfilterLS[v][string], cutoff);
+	*sample = tVZFilterLS_tick(VZfilterLS[v][string], *sample);
 }
 void __ATTR_ITCMRAM  VZhighshelfTick(float* sample, int v, float cutoff, int string)
 {
-	tVZFilterHS_setFreqFast(&VZfilterHS[v][string], cutoff);
-	*sample = tVZFilterHS_tick(&VZfilterHS[v][string], *sample);
+	tVZFilterHS_setFreqFast(VZfilterHS[v][string], cutoff);
+	*sample = tVZFilterHS_tick(VZfilterHS[v][string], *sample);
 }
 void __ATTR_ITCMRAM  VZbandrejectTick(float* sample, int v, float cutoff, int string)
 {
-	tVZFilterBR_setFreqFast(&VZfilterBR[v][string], cutoff);
-	*sample = tVZFilterBR_tick(&VZfilterBR[v][string], *sample);
+	tVZFilterBR_setFreqFast(VZfilterBR[v][string], cutoff);
+	*sample = tVZFilterBR_tick(VZfilterBR[v][string], *sample);
     *sample *= filterGain[v][string];
 }
 
 void __ATTR_ITCMRAM  LadderLowpassTick(float* sample, int v, float cutoff, int string)
 {
-	tLadderFilter_setFreqFast(&Ladderfilter[v][string], cutoff);
-	*sample = tLadderFilter_tick(&Ladderfilter[v][string], *sample);
+	tLadderFilter_setFreqFast(Ladderfilter[v][string], cutoff);
+	*sample = tLadderFilter_tick(Ladderfilter[v][string], *sample);
     *sample *= filterGain[v][string];
 }
 
@@ -1003,47 +1002,47 @@ void __ATTR_ITCMRAM setFreqMultHarm(float harm, int osc, int string)
 
 void __ATTR_ITCMRAM  lowpassSetQ(float q, int v, int string)
 {
-    tSVF_setQ(&lowpass[v][string], q);
+    tSVF_setQ(lowpass[v][string], q);
 }
 
 void __ATTR_ITCMRAM  highpassSetQ(float q, int v, int string)
 {
-    tSVF_setQ(&highpass[v][string], q);
+    tSVF_setQ(highpass[v][string], q);
 }
 
 void __ATTR_ITCMRAM  bandpassSetQ(float q, int v, int string)
 {
-    tSVF_setQ(&bandpass[v][string], q);
+    tSVF_setQ(bandpass[v][string], q);
 }
 
 void __ATTR_ITCMRAM  diodeLowpassSetQ(float q, int v, int string)
 {
-	tDiodeFilter_setQ(&diodeFilters[v][string], q);
+	tDiodeFilter_setQ(diodeFilters[v][string], q);
 }
 
 void __ATTR_ITCMRAM  VZpeakSetQ(float q, int v, int string)
 {
-	tVZFilterBell_setBandwidth(&VZfilterPeak[v][string], q*20.0f);
+	tVZFilterBell_setBandwidth(VZfilterPeak[v][string], q*20.0f);
 }
 
 void __ATTR_ITCMRAM  VZlowshelfSetQ(float q, int v, int string)
 {
-	tVZFilterLS_setResonance(&VZfilterLS[v][string], q);
+	tVZFilterLS_setResonance(VZfilterLS[v][string], q);
 }
 
 void __ATTR_ITCMRAM  VZhighshelfSetQ(float q, int v, int string)
 {
-	tVZFilterHS_setResonance(&VZfilterHS[v][string], q);
+	tVZFilterHS_setResonance(VZfilterHS[v][string], q);
 }
 
 void __ATTR_ITCMRAM  VZbandrejectSetQ(float q, int v, int string)
 {
-	tVZFilterBR_setResonance(&VZfilterBR[v][string], q);
+	tVZFilterBR_setResonance(VZfilterBR[v][string], q);
 }
 
 void __ATTR_ITCMRAM  LadderLowpassSetQ(float q, int v, int string)
 {
-	tLadderFilter_setQ(&Ladderfilter[v][string], q);
+	tLadderFilter_setQ(Ladderfilter[v][string], q);
 }
 
 void __ATTR_ITCMRAM  lowpassSetGain(float gain, int v, int string)
@@ -1068,17 +1067,17 @@ void __ATTR_ITCMRAM  diodeLowpassSetGain(float gain, int v, int string)
 
 void __ATTR_ITCMRAM  VZpeakSetGain(float gain, int v, int string)
 {
-	 tVZFilterBell_setGain(&VZfilterPeak[v][string], dbToATableLookup((gain * 50.f) - 25.f));
+	 tVZFilterBell_setGain(VZfilterPeak[v][string], dbToATableLookup((gain * 50.f) - 25.f));
 }
 
 void __ATTR_ITCMRAM  VZlowshelfSetGain(float gain, int v, int string)
 {
-	tVZFilterLS_setGain(&VZfilterLS[v][string], dbToATableLookup((gain * 50.f) - 25.f));
+	tVZFilterLS_setGain(VZfilterLS[v][string], dbToATableLookup((gain * 50.f) - 25.f));
 }
 
 void __ATTR_ITCMRAM  VZhighshelfSetGain(float gain, int v, int string)
 {
-	tVZFilterHS_setGain(&VZfilterHS[v][string], dbToATableLookup((gain * 50.f) - 25.f));
+	tVZFilterHS_setGain(VZfilterHS[v][string], dbToATableLookup((gain * 50.f) - 25.f));
 }
 
 void  __ATTR_ITCMRAM VZbandrejectSetGain(float gain, int v, int string)
@@ -1098,7 +1097,7 @@ void __ATTR_ITCMRAM envelope_tick(int string)
 	{
 		if (envOn[v])
 		{
-			sourceValues[ENV_SOURCE_OFFSET + v][string] = tADSRT_tickNoInterp(&envs[v][string]);
+			sourceValues[ENV_SOURCE_OFFSET + v][string] = tADSRT_tickNoInterp(envs[v][string]);
 		}
 	}
 }
@@ -1121,29 +1120,29 @@ void __ATTR_ITCMRAM lfo_tick(int string)
 void  __ATTR_ITCMRAM  setEnvelopeAttack(float a, int v, int string)
 {
 	a = a + 0.001f;
-	tADSRT_setAttack(&envs[v][string], a);
+	tADSRT_setAttack(envs[v][string], a);
 }
 
 void  __ATTR_ITCMRAM  setEnvelopeDecay(float d, int v, int string)
 {
 	d = d + 0.001f;
-	tADSRT_setDecay(&envs[v][string], d);
+	tADSRT_setDecay(envs[v][string], d);
 }
 
 void  __ATTR_ITCMRAM  setEnvelopeSustain(float s, int v, int string)
 {
-	tADSRT_setSustain(&envs[v][string], s);
+	tADSRT_setSustain(envs[v][string], s);
 }
 
 void  __ATTR_ITCMRAM  setEnvelopeRelease(float r, int v, int string)
 {
 	r = r + 0.001f;
-	tADSRT_setRelease(&envs[v][string], r);
+	tADSRT_setRelease(envs[v][string], r);
 }
 
 void  __ATTR_ITCMRAM  setEnvelopeLeak(float leak, int v, int string)
 {
-	tADSRT_setLeakFactor(&envs[v][string], 0.99995f + 0.00005f*(1.f-leak));
+	tADSRT_setLeakFactor(envs[v][string], 0.99995f + 0.00005f*(1.f-leak));
 }
 
 void  __ATTR_ITCMRAM  setAmp(float amp, int v, int string)
@@ -1168,7 +1167,7 @@ void  __ATTR_ITCMRAM  setPitchBendRange(float in, int v, int string)
 
 void  __ATTR_ITCMRAM  setFinalLowpass(float in, int v, int string)
 {
-	tSVF_LP_setFreqFast(&finalLowpass[string], in);
+	tSVF_LP_setFreqFast(finalLowpass[string], in);
 }
 
 
@@ -1201,8 +1200,8 @@ void __ATTR_ITCMRAM tickMappings(void)
 				//sources are now summed - let's add the initial value
 				smoothedValue += mappings[i].dest->zeroToOneVal[v];
 
-				tExpSmooth_setDest(&mapSmoothers[i][v], smoothedValue);
-				smoothedValue = tExpSmooth_tick(&mapSmoothers[i][v]);
+				tExpSmooth_setDest(mapSmoothers[i][v], smoothedValue);
+				smoothedValue = tExpSmooth_tick(mapSmoothers[i][v]);
 				float finalVal = unsmoothedValue + smoothedValue;
 
 				//now scale the value with the correct scaling function
@@ -1222,93 +1221,93 @@ void __ATTR_ITCMRAM tickMappings(void)
 
 void __ATTR_ITCMRAM lfoSawSquareTick(float* sample, int v, int string)
 {
-	*sample = tSawSquareLFO_tick(&lfoSawSquare[v][string]);
+	*sample = tSawSquareLFO_tick(lfoSawSquare[v][string]);
 }
 
 void __ATTR_ITCMRAM lfoSineTriTick(float* sample, int v, int string)
 {
-	*sample = tSineTriLFO_tick(&lfoSineTri[v][string]);
+	*sample = tSineTriLFO_tick(lfoSineTri[v][string]);
 }
 
 void __ATTR_ITCMRAM lfoSineTick(float* sample, int v, int string)
 {
-    *sample = tCycle_tick(&lfoSine[v][string]);
+    *sample = tCycle_tick(lfoSine[v][string]);
 }
 
 void __ATTR_ITCMRAM lfoTriTick(float* sample, int v, int string)
 {
-    *sample = tTriLFO_tick(&lfoTri[v][string]);
+    *sample = tTriLFO_tick(lfoTri[v][string]);
 }
 void __ATTR_ITCMRAM lfoSawTick(float* sample, int v, int string)
 {
-    *sample = (tIntPhasor_tick(&lfoSaw[v][string]) * 2.0f) - 1.0f;
+    *sample = (tIntPhasor_tick(lfoSaw[v][string]) * 2.0f) - 1.0f;
 }
 
 void __ATTR_ITCMRAM lfoPulseTick(float* sample, int v, int string)
 {
-    *sample = tSquareLFO_tick(&lfoPulse[v][string]);
+    *sample = tSquareLFO_tick(lfoPulse[v][string]);
 }
 
 void __ATTR_ITCMRAM lfoSawSquareSetRate(float r, int v, int string)
 {
-	tSawSquareLFO_setFreq(&lfoSawSquare[v][string],r);
+	tSawSquareLFO_setFreq(lfoSawSquare[v][string],r);
 }
 
 void __ATTR_ITCMRAM lfoSineTriSetRate(float r, int v, int string)
 {
-	tSineTriLFO_setFreq(&lfoSineTri[v][string],r);
+	tSineTriLFO_setFreq(lfoSineTri[v][string],r);
 }
 void __ATTR_ITCMRAM lfoSineSetRate(float r, int v, int string)
 {
-	tCycle_setFreq(&lfoSine[v][string], r);
+	tCycle_setFreq(lfoSine[v][string], r);
 }
 void __ATTR_ITCMRAM lfoTriSetRate(float r, int v, int string)
 {
-	tTriLFO_setFreq(&lfoTri[v][string], r);
+	tTriLFO_setFreq(lfoTri[v][string], r);
 }
 void __ATTR_ITCMRAM lfoSawSetRate(float r, int v, int string)
 {
-	tIntPhasor_setFreq(&lfoSaw[v][string], r);
+	tIntPhasor_setFreq(lfoSaw[v][string], r);
 }
 void __ATTR_ITCMRAM lfoPulseSetRate(float r, int v, int string)
 {
-	 tSquareLFO_setFreq(&lfoPulse[v][string], r);
+	 tSquareLFO_setFreq(lfoPulse[v][string], r);
 }
 
 
 void __ATTR_ITCMRAM lfoSawSquareSetPhase(float p, int v, int string)
 {
-	tSawSquareLFO_setPhase(&lfoSawSquare[v][string],p);
+	tSawSquareLFO_setPhase(lfoSawSquare[v][string],p);
 }
 void __ATTR_ITCMRAM lfoSineTriSetPhase(float p, int v, int string)
 {
-	tSineTriLFO_setPhase(&lfoSineTri[v][string], p);
+	tSineTriLFO_setPhase(lfoSineTri[v][string], p);
 }
 void __ATTR_ITCMRAM lfoSineSetPhase(float p, int v, int string)
 {
-	tCycle_setPhase(&lfoSine[v][string],p);
+	tCycle_setPhase(lfoSine[v][string],p);
 }
 void __ATTR_ITCMRAM lfoTriSetPhase(float p, int v, int string)
 {
-	tTriLFO_setPhase(&lfoTri[v][string],p);
+	tTriLFO_setPhase(lfoTri[v][string],p);
 }
 void __ATTR_ITCMRAM lfoSawSetPhase(float p, int v, int string)
 {
-	tIntPhasor_setPhase(&lfoSaw[v][string], p);
+	tIntPhasor_setPhase(lfoSaw[v][string], p);
 }
 void __ATTR_ITCMRAM lfoPulseSetPhase(float p, int v, int string)
 {
-	tSquareLFO_setPhase(&lfoPulse[v][string], p);
+	tSquareLFO_setPhase(lfoPulse[v][string], p);
 }
 
 
 void __ATTR_ITCMRAM lfoSawSquareSetShape(float s, int v, int string)
 {
-	tSawSquareLFO_setShape(&lfoSawSquare[v][string],s);
+	tSawSquareLFO_setShape(lfoSawSquare[v][string],s);
 }
 void __ATTR_ITCMRAM lfoSineTriSetShape(float s, int v, int string)
 {
-	tSineTriLFO_setShape(&lfoSineTri[v][string],s);
+	tSineTriLFO_setShape(lfoSineTri[v][string],s);
 }
 void __ATTR_ITCMRAM lfoSineSetShape(float s, int v, int string)
 {
@@ -1324,7 +1323,7 @@ void __ATTR_ITCMRAM lfoSawSetShape(float s, int v, int string)
 }
 void __ATTR_ITCMRAM lfoPulseSetShape(float s, int v, int string)
 {
-	tSquareLFO_setPulseWidth(&lfoPulse[v][string], s);
+	tSquareLFO_setPulseWidth(lfoPulse[v][string], s);
 }
 
 
@@ -1352,22 +1351,22 @@ void __ATTR_ITCMRAM  wavefolderParam3(float value, int v, int string)
 
 void __ATTR_ITCMRAM  tiltParam1(float value, int v, int string)
 {
-	tTiltFilter_setTilt(&FXTilt[v][string], value*12.0f - 6.0f);
+	tTiltFilter_setTilt(FXTilt[v][string], value*12.0f - 6.0f);
 }
 
 void __ATTR_ITCMRAM  tiltParam2(float value, int v, int string)
 {
 	value = (value * 77.0f) + 42.0f;
 	value = LEAF_clip(0.0f, (value-16.0f) * 35.929824561403509f, 4095.0f);
-	tVZFilterBell_setFreq(&bell1[v][string], value);
+	tVZFilterBell_setFreq(bell1[v][string], value);
 }
 void __ATTR_ITCMRAM  tiltParam3(float value, int v, int string)
 {
-	tVZFilterBell_setBandwidth(&bell1[v][string], (value +1.0f)*6.0f);//TODO: make this match plugin
+	tVZFilterBell_setBandwidth(bell1[v][string], (value +1.0f)*6.0f);//TODO: make this match plugin
 }
 void __ATTR_ITCMRAM  tiltParam4(float value, int v, int string)
 {
-	tVZFilterBell_setGain(&bell1[v][string], dbToATableLookup((value * 34.0f) - 17.0f));
+	tVZFilterBell_setGain(bell1[v][string], dbToATableLookup((value * 34.0f) - 17.0f));
 }
 
 void __ATTR_ITCMRAM  compressorParam1(float value, int v, int string)
@@ -1418,7 +1417,7 @@ void __ATTR_ITCMRAM param3Soft(float value, int v, int string)
 void __ATTR_ITCMRAM param3Hard(float value, int v, int string)
 {
 	param3[v][string] = ((value * .99f) + 0.01f) * HALF_PI;
-	float tempDiv = arm_sin_f32(param3[v][string]);
+	float tempDiv = sinf(param3[v][string]);
 	if (tempDiv == 0.0f)
 	{
 		tempDiv = 0.001f;
@@ -1449,20 +1448,20 @@ void __ATTR_ITCMRAM param5Linear(float value, int v, int string)
 }
 void __ATTR_ITCMRAM param2BC(float value, int v, int string)
 {
-	tCrusher_setQuality (&bc[v][string],value);
+	tCrusher_setQuality (bc[v][string],value);
 }
 void __ATTR_ITCMRAM param3BC(float value, int v, int string)
 {
 	value = ((1.0f - value)* inv_oversample) + 0.01f;
-	tCrusher_setSamplingRatio (&bc[v][string], value);
+	tCrusher_setSamplingRatio (bc[v][string], value);
 }
 void __ATTR_ITCMRAM param4BC(float value, int v, int string)
 {
-	tCrusher_setRound(&bc[v][string], value);
+	tCrusher_setRound(bc[v][string], value);
 }
 void __ATTR_ITCMRAM param5BC(float value, int v, int string)
 {
-	tCrusher_setOperation(&bc[v][string], value);
+	tCrusher_setOperation(bc[v][string], value);
 }
 
 
@@ -1512,9 +1511,9 @@ float __ATTR_ITCMRAM wavefolderTick(float sample, int v, int string)
     fbSample *= 1.499999f;
     float fb = curFB * fbSample;
 
-    wfState[v][string] = (ff + fb) - param5[v][string] * arm_sin_f32(TWO_PI * sample); //maybe switch for our own sine lookup (avoid the if statements in the CMSIS code)
+    wfState[v][string] = (ff + fb) - param5[v][string] * sinf(TWO_PI * sample); //maybe switch for our own sine lookup (avoid the if statements in the CMSIS code)
     sample = wfState[v][string] * invCurFB[v][string];
-    sample = tHighpass_tick(&dcBlock1[v][string], sample);
+    sample = tHighpass_tick(dcBlock1[v][string], sample);
     return sample;
 }
 
@@ -1530,18 +1529,18 @@ void __ATTR_ITCMRAM chorusParam2(float value, int v, int string)
 
 void __ATTR_ITCMRAM chorusParam3(float value, int v, int string)
 {
-    tCycle_setFreq(&mod1[v][string], (value * 0.4f) + 0.01f);
+    tCycle_setFreq(mod1[v][string], (value * 0.4f) + 0.01f);
 }
 
 void __ATTR_ITCMRAM chorusParam4(float value, int v, int string)
 {
-    tCycle_setFreq(&mod2[v][string], (value * 0.4444444f) + 0.011f);
+    tCycle_setFreq(mod2[v][string], (value * 0.4444444f) + 0.011f);
 }
 
 
 void __ATTR_ITCMRAM delayParam1(float value, int v, int string)
 {
-    tTapeDelay_setDelay(&tapeDelay[string], value * 30000.0f + 1.0f);
+    tTapeDelay_setDelay(tapeDelay[string], value * 30000.0f + 1.0f);
 }
 
 void __ATTR_ITCMRAM delayParam2(float value, int v, int string)
@@ -1551,12 +1550,12 @@ void __ATTR_ITCMRAM delayParam2(float value, int v, int string)
 
 void __ATTR_ITCMRAM delayParam3(float value, int v, int string)
 {
-    tSVF_setFreqFast(&FXlowpass[v][string], (value * 127.0f));
+    tSVF_setFreqFast(FXlowpass[v][string], (value * 127.0f));
 }
 
 void __ATTR_ITCMRAM delayParam4(float value, int v, int string)
 {
-    tSVF_setFreqFast(&FXhighpass[v][string], (value * 127.0f));
+    tSVF_setFreqFast(FXhighpass[v][string], (value * 127.0f));
 }
 
 void __ATTR_ITCMRAM delayParam5(float value, int v, int string)
@@ -1574,11 +1573,11 @@ float delayTick(float sample, int v, int string)
 
     sample = fast_tanh5(sample);
 
-    sample = tFeedbackLeveler_tick(&feedbackControl[v][string], sample);
+    sample = tFeedbackLeveler_tick(feedbackControl[v][string], sample);
 
-    delayFB[v][string] = tTapeDelay_tick(&tapeDelay[string], sample);
-    delayFB[v][string] = tSVF_tick(&FXlowpass[v][string], delayFB[v][string]);
-    sample = tSVF_tick(&FXhighpass[v][string], delayFB[v][string]);
+    delayFB[v][string] = tTapeDelay_tick(tapeDelay[string], sample);
+    delayFB[v][string] = tSVF_tick(FXlowpass[v][string], delayFB[v][string]);
+    sample = tSVF_tick(FXhighpass[v][string], delayFB[v][string]);
     sample = fast_tanh5(sample);
     delayFB[v][string] = sample;
     return sample;
@@ -1586,11 +1585,11 @@ float delayTick(float sample, int v, int string)
 
 float __ATTR_ITCMRAM chorusTick(float sample, int v, int string)
 {
-	tLinearDelay_setDelay(&delay1[string], param1[v][string] * .707f * (1.0f + param2[v][string] * tCycle_tick(&mod1[v][string])));
-    tLinearDelay_setDelay(&delay2[string], param1[v][string] * .5f * (1.0f - param2[v][string] * tCycle_tick(&mod2[v][string])));
-    float temp = tLinearDelay_tick(&delay1[string], sample) - sample;
-    temp += tLinearDelay_tick(&delay2[string], sample) - sample;
-    temp = tHighpass_tick(&dcBlock1[v][string], temp);
+	tLinearDelay_setDelay(delay1[string], param1[v][string] * .707f * (1.0f + param2[v][string] * tCycle_tick(mod1[v][string])));
+    tLinearDelay_setDelay(delay2[string], param1[v][string] * .5f * (1.0f - param2[v][string] * tCycle_tick(mod2[v][string])));
+    float temp = tLinearDelay_tick(delay1[string], sample) - sample;
+    temp += tLinearDelay_tick(delay2[string], sample) - sample;
+    temp = tHighpass_tick(dcBlock1[v][string], temp);
 	//float temp = 0.0f;
     return -temp;
 }
@@ -1599,7 +1598,7 @@ float __ATTR_ITCMRAM shaperTick(float sample, int v, int string)
 {
     sample = sample * (param1[v][string]+1.0f);
     float temp = LEAF_shaper(sample + (param2[v][string] * param1[v][string]),param3[v][string]);
-    temp = tHighpass_tick(&dcBlock1[v][string], temp);
+    temp = tHighpass_tick(dcBlock1[v][string], temp);
     return temp;
 }
 
@@ -1610,8 +1609,8 @@ float __ATTR_ITCMRAM blankTick(float sample, int v, int string)
 
 float __ATTR_ITCMRAM tiltFilterTick(float sample, int v, int string)
 {
-    sample = tTiltFilter_tick(&FXTilt[v][string], sample);
-    sample = tVZFilterBell_tick(&bell1[v][string], sample);
+    sample = tTiltFilter_tick(FXTilt[v][string], sample);
+    sample = tVZFilterBell_tick(bell1[v][string], sample);
     return sample;
 }
 
@@ -1622,7 +1621,7 @@ float __ATTR_ITCMRAM tanhTick(float sample, int v, int string)
     gain = gain * 0.5f;
     //need to do something with shape param
     float temp = fast_tanh5(sample + (param2[v][string]*gain));
-    temp = tHighpass_tick(&dcBlock1[v][string], temp);
+    temp = tHighpass_tick(dcBlock1[v][string], temp);
     //temp *= param4[v][string];
     temp = fast_tanh5(temp);
     //temp = tHighpass_tick(&dcBlock2, temp);
@@ -1647,7 +1646,7 @@ float __ATTR_ITCMRAM softClipTick(float sample, int v, int string)
         //sample = sample * shapeDividerS[v][string];
     }
 
-    sample = tHighpass_tick(&dcBlock1[v][string], sample);
+    sample = tHighpass_tick(dcBlock1[v][string], sample);
     return sample;
 }
 
@@ -1665,11 +1664,11 @@ float __ATTR_ITCMRAM hardClipTick(float sample, int v, int string)
         sample = 1.0f;
     }
     {
-        sample = arm_sin_f32(  (arm_sin_f32(sample*param3[v][string]) * shapeDividerH[v][string]) * param3[v][string]);
+        sample = sinf(  (sinf(sample*param3[v][string]) * shapeDividerH[v][string]) * param3[v][string]);
         sample = sample * shapeDividerH[v][string];
     }
 
-    sample = tHighpass_tick(&dcBlock1[v][string], sample);
+    sample = tHighpass_tick(dcBlock1[v][string], sample);
     return sample;
 }
 
@@ -1692,15 +1691,15 @@ float __ATTR_ITCMRAM polynomialShaperTick(float sample, int v, int string)
 	sample = sample * polyDivider[v][string];
 
 
-    sample = tHighpass_tick(&dcBlock1[v][string], sample);
+    sample = tHighpass_tick(dcBlock1[v][string], sample);
     return sample;
 }
 float __ATTR_ITCMRAM satTick(float sample, int v, int string)
 {;
     sample = sample * param1[v][string];
     float temp = (sample + (param2[v][string] * param1[v][string])) / (1.0f + fabsf(sample + param2[v][string]));
-    temp = tHighpass_tick(&dcBlock1[v][string], temp);
-    temp = tHighpass_tick(&dcBlock2[v][string], temp);
+    temp = tHighpass_tick(dcBlock1[v][string], temp);
+    temp = tHighpass_tick(dcBlock2[v][string], temp);
     temp = fast_tanh5(temp);
     return temp;
 }
@@ -1710,178 +1709,178 @@ float __ATTR_ITCMRAM satTick(float sample, int v, int string)
 float __ATTR_ITCMRAM bcTick(float sample, int v, int string)
 {
     sample = sample * param1[v][string];
-    return tCrusher_tick(&bc[v][string], sample);
+    return tCrusher_tick(bc[v][string], sample);
 }
 
 
 float __ATTR_ITCMRAM compressorTick(float sample, int v, int string)
 {
-    return tCompressor_tick(&comp[v][string], sample);
+    return tCompressor_tick(comp[v][string], sample);
 }
 
 float __ATTR_ITCMRAM  FXlowpassTick(float sample, int v, int string)
 {
-	return tSVF_tickLP(&FXlowpass[v][string], sample);
+	return tSVF_tickLP(FXlowpass[v][string], sample);
 }
 
 float __ATTR_ITCMRAM  FXhighpassTick(float sample, int v, int string)
 {
-	return tSVF_tickHP(&FXhighpass[v][string], sample);
+	return tSVF_tickHP(FXhighpass[v][string], sample);
 }
 
 float __ATTR_ITCMRAM  FXbandpassTick(float sample, int v, int string)
 {
-	return tSVF_tickBP(&FXbandpass[v][string], sample);
+	return tSVF_tickBP(FXbandpass[v][string], sample);
 }
 
 float __ATTR_ITCMRAM  FXdiodeLowpassTick(float sample, int v, int string)
 {
-	return tDiodeFilter_tickEfficient(&FXdiodeFilters[v][string], sample);
+	return tDiodeFilter_tickEfficient(FXdiodeFilters[v][string], sample);
 }
 
 float __ATTR_ITCMRAM  FXVZpeakTick(float sample, int v, int string)
 {
-	return tVZFilterBell_tick(&FXVZfilterPeak[v][string], sample);
+	return tVZFilterBell_tick(FXVZfilterPeak[v][string], sample);
 }
 
 float __ATTR_ITCMRAM  FXVZlowshelfTick(float sample, int v, int string)
 {
-	return tVZFilterLS_tick(&FXVZfilterLS[v][string], sample);
+	return tVZFilterLS_tick(FXVZfilterLS[v][string], sample);
 }
 float __ATTR_ITCMRAM  FXVZhighshelfTick(float sample, int v, int string)
 {
-	return tVZFilterHS_tick(&FXVZfilterHS[v][string], sample);
+	return tVZFilterHS_tick(FXVZfilterHS[v][string], sample);
 }
 float __ATTR_ITCMRAM  FXVZbandrejectTick(float sample, int v, int string)
 {
-	return  tVZFilterBR_tick(&FXVZfilterBR[v][string], sample);
+	return  tVZFilterBR_tick(FXVZfilterBR[v][string], sample);
 }
 
 float __ATTR_ITCMRAM  FXLadderLowpassTick(float sample, int v, int string)
 {
-	return tLadderFilter_tick(&FXLadderfilter[v][string], sample);
+	return tLadderFilter_tick(FXLadderfilter[v][string], sample);
 }
 //cutoffparams
 
 void  __ATTR_ITCMRAM FXLowpassParam1(float value, int v, int string)
 {
 	value = (value * 77.0f) + 42.0f;
-	tSVF_setFreqFast(&FXlowpass[v][string], value);
+	tSVF_setFreqFast(FXlowpass[v][string], value);
 }
 void __ATTR_ITCMRAM FXHighpassParam1(float value, int v, int string)
 {
 	value = (value * 77.0f) + 42.0f;
-	tSVF_setFreqFast(&FXhighpass[v][string], value);
+	tSVF_setFreqFast(FXhighpass[v][string], value);
 }
 
 void __ATTR_ITCMRAM FXBandpassParam1(float value, int v, int string)
 {
 	value = (value * 77.0f) + 42.0f;
-    tSVF_setFreqFast(&FXbandpass[v][string], value);
+    tSVF_setFreqFast(FXbandpass[v][string], value);
 }
 
 void __ATTR_ITCMRAM FXDiodeParam1(float value, int v, int string)
 {
 	value = (value * 77.0f) + 42.0f;
-	tDiodeFilter_setFreqFast(&FXdiodeFilters[v][string], value);
+	tDiodeFilter_setFreqFast(FXdiodeFilters[v][string], value);
 }
 void __ATTR_ITCMRAM FXPeakParam1(float value, int v, int string)
 {
 	value = (value * 77.0f) + 42.0f;
-	tVZFilterBell_setFreq(&FXVZfilterPeak[v][string], value);
+	tVZFilterBell_setFreq(FXVZfilterPeak[v][string], value);
 }
 void __ATTR_ITCMRAM FXLowShelfParam1(float value, int v, int string)
 {
 	value = (value * 77.0f) + 42.0f;
-    tVZFilterLS_setFreqFast(&FXVZfilterLS[v][string], value);
+    tVZFilterLS_setFreqFast(FXVZfilterLS[v][string], value);
 }
 void __ATTR_ITCMRAM FXHighShelfParam1(float value, int v, int string)
 {
 	value = (value * 77.0f) + 42.0f;
-	tVZFilterHS_setFreqFast(&FXVZfilterHS[v][string], value);
+	tVZFilterHS_setFreqFast(FXVZfilterHS[v][string], value);
 }
 void __ATTR_ITCMRAM FXNotchParam1(float value, int v, int string)
 {
 	value = (value * 77.0f) + 42.0f;
-	tVZFilterBR_setFreqFast(&FXVZfilterBR[v][string], value);
+	tVZFilterBR_setFreqFast(FXVZfilterBR[v][string], value);
 }
 void __ATTR_ITCMRAM FXLadderParam1(float value, int v, int string)
 {
 	value = (value * 77.0f) + 42.0f;
-	tLadderFilter_setFreqFast(&FXLadderfilter[v][string], value);
+	tLadderFilter_setFreqFast(FXLadderfilter[v][string], value);
 }
 
 //gain params
 
 void __ATTR_ITCMRAM FXPeakParam2(float value, int v, int string)
 {
-	 tVZFilterBell_setGain(&FXVZfilterPeak[v][string], dbToATableLookup((value * 50.f) - 25.f));
+	 tVZFilterBell_setGain(FXVZfilterPeak[v][string], dbToATableLookup((value * 50.f) - 25.f));
 }
 
 void __ATTR_ITCMRAM FXLowShelfParam2(float value, int v, int string)
 {
-	tVZFilterLS_setGain(&FXVZfilterLS[v][string], dbToATableLookup((value * 50.f) - 25.f));
+	tVZFilterLS_setGain(FXVZfilterLS[v][string], dbToATableLookup((value * 50.f) - 25.f));
 }
 
 void __ATTR_ITCMRAM FXHighShelfParam2(float value, int v, int string)
 {
-	tVZFilterHS_setGain(&FXVZfilterHS[v][string], dbToATableLookup((value * 50.f) - 25.f));
+	tVZFilterHS_setGain(FXVZfilterHS[v][string], dbToATableLookup((value * 50.f) - 25.f));
 }
 
 void __ATTR_ITCMRAM FXNotchParam2(float value, int v, int string)
 {
-	tVZFilterBR_setGain(&FXVZfilterBR[v][string], dbToATableLookup((value * 50.f) - 25.f));
+	tVZFilterBR_setGain(FXVZfilterBR[v][string], dbToATableLookup((value * 50.f) - 25.f));
 
 }
 //resonance params
 void __ATTR_ITCMRAM FXLowpassParam3(float value, int v, int string)
 {
-	tSVF_setQ(&FXlowpass[v][string], scaleFilterResonance(value));
+	tSVF_setQ(FXlowpass[v][string], value);
 }
 
 void __ATTR_ITCMRAM FXHighpassParam3(float value, int v, int string)
 {
-    tSVF_setQ(&FXhighpass[v][string], scaleFilterResonance(value));
+    tSVF_setQ(FXhighpass[v][string], value);
 }
 
 void __ATTR_ITCMRAM FXBandpassParam3(float value, int v, int string)
 {
-    tSVF_setQ(&FXbandpass[v][string], scaleFilterResonance(value));
+    tSVF_setQ(FXbandpass[v][string], value);
 }
 
 void __ATTR_ITCMRAM FXDiodeParam3(float value, int v, int string)
 {
-	tDiodeFilter_setQ(&FXdiodeFilters[v][string], scaleFilterResonance(value));
+	tDiodeFilter_setQ(FXdiodeFilters[v][string], value);
 }
 
 
 void __ATTR_ITCMRAM FXPeakParam3(float value, int v, int string)
 {
-	tVZFilterBell_setBandwidth(&FXVZfilterPeak[v][string], scaleFilterResonance(value));
+	tVZFilterBell_setBandwidth(FXVZfilterPeak[v][string], value);
 }
 
 
 void __ATTR_ITCMRAM FXLowShelfParam3(float value, int v, int string)
 {
-	tVZFilterLS_setResonance(&FXVZfilterLS[v][string], scaleFilterResonance(value));
+	tVZFilterLS_setResonance(FXVZfilterLS[v][string], value);
 }
 
 
 void __ATTR_ITCMRAM FXHighShelfParam3(float value, int v, int string)
 {
-	tVZFilterHS_setResonance(&FXVZfilterHS[v][string], scaleFilterResonance(value));
+	tVZFilterHS_setResonance(FXVZfilterHS[v][string], value);
 }
 
 
 void __ATTR_ITCMRAM FXNotchParam3(float value, int v, int string)
 {
-	tVZFilterBR_setResonance(&FXVZfilterBR[v][string], scaleFilterResonance(value));
+	tVZFilterBR_setResonance(FXVZfilterBR[v][string], value);
 }
 
 
 void __ATTR_ITCMRAM FXLadderParam3(float value, int v, int string)
 {
-	tLadderFilter_setQ(&FXLadderfilter[v][string], scaleFilterResonance(value));
+	tLadderFilter_setQ(FXLadderfilter[v][string], value);
 }
 
 
@@ -1892,19 +1891,19 @@ void __ATTR_ITCMRAM FXLadderParam3(float value, int v, int string)
 void __ATTR_ITCMRAM noiseSetTilt(float value, int v, int string)
 {
 	//tTiltFilter_setTilt(&noiseTilt[string], dbToATableLookup(((value * 30.0f) - 15.0f)));
-	tTiltFilter_setTilt(&noiseTilt[string], value*10.0f - 5.0f);
+	tTiltFilter_setTilt(noiseTilt[string], value*10.0f - 5.0f);
 }
 
 
 void __ATTR_ITCMRAM noiseSetGain(float value, int v, int string)
 {
-	tVZFilterBell_setGain(&noiseBell1[string], dbToATableLookup((value* 34.0f) - 17.0f));
+	tVZFilterBell_setGain(noiseBell1[string], dbToATableLookup((value* 34.0f) - 17.0f));
 }
 
 void __ATTR_ITCMRAM noiseSetFreq(float value, int v, int string)
 {
 	value = (value * 77.0f) + 42.0f;
-	tVZFilterBell_setFreq(&noiseBell1[string], faster_mtof(value));
+	tVZFilterBell_setFreq(noiseBell1[string], faster_mtof(value));
 	//value = LEAF_clip(0.0f, (value-16.0f) * 35.929824561403509f, 4095.0f);
 
 }
@@ -1917,8 +1916,8 @@ void __ATTR_ITCMRAM noise_tick(int string)
 	float filterSend = params[NoiseFilterSend].realVal[string];
 	amp = amp < 0.f ? 0.f : amp;
 	float sample = (random_values[randomValPointer++] * 2.0f) - 1.0f;
-	sample = tTiltFilter_tick(&noiseTilt[string], sample);
-	sample = tVZFilterBell_tick(&noiseBell1[string], sample);
+	sample = tTiltFilter_tick(noiseTilt[string], sample);
+	sample = tVZFilterBell_tick(noiseBell1[string], sample);
 	sample = sample * amp;
 	if (!isfinite(sample))
 	{

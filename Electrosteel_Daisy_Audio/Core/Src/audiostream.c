@@ -16,7 +16,6 @@
 #include "spi.h"
 #include "parameters.h"
 #include "audiostream.h"
-#include "arm_math.h"
 #include "string1.h"
 #include "string2.h"
 #include "additive.h"
@@ -202,7 +201,7 @@ volatile uint8_t octaveAction = 0;
 
 /**********************************************/
 
-float FORCE_INLINE aToDbTableLookup(float in)
+static float FORCE_INLINE aToDbTableLookup(float in)
 {
     in = fastabsf(in);
     float floatIndex = LEAF_clip (0, (in * atodbTableScalar) - atodbTableOffset, ATODB_TABLE_SIZE_MINUS_ONE);
@@ -216,7 +215,7 @@ float FORCE_INLINE aToDbTableLookup(float in)
     return ((atoDbTable[inAmpIndex] * (1.0f - alpha)) + (atoDbTable[inAmpIndexPlusOne] * alpha));
 }
 
-float FORCE_INLINE aToDbTableLookupFast(float in)
+static float FORCE_INLINE aToDbTableLookupFast(float in)
 {
     in = fastabsf(in);
     uint32_t inAmpIndex = LEAF_clip (0, (in * atodbTableScalar) - atodbTableOffset, ATODB_TABLE_SIZE_MINUS_ONE);
@@ -236,7 +235,7 @@ float FORCE_INLINE dbToATableLookup(float in)
     return ((dbtoATable[inDBIndex] * (1.0f - alpha)) + (dbtoATable[inDBIndexPlusOne] * alpha));
 }
 
-float FORCE_INLINE dbToATableLookupFast(float in)
+static float FORCE_INLINE dbToATableLookupFast(float in)
 {
     uint32_t inDBIndex = LEAF_clip (0, (in * dbtoaTableScalar) - dbtoaTableOffset, DBTOA_TABLE_SIZE_MINUS_ONE);
     return dbtoATable[inDBIndex];
@@ -366,8 +365,8 @@ void audioInit()
 		//tVZFilter_setFreq(&noiseFilt2, 3332.0f); //based on testing with knob values
 
 
-		tVZFilter_setFreq(&noiseFilt, faster_mtof(0.9f * 128.0f));
-		tVZFilter_setFreq(&noiseFilt2,faster_mtof(0.8f * 128.0f));
+		tVZFilter_setFreq(noiseFilt, faster_mtof(0.9f * 128.0f));
+		tVZFilter_setFreq(noiseFilt2,faster_mtof(0.8f * 128.0f));
 
 		tNoise_init(&myNoise, WhiteNoise, &leaf);
 
@@ -426,7 +425,7 @@ void __ATTR_ITCMRAM updateStateFromSPIMessage(uint8_t offset)
 		barInMIDI[0] = stringPositions[0] * 0.001953125f;
 		barInMIDI[1] = stringPositions[1] * 0.001953125f;
 	}
-	tExpSmooth_setDest(&volumeSmoother,volumePedal);
+	tExpSmooth_setDest(volumeSmoother,volumePedal);
 	timeSPI = DWT->CYCCNT - tempCountSPI;
 }
 

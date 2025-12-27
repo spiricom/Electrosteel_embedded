@@ -19,6 +19,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "bdma.h"
 #include "dma.h"
 #include "fatfs.h"
 #include "i2c.h"
@@ -202,10 +203,16 @@ static void checkForBootloadableBrainFile(void);
   */
 int main(void)
 {
+
   /* USER CODE BEGIN 1 */
 	//SCB_CleanInvalidateDCache();
 	//SCB_InvalidateICache();
   /* USER CODE END 1 */
+
+  /* MPU Configuration--------------------------------------------------------*/
+  MPU_Config();
+
+  /* Enable the CPU Cache */
 
   /* Enable I-Cache---------------------------------------------------------*/
   SCB_EnableICache();
@@ -218,9 +225,6 @@ int main(void)
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
 
-  /* MPU Configuration--------------------------------------------------------*/
-  MPU_Config();
-
   /* USER CODE BEGIN Init */
   __enable_irq();
   /* USER CODE END Init */
@@ -228,7 +232,7 @@ int main(void)
   /* Configure the system clock */
   SystemClock_Config();
 
-/* Configure the peripherals common clocks */
+  /* Configure the peripherals common clocks */
   PeriphCommonClock_Config();
 
   /* USER CODE BEGIN SysInit */
@@ -580,6 +584,10 @@ int main(void)
   /* USER CODE END 3 */
 }
 
+/**
+  * @brief System Clock Configuration
+  * @retval None
+  */
 void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
@@ -591,11 +599,6 @@ void SystemClock_Config(void)
 
   /** Configure the main internal regulator output voltage
   */
-  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
-
-  while(!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY)) {}
-
-  __HAL_RCC_SYSCFG_CLK_ENABLE();
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE0);
 
   while(!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY)) {}
@@ -747,7 +750,7 @@ void getPresetNamesFromSDCard(void)
 
 
 				res = f_findfirst(&dir, &fno, SDPath, finalString);
-				uint32_t bytesRead;
+				unsigned int bytesRead;
 				if(res == FR_OK)
 				{
 					if(f_open(&SDFile, fno.fname, FA_OPEN_ALWAYS | FA_READ) == FR_OK)
@@ -843,7 +846,7 @@ static int checkForSDCardPreset(uint8_t numberToLoad)
 			}
 
 			res = f_findfirst(&dir, &fno, SDPath, finalString);
-			uint32_t bytesRead;
+			unsigned int  bytesRead;
 			if(res == FR_OK)
 			{
 				if(f_open(&SDFile, fno.fname, FA_OPEN_ALWAYS | FA_READ) == FR_OK)
@@ -902,7 +905,7 @@ static void checkForBootloadableBrainFile(void)
 			disk_initialize(0);
 
 			disk_status(0);
-			uint_fast32_t  bytesRead;
+			unsigned int   bytesRead;
 			if(f_mount(&SDFatFS,  SDPath, 1) == FR_OK)
 			{
 
@@ -1059,7 +1062,7 @@ static void writePresetToSDCard(int fileSize)
 
 				if(f_open(&SDFile, finalString, FA_CREATE_ALWAYS | FA_WRITE) == FR_OK)
 				{
-					uint32_t bytesRead;
+					unsigned int  bytesRead;
 					f_write(&SDFile, &buffer, fileSize, &bytesRead);
 					f_close(&SDFile);
 				}
@@ -1190,14 +1193,14 @@ float __ATTR_ITCMRAM scalePitchBend(float input)
 
 float __ATTR_ITCMRAM scaleFilterCutoff(float input)
 {
-	//input = LEAF_clip(0.f, input, 1.f);
+	input = LEAF_clip(0.f, input, 1.f);
 	return (input * 127.0f);
 }
 
 float __ATTR_ITCMRAM scaleFilterResonance(float input)
 {
 	//lookup table for filter res
-	//input = LEAF_clip(0.1f, input, 1.0f);
+	input = LEAF_clip(0.1f, input, 1.0f);
 	//scale to lookup range
 	input *= 2047.0f;
 	int inputInt = (int)input;
@@ -1210,7 +1213,7 @@ float __ATTR_ITCMRAM scaleFilterResonance(float input)
 float __ATTR_ITCMRAM scaleEnvTimes(float input)
 {
 	//lookup table for env times
-	//input = LEAF_clip(0.0f, input, 1.0f);
+	input = LEAF_clip(0.0f, input, 1.0f);
 	//scale to lookup range
 	input *= 2047.0f;
 	int inputInt = (int)input;
@@ -1224,7 +1227,7 @@ float __ATTR_ITCMRAM scaleEnvTimes(float input)
 float __ATTR_ITCMRAM scaleLFORates(float input)
 {
 	//lookup table for LFO rates
-	//input = LEAF_clip(0.0f, input, 1.0f);
+	input = LEAF_clip(0.0f, input, 1.0f);
 	//scale to lookup range
 	input *= 2047.0f;
 	int inputInt = (int)input;
@@ -1236,7 +1239,7 @@ float __ATTR_ITCMRAM scaleLFORates(float input)
 
 float __ATTR_ITCMRAM scaleFinalLowpass(float input)
 {
-	//input = LEAF_clip(0.f, input, 1.f);
+	input = LEAF_clip(0.f, input, 1.f);
 	return ((input * 70.0f) + 58.0f);
 }
 
@@ -1756,7 +1759,7 @@ void  handleSPI (uint8_t offset)
 				}
 				else
 				{
-					tExpSmooth_setDest(&knobSmoothers[i], (SPI_LEVERS_RX[i + currentByte] * 0.003921568627451f)); //scaled 0.0 to 1.0
+					tExpSmooth_setDest(knobSmoothers[i], (SPI_LEVERS_RX[i + currentByte] * 0.003921568627451f)); //scaled 0.0 to 1.0
 					prevKnobByte[i] = newByte;
 				}
 
@@ -1780,7 +1783,7 @@ void  handleSPI (uint8_t offset)
 				}
 				else
 				{
-					tExpSmooth_setDest(&knobSmoothers[i], (newByte * 0.003921568627451f)); //scaled 0.0 to 1.0
+					tExpSmooth_setDest(knobSmoothers[i], (newByte * 0.003921568627451f)); //scaled 0.0 to 1.0
 					prevKnobByte[i] = newByte;
 				}
 
@@ -1788,7 +1791,7 @@ void  handleSPI (uint8_t offset)
 			currentByte += 12;
 			for (int i = 0; i < 10; i++)
 			{
-				tExpSmooth_setDest(&pedalSmoothers[i], (SPI_LEVERS_RX[i + currentByte ] * 0.003921568627451f)); //scaled 0.0 to 1.0
+				tExpSmooth_setDest(pedalSmoothers[i], (SPI_LEVERS_RX[i + currentByte ] * 0.003921568627451f)); //scaled 0.0 to 1.0
 			}
 			//HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_SET);
 			whichBar = 1;
@@ -1822,7 +1825,7 @@ void  handleSPI (uint8_t offset)
 				}
 				else
 				{
-					tExpSmooth_setDest(&knobSmoothers[whichKnob], (newByte * 0.003921568627451f)); //scaled 0.0 to 1.0
+					tExpSmooth_setDest(knobSmoothers[whichKnob], (newByte * 0.003921568627451f)); //scaled 0.0 to 1.0
 					prevKnobByte[whichKnob] = newByte;
 				}
 
@@ -1846,7 +1849,7 @@ void  handleSPI (uint8_t offset)
 				}
 				else
 				{
-					tExpSmooth_setDest(&knobSmoothers[whichKnob], (SPI_LEVERS_RX[i + currentByte] * 0.003921568627451f)); //scaled 0.0 to 1.0
+					tExpSmooth_setDest(knobSmoothers[whichKnob], (SPI_LEVERS_RX[i + currentByte] * 0.003921568627451f)); //scaled 0.0 to 1.0
 					prevKnobByte[whichKnob] = newByte;
 				}
 
@@ -1855,7 +1858,7 @@ void  handleSPI (uint8_t offset)
 			currentByte += 12;
 			for (int i = 0; i < 10; i++)
 			{
-				tExpSmooth_setDest(&pedalSmoothers[i], (SPI_LEVERS_RX[i + currentByte ] * 0.003921568627451f)); //scaled 0.0 to 1.0
+				tExpSmooth_setDest(pedalSmoothers[i], (SPI_LEVERS_RX[i + currentByte ] * 0.003921568627451f)); //scaled 0.0 to 1.0
 			}
 			//HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_SET);
 			whichBar = 1;
@@ -3093,7 +3096,7 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 				sourceValues[source][v] = params[whichMacro + MACRO_PARAMS_OFFSET].realVal[v];
 			}
 			//set starting point for the knob smoothers to smooth from
-			tExpSmooth_setValAndDest(&knobSmoothers[whichMacro], params[whichMacro + MACRO_PARAMS_OFFSET].realVal[0]);
+			tExpSmooth_setValAndDest(knobSmoothers[whichMacro], params[whichMacro + MACRO_PARAMS_OFFSET].realVal[0]);
 			knobFrozen[whichMacro] = 1;
 			knobTicked[whichMacro] = 1;
 		}
@@ -3136,7 +3139,7 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 						sourceValues[scalar][v] = params[whichMacro + MACRO_PARAMS_OFFSET].realVal[v];
 					}
 					//set starting point for the knob smoothers to smooth from
-					tExpSmooth_setValAndDest(&knobSmoothers[whichMacro], params[whichMacro + MACRO_PARAMS_OFFSET].realVal[0]);
+					tExpSmooth_setValAndDest(knobSmoothers[whichMacro], params[whichMacro + MACRO_PARAMS_OFFSET].realVal[0]);
 					knobFrozen[whichMacro] = 1;
 					knobTicked[whichMacro] = 1;
 				}
@@ -3414,106 +3417,105 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 }
 /* USER CODE END 4 */
 
-/* MPU Configuration */
+ /* MPU Configuration */
 
 void MPU_Config(void)
 {
-	MPU_Region_InitTypeDef MPU_InitStruct = {0};
+  MPU_Region_InitTypeDef MPU_InitStruct = {0};
 
-	  /* Disables the MPU */
-	  HAL_MPU_Disable();
+  /* Disables the MPU */
+  HAL_MPU_Disable();
 
-	  /** Initializes and configures the Region and the memory to be protected
-	  */
-	  MPU_InitStruct.Enable = MPU_REGION_ENABLE;
-	  MPU_InitStruct.Number = MPU_REGION_NUMBER0;
-	  MPU_InitStruct.BaseAddress = 0x0;
-	  MPU_InitStruct.Size = MPU_REGION_SIZE_4GB;
-	  MPU_InitStruct.SubRegionDisable = 0x87;
-	  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
-	  MPU_InitStruct.AccessPermission = MPU_REGION_NO_ACCESS;
-	  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_DISABLE;
-	  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
-	  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
-	  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
+  /** Initializes and configures the Region and the memory to be protected
+  */
+  MPU_InitStruct.Enable = MPU_REGION_ENABLE;
+  MPU_InitStruct.Number = MPU_REGION_NUMBER0;
+  MPU_InitStruct.BaseAddress = 0x0;
+  MPU_InitStruct.Size = MPU_REGION_SIZE_4GB;
+  MPU_InitStruct.SubRegionDisable = 0x87;
+  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
+  MPU_InitStruct.AccessPermission = MPU_REGION_NO_ACCESS;
+  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_DISABLE;
+  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
+  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
+  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
 
-	  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+  HAL_MPU_ConfigRegion(&MPU_InitStruct);
 
-	  /** Initializes and configures the Region and the memory to be protected
-	  */
-	  MPU_InitStruct.Number = MPU_REGION_NUMBER1;
-	  MPU_InitStruct.BaseAddress = 0x024000000;
-	  MPU_InitStruct.Size = MPU_REGION_SIZE_256KB;
-	  MPU_InitStruct.SubRegionDisable = 0x0;
-	  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL1;
-	  MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
-	  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_ENABLE;
-	  MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
-	  MPU_InitStruct.IsCacheable = MPU_ACCESS_CACHEABLE;
-	  MPU_InitStruct.IsBufferable = MPU_ACCESS_BUFFERABLE;
+  /** Initializes and configures the Region and the memory to be protected
+  */
+  MPU_InitStruct.Number = MPU_REGION_NUMBER1;
+  MPU_InitStruct.BaseAddress = 0x024000000;
+  MPU_InitStruct.Size = MPU_REGION_SIZE_256KB;
+  MPU_InitStruct.SubRegionDisable = 0x0;
+  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL1;
+  MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
+  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_ENABLE;
+  MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
+  MPU_InitStruct.IsCacheable = MPU_ACCESS_CACHEABLE;
+  MPU_InitStruct.IsBufferable = MPU_ACCESS_BUFFERABLE;
 
-	  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+  HAL_MPU_ConfigRegion(&MPU_InitStruct);
 
-	  /** Initializes and configures the Region and the memory to be protected
-	  */
-	  MPU_InitStruct.Number = MPU_REGION_NUMBER2;
-	  MPU_InitStruct.BaseAddress = 0x24040000;
-	  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_DISABLE;
+  /** Initializes and configures the Region and the memory to be protected
+  */
+  MPU_InitStruct.Number = MPU_REGION_NUMBER2;
+  MPU_InitStruct.BaseAddress = 0x24040000;
+  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_DISABLE;
 
-	  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+  HAL_MPU_ConfigRegion(&MPU_InitStruct);
 
-	  /** Initializes and configures the Region and the memory to be protected
-	  */
-	  MPU_InitStruct.Number = MPU_REGION_NUMBER3;
-	  MPU_InitStruct.BaseAddress = 0x30000000;
-	  MPU_InitStruct.Size = MPU_REGION_SIZE_512KB;
+  /** Initializes and configures the Region and the memory to be protected
+  */
+  MPU_InitStruct.Number = MPU_REGION_NUMBER3;
+  MPU_InitStruct.BaseAddress = 0x30000000;
+  MPU_InitStruct.Size = MPU_REGION_SIZE_512KB;
 
-	  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+  HAL_MPU_ConfigRegion(&MPU_InitStruct);
 
-	  /** Initializes and configures the Region and the memory to be protected
-	  */
-	  MPU_InitStruct.Number = MPU_REGION_NUMBER4;
-	  MPU_InitStruct.Size = MPU_REGION_SIZE_8KB;
-	  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
-	  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
-	  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
-	  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
+  /** Initializes and configures the Region and the memory to be protected
+  */
+  MPU_InitStruct.Number = MPU_REGION_NUMBER4;
+  MPU_InitStruct.Size = MPU_REGION_SIZE_8KB;
+  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
+  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
+  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
+  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
 
-	  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+  HAL_MPU_ConfigRegion(&MPU_InitStruct);
 
-	  /** Initializes and configures the Region and the memory to be protected
-	  */
-	  MPU_InitStruct.Number = MPU_REGION_NUMBER5;
-	  MPU_InitStruct.BaseAddress = 0x38000000;
-	  MPU_InitStruct.Size = MPU_REGION_SIZE_64KB;
+  /** Initializes and configures the Region and the memory to be protected
+  */
+  MPU_InitStruct.Number = MPU_REGION_NUMBER5;
+  MPU_InitStruct.BaseAddress = 0x38000000;
+  MPU_InitStruct.Size = MPU_REGION_SIZE_64KB;
 
-	  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+  HAL_MPU_ConfigRegion(&MPU_InitStruct);
 
-	  /** Initializes and configures the Region and the memory to be protected
-	  */
-	  MPU_InitStruct.Number = MPU_REGION_NUMBER6;
-	  MPU_InitStruct.BaseAddress = 0x38800000;
-	  MPU_InitStruct.Size = MPU_REGION_SIZE_4KB;
+  /** Initializes and configures the Region and the memory to be protected
+  */
+  MPU_InitStruct.Number = MPU_REGION_NUMBER6;
+  MPU_InitStruct.BaseAddress = 0x38800000;
+  MPU_InitStruct.Size = MPU_REGION_SIZE_4KB;
 
-	  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+  HAL_MPU_ConfigRegion(&MPU_InitStruct);
 
-	  /** Initializes and configures the Region and the memory to be protected
-	  */
-	  MPU_InitStruct.Number = MPU_REGION_NUMBER7;
-	  MPU_InitStruct.BaseAddress = 0xc0000000;
-	  MPU_InitStruct.Size = MPU_REGION_SIZE_64MB;
+  /** Initializes and configures the Region and the memory to be protected
+  */
+  MPU_InitStruct.Number = MPU_REGION_NUMBER7;
+  MPU_InitStruct.BaseAddress = 0xc0000000;
+  MPU_InitStruct.Size = MPU_REGION_SIZE_64MB;
 
-	  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+  HAL_MPU_ConfigRegion(&MPU_InitStruct);
 
-	  /** Initializes and configures the Region and the memory to be protected
-	  */
-	  MPU_InitStruct.Number = MPU_REGION_NUMBER8;
-	  MPU_InitStruct.BaseAddress = 0x90040000;
+  /** Initializes and configures the Region and the memory to be protected
+  */
+  MPU_InitStruct.Number = MPU_REGION_NUMBER8;
+  MPU_InitStruct.BaseAddress = 0x90040000;
 
-	  HAL_MPU_ConfigRegion(&MPU_InitStruct);
-	  /* Enables the MPU */
-	  HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
-
+  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+  /* Enables the MPU */
+  HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
 
 }
 

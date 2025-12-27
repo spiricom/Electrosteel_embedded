@@ -16,7 +16,6 @@
 #include "spi.h"
 #include "parameters.h"
 #include "audiostream.h"
-#include "arm_math.h"
 #include "string2.h"
 #include "string1.h"
 #include "synth.h"
@@ -77,7 +76,7 @@ void __ATTR_ITCMRAM audioInitString2()
 		for (int v = 0; v < numStringsThisBoard; v++)
 		{
 			 tTString_initToPool(&strings[v], 1, 15.0f, &mediumPool);
-			 tTString_setWoundOrUnwound(&strings[v],((firstString+v) > 3)); //string 5 is first wound string (4 in zero-based counting)
+			 tTString_setWoundOrUnwound(strings[v],((firstString+v) > 3)); //string 5 is first wound string (4 in zero-based counting)
 		}
 
 		whichStringModelLoaded = String2Loaded;
@@ -99,14 +98,14 @@ void __ATTR_ITCMRAM audioSwitchToString2()
 	audioInitString2();
 	for (int i = 0; i < 20; i++)
 	{
-		tExpSmooth_setFactor(&knobSmoothers[i], 0.001f);
+		tExpSmooth_setFactor(knobSmoothers[i], 0.001f);
 		if (voice == 62)
 		{
-			tExpSmooth_setValAndDest(&knobSmoothers[i], string2Defaults[i]);
+			tExpSmooth_setValAndDest(knobSmoothers[i], string2Defaults[i]);
 		}
 		else
 		{
-			tExpSmooth_setValAndDest(&knobSmoothers[i], loadedKnobParams[i]);
+			tExpSmooth_setValAndDest(knobSmoothers[i], loadedKnobParams[i]);
 		}
 		knobFrozen[i] = 1;
 	}
@@ -127,7 +126,7 @@ void __ATTR_ITCMRAM audioFrameString2(uint16_t buffer_offset)
 			for (int i = 0; i < numStringsThisBoard; i++)
 			{
 				//note off
-				tTString_mute(&strings[i]);
+				tTString_mute(strings[i]);
 				previousStringInputs[i] = 0;
 			}
 			resetStringInputs = 0;
@@ -135,17 +134,17 @@ void __ATTR_ITCMRAM audioFrameString2(uint16_t buffer_offset)
 		}
 		for (int i = 0; i < numStringsThisBoard; i++)
 		{
-			tTString_setPickupPos(&strings[i],knobScaled[3]);
-			tTString_setSlideGain(&strings[i],knobScaled[4]);
-			tTString_setPickupFilterFreq(&strings[i],knobScaled[8]*6000.0f + 1000.0f);
-			tTString_setPickupModFreq(&strings[i],(knobScaled[12]));
-			tTString_setPickupModAmp(&strings[i],knobScaled[13]);
-			tTString_setPhantomHarmonicsGain(&strings[i],knobScaled[14]);
-			tTString_setPickupFilterQ(&strings[i],knobScaled[15]+0.5f);
-			tTString_setPeakFilterFreq(&strings[i],knobScaled[16]*6000.0f + 60.0f);
-			tTString_setPeakFilterQ(&strings[i],knobScaled[17]);
-			tTString_setTensionGain(&strings[i],knobScaled[18]);
-			tTString_setPickupAmount(&strings[i],knobScaled[19]);
+			tTString_setPickupPos(strings[i],knobScaled[3]);
+			tTString_setSlideGain(strings[i],knobScaled[4]);
+			tTString_setPickupFilterFreq(strings[i],knobScaled[8]*6000.0f + 1000.0f);
+			tTString_setPickupModFreq(strings[i],(knobScaled[12]));
+			tTString_setPickupModAmp(strings[i],knobScaled[13]);
+			tTString_setPhantomHarmonicsGain(strings[i],knobScaled[14]);
+			tTString_setPickupFilterQ(strings[i],knobScaled[15]+0.5f);
+			tTString_setPeakFilterFreq(strings[i],knobScaled[16]*6000.0f + 60.0f);
+			tTString_setPeakFilterQ(strings[i],knobScaled[17]);
+			tTString_setTensionGain(strings[i],knobScaled[18]);
+			tTString_setPickupAmount(strings[i],knobScaled[19]);
 		}
 		//mono operation, no need to compute right channel. Also for loop iterating by 2 instead of 1 to avoid if statement.
 		for (int i = 0; i < HALF_BUFFER_SIZE; i+=2)
@@ -174,11 +173,11 @@ float __ATTR_ITCMRAM audioTickString2(void)
 	float temp = 0.0f;
 	float theNote[NUM_STRINGS_PER_BOARD];
 
-	float volumeSmoothed = tExpSmooth_tick(&volumeSmoother);
+	float volumeSmoothed = tExpSmooth_tick(volumeSmoother);
 
 	for (int i = 0; i < 20; i++)
 	{
-		knobScaled[i] = tExpSmooth_tick(&knobSmoothers[i]);
+		knobScaled[i] = tExpSmooth_tick(knobSmoothers[i]);
 	}
 
 	/*
@@ -226,14 +225,14 @@ float __ATTR_ITCMRAM audioTickString2(void)
 					theNote[i] = 64.0f;
 				}
 				float finalFreq = mtofTableLookup(theNote[i]);
-				tTString_setFreq(&strings[i], finalFreq);
-				tTString_pluck(&strings[i],  knobScaled[2], amplitz);
+				tTString_setFreq(strings[i], finalFreq);
+				tTString_pluck(strings[i],  knobScaled[2], amplitz);
 
 			}
 			else if ((previousStringInputs[i] > 0) && (stringInputs[i] == 0))
 			{
 				//note off
-				tTString_mute(&strings[i]);
+				tTString_mute(strings[i]);
 			}
 			previousStringInputs[i] = stringInputs[i];
 		}
@@ -258,7 +257,7 @@ float __ATTR_ITCMRAM audioTickString2(void)
 
 		float finalFreq = mtofTableLookup(theNote[i]);
 		float openStringFreq = mtofTableLookup(theNote[i]-barInMIDI[i]);
-		tTString_setWindingsPerInch(&strings[i],LEAF_map(openStringFreq, 123.0f, 247.0f, 70.0f, 120.0f));
+		tTString_setWindingsPerInch(strings[i],LEAF_map(openStringFreq, 123.0f, 247.0f, 70.0f, 120.0f));
 		if (thisFrameCount == 0)
 		{
 
@@ -270,14 +269,14 @@ float __ATTR_ITCMRAM audioTickString2(void)
 			if (knobScaled[5] > 0.05f)
 			{
 				inHarm = LEAF_clip(0.00000001f, inHarm * knobScaled[5], 0.01f);
-				tTString_setHarmonicity(&strings[i], inHarm, finalFreq);
-				tTString_setInharmonic(&strings[i], 1);
-				tTString_setHarmonic(&strings[i],harmonic);
+				tTString_setHarmonicity(strings[i], inHarm, finalFreq);
+				tTString_setInharmonic(strings[i], 1);
+				tTString_setHarmonic(strings[i],harmonic);
 			}
 			else
 			{
-				tTString_setInharmonic(&strings[i], 0);
-				tTString_setHarmonic(&strings[i],(uint32_t)harmonic);
+				tTString_setInharmonic(strings[i], 0);
+				tTString_setHarmonic(strings[i],(uint32_t)harmonic);
 			}
 
 		}
@@ -288,16 +287,16 @@ float __ATTR_ITCMRAM audioTickString2(void)
 
 
 		//tTString_setPickupAmount(&strings[i], knobScaled[7]);
-		tTString_setBarPosition(&strings[i],barInMIDI[i]);
+		tTString_setBarPosition(strings[i],barInMIDI[i]);
 		//tTString_setBarDrive(&strings[i],knobScaled[4]);
-		tTString_setOpenStringFrequency(&strings[i], openStringFreq);
+		tTString_setOpenStringFrequency(strings[i], openStringFreq);
 
 
 
-		tTString_setFeedbackStrength(&strings[i],knobScaled[6]);
-		tTString_setFeedbackReactionSpeed(&strings[i],knobScaled[7]);
+		tTString_setFeedbackStrength(strings[i],knobScaled[6]);
+		tTString_setFeedbackReactionSpeed(strings[i],knobScaled[7]);
 
-		tTString_setRippleDepth(&strings[i],knobScaled[9]);
+		tTString_setRippleDepth(strings[i],knobScaled[9]);
 
 
 		//tTString_setTensionSpeed(&strings[i],knobScaled[19]);
@@ -307,7 +306,7 @@ float __ATTR_ITCMRAM audioTickString2(void)
 
 
 
-		tTString_setFreq(&strings[i], finalFreq);
+		tTString_setFreq(strings[i], finalFreq);
 
 
 
@@ -382,10 +381,10 @@ float __ATTR_ITCMRAM audioTickString2(void)
 		}
 
 
-		tTString_setDecayInSeconds(&strings[i],decayTime * decayScaling);
-		tTString_setFilterFreqDirectly(&strings[i], filterFreq * filterScaling);
+		tTString_setDecayInSeconds(strings[i],decayTime * decayScaling);
+		tTString_setFilterFreqDirectly(strings[i], filterFreq * filterScaling);
 
-		temp += tTString_tick(&strings[i]) * 0.5f;
+		temp += tTString_tick(strings[i]) * 0.5f;
 	}
 	thisFrameCount = (thisFrameCount + 1) & 63;
 	//float outVol = 0.0265625f - (0.2467348f * volumeSmoothed) + (1.253049f * volumeSmoothed * volumeSmoothed);

@@ -1,6 +1,6 @@
 ################################################################################
 # Automatically-generated file. Do not edit!
-# Toolchain: GNU Tools for STM32 (11.3.rel1)
+# Toolchain: GNU Tools for STM32 (13.3.rel1)
 ################################################################################
 
 ELF_SRCS := 
@@ -23,7 +23,6 @@ OBJCOPY_BIN :=
 
 # Every subdirectory with source files must be described here
 SUBDIRS := \
-CMSIS/Source \
 Core/Inc \
 Core/Src \
 Drivers/STM32H7xx_HAL_Driver/Src \
@@ -31,6 +30,4 @@ FATFS/App \
 FATFS/Target \
 Middlewares/Third_Party/FatFs/src \
 Middlewares/Third_Party/FatFs/src/option \
-leaf/Externals \
-leaf/Src \
 

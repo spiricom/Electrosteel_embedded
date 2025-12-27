@@ -14,7 +14,6 @@
 #include "spi.h"
 #include "parameters.h"
 #include "audiostream.h"
-#include "arm_math.h"
 #include "vocal.h"
 
 tVoc vocal[NUM_STRINGS_PER_BOARD];
@@ -38,18 +37,18 @@ void __ATTR_ITCMRAM audioSwitchToVocal()
 {
 	for (int i = 0; i < 12; i++)
 	{
-		tExpSmooth_setFactor(&knobSmoothers[i], 0.01f);
+		tExpSmooth_setFactor(knobSmoothers[i], 0.01f);
 
 		if (voice == 60)
 		{
-			tExpSmooth_setValAndDest(&knobSmoothers[i], vocalDefaults[i]);
+			tExpSmooth_setValAndDest(knobSmoothers[i], vocalDefaults[i]);
 		}
 		else
 		{
-			tExpSmooth_setValAndDest(&knobSmoothers[i], loadedKnobParams[i]);
+			tExpSmooth_setValAndDest(knobSmoothers[i], loadedKnobParams[i]);
 		}
 
-		tExpSmooth_setValAndDest(&knobSmoothers[i], vocalDefaults[i]);
+		tExpSmooth_setValAndDest(knobSmoothers[i], vocalDefaults[i]);
 		knobFrozen[i] = 1;
 	}
 }
@@ -64,7 +63,7 @@ void __ATTR_ITCMRAM audioFrameVocal(uint16_t buffer_offset)
 		for (int i = 0; i < numStringsThisBoard; i++)
 		{
 			//note off
-			tADSRT_clear(&fenvelopes[i]);
+			tADSRT_clear(fenvelopes[i]);
 			previousStringInputs[i] = 0;
 		}
 		resetStringInputs = 0;
@@ -85,16 +84,16 @@ void __ATTR_ITCMRAM audioFrameVocal(uint16_t buffer_offset)
 				//tADSRT_on(&fenvelopes[i], amplitz);
 				stringFrequencies[i] = mtof(stringMIDIPitches[i]+ stringOctave[i]);
 
-				tADSRT_setSustain(&fenvelopes[i], 1.0f);// * randomFactors[currentRandom]);
+				tADSRT_setSustain(fenvelopes[i], 1.0f);// * randomFactors[currentRandom]);
 
-				tADSRT_on(&fenvelopes[i], amplitz);
+				tADSRT_on(fenvelopes[i], amplitz);
 
 			}
 			else if ((previousStringInputs[i] > 0) && (stringInputs[i] == 0))
 			{
 				//note off
 
-				tADSRT_off(&fenvelopes[i]);
+				tADSRT_off(fenvelopes[i]);
 			}
 			previousStringInputs[i] = stringInputs[i];
 		}
@@ -112,21 +111,21 @@ void __ATTR_ITCMRAM audioFrameVocal(uint16_t buffer_offset)
 			int32_t squishedTract = (newTractLength*0.168f) ;
 			if ( squishedTract != prevActualTractLength[i])
 			{
-				tVoc_set_tractLength(&vocal[i],squishedTract   + 2);
+				tVoc_set_tractLength(vocal[i],squishedTract   + 2);
 				prevActualTractLength[i] = squishedTract;
 			}
 			prevTractLength[i] = newTractLength;
 		}
 
-		tVoc_setDoubleComputeFlag(&vocal[i], doublecompute);
+		tVoc_setDoubleComputeFlag(vocal[i], doublecompute);
 
-		tVoc_setTurbulenceNoiseGain(&vocal[i], knobScaled[4]);
-		tVoc_setAspirationNoiseGain(&vocal[i], knobScaled[5]);
-		tVoc_setAspirationNoiseFilterFreq(&vocal[i], knobScaled[6]);
-		tVoc_setAspirationNoiseFilterQ(&vocal[i], knobScaled[7]);
-		tVoc_set_tongue_shape_and_touch(&vocal[i], knobScaled[8], knobScaled[9],knobScaled[10],knobScaled[11]);
-		tVoc_set_velum(&vocal[i], (0.4f * knobScaled[3]) + 0.01f);
-		tVoc_rescaleDiameter(&vocal[i], (knobScaled[2] * 3.0f) + 0.0245f);
+		tVoc_setTurbulenceNoiseGain(vocal[i], knobScaled[4]);
+		tVoc_setAspirationNoiseGain(vocal[i], knobScaled[5]);
+		tVoc_setAspirationNoiseFilterFreq(vocal[i], knobScaled[6]);
+		tVoc_setAspirationNoiseFilterQ(vocal[i], knobScaled[7]);
+		tVoc_set_tongue_shape_and_touch(vocal[i], knobScaled[8], knobScaled[9],knobScaled[10],knobScaled[11]);
+		tVoc_set_velum(vocal[i], (0.4f * knobScaled[3]) + 0.01f);
+		tVoc_rescaleDiameter(vocal[i], (knobScaled[2] * 3.0f) + 0.0245f);
 	}
 
 		//mono operation, no need to compute right channel. Also for loop iterating by 2 instead of 1 to avoid if statement.
@@ -154,19 +153,19 @@ float __ATTR_ITCMRAM audioTickVocal(void)
 	float tempSamp = 0.0f;
 	for (int i = 0; i < 12; i++)
 	{
-		knobScaled[i] = tExpSmooth_tick(&knobSmoothers[i]);
+		knobScaled[i] = tExpSmooth_tick(knobSmoothers[i]);
 	}
 
-	float volumeSmoothed = tExpSmooth_tick(&volumeSmoother);
+	float volumeSmoothed = tExpSmooth_tick(volumeSmoother);
 
 
 
 	for (int i = 0; i < numStringsThisBoard; i++)
 	{
-		tempSamp += tVoc_tick(&vocal[i]) * tADSRT_tickNoInterp(&fenvelopes[i]);
+		tempSamp += tVoc_tick(vocal[i]) * tADSRT_tickNoInterp(fenvelopes[i]);
 		stringFrequencies[i] = mtofTableLookup(stringMIDIPitches[i]+ stringOctave[i]);
-		tVoc_setFreq(&vocal[i], stringFrequencies[i]);
-		tVoc_set_tenseness(&vocal[i], volumeSmoothed);
+		tVoc_setFreq(vocal[i], stringFrequencies[i]);
+		tVoc_set_tenseness(vocal[i], volumeSmoothed);
 
 		//Lfloat tongue = 12.0f + (16.0f * knobScaled[0]);
 		//tVoc_set_tongue_shape(&vocal[i], tongue, 2.9f * knobScaled[1] + 0.1f);
