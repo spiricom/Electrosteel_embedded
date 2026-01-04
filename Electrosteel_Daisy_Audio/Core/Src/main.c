@@ -23,10 +23,12 @@
 #include "dma.h"
 #include "fatfs.h"
 #include "i2c.h"
+#include "memorymap.h"
 #include "rng.h"
 #include "sai.h"
 #include "sdmmc.h"
 #include "spi.h"
+#include "tim.h"
 #include "gpio.h"
 #include "fmc.h"
 
@@ -253,6 +255,8 @@ int main(void)
   MX_FATFS_Init();
   MX_SPI6_Init();
   MX_RNG_Init();
+  MX_TIM2_Init();
+  MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
 
 	int bit0 = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_15);

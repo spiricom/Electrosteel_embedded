@@ -73,6 +73,8 @@
 									<listOptionValue builtIn="false" value="../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc"/>
 									<listOptionValue builtIn="false" value="../Drivers/CMSIS/Include"/>
 									<listOptionValue builtIn="false" value="../Drivers/CMSIS/Device/ST/STM32H7xx/Include"/>
+									<listOptionValue builtIn="false" value="../Core/Inc"/>
+									<listOptionValue builtIn="false" value="../Drivers/STM32H7xx_HAL_Driver/Inc"/>
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.option.otherflags.1410957214" name="Other flags" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.option.otherflags" useByScannerDiscovery="true" valueType="stringList">
 									<listOptionValue builtIn="false" value="-ggdb"/>
@@ -88,7 +90,7 @@
 								<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.cpp.compiler.option.optimization.level.1862749499" name="Optimization level" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.cpp.compiler.option.optimization.level" useByScannerDiscovery="false"/>
 							</tool>
 							<tool id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker.1491277914" name="MCU GCC Linker" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker">
-								<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker.option.script.54563556" name="Linker Script (-T)" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker.option.script" useByScannerDiscovery="false" value="/Users/josnyder/dev/Electrosteel_embedded-main/Electrosteel_Daisy_Audio/STM32H750IBKX_FLASH.ld" valueType="string"/>
+								<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker.option.script.54563556" name="Linker Script (-T)" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker.option.script" useByScannerDiscovery="false" value="${workspace_loc:/${ProjName}/STM32H750IBKX_FLASH.ld}" valueType="string"/>
 								<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker.option.cref.534028919" name="Add symbol cross reference table to map file (-Wl,--cref)" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker.option.cref" useByScannerDiscovery="false" value="true" valueType="boolean"/>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker.option.otherflags.1572457043" name="Other flags" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker.option.otherflags" useByScannerDiscovery="false" valueType="stringList">
 									<listOptionValue builtIn="false" value="-lnosys"/>
@@ -121,17 +123,11 @@
 							<outputType id="org.eclipse.cdt.managedbuilder.ui.rcbs.outputtype.836335569" name="Resource Custom Build Step Output Type"/>
 						</tool>
 					</fileInfo>
-					<fileInfo id="com.st.stm32cube.ide.mcu.gnu.managedbuild.config.exe.debug.796624567.1276295190" name="startup_stm32h750ibkx.s" rcbsApplicability="disable" resourcePath="Core/Startup/startup_stm32h750ibkx.s" toolsToInvoke="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.assembler.1040207518.919464264">
-						<tool id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.assembler.1040207518.919464264" name="MCU GCC Assembler" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.assembler.1040207518"/>
-						<tool customBuildStep="true" id="org.eclipse.cdt.managedbuilder.ui.rcbs.1301427833" name="Resource Custom Build Step">
-							<inputType id="org.eclipse.cdt.managedbuilder.ui.rcbs.inputtype.1960402592" name="Resource Custom Build Step Input Type">
-								<additionalInput kind="additionalinputdependency" paths=""/>
-							</inputType>
-							<outputType id="org.eclipse.cdt.managedbuilder.ui.rcbs.outputtype.361686033" name="Resource Custom Build Step Output Type"/>
-						</tool>
-					</fileInfo>
 					<sourceEntries>
-						<entry excluding="Core/Startup/startup_stm32h750ibkx.s" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Core"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="FATFS"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Middlewares"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Drivers"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -159,7 +155,7 @@
 							<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.fpu.1449115742" name="Floating-point unit" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.fpu" useByScannerDiscovery="true" value="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.fpu.value.fpv5-d16" valueType="enumerated"/>
 							<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.floatabi.460930203" name="Floating-point ABI" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.floatabi" useByScannerDiscovery="true" value="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.floatabi.value.hard" valueType="enumerated"/>
 							<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.target_board.891242676" name="Board" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.target_board" useByScannerDiscovery="false" value="genericBoard" valueType="string"/>
-							<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.defaults.1509938967" name="Defaults" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.defaults" useByScannerDiscovery="false" value="com.st.stm32cube.ide.common.services.build.inputs.revA.1.0.6 || Release || false || Executable || com.st.stm32cube.ide.mcu.gnu.managedbuild.option.toolchain.value.workspace || STM32H750IBKx || 0 || 0 || arm-none-eabi- || ${gnu_tools_for_stm32_compiler_path} || ../FATFS/App | ../USB_DEVICE/Target | ../Drivers/CMSIS/Include | ../Core/Inc | ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc | ../USB_DEVICE/App | ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy | ../Drivers/CMSIS/Device/ST/STM32H7xx/Include | ../FATFS/Target | ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc | ../Middlewares/Third_Party/FatFs/src | ../Drivers/STM32H7xx_HAL_Driver/Inc ||  ||  || STM32H750xx | USE_HAL_DRIVER ||  || Drivers | Core/Startup | Middlewares | Core | FATFS ||  ||  || ${workspace_loc:/${ProjName}/STM32H750IBKX_FLASH.ld} || true || NonSecure ||  || secure_nsclib.o ||  || None ||  ||  || " valueType="string"/>
+							<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.defaults.1509938967" name="Defaults" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.defaults" useByScannerDiscovery="false" value="com.st.stm32cube.ide.common.services.build.inputs.revA.1.0.6 || Release || false || Executable || com.st.stm32cube.ide.mcu.gnu.managedbuild.option.toolchain.value.workspace || STM32H750IBKx || 0 || 0 || arm-none-eabi- || ${gnu_tools_for_stm32_compiler_path} || ../FATFS/App | ../USB_DEVICE/Target | ../Drivers/CMSIS/Include | ../Core/Inc | ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc | ../USB_DEVICE/App | ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy | ../Drivers/CMSIS/Device/ST/STM32H7xx/Include | ../FATFS/Target | ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc | ../Middlewares/Third_Party/FatFs/src | ../Drivers/STM32H7xx_HAL_Driver/Inc ||  ||  || STM32H750xx | USE_HAL_DRIVER | USE_PWR_LDO_SUPPLY ||  || Drivers | Core/Startup | Middlewares | Core | FATFS ||  ||  || ${workspace_loc:/${ProjName}/STM32H750IBKX_FLASH.ld} || true || NonSecure ||  || secure_nsclib.o ||  || None ||  ||  || " valueType="string"/>
 							<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.convertbinary.679204696" name="Convert to binary file (-O binary)" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.convertbinary" useByScannerDiscovery="false" value="true" valueType="boolean"/>
 							<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.runtimelibrary_c.2112958715" name="Runtime library" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.runtimelibrary_c" useByScannerDiscovery="true" value="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.runtimelibrary_c.value.nano_c" valueType="enumerated"/>
 							<option id="com.st.stm32cube.ide.mcu.debug.option.cpuclock.2041295897" name="Cpu clock frequence" superClass="com.st.stm32cube.ide.mcu.debug.option.cpuclock" useByScannerDiscovery="false" value="240" valueType="string"/>
