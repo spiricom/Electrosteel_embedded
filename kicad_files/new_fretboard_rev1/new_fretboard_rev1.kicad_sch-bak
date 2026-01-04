@@ -937,12 +937,6 @@
 		(uuid "1091c256-2cea-4e1b-bff6-3ef4bff2368a")
 	)
 	(junction
-		(at 224.79 128.27)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "200ab03f-8c3b-4193-aa74-145a56fb393c")
-	)
-	(junction
 		(at 259.08 121.92)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -955,10 +949,10 @@
 		(uuid "75828c10-0627-4b36-8d49-ee3083c8e983")
 	)
 	(junction
-		(at 255.27 129.54)
+		(at 224.79 128.27)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "7837c515-0a88-45ff-851d-91f37d671034")
+		(uuid "778f317a-75da-402d-8a49-44ef76a0add6")
 	)
 	(junction
 		(at 323.85 99.06)
@@ -971,6 +965,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "7fcf3f4c-d21c-443e-9769-f2407d3122de")
+	)
+	(junction
+		(at 255.27 129.54)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "9878cadd-26b3-4ea3-8498-020e2c70e95a")
 	)
 	(junction
 		(at 347.98 109.22)
@@ -1066,6 +1066,16 @@
 	)
 	(wire
 		(pts
+			(xy 224.79 128.27) (xy 228.6 128.27)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "150e5f5d-ce27-4097-a2b1-5bfd1027c5c3")
+	)
+	(wire
+		(pts
 			(xy 325.12 68.58) (xy 325.12 81.28)
 		)
 		(stroke
@@ -1133,16 +1143,6 @@
 			(type default)
 		)
 		(uuid "4175ec67-4126-4096-b020-df83d167aa73")
-	)
-	(wire
-		(pts
-			(xy 224.79 128.27) (xy 228.6 128.27)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "41992fd1-94dd-40ad-bbc6-aa0d521fa781")
 	)
 	(wire
 		(pts
@@ -1376,6 +1376,16 @@
 	)
 	(wire
 		(pts
+			(xy 255.27 129.54) (xy 259.08 129.54)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a4230b9e-b19e-42d2-9fec-cb0dd2f16119")
+	)
+	(wire
+		(pts
 			(xy 260.35 99.06) (xy 271.78 99.06)
 		)
 		(stroke
@@ -1383,16 +1393,6 @@
 			(type default)
 		)
 		(uuid "a4b5816f-1779-4ecf-ae75-9a7feb974fda")
-	)
-	(wire
-		(pts
-			(xy 255.27 129.54) (xy 259.08 129.54)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "a4fa8982-2b5c-4f15-a10a-c6a6363f261c")
 	)
 	(wire
 		(pts
@@ -1714,52 +1714,6 @@
 		)
 		(uuid "faad1d26-7a1c-4b67-91c4-cdf5d7ce4e91")
 	)
-	(rule_area
-		(polyline
-			(pts
-				(xy 201.93 27.94) (xy 375.92 27.94) (xy 375.92 138.43) (xy 368.3 146.05) (xy 207.01 146.05) (xy 201.93 140.97)
-			)
-			(stroke
-				(width 0)
-				(type dash)
-			)
-			(fill
-				(type none)
-			)
-			(uuid 0c88d338-e823-47cf-88b3-711951ae7fc1)
-		)
-	)
-	(netclass_flag ""
-		(length 2.54)
-		(shape round)
-		(at 214.63 27.94 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "62d1a771-f331-4e9c-9496-73f99d145f1f")
-		(property "Netclass" ""
-			(at 3.81 2.54 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Component Class" "ch1"
-			(at 215.3285 25.4 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-					(italic yes)
-				)
-				(justify left)
-			)
-		)
-	)
 	(symbol
 		(lib_id "Device:C")
 		(at 248.92 102.87 180)
@@ -1807,15 +1761,6 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
-			(at 248.92 102.87 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Component Class" "ch1"
 			(at 248.92 102.87 0)
 			(effects
 				(font
@@ -1960,15 +1905,6 @@
 				(hide yes)
 			)
 		)
-		(property "Component Class" "ch1"
-			(at 335.28 64.77 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(pin "1"
 			(uuid "b4ed2780-456d-4468-8a58-359b1ff2d8ce")
 		)
@@ -2031,15 +1967,6 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
-			(at 260.35 102.87 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Component Class" "ch1"
 			(at 260.35 102.87 0)
 			(effects
 				(font
@@ -2116,15 +2043,6 @@
 				(hide yes)
 			)
 		)
-		(property "Component Class" "ch1"
-			(at 344.17 109.22 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(pin "1"
 			(uuid "3891e11b-526e-4b3f-b2ec-702883942082")
 		)
@@ -2187,15 +2105,6 @@
 			)
 		)
 		(property "Description" "Inductor"
-			(at 325.12 64.77 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Component Class" "ch1"
 			(at 325.12 64.77 0)
 			(effects
 				(font
@@ -2404,15 +2313,6 @@
 				(hide yes)
 			)
 		)
-		(property "Component Class" "ch1"
-			(at 331.47 99.06 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(pin "1"
 			(uuid "aa4edf8f-673a-4a40-a657-ccdfdc1cb455")
 		)
@@ -2473,15 +2373,6 @@
 			)
 		)
 		(property "Description" ""
-			(at 271.78 88.9 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Component Class" "ch1"
 			(at 271.78 88.9 0)
 			(effects
 				(font
@@ -2660,15 +2551,6 @@
 				(hide yes)
 			)
 		)
-		(property "Component Class" "ch1"
-			(at 223.52 120.65 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(pin "2"
 			(uuid "d40e7965-f1ec-4ccc-9247-2c710e067961")
 		)
@@ -2737,15 +2619,6 @@
 				(hide yes)
 			)
 		)
-		(property "Component Class" "ch1"
-			(at 345.44 81.28 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(pin "1"
 			(uuid "74e535a5-185d-40f0-a508-064a7adb0f55")
 		)
@@ -2807,15 +2680,6 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 345.44 93.98 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Component Class" "ch1"
-			(at 345.44 93.98 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2957,15 +2821,6 @@
 				(hide yes)
 			)
 		)
-		(property "Component Class" "ch1"
-			(at 344.17 118.11 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(pin "1"
 			(uuid "61273f42-dba5-4bc4-b034-2ec1c4b274f7")
 		)
@@ -3027,15 +2882,6 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 330.2 129.54 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Component Class" "ch1"
-			(at 330.2 129.54 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3105,15 +2951,6 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 259.08 118.11 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Component Class" "ch1"
 			(at 259.08 118.11 0)
 			(effects
 				(font
@@ -3192,15 +3029,6 @@
 				(hide yes)
 			)
 		)
-		(property "Component Class" "ch1"
-			(at 228.6 124.46 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(pin "1"
 			(uuid "4f795253-e317-4404-9363-54d92b211d26")
 		)
@@ -3263,15 +3091,6 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
-			(at 238.76 124.46 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Component Class" "ch1"
 			(at 238.76 124.46 0)
 			(effects
 				(font
@@ -3414,15 +3233,6 @@
 				(hide yes)
 			)
 		)
-		(property "Component Class" "ch1"
-			(at 332.74 118.11 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(pin "2"
 			(uuid "db49a58f-96ce-404a-be3d-02a8dc9c1cd7")
 		)
@@ -3485,15 +3295,6 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
-			(at 217.17 124.46 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Component Class" "ch1"
 			(at 217.17 124.46 0)
 			(effects
 				(font
@@ -3572,15 +3373,6 @@
 				(hide yes)
 			)
 		)
-		(property "Component Class" "ch1"
-			(at 325.12 53.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(pin "2"
 			(uuid "94e13578-53f3-4803-95a9-f0731e717a39")
 		)
@@ -3651,15 +3443,6 @@
 				(hide yes)
 			)
 		)
-		(property "Component Class" "ch1"
-			(at 251.46 125.73 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(pin "1"
 			(uuid "13520ad7-246a-4421-89c5-882abfb69e2a")
 		)
@@ -3721,15 +3504,6 @@
 		)
 		(property "Description" "Resistor"
 			(at 255.27 121.92 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Component Class" "ch1"
-			(at 255.27 121.92 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3807,15 +3581,6 @@
 				(hide yes)
 			)
 		)
-		(property "Component Class" "ch1"
-			(at 259.08 125.73 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(pin "1"
 			(uuid "149e30b8-6276-414d-a071-d9e66b8c7e4e")
 		)
@@ -3884,15 +3649,6 @@
 				(hide yes)
 			)
 		)
-		(property "Component Class" "ch1"
-			(at 331.47 109.22 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(pin "2"
 			(uuid "13a39c0b-0fba-4306-b0f7-c44b80ea6d6f")
 		)
@@ -3909,8 +3665,8 @@
 		)
 	)
 	(sheet
-		(at 439.42 53.34)
-		(size 135.89 107.95)
+		(at 184.15 30.48)
+		(size 194.31 125.73)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
@@ -3923,9 +3679,9 @@
 		(fill
 			(color 0 0 0 0.0000)
 		)
-		(uuid "bb7ce659-5d54-42ef-9244-a15fc07d1ea2")
-		(property "Sheetname" "testchannel1"
-			(at 439.42 52.6284 0)
+		(uuid "ff812287-9747-4538-ac27-150e4c94364c")
+		(property "Sheetname" "singlechannelrev3"
+			(at 184.15 29.7684 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3933,8 +3689,8 @@
 				(justify left bottom)
 			)
 		)
-		(property "Sheetfile" "testchannel2.kicad_sch"
-			(at 439.42 161.8746 0)
+		(property "Sheetfile" "singlechannelrev3_sch.kicad_sch"
+			(at 184.15 156.7946 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3946,48 +3702,6 @@
 			(project "new_fretboard_rev1"
 				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7"
 					(page "2")
-				)
-			)
-		)
-	)
-	(sheet
-		(at 586.74 54.61)
-		(size 135.89 107.95)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(stroke
-			(width 0.1524)
-			(type solid)
-		)
-		(fill
-			(color 0 0 0 0.0000)
-		)
-		(uuid "ffa871eb-d6c0-43d9-8aa8-26e31394453a")
-		(property "Sheetname" "testchannel2"
-			(at 586.74 53.8984 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left bottom)
-			)
-		)
-		(property "Sheetfile" "testchannel2.kicad_sch"
-			(at 586.74 163.1446 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-			)
-		)
-		(instances
-			(project "new_fretboard_rev1"
-				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7"
-					(page "1")
 				)
 			)
 		)

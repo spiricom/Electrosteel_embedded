@@ -937,12 +937,6 @@
 		(uuid "1091c256-2cea-4e1b-bff6-3ef4bff2368a")
 	)
 	(junction
-		(at 224.79 128.27)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "200ab03f-8c3b-4193-aa74-145a56fb393c")
-	)
-	(junction
 		(at 259.08 121.92)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -955,10 +949,10 @@
 		(uuid "75828c10-0627-4b36-8d49-ee3083c8e983")
 	)
 	(junction
-		(at 255.27 129.54)
+		(at 224.79 128.27)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "7837c515-0a88-45ff-851d-91f37d671034")
+		(uuid "778f317a-75da-402d-8a49-44ef76a0add6")
 	)
 	(junction
 		(at 323.85 99.06)
@@ -971,6 +965,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "7fcf3f4c-d21c-443e-9769-f2407d3122de")
+	)
+	(junction
+		(at 255.27 129.54)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "9878cadd-26b3-4ea3-8498-020e2c70e95a")
 	)
 	(junction
 		(at 347.98 109.22)
@@ -1066,6 +1066,16 @@
 	)
 	(wire
 		(pts
+			(xy 224.79 128.27) (xy 228.6 128.27)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "150e5f5d-ce27-4097-a2b1-5bfd1027c5c3")
+	)
+	(wire
+		(pts
 			(xy 325.12 68.58) (xy 325.12 81.28)
 		)
 		(stroke
@@ -1133,16 +1143,6 @@
 			(type default)
 		)
 		(uuid "4175ec67-4126-4096-b020-df83d167aa73")
-	)
-	(wire
-		(pts
-			(xy 224.79 128.27) (xy 228.6 128.27)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "41992fd1-94dd-40ad-bbc6-aa0d521fa781")
 	)
 	(wire
 		(pts
@@ -1376,6 +1376,16 @@
 	)
 	(wire
 		(pts
+			(xy 255.27 129.54) (xy 259.08 129.54)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a4230b9e-b19e-42d2-9fec-cb0dd2f16119")
+	)
+	(wire
+		(pts
 			(xy 260.35 99.06) (xy 271.78 99.06)
 		)
 		(stroke
@@ -1383,16 +1393,6 @@
 			(type default)
 		)
 		(uuid "a4b5816f-1779-4ecf-ae75-9a7feb974fda")
-	)
-	(wire
-		(pts
-			(xy 255.27 129.54) (xy 259.08 129.54)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "a4fa8982-2b5c-4f15-a10a-c6a6363f261c")
 	)
 	(wire
 		(pts
@@ -1714,52 +1714,6 @@
 		)
 		(uuid "faad1d26-7a1c-4b67-91c4-cdf5d7ce4e91")
 	)
-	(rule_area
-		(polyline
-			(pts
-				(xy 201.93 27.94) (xy 375.92 27.94) (xy 375.92 138.43) (xy 368.3 146.05) (xy 207.01 146.05) (xy 201.93 140.97)
-			)
-			(stroke
-				(width 0)
-				(type dash)
-			)
-			(fill
-				(type none)
-			)
-			(uuid 0c88d338-e823-47cf-88b3-711951ae7fc1)
-		)
-	)
-	(netclass_flag ""
-		(length 2.54)
-		(shape round)
-		(at 214.63 27.94 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "62d1a771-f331-4e9c-9496-73f99d145f1f")
-		(property "Netclass" ""
-			(at 3.81 2.54 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Component Class" "ch1"
-			(at 215.3285 25.4 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-					(italic yes)
-				)
-				(justify left)
-			)
-		)
-	)
 	(symbol
 		(lib_id "Device:C")
 		(at 248.92 102.87 180)
@@ -1815,15 +1769,6 @@
 				(hide yes)
 			)
 		)
-		(property "Component Class" "ch1"
-			(at 248.92 102.87 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(pin "1"
 			(uuid "dbbb7a2f-0531-41cf-9087-48293dd7911f")
 		)
@@ -1833,6 +1778,10 @@
 		(instances
 			(project "new_fretboard_rev1"
 				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7"
+					(reference "C16")
+					(unit 1)
+				)
+				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7/f12c95a3-3b29-4160-971a-49c96285d1a0"
 					(reference "C16")
 					(unit 1)
 				)
@@ -1849,7 +1798,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "2b18e93b-991c-448a-b34e-fdda162afcb9")
-		(property "Reference" "#PWR0102"
+		(property "Reference" "#PWR03"
 			(at 353.06 119.38 0)
 			(effects
 				(font
@@ -1899,7 +1848,11 @@
 		(instances
 			(project "new_fretboard_rev1"
 				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7"
-					(reference "#PWR0102")
+					(reference "#PWR03")
+					(unit 1)
+				)
+				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7/f12c95a3-3b29-4160-971a-49c96285d1a0"
+					(reference "#PWR03")
 					(unit 1)
 				)
 			)
@@ -1960,15 +1913,6 @@
 				(hide yes)
 			)
 		)
-		(property "Component Class" "ch1"
-			(at 335.28 64.77 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(pin "1"
 			(uuid "b4ed2780-456d-4468-8a58-359b1ff2d8ce")
 		)
@@ -1978,6 +1922,10 @@
 		(instances
 			(project ""
 				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7"
+					(reference "L6")
+					(unit 1)
+				)
+				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7/f12c95a3-3b29-4160-971a-49c96285d1a0"
 					(reference "L6")
 					(unit 1)
 				)
@@ -2039,15 +1987,6 @@
 				(hide yes)
 			)
 		)
-		(property "Component Class" "ch1"
-			(at 260.35 102.87 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(pin "1"
 			(uuid "d8dc91db-3947-44ae-8e80-8283ed599e0e")
 		)
@@ -2057,6 +1996,10 @@
 		(instances
 			(project "new_fretboard_rev1"
 				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7"
+					(reference "C17")
+					(unit 1)
+				)
+				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7/f12c95a3-3b29-4160-971a-49c96285d1a0"
 					(reference "C17")
 					(unit 1)
 				)
@@ -2116,15 +2059,6 @@
 				(hide yes)
 			)
 		)
-		(property "Component Class" "ch1"
-			(at 344.17 109.22 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(pin "1"
 			(uuid "3891e11b-526e-4b3f-b2ec-702883942082")
 		)
@@ -2134,6 +2068,10 @@
 		(instances
 			(project "new_fretboard_rev1"
 				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7"
+					(reference "L7")
+					(unit 1)
+				)
+				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7/f12c95a3-3b29-4160-971a-49c96285d1a0"
 					(reference "L7")
 					(unit 1)
 				)
@@ -2195,15 +2133,6 @@
 				(hide yes)
 			)
 		)
-		(property "Component Class" "ch1"
-			(at 325.12 64.77 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(pin "1"
 			(uuid "c1f05318-d8d3-4d6e-adbe-8bfb793b0dda")
 		)
@@ -2213,6 +2142,10 @@
 		(instances
 			(project ""
 				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7"
+					(reference "L5")
+					(unit 1)
+				)
+				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7/f12c95a3-3b29-4160-971a-49c96285d1a0"
 					(reference "L5")
 					(unit 1)
 				)
@@ -2229,7 +2162,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "6d2e61fa-7e11-4ceb-a18c-bb37e52436e3")
-		(property "Reference" "#PWR0101"
+		(property "Reference" "#PWR05"
 			(at 248.92 115.57 0)
 			(effects
 				(font
@@ -2279,7 +2212,11 @@
 		(instances
 			(project "new_fretboard_rev1"
 				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7"
-					(reference "#PWR0101")
+					(reference "#PWR05")
+					(unit 1)
+				)
+				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7/f12c95a3-3b29-4160-971a-49c96285d1a0"
+					(reference "#PWR05")
 					(unit 1)
 				)
 			)
@@ -2295,7 +2232,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "6d9b63ca-221e-45d0-af14-7287ee49adf1")
-		(property "Reference" "#PWR0104"
+		(property "Reference" "#PWR06"
 			(at 255.27 135.89 0)
 			(effects
 				(font
@@ -2345,7 +2282,11 @@
 		(instances
 			(project "new_fretboard_rev1"
 				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7"
-					(reference "#PWR0104")
+					(reference "#PWR06")
+					(unit 1)
+				)
+				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7/f12c95a3-3b29-4160-971a-49c96285d1a0"
+					(reference "#PWR06")
 					(unit 1)
 				)
 			)
@@ -2404,15 +2345,6 @@
 				(hide yes)
 			)
 		)
-		(property "Component Class" "ch1"
-			(at 331.47 99.06 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(pin "1"
 			(uuid "aa4edf8f-673a-4a40-a657-ccdfdc1cb455")
 		)
@@ -2422,6 +2354,10 @@
 		(instances
 			(project "new_fretboard_rev1"
 				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7"
+					(reference "C14")
+					(unit 1)
+				)
+				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7/f12c95a3-3b29-4160-971a-49c96285d1a0"
 					(reference "C14")
 					(unit 1)
 				)
@@ -2481,15 +2417,6 @@
 				(hide yes)
 			)
 		)
-		(property "Component Class" "ch1"
-			(at 271.78 88.9 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(pin "5"
 			(uuid "6ddbd8e4-5aa6-42e7-b836-4c1e9fa07f9b")
 		)
@@ -2538,6 +2465,10 @@
 					(reference "U2")
 					(unit 1)
 				)
+				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7/f12c95a3-3b29-4160-971a-49c96285d1a0"
+					(reference "U2")
+					(unit 1)
+				)
 			)
 		)
 	)
@@ -2551,7 +2482,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "74b1d7f2-124d-4593-930c-26e34ba5d584")
-		(property "Reference" "#PWR0103"
+		(property "Reference" "#PWR02"
 			(at 355.6 91.44 0)
 			(effects
 				(font
@@ -2601,7 +2532,11 @@
 		(instances
 			(project ""
 				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7"
-					(reference "#PWR0103")
+					(reference "#PWR02")
+					(unit 1)
+				)
+				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7/f12c95a3-3b29-4160-971a-49c96285d1a0"
+					(reference "#PWR02")
 					(unit 1)
 				)
 			)
@@ -2660,15 +2595,6 @@
 				(hide yes)
 			)
 		)
-		(property "Component Class" "ch1"
-			(at 223.52 120.65 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(pin "2"
 			(uuid "d40e7965-f1ec-4ccc-9247-2c710e067961")
 		)
@@ -2678,6 +2604,10 @@
 		(instances
 			(project "new_fretboard_rev1"
 				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7"
+					(reference "R13")
+					(unit 1)
+				)
+				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7/f12c95a3-3b29-4160-971a-49c96285d1a0"
 					(reference "R13")
 					(unit 1)
 				)
@@ -2737,15 +2667,6 @@
 				(hide yes)
 			)
 		)
-		(property "Component Class" "ch1"
-			(at 345.44 81.28 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(pin "1"
 			(uuid "74e535a5-185d-40f0-a508-064a7adb0f55")
 		)
@@ -2755,6 +2676,10 @@
 		(instances
 			(project "new_fretboard_rev1"
 				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7"
+					(reference "C13")
+					(unit 1)
+				)
+				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7/f12c95a3-3b29-4160-971a-49c96285d1a0"
 					(reference "C13")
 					(unit 1)
 				)
@@ -2814,15 +2739,6 @@
 				(hide yes)
 			)
 		)
-		(property "Component Class" "ch1"
-			(at 345.44 93.98 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(pin "1"
 			(uuid "a713f1ca-df38-4855-b44b-eedfce7c886c")
 		)
@@ -2832,6 +2748,10 @@
 		(instances
 			(project ""
 				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7"
+					(reference "C12")
+					(unit 1)
+				)
+				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7/f12c95a3-3b29-4160-971a-49c96285d1a0"
 					(reference "C12")
 					(unit 1)
 				)
@@ -2848,7 +2768,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "93ad3877-64d9-4d72-b704-07c818164623")
-		(property "Reference" "#PWR0106"
+		(property "Reference" "#PWR04"
 			(at 262.89 97.79 0)
 			(effects
 				(font
@@ -2898,7 +2818,11 @@
 		(instances
 			(project "new_fretboard_rev1"
 				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7"
-					(reference "#PWR0106")
+					(reference "#PWR04")
+					(unit 1)
+				)
+				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7/f12c95a3-3b29-4160-971a-49c96285d1a0"
+					(reference "#PWR04")
 					(unit 1)
 				)
 			)
@@ -2957,15 +2881,6 @@
 				(hide yes)
 			)
 		)
-		(property "Component Class" "ch1"
-			(at 344.17 118.11 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(pin "1"
 			(uuid "61273f42-dba5-4bc4-b034-2ec1c4b274f7")
 		)
@@ -2975,6 +2890,10 @@
 		(instances
 			(project "new_fretboard_rev1"
 				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7"
+					(reference "L8")
+					(unit 1)
+				)
+				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7/f12c95a3-3b29-4160-971a-49c96285d1a0"
 					(reference "L8")
 					(unit 1)
 				)
@@ -3034,15 +2953,6 @@
 				(hide yes)
 			)
 		)
-		(property "Component Class" "ch1"
-			(at 330.2 129.54 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(pin "1"
 			(uuid "d250040f-3478-48c2-ab43-85043ad31e09")
 		)
@@ -3052,6 +2962,10 @@
 		(instances
 			(project "new_fretboard_rev1"
 				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7"
+					(reference "C15")
+					(unit 1)
+				)
+				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7/f12c95a3-3b29-4160-971a-49c96285d1a0"
 					(reference "C15")
 					(unit 1)
 				)
@@ -3113,15 +3027,6 @@
 				(hide yes)
 			)
 		)
-		(property "Component Class" "ch1"
-			(at 259.08 118.11 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(pin "2"
 			(uuid "ba639881-9a2f-4f7a-9fee-934ce34c29a7")
 		)
@@ -3131,6 +3036,10 @@
 		(instances
 			(project "new_fretboard_rev1"
 				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7"
+					(reference "R11")
+					(unit 1)
+				)
+				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7/f12c95a3-3b29-4160-971a-49c96285d1a0"
 					(reference "R11")
 					(unit 1)
 				)
@@ -3192,15 +3101,6 @@
 				(hide yes)
 			)
 		)
-		(property "Component Class" "ch1"
-			(at 228.6 124.46 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(pin "1"
 			(uuid "4f795253-e317-4404-9363-54d92b211d26")
 		)
@@ -3210,6 +3110,10 @@
 		(instances
 			(project "new_fretboard_rev1"
 				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7"
+					(reference "C21")
+					(unit 1)
+				)
+				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7/f12c95a3-3b29-4160-971a-49c96285d1a0"
 					(reference "C21")
 					(unit 1)
 				)
@@ -3271,15 +3175,6 @@
 				(hide yes)
 			)
 		)
-		(property "Component Class" "ch1"
-			(at 238.76 124.46 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(pin "1"
 			(uuid "706dabc8-9a3b-4ed2-97c6-75dace58e698")
 		)
@@ -3289,6 +3184,10 @@
 		(instances
 			(project "new_fretboard_rev1"
 				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7"
+					(reference "C22")
+					(unit 1)
+				)
+				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7/f12c95a3-3b29-4160-971a-49c96285d1a0"
 					(reference "C22")
 					(unit 1)
 				)
@@ -3305,7 +3204,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "cb6627d3-0ec0-4991-a0c5-690289f261dd")
-		(property "Reference" "#PWR0105"
+		(property "Reference" "#PWR07"
 			(at 224.79 134.62 0)
 			(effects
 				(font
@@ -3355,7 +3254,11 @@
 		(instances
 			(project "new_fretboard_rev1"
 				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7"
-					(reference "#PWR0105")
+					(reference "#PWR07")
+					(unit 1)
+				)
+				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7/f12c95a3-3b29-4160-971a-49c96285d1a0"
+					(reference "#PWR07")
 					(unit 1)
 				)
 			)
@@ -3414,15 +3317,6 @@
 				(hide yes)
 			)
 		)
-		(property "Component Class" "ch1"
-			(at 332.74 118.11 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(pin "2"
 			(uuid "db49a58f-96ce-404a-be3d-02a8dc9c1cd7")
 		)
@@ -3432,6 +3326,10 @@
 		(instances
 			(project "new_fretboard_rev1"
 				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7"
+					(reference "R10")
+					(unit 1)
+				)
+				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7/f12c95a3-3b29-4160-971a-49c96285d1a0"
 					(reference "R10")
 					(unit 1)
 				)
@@ -3493,15 +3391,6 @@
 				(hide yes)
 			)
 		)
-		(property "Component Class" "ch1"
-			(at 217.17 124.46 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(pin "1"
 			(uuid "6bab22b9-f359-4f51-9287-4753e0e47893")
 		)
@@ -3511,6 +3400,10 @@
 		(instances
 			(project "new_fretboard_rev1"
 				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7"
+					(reference "C20")
+					(unit 1)
+				)
+				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7/f12c95a3-3b29-4160-971a-49c96285d1a0"
 					(reference "C20")
 					(unit 1)
 				)
@@ -3572,15 +3465,6 @@
 				(hide yes)
 			)
 		)
-		(property "Component Class" "ch1"
-			(at 325.12 53.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(pin "2"
 			(uuid "94e13578-53f3-4803-95a9-f0731e717a39")
 		)
@@ -3590,6 +3474,10 @@
 		(instances
 			(project ""
 				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7"
+					(reference "R8")
+					(unit 1)
+				)
+				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7/f12c95a3-3b29-4160-971a-49c96285d1a0"
 					(reference "R8")
 					(unit 1)
 				)
@@ -3651,15 +3539,6 @@
 				(hide yes)
 			)
 		)
-		(property "Component Class" "ch1"
-			(at 251.46 125.73 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(pin "1"
 			(uuid "13520ad7-246a-4421-89c5-882abfb69e2a")
 		)
@@ -3669,6 +3548,10 @@
 		(instances
 			(project "new_fretboard_rev1"
 				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7"
+					(reference "C18")
+					(unit 1)
+				)
+				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7/f12c95a3-3b29-4160-971a-49c96285d1a0"
 					(reference "C18")
 					(unit 1)
 				)
@@ -3728,15 +3611,6 @@
 				(hide yes)
 			)
 		)
-		(property "Component Class" "ch1"
-			(at 255.27 121.92 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(pin "2"
 			(uuid "8ccbca12-2cc7-432e-be36-62b4011216e4")
 		)
@@ -3746,6 +3620,10 @@
 		(instances
 			(project "new_fretboard_rev1"
 				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7"
+					(reference "R12")
+					(unit 1)
+				)
+				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7/f12c95a3-3b29-4160-971a-49c96285d1a0"
 					(reference "R12")
 					(unit 1)
 				)
@@ -3807,15 +3685,6 @@
 				(hide yes)
 			)
 		)
-		(property "Component Class" "ch1"
-			(at 259.08 125.73 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(pin "1"
 			(uuid "149e30b8-6276-414d-a071-d9e66b8c7e4e")
 		)
@@ -3825,6 +3694,10 @@
 		(instances
 			(project "new_fretboard_rev1"
 				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7"
+					(reference "C19")
+					(unit 1)
+				)
+				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7/f12c95a3-3b29-4160-971a-49c96285d1a0"
 					(reference "C19")
 					(unit 1)
 				)
@@ -3884,15 +3757,6 @@
 				(hide yes)
 			)
 		)
-		(property "Component Class" "ch1"
-			(at 331.47 109.22 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(pin "2"
 			(uuid "13a39c0b-0fba-4306-b0f7-c44b80ea6d6f")
 		)
@@ -3905,97 +3769,11 @@
 					(reference "R9")
 					(unit 1)
 				)
-			)
-		)
-	)
-	(sheet
-		(at 439.42 53.34)
-		(size 135.89 107.95)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(stroke
-			(width 0.1524)
-			(type solid)
-		)
-		(fill
-			(color 0 0 0 0.0000)
-		)
-		(uuid "bb7ce659-5d54-42ef-9244-a15fc07d1ea2")
-		(property "Sheetname" "testchannel1"
-			(at 439.42 52.6284 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left bottom)
-			)
-		)
-		(property "Sheetfile" "testchannel2.kicad_sch"
-			(at 439.42 161.8746 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-			)
-		)
-		(instances
-			(project "new_fretboard_rev1"
-				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7"
-					(page "2")
+				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7/f12c95a3-3b29-4160-971a-49c96285d1a0"
+					(reference "R9")
+					(unit 1)
 				)
 			)
 		)
 	)
-	(sheet
-		(at 586.74 54.61)
-		(size 135.89 107.95)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(stroke
-			(width 0.1524)
-			(type solid)
-		)
-		(fill
-			(color 0 0 0 0.0000)
-		)
-		(uuid "ffa871eb-d6c0-43d9-8aa8-26e31394453a")
-		(property "Sheetname" "testchannel2"
-			(at 586.74 53.8984 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left bottom)
-			)
-		)
-		(property "Sheetfile" "testchannel2.kicad_sch"
-			(at 586.74 163.1446 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-			)
-		)
-		(instances
-			(project "new_fretboard_rev1"
-				(path "/bd5070b5-189c-4dfb-a5e7-79e743be8aa7"
-					(page "1")
-				)
-			)
-		)
-	)
-	(sheet_instances
-		(path "/"
-			(page "#")
-		)
-	)
-	(embedded_fonts no)
 )
