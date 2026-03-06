@@ -40,6 +40,8 @@ Core/Src/sai.o: ../Core/Src/sai.c \
  /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_ll_fmc.h \
  /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi.h \
  /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi_ex.h \
+ /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim.h \
+ /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim_ex.h \
  /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Core/Inc/parameters.h \
  /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Core/Inc/audiostream.h \
  /Users/josnyder/dev/LEAF/leaf/leaf.h \
@@ -116,6 +118,8 @@ Core/Src/sai.o: ../Core/Src/sai.c \
 /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_ll_fmc.h:
 /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi.h:
 /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi_ex.h:
+/Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim.h:
+/Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim_ex.h:
 /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Core/Inc/parameters.h:
 /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Core/Inc/audiostream.h:
 /Users/josnyder/dev/LEAF/leaf/leaf.h:

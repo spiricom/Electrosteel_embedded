@@ -2760,6 +2760,168 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "Device:L"
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 1.016)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "L"
+				(at -1.27 0 90)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "L"
+				(at 1.905 0 90)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Inductor"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "inductor choke coil reactor magnetic"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "Choke_* *Coil* Inductor_* L_*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "L_0_1"
+				(arc
+					(start 0 2.54)
+					(mid 0.6323 1.905)
+					(end 0 1.27)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(arc
+					(start 0 1.27)
+					(mid 0.6323 0.635)
+					(end 0 0)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(arc
+					(start 0 0)
+					(mid 0.6323 -0.635)
+					(end 0 -1.27)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(arc
+					(start 0 -1.27)
+					(mid 0.6323 -1.905)
+					(end 0 -2.54)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "L_1_1"
+				(pin passive line
+					(at 0 3.81 270)
+					(length 1.27)
+					(name "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 -3.81 90)
+					(length 1.27)
+					(name "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "Device:R"
 			(pin_numbers
 				(hide yes)
@@ -7322,6 +7484,12 @@
 		(uuid "0f8e5f9b-a82f-41a9-80cf-b3ec80f01475")
 	)
 	(junction
+		(at 34.29 204.47)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "101e3a25-e64c-411c-8e47-d219db8657dd")
+	)
+	(junction
 		(at 236.22 20.32)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -7514,12 +7682,6 @@
 		(uuid "65201325-1650-4039-a5e5-1db1996b7df7")
 	)
 	(junction
-		(at 34.29 204.47)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "67e4ca41-9cc6-47da-9dff-5acf6c7cf5c4")
-	)
-	(junction
 		(at 805.18 52.07)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -7536,6 +7698,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "6fbf8dc9-5895-4517-8f7b-a99592eb7c3a")
+	)
+	(junction
+		(at 49.53 204.47)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "7029d2db-03e2-46b3-b4ac-0c2f8b0a9865")
 	)
 	(junction
 		(at 378.46 57.15)
@@ -7718,6 +7886,12 @@
 		(uuid "c01d1906-5180-4289-b977-50883c1174ad")
 	)
 	(junction
+		(at 46.99 212.09)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "c24601a4-0869-48eb-a0af-55992cc5dd0e")
+	)
+	(junction
 		(at 124.46 243.84)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -7856,12 +8030,6 @@
 		(uuid "fbebfae6-474d-4e32-9362-804b1da6f827")
 	)
 	(junction
-		(at 49.53 204.47)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "fd0d721d-fcf9-445f-8577-48f07d872dea")
-	)
-	(junction
 		(at 124.46 248.92)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -7922,6 +8090,16 @@
 			(type solid)
 		)
 		(uuid "01533bec-088a-4cfb-a24a-768473517d87")
+	)
+	(wire
+		(pts
+			(xy 46.99 204.47) (xy 49.53 204.47)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "015c8b81-dfe9-4f80-bd2f-d32f6299435b")
 	)
 	(wire
 		(pts
@@ -8572,6 +8750,16 @@
 			(type solid)
 		)
 		(uuid "242b1279-6115-4b6d-8ed6-b6cf97bfa074")
+	)
+	(wire
+		(pts
+			(xy 34.29 204.47) (xy 39.37 204.47)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "24974335-e1b0-4413-8fcb-699df9321f8b")
 	)
 	(wire
 		(pts
@@ -10022,6 +10210,16 @@
 			(type default)
 		)
 		(uuid "74156369-ef10-4d73-b055-5e943588f608")
+	)
+	(wire
+		(pts
+			(xy 46.99 212.09) (xy 49.53 212.09)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "746f67ab-3ff4-43a8-a5ef-95c0745cb157")
 	)
 	(wire
 		(pts
@@ -11815,7 +12013,7 @@
 	)
 	(wire
 		(pts
-			(xy 34.29 212.09) (xy 49.53 212.09)
+			(xy 34.29 212.09) (xy 46.99 212.09)
 		)
 		(stroke
 			(width 0)
@@ -20573,85 +20771,6 @@
 		)
 	)
 	(symbol
-		(lib_id "electrosteel2020_10_arrange7_synthboardsonlyrev6-eagle-import:INDUCTORS")
-		(at 41.91 204.47 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "577d2f4b-c87a-4d22-8bb3-796da90decb0")
-		(property "Reference" "L2"
-			(at 36.83 201.295 0)
-			(effects
-				(font
-					(size 1.27 1.0795)
-				)
-				(justify left bottom)
-			)
-		)
-		(property "Value" "10uH"
-			(at 46.99 201.295 0)
-			(effects
-				(font
-					(size 1.27 1.0795)
-				)
-				(justify right bottom)
-			)
-		)
-		(property "Footprint" "Inductor_SMD:L_0805_2012Metric"
-			(at 41.91 204.47 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 41.91 204.47 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 41.91 204.47 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "PARTNO" "SRP2010-2R2M"
-			(at 41.91 204.47 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left bottom)
-				(hide yes)
-			)
-		)
-		(pin "P$1"
-			(uuid "09ab2aa5-cba4-461c-9d29-9f18dc212464")
-		)
-		(pin "P$2"
-			(uuid "e273d90f-5649-4954-9373-52451bc99291")
-		)
-		(instances
-			(project "electrosteel2020_10_arrange7_synthboardsonlyrev6"
-				(path "/485604e2-ed4f-49c8-a072-fce68222d950/0b21e4a6-d020-4eb2-8b68-133e5c5b3d86"
-					(reference "L2")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Device:R")
 		(at 675.64 53.34 90)
 		(unit 1)
@@ -20780,6 +20899,74 @@
 			(project "electrosteel2020_10_arrange7_synthboardsonlyrev6"
 				(path "/485604e2-ed4f-49c8-a072-fce68222d950/0b21e4a6-d020-4eb2-8b68-133e5c5b3d86"
 					(reference "#P+04")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:L")
+		(at 43.18 204.47 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "5843eef2-a12e-49a6-a60a-13631c19abb4")
+		(property "Reference" "L2"
+			(at 43.18 199.39 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "10uH"
+			(at 43.18 201.93 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Inductor_SMD:L_0805_2012Metric"
+			(at 43.18 204.47 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 43.18 204.47 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Inductor"
+			(at 43.18 204.47 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "fbf6c296-a751-43ed-95a6-0086869a239e")
+		)
+		(pin "1"
+			(uuid "f8f145f2-4367-4760-9458-11a2f47cc939")
+		)
+		(instances
+			(project ""
+				(path "/485604e2-ed4f-49c8-a072-fce68222d950/0b21e4a6-d020-4eb2-8b68-133e5c5b3d86"
+					(reference "L2")
 					(unit 1)
 				)
 			)
@@ -22027,7 +22214,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder"
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
 			(at 210.82 45.72 0)
 			(effects
 				(font
@@ -24698,6 +24885,72 @@
 			(project "electrosteel2020_10_arrange7_synthboardsonlyrev6"
 				(path "/485604e2-ed4f-49c8-a072-fce68222d950/0b21e4a6-d020-4eb2-8b68-133e5c5b3d86"
 					(reference "#P+018")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "electrosteel2020_10_arrange7_synthboardsonlyrev6-eagle-import:DGND4")
+		(at 46.99 214.63 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "941b10c8-00ee-408b-8b4d-1d888095c493")
+		(property "Reference" "#V016"
+			(at 46.99 214.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "DGND4"
+			(at 44.7675 217.17 0)
+			(effects
+				(font
+					(size 1.778 1.5113)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Footprint" ""
+			(at 46.99 214.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 46.99 214.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "SUPPLY SYMBOL"
+			(at 46.99 214.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "30053eb7-0e5e-4702-a874-bc804961e044")
+		)
+		(instances
+			(project "electrosteel2020_10_arrange7_synthboardsonlyrev6"
+				(path "/485604e2-ed4f-49c8-a072-fce68222d950/0b21e4a6-d020-4eb2-8b68-133e5c5b3d86"
+					(reference "#V016")
 					(unit 1)
 				)
 			)

@@ -96,6 +96,7 @@ uint8_t lsDecay[NUM_STRINGS_PER_BOARD];
 audioFrame_t audioFrameFunction;
 
 
+tCycle testSine;
 
 //envelope tables
 float decayExpBuffer[DECAY_EXP_BUFFER_SIZE];
@@ -196,7 +197,7 @@ volatile int switchStrings = 0;
 volatile uint8_t octaveAction = 0;
 
 
-
+void __ATTR_ITCMRAM audioFrameTesting(uint16_t buffer_offset);
 
 
 /**********************************************/
@@ -274,7 +275,8 @@ void audioInit()
 
 
 
-
+	tCycle_init(&testSine, &leaf);
+	tCycle_setFreq(testSine, 440.0f);
 
 	for (int i = 0; i < 256; i++)
 	{
@@ -302,6 +304,7 @@ void audioInit()
 
 	else if (numStrings == 10)
 	{
+#if 0
 		// first two strings are one board each, other 8 are two strings each.
 		if (boardNumber == 0)
 		{
@@ -318,6 +321,11 @@ void audioInit()
 			firstString = (boardNumber - 1) * NUM_STRINGS_PER_BOARD;
 			numStringsThisBoard = 2;
 		}
+#endif
+		numStringsThisBoard = 1;
+		// first two strings are one board each, other 8 are two strings each.
+		firstString = boardNumber;
+
 	}
 
 	else //otherwise 12-string version
@@ -378,7 +386,11 @@ void audioInit()
 			audioOutBuffer[ i] = (int32_t)(0.0f * TWO_TO_23);
 	}
 
-	audioFrameFunction = audioFrameWaiting;
+//messing around
+	//audioFrameFunction = audioFrameTesting;
+	//diskBusy = 0;
+	//presetReady = 1;
+		audioFrameFunction = audioFrameWaiting;
 	HAL_Delay(1);
 
 }
@@ -539,6 +551,23 @@ void __ATTR_ITCMRAM HAL_SAI_ErrorCallback(SAI_HandleTypeDef *hsai)
 {
 }
 
+void __ATTR_ITCMRAM audioFrameTesting(uint16_t buffer_offset)
+{
+	//HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_SET);
+	uint32_t tempCountFrame = DWT->CYCCNT;
+	//mono operation, no need to compute right channel. Also for loop iterating by 2 instead of 1 to avoid if statement.
+	for (int i = 0; i < HALF_BUFFER_SIZE; i+=2)
+	{
+		int iplusbuffer = buffer_offset + i;
+		float leftOut = tCycle_tick(testSine);
+		audioOutBuffer[iplusbuffer] = (int32_t)(leftOut * TWO_TO_23);
+		audioOutBuffer[iplusbuffer + 1] = (int32_t)(leftOut * -.99999f *  TWO_TO_23);
+	}
+	timeFrame = DWT->CYCCNT - tempCountFrame;
+	frameLoadPercentage = (float)timeFrame * frameLoadMultiplier;
+	//HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_RESET);
+}
+
 
 void __ATTR_ITCMRAM audioFrameWaiting(uint16_t buffer_offset)
 {
@@ -555,3 +584,4 @@ void __ATTR_ITCMRAM audioFrameWaiting(uint16_t buffer_offset)
 	frameLoadPercentage = (float)timeFrame * frameLoadMultiplier;
 	//HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_RESET);
 }
+

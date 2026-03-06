@@ -52,7 +52,6 @@
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
-static void MPU_Initialize(void);
 static void MPU_Config(void);
 /* USER CODE BEGIN PFP */
 static void FS_FileOperations(void);
@@ -140,6 +139,7 @@ uint8_t BSP_SD_IsDetected(void)
   */
 int main(void)
 {
+
   /* USER CODE BEGIN 1 */
 	  /* Enable I-Cache---------------------------------------------------------*/
 	  //SCB_EnableICache();
@@ -149,13 +149,13 @@ int main(void)
 
   /* USER CODE END 1 */
 
+  /* MPU Configuration--------------------------------------------------------*/
+  MPU_Config();
+
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
-
-  /* MPU Configuration--------------------------------------------------------*/
-  MPU_Config();
 
   /* USER CODE BEGIN Init */
 
@@ -189,7 +189,8 @@ int main(void)
  	int bit0 = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_15);
  	int bit1 = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_14);
  	int bit2 = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_2);
- 	boardNumber = ((bit0 << 1)+(bit1 << 2)+(bit2));
+ 	int bit3 = HAL_GPIO_ReadPin(GPIOG, GPIO_PIN_9);
+ 	boardNumber = (bit0 + (bit1 << 1)+(bit2 << 2)+(bit3 << 3));
  	if (boardNumber == 0)
  	{
 		  //set up the master send control pin to signal other daisies to listen to I2C bus
@@ -412,11 +413,6 @@ void SystemClock_Config(void)
 
   /** Configure the main internal regulator output voltage
   */
-  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
-
-  while(!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY)) {}
-
-  __HAL_RCC_SYSCFG_CLK_ENABLE();
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE0);
 
   while(!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY)) {}
@@ -1218,7 +1214,7 @@ __attribute__((noreturn)) static void boot_to(uint32_t addr)
 }
 /* USER CODE END 4 */
 
-/* MPU Configuration */
+ /* MPU Configuration */
 
 void MPU_Config(void)
 {

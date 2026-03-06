@@ -38,7 +38,9 @@ Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_flash.o: \
  /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_sdram.h \
  /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_ll_fmc.h \
  /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi.h \
- /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi_ex.h
+ /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi_ex.h \
+ /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim.h \
+ /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim_ex.h
 /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h:
 /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Core/Inc/stm32h7xx_hal_conf.h:
 /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_rcc.h:
@@ -78,3 +80,5 @@ Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_flash.o: \
 /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_ll_fmc.h:
 /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi.h:
 /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi_ex.h:
+/Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim.h:
+/Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim_ex.h:

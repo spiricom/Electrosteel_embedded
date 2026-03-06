@@ -262,7 +262,8 @@ int main(void)
 	int bit0 = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_15);
 	int bit1 = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_14);
 	int bit2 = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_2);
-	boardNumber = ((bit0 << 1)+(bit1 << 2)+(bit2));
+	int bit3 = HAL_GPIO_ReadPin(GPIOG, GPIO_PIN_9);
+	boardNumber = (bit0 + (bit1 << 1) + (bit2 << 2) + (bit3 << 3));
 
 
 	  //HAL_NVIC_DisableIRQ(EXTI15_10_IRQn);
@@ -3419,6 +3420,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     }
   }
 }
+
 /* USER CODE END 4 */
 
  /* MPU Configuration */

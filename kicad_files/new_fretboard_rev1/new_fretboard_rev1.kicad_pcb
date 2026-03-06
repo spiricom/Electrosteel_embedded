@@ -89,7 +89,7 @@
 		(aux_axis_origin 20.0775 161.94405)
 		(grid_origin 8 53)
 		(pcbplotparams
-			(layerselection 0x00000000_00000000_55557555_5755f5ff)
+			(layerselection 0x00000000_00000000_55557555_55555551)
 			(plot_on_all_layers_selection 0x00000000_00000000_00000000_00000000)
 			(disableapertmacros no)
 			(usegerberextensions no)
@@ -118,14 +118,14 @@
 			(sketchpadsonfab no)
 			(plotpadnumbers no)
 			(hidednponfab no)
-			(sketchdnponfab yes)
-			(crossoutdnponfab yes)
-			(subtractmaskfromsilk yes)
-			(outputformat 1)
+			(sketchdnponfab no)
+			(crossoutdnponfab no)
+			(subtractmaskfromsilk no)
+			(outputformat 5)
 			(mirror no)
 			(drillshape 0)
 			(scaleselection 1)
-			(outputdirectory "")
+			(outputdirectory "fretboard_rev3_fab/_singlesensor1_top")
 		)
 	)
 	(property "ADDRESS1" "12th & 13th Floors")
@@ -1053,7 +1053,7 @@
 		(attr smd)
 		(fp_line
 			(start -0.107836 -0.36)
-			(end 0.107836 -0.359999)
+			(end 0.107836 -0.359997)
 			(stroke
 				(width 0.12)
 				(type solid)
@@ -1062,7 +1062,7 @@
 			(uuid "6b78057e-ad1a-4a6a-9c4f-d507bfe974e1")
 		)
 		(fp_line
-			(start -0.107836 0.359999)
+			(start -0.107836 0.359997)
 			(end 0.107836 0.36)
 			(stroke
 				(width 0.12)
@@ -3828,6 +3828,18 @@
 			)
 		)
 		(fp_text user "*"
+			(at -1.438303 -1.7788 89.5)
+			(unlocked yes)
+			(layer "F.SilkS")
+			(uuid "9fc20a58-9b8a-4163-82d5-0ee234441c45")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(fp_text user "*"
 			(at -3.0226 -3.3978 89.5)
 			(unlocked yes)
 			(layer "F.SilkS")
@@ -3844,18 +3856,6 @@
 			(unlocked yes)
 			(layer "F.Fab")
 			(uuid "0561be1a-f51a-44df-9aa2-4f662a636b70")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
-		(fp_text user "*"
-			(at -1.8669 -2.4765 89.5)
-			(unlocked yes)
-			(layer "F.Fab")
-			(uuid "9fc20a58-9b8a-4163-82d5-0ee234441c45")
 			(effects
 				(font
 					(size 1 1)
@@ -6165,11 +6165,11 @@
 				)
 			)
 		)
-		(fp_text user "${REFERENCE}"
-			(at 0 0 90.33)
+		(fp_text user "*"
+			(at -1.643965 -1.773888 90.33)
 			(unlocked yes)
-			(layer "F.Fab")
-			(uuid "115a6125-171e-475b-b9d0-46a969f8f11b")
+			(layer "F.SilkS")
+			(uuid "bf6c5940-b2cf-4dea-91f4-00cb01648eff")
 			(effects
 				(font
 					(size 1 1)
@@ -6177,11 +6177,11 @@
 				)
 			)
 		)
-		(fp_text user "*"
-			(at -1.8669 -2.4765 90.33)
+		(fp_text user "${REFERENCE}"
+			(at 0 0 90.33)
 			(unlocked yes)
 			(layer "F.Fab")
-			(uuid "bf6c5940-b2cf-4dea-91f4-00cb01648eff")
+			(uuid "115a6125-171e-475b-b9d0-46a969f8f11b")
 			(effects
 				(font
 					(size 1 1)
@@ -7364,6 +7364,18 @@
 			(uuid "9e47d424-0436-4f15-8d46-244283cea9b7")
 		)
 		(fp_text user "*"
+			(at -1.67236 -1.797525 90.65)
+			(unlocked yes)
+			(layer "F.SilkS")
+			(uuid "60dc5974-b383-4aeb-91bd-52e45dd52ae1")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(fp_text user "*"
 			(at -3.0226 -3.3978 90.65)
 			(unlocked yes)
 			(layer "F.SilkS")
@@ -7383,18 +7395,6 @@
 				(font
 					(size 0.508 0.508)
 					(thickness 0.127)
-				)
-			)
-		)
-		(fp_text user "*"
-			(at -1.8669 -2.4765 90.65)
-			(unlocked yes)
-			(layer "F.Fab")
-			(uuid "60dc5974-b383-4aeb-91bd-52e45dd52ae1")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
 				)
 			)
 		)
@@ -7825,7 +7825,7 @@
 		(sheetfile "testchannel8.kicad_sch")
 		(attr smd)
 		(fp_line
-			(start -0.107836 0.359999)
+			(start -0.107836 0.359997)
 			(end 0.107836 0.36)
 			(stroke
 				(width 0.12)
@@ -7836,7 +7836,7 @@
 		)
 		(fp_line
 			(start -0.107836 -0.36)
-			(end 0.107836 -0.359999)
+			(end 0.107836 -0.359997)
 			(stroke
 				(width 0.12)
 				(type solid)
@@ -9034,7 +9034,7 @@
 		(attr smd)
 		(fp_line
 			(start -0.107836 0.36)
-			(end 0.107836 0.359999)
+			(end 0.107836 0.359997)
 			(stroke
 				(width 0.12)
 				(type solid)
@@ -9043,7 +9043,7 @@
 			(uuid "1e344c1e-e520-4997-9393-b38e372116d8")
 		)
 		(fp_line
-			(start -0.107836 -0.359999)
+			(start -0.107836 -0.359997)
 			(end 0.107836 -0.36)
 			(stroke
 				(width 0.12)
@@ -10769,7 +10769,7 @@
 		(attr smd)
 		(fp_line
 			(start -0.107836 -0.36)
-			(end 0.107836 -0.359999)
+			(end 0.107836 -0.359997)
 			(stroke
 				(width 0.12)
 				(type solid)
@@ -10778,7 +10778,7 @@
 			(uuid "8da12451-e65b-4898-880c-a28fab592734")
 		)
 		(fp_line
-			(start -0.107836 0.359999)
+			(start -0.107836 0.359997)
 			(end 0.107836 0.36)
 			(stroke
 				(width 0.12)
@@ -16331,7 +16331,7 @@
 		(sheetfile "new_fretboard_rev1.kicad_sch")
 		(attr smd)
 		(fp_line
-			(start -0.107836 -0.359999)
+			(start -0.107836 -0.359997)
 			(end 0.107836 -0.36)
 			(stroke
 				(width 0.12)
@@ -16342,7 +16342,7 @@
 		)
 		(fp_line
 			(start -0.107836 0.36)
-			(end 0.107836 0.359999)
+			(end 0.107836 0.359997)
 			(stroke
 				(width 0.12)
 				(type solid)
@@ -22781,7 +22781,7 @@
 		(sheetfile "new_fretboard_rev1.kicad_sch")
 		(attr smd)
 		(fp_line
-			(start -0.107836 -0.359999)
+			(start -0.107836 -0.359997)
 			(end 0.107836 -0.36)
 			(stroke
 				(width 0.12)
@@ -22792,7 +22792,7 @@
 		)
 		(fp_line
 			(start -0.107836 0.36)
-			(end 0.107836 0.359999)
+			(end 0.107836 0.359997)
 			(stroke
 				(width 0.12)
 				(type solid)
@@ -24398,7 +24398,7 @@
 		(attr smd)
 		(fp_line
 			(start -0.107836 0.36)
-			(end 0.107836 0.359999)
+			(end 0.107836 0.359997)
 			(stroke
 				(width 0.12)
 				(type solid)
@@ -24407,7 +24407,7 @@
 			(uuid "f224c97e-a120-4656-b580-230716edcfd0")
 		)
 		(fp_line
-			(start -0.107836 -0.359999)
+			(start -0.107836 -0.359997)
 			(end 0.107836 -0.36)
 			(stroke
 				(width 0.12)
@@ -25200,7 +25200,7 @@
 		(sheetfile "new_fretboard_rev1.kicad_sch")
 		(attr smd)
 		(fp_line
-			(start -0.107836 -0.359999)
+			(start -0.107836 -0.359997)
 			(end 0.107836 -0.36)
 			(stroke
 				(width 0.12)
@@ -25211,7 +25211,7 @@
 		)
 		(fp_line
 			(start -0.107836 0.36)
-			(end 0.107836 0.359999)
+			(end 0.107836 0.359997)
 			(stroke
 				(width 0.12)
 				(type solid)
@@ -26377,6 +26377,18 @@
 			)
 		)
 		(fp_text user "*"
+			(at -1.527782 -1.820307 89.66)
+			(unlocked yes)
+			(layer "F.SilkS")
+			(uuid "c9bac9ec-36dc-4518-8ee4-d3644feed3b2")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(fp_text user "*"
 			(at -3.022599 -3.397799 89.66)
 			(unlocked yes)
 			(layer "F.SilkS")
@@ -26393,18 +26405,6 @@
 			(unlocked yes)
 			(layer "F.Fab")
 			(uuid "682837e4-833e-4811-801d-fc33abfe86f0")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
-		(fp_text user "*"
-			(at -1.8669 -2.4765 89.66)
-			(unlocked yes)
-			(layer "F.Fab")
-			(uuid "c9bac9ec-36dc-4518-8ee4-d3644feed3b2")
 			(effects
 				(font
 					(size 1 1)
@@ -33342,9 +33342,9 @@
 			)
 		)
 		(fp_text user "*"
-			(at -1.8669 -2.4765 90.15)
+			(at -1.752406 -1.924541 90.15)
 			(unlocked yes)
-			(layer "F.Fab")
+			(layer "F.SilkS")
 			(uuid "a909a4c9-1f91-45d4-95c7-cc101e383b24")
 			(effects
 				(font
@@ -35221,7 +35221,7 @@
 		(descr "Capacitor SMD 0603 (1608 Metric), square (rectangular) end terminal, IPC-7351 nominal, (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "capacitor")
 		(property "Reference" "C26"
-			(at 0.127056 1.372955 0.33)
+			(at 0.127063 1.372955 0.33)
 			(layer "F.SilkS")
 			(uuid "1b622825-d88b-438d-927a-5d89e4925226")
 			(effects
@@ -38484,7 +38484,7 @@
 		(sheetfile "testchannel8.kicad_sch")
 		(attr smd)
 		(fp_line
-			(start -0.107836 0.359999)
+			(start -0.107836 0.359997)
 			(end 0.107836 0.36)
 			(stroke
 				(width 0.12)
@@ -38495,7 +38495,7 @@
 		)
 		(fp_line
 			(start -0.107836 -0.36)
-			(end 0.107836 -0.359999)
+			(end 0.107836 -0.359997)
 			(stroke
 				(width 0.12)
 				(type solid)
@@ -41589,7 +41589,7 @@
 		(sheetfile "testchannel8.kicad_sch")
 		(attr smd)
 		(fp_line
-			(start -0.107836 0.359999)
+			(start -0.107836 0.359997)
 			(end 0.107836 0.36)
 			(stroke
 				(width 0.12)
@@ -41600,7 +41600,7 @@
 		)
 		(fp_line
 			(start -0.107836 -0.36)
-			(end 0.107836 -0.359999)
+			(end 0.107836 -0.359997)
 			(stroke
 				(width 0.12)
 				(type solid)
@@ -42078,7 +42078,7 @@
 		(sheetfile "testchannel8.kicad_sch")
 		(attr smd)
 		(fp_line
-			(start -0.107836 0.359999)
+			(start -0.107836 0.359997)
 			(end 0.107836 0.36)
 			(stroke
 				(width 0.12)
@@ -42089,7 +42089,7 @@
 		)
 		(fp_line
 			(start -0.107836 -0.36)
-			(end 0.107836 -0.359999)
+			(end 0.107836 -0.359997)
 			(stroke
 				(width 0.12)
 				(type solid)
@@ -42480,7 +42480,7 @@
 		(attr smd)
 		(fp_line
 			(start -0.107836 0.36)
-			(end 0.107836 0.359999)
+			(end 0.107836 0.359997)
 			(stroke
 				(width 0.12)
 				(type solid)
@@ -42489,7 +42489,7 @@
 			(uuid "ef1137fc-1792-452b-a990-125ee90b487a")
 		)
 		(fp_line
-			(start -0.107836 -0.359999)
+			(start -0.107836 -0.359997)
 			(end 0.107836 -0.36)
 			(stroke
 				(width 0.12)
@@ -45171,7 +45171,7 @@
 		(sheetfile "testchannel8.kicad_sch")
 		(attr smd)
 		(fp_line
-			(start -0.107836 0.359999)
+			(start -0.107836 0.359997)
 			(end 0.107836 0.36)
 			(stroke
 				(width 0.12)
@@ -45182,7 +45182,7 @@
 		)
 		(fp_line
 			(start -0.107836 -0.36)
-			(end 0.107836 -0.359999)
+			(end 0.107836 -0.359997)
 			(stroke
 				(width 0.12)
 				(type solid)
@@ -47134,7 +47134,7 @@
 		(attr smd)
 		(fp_line
 			(start -0.107836 0.36)
-			(end 0.107836 0.359999)
+			(end 0.107836 0.359997)
 			(stroke
 				(width 0.12)
 				(type solid)
@@ -47143,7 +47143,7 @@
 			(uuid "d6ca41e7-5cdb-4c2b-bd0c-e3a6f731c9a0")
 		)
 		(fp_line
-			(start -0.107836 -0.359999)
+			(start -0.107836 -0.359997)
 			(end 0.107836 -0.36)
 			(stroke
 				(width 0.12)
@@ -48928,8 +48928,8 @@
 			)
 		)
 		(fp_text user "*"
-			(at -1.866901 -2.476501 89.92)
-			(layer "F.Fab")
+			(at -1.715252 -1.88076 89.92)
+			(layer "F.SilkS")
 			(uuid "6965124e-a50c-4ff4-bcf4-e02fc94f0917")
 			(effects
 				(font
@@ -49926,6 +49926,17 @@
 			(uuid "fca53677-2a98-46bf-83b4-cd5d543ea673")
 		)
 		(fp_text user "*"
+			(at -1.669889 -1.670881 89.81)
+			(layer "F.SilkS")
+			(uuid "10cbc4c9-af75-4a60-bb90-0573c4622f97")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(fp_text user "*"
 			(at -3.0226 -3.3978 89.81)
 			(unlocked yes)
 			(layer "F.SilkS")
@@ -49945,17 +49956,6 @@
 			(effects
 				(font
 					(size 0.508 0.508)
-					(thickness 0.15)
-				)
-			)
-		)
-		(fp_text user "*"
-			(at -1.866901 -2.4765 89.81)
-			(layer "F.Fab")
-			(uuid "10cbc4c9-af75-4a60-bb90-0573c4622f97")
-			(effects
-				(font
-					(size 1 1)
 					(thickness 0.15)
 				)
 			)
@@ -51827,7 +51827,7 @@
 		(sheetfile "testchannel8.kicad_sch")
 		(attr smd)
 		(fp_line
-			(start -0.107836 0.359999)
+			(start -0.107836 0.359997)
 			(end 0.107836 0.36)
 			(stroke
 				(width 0.12)
@@ -51838,7 +51838,7 @@
 		)
 		(fp_line
 			(start -0.107836 -0.36)
-			(end 0.107836 -0.359999)
+			(end 0.107836 -0.359997)
 			(stroke
 				(width 0.12)
 				(type solid)
@@ -52630,7 +52630,7 @@
 		(attr smd)
 		(fp_line
 			(start -0.107836 0.36)
-			(end 0.107836 0.359999)
+			(end 0.107836 0.359997)
 			(stroke
 				(width 0.12)
 				(type solid)
@@ -52639,7 +52639,7 @@
 			(uuid "e0da237f-8be2-4b15-b393-9ad319296ff8")
 		)
 		(fp_line
-			(start -0.107836 -0.359999)
+			(start -0.107836 -0.359997)
 			(end 0.107836 -0.36)
 			(stroke
 				(width 0.12)
@@ -55785,6 +55785,18 @@
 			(uuid "7424e14c-e631-4400-9875-41be6caf0a33")
 		)
 		(fp_text user "*"
+			(at -1.675887 -1.695571 90.49)
+			(unlocked yes)
+			(layer "F.SilkS")
+			(uuid "01ef92c9-9f6b-4182-aa76-d7ce80c051a6")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(fp_text user "*"
 			(at -3.0226 -3.3978 90.49)
 			(unlocked yes)
 			(layer "F.SilkS")
@@ -55804,18 +55816,6 @@
 			(effects
 				(font
 					(size 0.508 0.508)
-					(thickness 0.15)
-				)
-			)
-		)
-		(fp_text user "*"
-			(at -1.8669 -2.4765 90.49)
-			(unlocked yes)
-			(layer "F.Fab")
-			(uuid "01ef92c9-9f6b-4182-aa76-d7ce80c051a6")
-			(effects
-				(font
-					(size 1 1)
 					(thickness 0.15)
 				)
 			)
@@ -58968,6 +58968,18 @@
 			)
 		)
 		(fp_text user "*"
+			(at -1.609387 -1.740158 89.35)
+			(unlocked yes)
+			(layer "F.SilkS")
+			(uuid "644f0a61-f4bd-4d70-a810-c71e6e33916b")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(fp_text user "*"
 			(at -3.022599 -3.3978 89.35)
 			(unlocked yes)
 			(layer "F.SilkS")
@@ -58975,18 +58987,6 @@
 			(effects
 				(font
 					(size 0.508 0.508)
-					(thickness 0.15)
-				)
-			)
-		)
-		(fp_text user "*"
-			(at -1.8669 -2.4765 89.35)
-			(unlocked yes)
-			(layer "F.Fab")
-			(uuid "644f0a61-f4bd-4d70-a810-c71e6e33916b")
-			(effects
-				(font
-					(size 1 1)
 					(thickness 0.15)
 				)
 			)

@@ -430,8 +430,10 @@ void __ATTR_ITCMRAM audioFrameSynth(uint16_t buffer_offset)
 	for (int i = 0; i < HALF_BUFFER_SIZE; i+=2)
 	{
 		current_sample = (int32_t)(audioTickSynth() * TWO_TO_23);
+		current_sample = LEAF_clip((-1 * TWO_TO_23) + 1, current_sample, TWO_TO_23 - 1);
+
 		audioOutBuffer[buffer_offset + i] = current_sample;
-		audioOutBuffer[buffer_offset + i + 1] = current_sample;
+		audioOutBuffer[buffer_offset + i + 1] = current_sample * -1;
 	}
 
 

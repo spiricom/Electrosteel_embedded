@@ -39,6 +39,8 @@ Core/Src/main.o: ../Core/Src/main.c \
  /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_ll_fmc.h \
  /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi.h \
  /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi_ex.h \
+ /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim.h \
+ /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim_ex.h \
  /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Core/Inc/parameters.h \
  /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Core/Inc/audiostream.h \
  /Users/josnyder/dev/LEAF/leaf/leaf.h \
@@ -84,10 +86,12 @@ Core/Src/main.o: ../Core/Src/main.c \
  ../Middlewares/Third_Party/FatFs/src/diskio.h \
  ../Middlewares/Third_Party/FatFs/src/ff.h ../FATFS/Target/sd_diskio.h \
  /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Core/Inc/i2c.h \
+ /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Core/Inc/memorymap.h \
  /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Core/Inc/rng.h \
  /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Core/Inc/sai.h \
  /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Core/Inc/sdmmc.h \
  /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Core/Inc/spi.h \
+ /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Core/Inc/tim.h \
  /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Core/Inc/gpio.h \
  /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Core/Inc/fmc.h \
  /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Core/Inc/audiostream.h \
@@ -138,6 +142,8 @@ Core/Src/main.o: ../Core/Src/main.c \
 /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_ll_fmc.h:
 /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi.h:
 /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi_ex.h:
+/Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim.h:
+/Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim_ex.h:
 /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Core/Inc/parameters.h:
 /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Core/Inc/audiostream.h:
 /Users/josnyder/dev/LEAF/leaf/leaf.h:
@@ -187,10 +193,12 @@ Core/Src/main.o: ../Core/Src/main.c \
 ../Middlewares/Third_Party/FatFs/src/ff.h:
 ../FATFS/Target/sd_diskio.h:
 /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Core/Inc/i2c.h:
+/Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Core/Inc/memorymap.h:
 /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Core/Inc/rng.h:
 /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Core/Inc/sai.h:
 /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Core/Inc/sdmmc.h:
 /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Core/Inc/spi.h:
+/Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Core/Inc/tim.h:
 /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Core/Inc/gpio.h:
 /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Core/Inc/fmc.h:
 /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Core/Inc/audiostream.h:
