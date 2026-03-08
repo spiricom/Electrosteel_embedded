@@ -123,6 +123,7 @@ uint32_t timerCapture8[128];
 float timerFreq[4];
 void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 {
+	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_2, GPIO_PIN_SET);
 	uint32_t whichString = 0;
 	float myFreq = 1.0f;
 	if (htim->Instance == TIM8)
@@ -255,10 +256,12 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 
 		}
 	}
+	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_2, GPIO_PIN_RESET);
 }
 
 void HAL_TIM_IC_CaptureHalfCpltCallback(TIM_HandleTypeDef *htim)
 {
+	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_3, GPIO_PIN_SET);
 	uint32_t whichString = 0;
 	float myFreq = 1.0f;
 	if (htim->Instance == TIM8)
@@ -392,6 +395,7 @@ void HAL_TIM_IC_CaptureHalfCpltCallback(TIM_HandleTypeDef *htim)
 
 		}
 	}
+	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_3, GPIO_PIN_RESET);
 }
 
 
