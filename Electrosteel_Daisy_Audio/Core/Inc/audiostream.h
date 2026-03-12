@@ -62,6 +62,7 @@ typedef enum
   String1Loaded,
   String2Loaded,
   String3Loaded,
+  String4Loaded,
   SynthLoaded,
 }StringModelLoadedTypeDef;
 

@@ -16,7 +16,7 @@
 #include "spi.h"
 #include "parameters.h"
 #include "audiostream.h"
-#include "arm_math.h"
+
 #include "additive.h"
 
 
@@ -96,7 +96,7 @@ float stringFundamentals[3][3] =
 };
 
 
-float additiveDefaults[12] = {0.15f, 0.50f, 0.7f, 0.95f, 0.20f, 0.5f, 0.63f, 0.96f, 0.3f, 0.1764f, 0.7f, 0.5f};
+float additiveDefaults[12] = {0.1f, 0.50f, 0.5f, 0.95f, 0.0f, 0.1f, 0.2f, 0.96f, 0.3f, 0.1764f, 0.99f, 0.4f};
 
 
 void __ATTR_ITCMRAM audioInitAdditive()
@@ -160,7 +160,7 @@ void __ATTR_ITCMRAM audioInitAdditive()
 			tCycle_init(&additive[i][j], &leaf);
 			tADSRT_init(&additiveEnv[i][j], 5.0f, partialDecays[j] * 1000.0f, 0.0f, 150.0f, decayExpBuffer, DECAY_EXP_BUFFER_SIZE, &leaf);
 			tExpSmooth_init(&tensionAdd[i], 0.0f, 0.001f, &leaf);
-			tExpSmooth_setDest(&tensionAdd[i], 0.0f);
+			tExpSmooth_setDest(tensionAdd[i], 0.0f);
 		}
 		//tExpSmooth_init(&stringFreqSmoothers[i],1.0f, 0.05f, &leaf);
 	}
@@ -174,24 +174,24 @@ void __ATTR_ITCMRAM audioFreeAdditive()
 
 void __ATTR_ITCMRAM audioSwitchToAdditive()
 {
-	tVZFilter_setFrequencyAndResonance(&noiseFilt,1760.0f, 2.5f);
-	tVZFilter_setFrequencyAndResonance(&noiseFilt2,61.0f, 2.5f);
+	tVZFilter_setFrequencyAndResonance(noiseFilt,1760.0f, 2.5f);
+	tVZFilter_setFrequencyAndResonance(noiseFilt2,61.0f, 2.5f);
 	for (int i = 0; i < 12; i++)
 	{
-		tExpSmooth_setFactor(&knobSmoothers[i], 0.001f);
+		tExpSmooth_setFactor(knobSmoothers[i], 0.001f);
 		if (voice == 61)
 		{
-			tExpSmooth_setValAndDest(&knobSmoothers[i], additiveDefaults[i]);
+			tExpSmooth_setValAndDest(knobSmoothers[i], additiveDefaults[i]);
 		}
 		else
 		{
-			tExpSmooth_setValAndDest(&knobSmoothers[i], loadedKnobParams[i]);
+			tExpSmooth_setValAndDest(knobSmoothers[i], loadedKnobParams[i]);
 		}
 		knobFrozen[i] = 1;
 	}
 	for (int i = 0; i < numStringsThisBoard; i++)
 	{
-		tADSRT_setSustain(&fenvelopes[i], 0.0f);
+		tADSRT_setSustain(fenvelopes[i], 0.0f);
 	}
 
 }
@@ -209,9 +209,9 @@ void __ATTR_ITCMRAM audioFrameAdditive(uint16_t buffer_offset)
 			//note off
 			for (int j = 0; j < NUM_OVERTONES; j++)
 			{
-				tADSRT_clear(&additiveEnv[i][j]);
+				tADSRT_clear(additiveEnv[i][j]);
 			}
-			tADSRT_clear(&fenvelopes[i]);
+			tADSRT_clear(fenvelopes[i]);
 			previousStringInputs[i] = 0;
 		}
 		resetStringInputs = 0;
@@ -224,7 +224,7 @@ void __ATTR_ITCMRAM audioFrameAdditive(uint16_t buffer_offset)
 		for (int j = 0; j < NUM_OVERTONES; j++)
 		{
 			Lfloat x0 = additivePickupPos[i] * PI;
-			pickupWeights[i][j] = arm_sin_f32((j + 1) * x0);
+			pickupWeights[i][j] = sinf((j + 1) * x0);
 		}
 	}
 
@@ -235,12 +235,12 @@ void __ATTR_ITCMRAM audioFrameAdditive(uint16_t buffer_offset)
 			if ((previousStringInputs[i] == 0) && (stringInputs[i] > 0))
 			{
 				float amplitz = stringInputs[i] * 0.000015259021897f;
-				tExpSmooth_setVal(&tensionAdd[i], amplitz);
+				tExpSmooth_setVal(tensionAdd[i], amplitz);
 				stringOctave[i] = octave;
 				//HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_SET);
 
-				tADSRT_setDecay(&fenvelopes[i], 50.0f);
-				tADSRT_on(&fenvelopes[i], amplitz);
+				tADSRT_setDecay(fenvelopes[i], 50.0f);
+				tADSRT_on(fenvelopes[i], amplitz);
 				stringFrequencies[i] = mtofTableLookup(stringMIDIPitches[i]+ stringOctave[i]);
 				//float thisDecay = 1.0f / ((decayAfParts[j] * stringFrequencies[i]) + decayBs[j]);
 				float thisDecay;
@@ -331,9 +331,9 @@ void __ATTR_ITCMRAM audioFrameAdditive(uint16_t buffer_offset)
 						thisDecay = (d1 * stringFade) + (d2 * oneMinusStringFade);
 					}
 					thisDecay *= 2000.0f * knobScaled[10];
-					tADSRT_setDecay(&additiveEnv[i][j], thisDecay);// * randomFactors[currentRandom]);
+					tADSRT_setDecay(additiveEnv[i][j], thisDecay);// * randomFactors[currentRandom]);
 					currentRandom++;
-					tADSRT_on(&additiveEnv[i][j], amplitz * thisGain);
+					tADSRT_on(additiveEnv[i][j], amplitz * thisGain);
 					finalGains[i][j] = thisGain;
 					currentRandom++;
 				}
@@ -344,9 +344,9 @@ void __ATTR_ITCMRAM audioFrameAdditive(uint16_t buffer_offset)
 				//HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_RESET);
 				for (int j = 0; j < NUM_OVERTONES; j++)
 				{
-					tADSRT_off(&additiveEnv[i][j]);
+					tADSRT_off(additiveEnv[i][j]);
 				}
-				tADSRT_off(&fenvelopes[i]);
+				tADSRT_off(fenvelopes[i]);
 			}
 			previousStringInputs[i] = stringInputs[i];
 		}
@@ -380,12 +380,12 @@ float __ATTR_ITCMRAM audioTickAdditive(void)
 	float tempSamp = 0.0f;
 	for (int i = 0; i < 12; i++)
 	{
-		knobScaled[i] = tExpSmooth_tick(&knobSmoothers[i]);
+		knobScaled[i] = tExpSmooth_tick(knobSmoothers[i]);
 	}
 
 
-	float filtNoise = tVZFilter_tickEfficient(&noiseFilt, tNoise_tick(&myNoise));
-	filtNoise += tVZFilter_tickEfficient(&noiseFilt2, tNoise_tick(&myNoise));
+	float filtNoise = tVZFilter_tickEfficient(noiseFilt, tNoise_tick(myNoise));
+	filtNoise += tVZFilter_tickEfficient(noiseFilt2, tNoise_tick(myNoise));
 	filtNoise *= 2.0f;
 	float stretch = knobScaled[0];
 	stretch = (stretch*stretch*stretch*stretch) * 0.3f;
@@ -393,19 +393,19 @@ float __ATTR_ITCMRAM audioTickAdditive(void)
 	float pickup = knobScaled[4];
 	float freqWeightKnob = knobScaled[1];
 	float oneMinusFreqWeightKnob = 1.0f - knobScaled[1];
-	float volumeSmoothed = tExpSmooth_tick(&volumeSmoother);
+	float volumeSmoothed = tExpSmooth_tick(volumeSmoother);
 	//float Env2 = 0.0f;
 	for (int i = 0; i < numStringsThisBoard; i++)
 	{
-		float thisTension = tExpSmooth_tick(&tensionAdd[i]);
+		float thisTension = tExpSmooth_tick(tensionAdd[i]);
 		thisTension = knobScaled[5] * thisTension;
 		float tensionSpeed = (1.0f - knobScaled[6]);
 		tensionSpeed = tensionSpeed*tensionSpeed*tensionSpeed*tensionSpeed;
-		tExpSmooth_setFactor(&tensionAdd[i], 0.01f * tensionSpeed + 0.0001f);
+		tExpSmooth_setFactor(tensionAdd[i], 0.01f * tensionSpeed + 0.0001f);
 
 		float theMIDI = (stringMIDIPitches[i]+ stringOctave[i]) + thisTension;
 
-		float noiseEnv = tADSRT_tick(&fenvelopes[i]); //noise envelope
+		float noiseEnv = tADSRT_tick(fenvelopes[i]); //noise envelope
 		tempSamp += filtNoise * noiseEnv *  knobScaled[2];
 		stringFrequencies[i] = mtofTableLookup(theMIDI);
 		invGainSum[i] = 1.0f;
@@ -416,19 +416,19 @@ float __ATTR_ITCMRAM audioTickAdditive(void)
 		gainSum[i] = 0.0f;
 		for (int j = 0; j < NUM_OVERTONES; j++)
 		{
-			float thisEnv = tADSRT_tick(&additiveEnv[i][j]);
+			float thisEnv = tADSRT_tick(additiveEnv[i][j]);
 			float tempFreq = (stringFrequencies[i] * (j+1) * ((stretch * j) + 1.0f));// * ((Env2 * knobScaled[5])+ 1.0f);
 			//float tempFreq = 0.0f;
 			float tempGain = ((tempFreq - 15000.0f) * 0.00025f);
 			//float tempGain = LEAF_map(tempFreq, 15000.0f, 19000.0f, 0.0, 1.0f);
 			tempGain = LEAF_clip(0.0f, (1.0f-tempGain), 1.0f);
-			tCycle_setFreq(&additive[i][j], tempFreq);
+			tCycle_setFreq(additive[i][j], tempFreq);
 			float upRamp = (j * invNumOvertones);
 			float downRamp = 1.0f - (j * invNumOvertones);
 			float freqWeight = (upRamp * freqWeightKnob) + (downRamp * oneMinusFreqWeightKnob);
 			gainSum[i] += freqWeight * finalGains[i][j];
 			float thisWeight = oneMinusPickup + pickupWeights[i][j] * pickup;
-			tempSamp += tCycle_tick(&additive[i][j]) * thisEnv * thisWeight * freqWeight * invGainSum[i];
+			tempSamp += tCycle_tick(additive[i][j]) * thisEnv * thisWeight * freqWeight * invGainSum[i];
 		}
 	}
 
@@ -436,7 +436,7 @@ float __ATTR_ITCMRAM audioTickAdditive(void)
 	float outVol = 0.006721744f + 0.4720157f*volumeSmoothed - 2.542849f*volumeSmoothed*volumeSmoothed + 6.332339f*volumeSmoothed*volumeSmoothed*volumeSmoothed - 3.271672f*volumeSmoothed*volumeSmoothed*volumeSmoothed*volumeSmoothed;
 
 
-	tempSamp *= 0.5f;
+	tempSamp *= 0.99f;
 	tempSamp *= outVol;
 	tempSamp *= masterVolFromBrain;
 	return tempSamp;

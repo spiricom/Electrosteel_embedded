@@ -436,7 +436,7 @@ int main(void)
   specialModeMacroNames[2][18] = "          ";
   specialModeMacroNames[2][19] = "          ";
 
-  specialModeNames[3] = "VOCAL        ";
+  specialModeNames[3] = "STRING4       ";
   specialModeMacroNames[3][0] = "Size      ";
   specialModeMacroNames[3][1] = "Chipmunk  ";
   specialModeMacroNames[3][2] = "Diameter  ";

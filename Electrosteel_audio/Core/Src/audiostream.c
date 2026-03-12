@@ -16,13 +16,13 @@
 #include "spi.h"
 #include "parameters.h"
 #include "audiostream.h"
-#include "arm_math.h"
 #include "string1.h"
 #include "string2.h"
 #include "additive.h"
 #include "vocal.h"
 #include "synth.h"
 #include "string3.h"
+#include "string4.h"
 
 //the audio buffers are put in the D2 RAM area because that is a memory location that the DMA has access to.
 int32_t audioOutBuffer[AUDIO_BUFFER_SIZE] __ATTR_RAM_D2_DMA;
@@ -50,7 +50,7 @@ volatile uint32_t newBar = 0 ;
 
 
 
-const uint8_t numStrings = 12; //TODO FIX THIS!
+const uint8_t numStrings = 10; //TODO FIX THIS!
 
 float invNumStrings = 1.0f / numStrings;
 
@@ -97,6 +97,7 @@ uint8_t lsDecay[NUM_STRINGS_PER_BOARD];
 audioFrame_t audioFrameFunction;
 
 
+tCycle testSine;
 
 //envelope tables
 float decayExpBuffer[DECAY_EXP_BUFFER_SIZE];
@@ -197,12 +198,12 @@ volatile int switchStrings = 0;
 volatile uint8_t octaveAction = 0;
 
 
-
+void __ATTR_ITCMRAM audioFrameTesting(uint16_t buffer_offset);
 
 
 /**********************************************/
 
-float FORCE_INLINE aToDbTableLookup(float in)
+static float FORCE_INLINE aToDbTableLookup(float in)
 {
     in = fastabsf(in);
     float floatIndex = LEAF_clip (0, (in * atodbTableScalar) - atodbTableOffset, ATODB_TABLE_SIZE_MINUS_ONE);
@@ -216,7 +217,7 @@ float FORCE_INLINE aToDbTableLookup(float in)
     return ((atoDbTable[inAmpIndex] * (1.0f - alpha)) + (atoDbTable[inAmpIndexPlusOne] * alpha));
 }
 
-float FORCE_INLINE aToDbTableLookupFast(float in)
+static float FORCE_INLINE aToDbTableLookupFast(float in)
 {
     in = fastabsf(in);
     uint32_t inAmpIndex = LEAF_clip (0, (in * atodbTableScalar) - atodbTableOffset, ATODB_TABLE_SIZE_MINUS_ONE);
@@ -236,7 +237,7 @@ float FORCE_INLINE dbToATableLookup(float in)
     return ((dbtoATable[inDBIndex] * (1.0f - alpha)) + (dbtoATable[inDBIndexPlusOne] * alpha));
 }
 
-float FORCE_INLINE dbToATableLookupFast(float in)
+static float FORCE_INLINE dbToATableLookupFast(float in)
 {
     uint32_t inDBIndex = LEAF_clip (0, (in * dbtoaTableScalar) - dbtoaTableOffset, DBTOA_TABLE_SIZE_MINUS_ONE);
     return dbtoATable[inDBIndex];
@@ -275,16 +276,17 @@ void audioInit()
 
 
 
-
+	tCycle_init(&testSine, &leaf);
+	tCycle_setFreq(testSine, 440.0f);
 
 	for (int i = 0; i < 256; i++)
 	{
 		randomFactors[i] = (randomNumber() * 0.4f) + 0.8f;
 	}
-	LEAF_generate_atodb(atoDbTable, ATODB_TABLE_SIZE, 0.00001f, 4.0f);
+	LEAF_generate_atodb(atoDbTable, ATODB_TABLE_SIZE, 0.00001f, 1.0f);
 	LEAF_generate_dbtoa(dbtoATable, DBTOA_TABLE_SIZE, -90.0f, 50.0f);
 
-	atodbTableScalar = ATODB_TABLE_SIZE_MINUS_ONE/(4.0f-0.00001f);
+	atodbTableScalar = ATODB_TABLE_SIZE_MINUS_ONE/(1.0f-0.00001f);
 	atodbTableOffset = 0.00001f * atodbTableScalar;
 	dbtoaTableScalar = DBTOA_TABLE_SIZE_MINUS_ONE/(50.0f+90.0f);
 	dbtoaTableOffset = -90.0f * dbtoaTableScalar;
@@ -303,6 +305,7 @@ void audioInit()
 
 	else if (numStrings == 10)
 	{
+#if 0
 		// first two strings are one board each, other 8 are two strings each.
 		if (boardNumber == 0)
 		{
@@ -319,6 +322,11 @@ void audioInit()
 			firstString = (boardNumber - 1) * NUM_STRINGS_PER_BOARD;
 			numStringsThisBoard = 2;
 		}
+#endif
+		numStringsThisBoard = 1;
+		// first two strings are one board each, other 8 are two strings each.
+		firstString = boardNumber;
+
 	}
 
 	else //otherwise 12-string version
@@ -350,10 +358,10 @@ void audioInit()
 
 	audioInitAdditive();
 	//audioInitString1();
-	audioInitVocal();
+	//audioInitVocal();
 	audioInitSynth();
 	audioInitString3();
-
+	audioInitString4();
 	for (int v = 0; v < NUM_STRINGS_PER_BOARD; v++)
 	{
 
@@ -366,8 +374,8 @@ void audioInit()
 		//tVZFilter_setFreq(&noiseFilt2, 3332.0f); //based on testing with knob values
 
 
-		tVZFilter_setFreq(&noiseFilt, faster_mtof(0.9f * 128.0f));
-		tVZFilter_setFreq(&noiseFilt2,faster_mtof(0.8f * 128.0f));
+		tVZFilter_setFreq(noiseFilt, faster_mtof(0.9f * 128.0f));
+		tVZFilter_setFreq(noiseFilt2,faster_mtof(0.8f * 128.0f));
 
 		tNoise_init(&myNoise, WhiteNoise, &leaf);
 
@@ -379,7 +387,11 @@ void audioInit()
 			audioOutBuffer[ i] = (int32_t)(0.0f * TWO_TO_23);
 	}
 
-	audioFrameFunction = audioFrameWaiting;
+//messing around
+	//audioFrameFunction = audioFrameTesting;
+	//diskBusy = 0;
+	//presetReady = 1;
+		audioFrameFunction = audioFrameWaiting;
 	HAL_Delay(1);
 
 }
@@ -388,7 +400,7 @@ void audioStart(SAI_HandleTypeDef* hsaiOut, SAI_HandleTypeDef* hsaiIn)
 {
 	HAL_Delay(1);
 	transmit_status = HAL_SAI_Transmit_DMA(hsaiOut, (uint8_t *)&audioOutBuffer[0], AUDIO_BUFFER_SIZE);
-	//receive_status = HAL_SAI_Receive_DMA(hsaiIn, (uint8_t *)&audioInBuffer[0], AUDIO_BUFFER_SIZE);
+	receive_status = HAL_SAI_Receive_DMA(hsaiIn, (uint8_t *)&audioInBuffer[0], AUDIO_BUFFER_SIZE);
 }
 
 volatile uint32_t timeSPI = 0;
@@ -426,7 +438,7 @@ void __ATTR_ITCMRAM updateStateFromSPIMessage(uint8_t offset)
 		barInMIDI[0] = stringPositions[0] * 0.001953125f;
 		barInMIDI[1] = stringPositions[1] * 0.001953125f;
 	}
-	tExpSmooth_setDest(&volumeSmoother,volumePedal);
+	tExpSmooth_setDest(volumeSmoother,volumePedal);
 	timeSPI = DWT->CYCCNT - tempCountSPI;
 }
 
@@ -467,7 +479,7 @@ void voiceChangeCheck(void)
 		else if (voice == 60)
 		{
 			audioFrameFunction = audioFrameVocal;
-			audioSwitchToVocal();
+			audioSwitchToString4();
 			currentActivePreset = voice;
 			diskBusy = 0;
 			presetReady = 1;
@@ -490,7 +502,7 @@ void voiceChangeCheck(void)
 			presetWaitingToLoad = 1;
 			presetNumberToLoad = voice;
 			presetReady = 0;
-			if (prevVoice > 59)
+			if (prevVoice > 58)
 			{
 				resetStringInputs = 1;
 			}
@@ -502,7 +514,6 @@ void voiceChangeCheck(void)
 			audioOutBuffer[i] = 0;
 			audioOutBuffer[i + 1] = 0;
 		}
-
 	}
 
 	prevVoice = voice;
@@ -539,6 +550,23 @@ void __ATTR_ITCMRAM HAL_SAI_TxHalfCpltCallback(SAI_HandleTypeDef *hsai)
 
 void __ATTR_ITCMRAM HAL_SAI_ErrorCallback(SAI_HandleTypeDef *hsai)
 {
+}
+
+void __ATTR_ITCMRAM audioFrameTesting(uint16_t buffer_offset)
+{
+	//HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_SET);
+	uint32_t tempCountFrame = DWT->CYCCNT;
+	//mono operation, no need to compute right channel. Also for loop iterating by 2 instead of 1 to avoid if statement.
+	for (int i = 0; i < HALF_BUFFER_SIZE; i+=2)
+	{
+		int iplusbuffer = buffer_offset + i;
+		float leftOut = tCycle_tick(testSine);
+		audioOutBuffer[iplusbuffer] = (int32_t)(leftOut * TWO_TO_23);
+		audioOutBuffer[iplusbuffer + 1] = (int32_t)(leftOut * -.99999f *  TWO_TO_23);
+	}
+	timeFrame = DWT->CYCCNT - tempCountFrame;
+	frameLoadPercentage = (float)timeFrame * frameLoadMultiplier;
+	//HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_RESET);
 }
 
 

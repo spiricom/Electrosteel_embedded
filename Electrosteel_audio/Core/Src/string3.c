@@ -24,7 +24,6 @@
 #include "spi.h"
 #include "parameters.h"
 #include "audiostream.h"
-#include "arm_math.h"
 #include "string3.h"
 
 
@@ -36,7 +35,9 @@ float prevPuPos[NUM_STRINGS_PER_BOARD];
 float prevSquishedPuPos[NUM_STRINGS_PER_BOARD];
 float finalPuPos[NUM_STRINGS_PER_BOARD];
 
-float string3Defaults[12] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.3019f, 0.1764f, 0.7764f, 0.8155f};
+float string3Defaults[12] = {0.06f, 0.99f, 0.99f, 0.9f, 0.6f, 0.6f, 0.0f, 0.0f, 0.9f, 0.85f, 0.84f, 0.905f};
+
+//add tDynamicSmoother for pitch
 
 void __ATTR_ITCMRAM audioInitString3()
 {
@@ -60,15 +61,15 @@ void __ATTR_ITCMRAM audioSwitchToString3()
 {
 	for (int i = 0; i < 12; i++)
 	{
-		tExpSmooth_setFactor(&knobSmoothers[i], 0.001f);
+		tExpSmooth_setFactor(knobSmoothers[i], 0.001f);
 
 		if (voice == 59)
 		{
-			tExpSmooth_setValAndDest(&knobSmoothers[i], string3Defaults[i]);
+			tExpSmooth_setValAndDest(knobSmoothers[i], string3Defaults[i]);
 		}
 		else
 		{
-			tExpSmooth_setValAndDest(&knobSmoothers[i], loadedKnobParams[i]);
+			tExpSmooth_setValAndDest(knobSmoothers[i], loadedKnobParams[i]);
 		}
 		knobFrozen[i] = 1;
 	}
@@ -111,7 +112,7 @@ void __ATTR_ITCMRAM audioFrameString3(uint16_t buffer_offset)
 
 			float finalFreq = mtofTableLookup(theNote[i]);
 			//float openStringFreq = mtofTableLookup(theNote[i]-barInMIDI[i]);
-			tStiffString_setFreqNoUpdate(&stringsC[i], finalFreq);
+			tStiffString_setFreqNoUpdate(stringsC[i], finalFreq);
 
 			float openStringFreq = mtofTableLookup(theNote[i]-barInMIDI[i]);
 			volatile float ratioOfOpenStringToNote=(finalFreq/ openStringFreq);
@@ -124,7 +125,7 @@ void __ATTR_ITCMRAM audioFrameString3(uint16_t buffer_offset)
 				float squishedStiffness = (newStiffness*0.01f) ;
 				if ( squishedStiffness != prevSquishedStiffness[i])
 				{
-					tStiffString_setStiffnessNoUpdate(&stringsC[i],squishedStiffness );
+					tStiffString_setStiffnessNoUpdate(stringsC[i],squishedStiffness );
 					prevSquishedStiffness[i] = squishedStiffness;
 				}
 				prevStiffness[i] = newStiffness;
@@ -147,7 +148,7 @@ void __ATTR_ITCMRAM audioFrameString3(uint16_t buffer_offset)
 						pickupKnobVal2 = ratioOfNoteToOpenString-difference;
 					}
 					float pickuppos = (pickupKnobVal * knobScaled[1]) + (pickupKnobVal2 * ratioOfOpenStringToNote) * (1.0f - knobScaled[1]);
-					tStiffString_setPickupPosNoUpdate(&stringsC[i], (pickuppos));
+					tStiffString_setPickupPosNoUpdate(stringsC[i], (pickuppos));
 					prevSquishedPuPos[i] = squishedPuPos;
 				}
 				prevPuPos[i] = newpuPos;
@@ -166,7 +167,7 @@ void __ATTR_ITCMRAM audioFrameString3(uint16_t buffer_offset)
 				pluckKnobVal2 = ratioOfNoteToOpenString-difference;
 			}
 			float pluckpos = (pluckKnobVal * knobScaled[2]) + (pluckKnobVal2 * ratioOfOpenStringToNote) * (1.0f - knobScaled[2]);
-			tStiffString_setPluckPosNoUpdate(&stringsC[i], LEAF_clip(0.1f,pluckpos, 0.9f));
+			tStiffString_setPluckPosNoUpdate(stringsC[i], LEAF_clip(0.1f,pluckpos, 0.9f));
 
 			float dampKnob = (1.0f - knobScaled[9]);
 
@@ -175,10 +176,10 @@ void __ATTR_ITCMRAM audioFrameString3(uint16_t buffer_offset)
 			{
 				mainDecay = 0.0f;
 			}
-			tStiffString_setDecayNoUpdate(&stringsC[i], mainDecay * mainDecay * mainDecay * 0.001f);
-			tStiffString_setDecayHighFreqNoUpdate(&stringsC[i], (dampKnob*dampKnob*dampKnob)  * 0.00025f);
-			tStiffString_updateOscillators(&stringsC[i]);
-			tStiffString_updateOutputWeights(&stringsC[i]);
+			tStiffString_setDecayNoUpdate(stringsC[i], mainDecay * mainDecay * mainDecay * 0.001f);
+			tStiffString_setDecayHighFreqNoUpdate(stringsC[i], (dampKnob*dampKnob*dampKnob)  * 0.00025f);
+			tStiffString_updateOscillators(stringsC[i]);
+			tStiffString_updateOutputWeights(stringsC[i]);
 		}
 		//mono operation, no need to compute right channel. Also for loop iterating by 2 instead of 1 to avoid if statement.
 		for (int i = 0; i < HALF_BUFFER_SIZE; i+=2)
@@ -206,11 +207,11 @@ float __ATTR_ITCMRAM audioTickString3(void)
 	float temp = 0.0f;
 
 
-	float volumeSmoothed = tExpSmooth_tick(&volumeSmoother);
+	float volumeSmoothed = tExpSmooth_tick(volumeSmoother);
 
 	for (int i = 0; i < 12; i++)
 	{
-		knobScaled[i] = tExpSmooth_tick(&knobSmoothers[i]);
+		knobScaled[i] = tExpSmooth_tick(knobSmoothers[i]);
 	}
 
 	/*
@@ -259,15 +260,19 @@ float __ATTR_ITCMRAM audioTickString3(void)
 					theNote[i] = 64.0f;
 				}
 				float finalFreq = mtofTableLookup(theNote[i]);
-				tStiffString_setFreq(&stringsC[i], finalFreq);
-				tStiffString_pluck(&stringsC[i], str3Amp);
+				tStiffString_setFreq(stringsC[i], finalFreq);
+				tStiffString_pluck(stringsC[i], str3Amp);
 
 			}
 			else if ((previousStringInputs[i] > 0) && (stringInputs[i] == 0))
 			{
 				//note off
-				tStiffString_mute(&stringsC[i]);
+				tStiffString_mute(stringsC[i]);
 				//tTString_mute(&strings[i]);
+			}
+			else
+			{
+
 			}
 			previousStringInputs[i] = stringInputs[i];
 		}
@@ -276,7 +281,7 @@ float __ATTR_ITCMRAM audioTickString3(void)
 	for (int i = 0; i < numStringsThisBoard; i++)
 	{
 
-		temp += tStiffString_tick(&stringsC[i]) * 0.5f;
+		temp += tStiffString_tick(stringsC[i]) * 0.5f;
 	}
 	//float outVol = 0.0265625f - (0.2467348f * volumeSmoothed) + (1.253049f * volumeSmoothed * volumeSmoothed);
 	float outVol = 0.006721744f + 0.4720157f*volumeSmoothed - 2.542849f*volumeSmoothed*volumeSmoothed + 6.332339f*volumeSmoothed*volumeSmoothed*volumeSmoothed - 3.271672f*volumeSmoothed*volumeSmoothed*volumeSmoothed*volumeSmoothed;

@@ -40,6 +40,7 @@
 #include "string3.h"
 #include "additive.h"
 #include "vocal.h"
+#include "string4.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -217,7 +218,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   * @retval int
   */
 int main(void)
-{
+  {
 
   /* USER CODE BEGIN 1 */
 	//SCB_CleanInvalidateDCache();
@@ -454,15 +455,15 @@ int main(void)
   specialModeMacroNames[2][18] = "          ";
   specialModeMacroNames[2][19] = "          ";
 
-  specialModeNames[3] = "VOCAL        ";
-  specialModeMacroNames[3][0] = "Size      ";
-  specialModeMacroNames[3][1] = "Chipmunk  ";
-  specialModeMacroNames[3][2] = "Diameter  ";
-  specialModeMacroNames[3][3] = "Nasal     ";
-  specialModeMacroNames[3][4] = "Turb Nois ";
-  specialModeMacroNames[3][5] = "Unvoiced  ";
-  specialModeMacroNames[3][6] = "          ";
-  specialModeMacroNames[3][7] = "          ";
+  specialModeNames[3] = "STRING4      ";
+  specialModeMacroNames[3][0] = "PU Width  ";
+  specialModeMacroNames[3][1] = "PU Pos    ";
+  specialModeMacroNames[3][2] = "PU Filt   ";
+  specialModeMacroNames[3][3] = "Nonlin    ";
+  specialModeMacroNames[3][4] = "V gain    ";
+  specialModeMacroNames[3][5] = "H gain    ";
+  specialModeMacroNames[3][6] = "Decay     ";
+  specialModeMacroNames[3][7] = "Tone    ";
   specialModeMacroNames[3][8] = "BackPos   ";
   specialModeMacroNames[3][9] = "BackDiam  ";
   specialModeMacroNames[3][10] = "ToungePos  ";
@@ -514,7 +515,10 @@ int main(void)
 	  }
   }
 
-
+  for (int i = 0; i < 20; i++)
+   {
+ 	  prevKnobByte[i] = 256;
+   }
 	//now to send all the necessary messages to the codec
 
   //HAL_Delay(1000);
@@ -1780,7 +1784,7 @@ void  handleSPI (uint8_t offset)
 				}
 				else
 				{
-					tExpSmooth_setDest(&knobSmoothers[i], (SPI_LEVERS_RX[i + currentByte] * 0.003921568627451f)); //scaled 0.0 to 1.0
+					tExpSmooth_setDest(knobSmoothers[i], (SPI_LEVERS_RX[i + currentByte] * 0.003921568627451f)); //scaled 0.0 to 1.0
 					prevKnobByte[i] = newByte;
 				}
 
@@ -1801,7 +1805,7 @@ void  handleSPI (uint8_t offset)
 				}
 				else
 				{
-					tExpSmooth_setDest(&knobSmoothers[i], (newByte * 0.003921568627451f)); //scaled 0.0 to 1.0
+					tExpSmooth_setDest(knobSmoothers[i], (newByte * 0.003921568627451f)); //scaled 0.0 to 1.0
 					prevKnobByte[i] = newByte;
 				}
 
@@ -1809,7 +1813,7 @@ void  handleSPI (uint8_t offset)
 			currentByte += 12;
 			for (int i = 0; i < 10; i++)
 			{
-				tExpSmooth_setDest(&pedalSmoothers[i], (SPI_LEVERS_RX[i + currentByte ] * 0.003921568627451f)); //scaled 0.0 to 1.0
+				tExpSmooth_setDest(pedalSmoothers[i], (SPI_LEVERS_RX[i + currentByte ] * 0.003921568627451f)); //scaled 0.0 to 1.0
 			}
 			//HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_SET);
 			whichBar = 1;
@@ -1839,7 +1843,7 @@ void  handleSPI (uint8_t offset)
 				}
 				else
 				{
-					tExpSmooth_setDest(&knobSmoothers[whichKnob], (newByte * 0.003921568627451f)); //scaled 0.0 to 1.0
+					tExpSmooth_setDest(knobSmoothers[whichKnob], (newByte * 0.003921568627451f)); //scaled 0.0 to 1.0
 					prevKnobByte[whichKnob] = newByte;
 				}
 
@@ -1859,7 +1863,7 @@ void  handleSPI (uint8_t offset)
 				}
 				else
 				{
-					tExpSmooth_setDest(&knobSmoothers[whichKnob], (SPI_LEVERS_RX[i + currentByte] * 0.003921568627451f)); //scaled 0.0 to 1.0
+					tExpSmooth_setDest(knobSmoothers[whichKnob], (SPI_LEVERS_RX[i + currentByte] * 0.003921568627451f)); //scaled 0.0 to 1.0
 					prevKnobByte[whichKnob] = newByte;
 				}
 
@@ -1868,7 +1872,7 @@ void  handleSPI (uint8_t offset)
 			currentByte += 12;
 			for (int i = 0; i < 10; i++)
 			{
-				tExpSmooth_setDest(&pedalSmoothers[i], (SPI_LEVERS_RX[i + currentByte ] * 0.003921568627451f)); //scaled 0.0 to 1.0
+				tExpSmooth_setDest(pedalSmoothers[i], (SPI_LEVERS_RX[i + currentByte ] * 0.003921568627451f)); //scaled 0.0 to 1.0
 			}
 			//HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_SET);
 			whichBar = 1;
@@ -3093,7 +3097,7 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 				sourceValues[source][v] = params[whichMacro + MACRO_PARAMS_OFFSET].realVal[v];
 			}
 			//set starting point for the knob smoothers to smooth from
-			tExpSmooth_setValAndDest(&knobSmoothers[whichMacro], params[whichMacro + MACRO_PARAMS_OFFSET].realVal[0]);
+			tExpSmooth_setValAndDest(knobSmoothers[whichMacro], params[whichMacro + MACRO_PARAMS_OFFSET].realVal[0]);
 			knobFrozen[whichMacro] = 1;
 			knobTicked[whichMacro] = 1;
 		}
@@ -3136,7 +3140,7 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 						sourceValues[scalar][v] = params[whichMacro + MACRO_PARAMS_OFFSET].realVal[v];
 					}
 					//set starting point for the knob smoothers to smooth from
-					tExpSmooth_setValAndDest(&knobSmoothers[whichMacro], params[whichMacro + MACRO_PARAMS_OFFSET].realVal[0]);
+					tExpSmooth_setValAndDest(knobSmoothers[whichMacro], params[whichMacro + MACRO_PARAMS_OFFSET].realVal[0]);
 					knobFrozen[whichMacro] = 1;
 					knobTicked[whichMacro] = 1;
 				}

@@ -14,6 +14,7 @@
 #include "audiostream.h"
 #include "string1.h"
 #include "string2.h"
+#include "string4.h"
 #include "synth.h"
 
 tSimpleLivingString3 livStr[NUM_STRINGS_PER_BOARD];
@@ -28,6 +29,10 @@ void __ATTR_ITCMRAM audioInitString1()
 		if (whichStringModelLoaded == String2Loaded)
 		{
 			audioFreeString2();
+		}
+		if (whichStringModelLoaded == String4Loaded)
+		{
+			audioFreeString4();
 		}
 		else if (whichStringModelLoaded == SynthLoaded)
 		{
@@ -160,8 +165,10 @@ void __ATTR_ITCMRAM audioFrameString1(uint16_t buffer_offset)
 	{
 		int iplusbuffer = buffer_offset + i;
 		current_sample = (int32_t)(audioTickString1() * TWO_TO_23);
-		audioOutBuffer[iplusbuffer] = current_sample;
-		audioOutBuffer[iplusbuffer + 1] = current_sample;
+		current_sample = LEAF_clip((-1 * TWO_TO_23) + 1, current_sample, TWO_TO_23 - 1);
+
+		audioOutBuffer[buffer_offset + i] = current_sample;
+		audioOutBuffer[buffer_offset + i + 1] = current_sample * -1;
 	}
 
 	/*

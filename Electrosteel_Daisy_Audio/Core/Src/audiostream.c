@@ -357,10 +357,10 @@ void audioInit()
 
 	audioInitAdditive();
 	//audioInitString1();
-	audioInitVocal();
+	//audioInitVocal();
 	audioInitSynth();
 	audioInitString3();
-
+	audioInitString4();
 	for (int v = 0; v < NUM_STRINGS_PER_BOARD; v++)
 	{
 
@@ -478,7 +478,7 @@ inline void voiceChangeCheck(void)
 		else if (voice == 60)
 		{
 			audioFrameFunction = audioFrameVocal;
-			audioSwitchToVocal();
+			audioSwitchToString4();
 			currentActivePreset = voice;
 			diskBusy = 0;
 			presetReady = 1;
