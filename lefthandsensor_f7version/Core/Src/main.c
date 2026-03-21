@@ -121,6 +121,39 @@ uint32_t sensorerror[9];
 uint16_t timerCaptures[8][128];
 uint32_t timerCapture8[128];
 float timerFreq[4];
+
+
+uint8_t SPIoutputMessage[76];
+uint8_t SPIinputMessage[76];
+volatile uint8_t test;
+
+void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef* hspi)
+{
+test++;
+for (int i = 0; i < 38; i++)
+{
+	SPIoutputMessage[i] = i;
+}
+if (test > 75)
+{
+	test = 0;
+}
+}
+
+void HAL_SPI_TxRxHalfCpltCallback(SPI_HandleTypeDef* hspi)
+{
+test++;
+for (int i = 38; i < 76; i++)
+{
+	SPIoutputMessage[i] = i;
+}
+if (test > 75)
+{
+	test = 0;
+}
+}
+
+
 void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 {
 	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_2, GPIO_PIN_SET);
@@ -447,6 +480,7 @@ int main(void)
   MX_UART8_Init();
   /* USER CODE BEGIN 2 */
 
+  HAL_SPI_TransmitReceive_DMA(&hspi1, SPIoutputMessage,SPIinputMessage, 76);
 
   HAL_TIM_IC_Start_DMA(&htim8, TIM_CHANNEL_2, (uint32_t*)timerCaptures[6], 128);
   HAL_TIM_IC_Start_DMA(&htim8, TIM_CHANNEL_4, (uint32_t*)timerCaptures[7], 128);
@@ -593,19 +627,18 @@ static void MX_SPI1_Init(void)
   /* USER CODE END SPI1_Init 1 */
   /* SPI1 parameter configuration*/
   hspi1.Instance = SPI1;
-  hspi1.Init.Mode = SPI_MODE_MASTER;
+  hspi1.Init.Mode = SPI_MODE_SLAVE;
   hspi1.Init.Direction = SPI_DIRECTION_2LINES;
   hspi1.Init.DataSize = SPI_DATASIZE_8BIT;
   hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
-  hspi1.Init.NSS = SPI_NSS_HARD_OUTPUT;
-  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
+  hspi1.Init.NSS = SPI_NSS_HARD_INPUT;
   hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
   hspi1.Init.CRCPolynomial = 7;
   hspi1.Init.CRCLength = SPI_CRC_LENGTH_DATASIZE;
-  hspi1.Init.NSSPMode = SPI_NSS_PULSE_ENABLE;
+  hspi1.Init.NSSPMode = SPI_NSS_PULSE_DISABLE;
   if (HAL_SPI_Init(&hspi1) != HAL_OK)
   {
     Error_Handler();

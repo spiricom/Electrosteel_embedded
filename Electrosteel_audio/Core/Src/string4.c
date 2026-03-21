@@ -185,7 +185,7 @@ float __ATTR_ITCMRAM audioTickString4(void)
 			tPattiString_setFullStringFreq(stringsP[i], 370.0f); //open string 1
 			tPattiString_setPickupWidth(stringsP[i], 0.04583333f); //1.1"
 			tPattiString_setPickupPos(stringsP[i], 0.92183333f); //1.9" -JS should check that we're actually centering the bridge on this point, I think it might not be the case
-			tPattiString_setPluckPos(stringsP[i], 0.89583333f); //2.5" from bridge
+			tPattiString_setPluckPos(stringsP[i], 0.65f);//0.89583333f); //2.5" from bridge
 		}
 		else if ((knobScaled[0] >= 0.3f) && (knobScaled[0] < 0.6f))
 		{
@@ -203,7 +203,7 @@ float __ATTR_ITCMRAM audioTickString4(void)
 		}
 		//tPattiString_setPickupWidth(stringsP[i], 0.04583333f); //1.1"
 		//tPattiString_setPickupPos(stringsP[i], 0.92183333f); //1.9" -JS should check that we're actually centering the bridge on this point, I think it might not be the case
-		stringsP[i]->pluckShape = (knobScaled[1]*3.0f) - 2.0f;
+		stringsP[i]->pluckShape = (knobScaled[1]*20.0f)+ 1.0;
 		tPattiString_setPickupFilterAmount(stringsP[i], knobScaled[2]);
 		tPattiString_setNonlinearityAmount(stringsP[i], knobScaled[3]);
 		tPattiString_setVerticalGain(stringsP[i], knobScaled[4]*2.0f);
