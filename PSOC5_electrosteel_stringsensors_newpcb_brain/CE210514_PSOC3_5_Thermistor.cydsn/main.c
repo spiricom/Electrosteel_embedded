@@ -9,7 +9,7 @@
 
 #define BOOTLOAD_STYLE
 
-const float versionNumber = 1.15f;
+const float versionNumber = 1.16f;
 
 uint32_t prevLastBufferBegin[2];
 uint32_t lastBufferBegin[2];
@@ -180,6 +180,10 @@ int16_t prevMacroKnobValues[NUM_MACROS*NUM_MACRO_PAGES];
 uint8_t knobFrozen[NUM_MACROS*NUM_MACRO_PAGES];
 
 uint8_t knobPanelLightActive = 0;
+
+uint8_t bendRange = 0;
+float bendScalingArray[2] = {1.0f, 2.0f};
+float bendScaling = 1.0f;
 
 static uint8 CYCODE eepromArray[]={ 0, 0 };
                                             
@@ -582,6 +586,8 @@ int main(void)
     transposeFloat = ((float)transposeSemitones) + (((float)transposeCents) * 0.01f);
     midiSendOn = EEPROM_ReadByte(EEPROM_MIDI_SEND_OFFSET)&1;
     midiBarSendOn = EEPROM_ReadByte(EEPROM_MIDI_SEND_OFFSET)&(1<<1);
+    bendRange = EEPROM_ReadByte(EEPROM_MIDI_SEND_OFFSET)&(1<<2);
+    bendScaling = bendScalingArray[bendRange];
     neckPreset[0] =  EEPROM_ReadByte(EEPROM_NECK_PRESETS_OFFSET);
     neckPreset[1] =  EEPROM_ReadByte(EEPROM_NECK_PRESETS_OFFSET+1);
     traditionalPedalAdd = EEPROM_ReadByte(EEPROM_PEDALSUM_OFFSET) & 1;
@@ -1194,7 +1200,7 @@ int main(void)
             
             
             
-            float pitchBendAmount = (computerMIDIOffset * 170.6666666666667f) + 8192.0f;  // 14bit number divide by 2 for signed, then divided by 48 for 48 semitones up/down range
+            float pitchBendAmount = (computerMIDIOffset * 170.6666666666667f * bendScaling) + 8192.0f;  // 14bit number divide by 2 for signed, then divided by 48 for 48 semitones up/down range
             if (midiSendOn)
             {
                 if (pitchBendAmount != prevStringPitchBend[i])

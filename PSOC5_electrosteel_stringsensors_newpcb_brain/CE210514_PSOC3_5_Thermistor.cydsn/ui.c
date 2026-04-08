@@ -604,7 +604,7 @@ void exitEditModeMenu(void)
     }
     if (menuPosition[0][0] == MidiSendMenu)
     {
-        uint8_t tempByte = ((midiBarSendOn & 1)<<1) + (midiSendOn & 1);
+        uint8_t tempByte = ((bendRange & 1) << 2) + ((midiBarSendOn & 1)<<1) + (midiSendOn & 1);
         EEPROM_WriteByte(tempByte,EEPROM_MIDI_SEND_OFFSET);
     }
     if (menuPosition[0][0] == VolumeMenu)
@@ -859,6 +859,22 @@ void menuAction(enum direction action)
                     GFXwrite(&theGFX, 70);
                     GFXwrite(&theGFX, 70);
                 }
+                OLEDtextColor(1, 0);
+                OLEDwriteString("BEND RANGE ", 11, 0, FourthLine);
+                midiselected = (whichMidiSendSelected==3);
+                GFXfillRect(&theGFX, 80, 48, 37, 16, midiselected);
+                OLEDtextColor(!midiselected,midiselected);
+                if (bendRange)
+                {
+                    GFXwrite(&theGFX, 50);
+                    GFXwrite(&theGFX, 52);
+                }
+                else
+                {
+                    GFXwrite(&theGFX, 52);
+                    GFXwrite(&theGFX, 56);
+                    GFXwrite(&theGFX, 32);
+                }
                 mainOLEDWaitingToSend = 1;
             }
             else if (menuPosition[2][1] == 6)
@@ -1057,6 +1073,10 @@ void menuAction(enum direction action)
             {
                 midiDebugSendOn = (midiDebugSendOn+1)&1;
             }
+            else if (whichMidiSendSelected == 3)
+            {
+                bendRange = (bendRange+1)&1;
+            }
         }
         else if (action == Left)
         {
@@ -1072,6 +1092,10 @@ void menuAction(enum direction action)
             {
                 midiDebugSendOn = (midiDebugSendOn-1)&1;
             }
+            else if (whichMidiSendSelected == 3)
+            {
+                bendRange = (bendRange-1)&1;
+            }
         }
         else if (action == Up)
         {
@@ -1083,9 +1107,9 @@ void menuAction(enum direction action)
         }
         if (whichMidiSendSelected < 0)
         {
-            whichMidiSendSelected = 2;
+            whichMidiSendSelected = 3;
         }
-        else if (whichMidiSendSelected > 2)
+        else if (whichMidiSendSelected > 3)
         {
             whichMidiSendSelected = 0;
         }
@@ -1136,6 +1160,22 @@ void menuAction(enum direction action)
             GFXwrite(&theGFX, 79);
             GFXwrite(&theGFX, 70);
             GFXwrite(&theGFX, 70);
+        }
+        OLEDtextColor(1, 0);
+        OLEDwriteString("BEND RANGE ", 11, 0, FourthLine);
+        midiselected = (whichMidiSendSelected==3);
+        GFXfillRect(&theGFX, 80, 48, 37, 16, midiselected);
+        OLEDtextColor(!midiselected,midiselected);
+        if (bendRange)
+        {
+            GFXwrite(&theGFX, 50);
+            GFXwrite(&theGFX, 52);
+        }
+        else
+        {
+            GFXwrite(&theGFX, 52);
+            GFXwrite(&theGFX, 56);
+            GFXwrite(&theGFX, 32);
         }
         mainOLEDWaitingToSend = 1;
                 

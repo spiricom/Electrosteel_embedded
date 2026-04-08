@@ -141,7 +141,7 @@ extern char newPresetName[14];
 extern uint8_t knobPanelLightActive;
 extern uint8_t neckPreset[2];
 extern uint8_t neckPresetsByte;
-
+extern uint8_t bendRange;
 typedef enum _MenuModes
 {
 	MainMenu = 0,
