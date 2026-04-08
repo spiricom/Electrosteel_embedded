@@ -21,7 +21,6 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "sent_rx.h"
 
 /* USER CODE END Includes */
 
@@ -105,28 +104,6 @@ volatile float F_CLK = 100000.0f;
 
 uint16_t previousCaptureValue[9];
 
-volatile SENTMsg_t currentMessage;
-volatile SENTSlowMsg_t currentMessage2;
-
-SENTRxHandle_t sent_rx;
-SENTHandleInit_t init = { .htim = &htim2, .channel = TIM_CHANNEL_1 };
-void SENT_MessageCallback(SENTMsg_t *const msg, void *user_data) {
-    // Process fast channel message
-
-	currentMessage.data_length = msg->data_length;
-	currentMessage.crc = msg->crc;
-	currentMessage.status_nibble = msg->status_nibble;
-	for (int i = 0; i < 8; i++)
-	{
-		currentMessage.data_nibbles[i] = msg->data_nibbles[i];
-	}
-	//memcpy(&currentMessage, &msg, sizeof(SENTMsg_t));
-}
-
-void SENT_SlowMessageCallback(SENTSlowMsg_t *const msg, void *user_data) {
-    // Process slow channel message
-	//currentMessage2 = msg;
-}
 
 uint32_t pulses[9][128];
 uint32_t currentPulse[9];
@@ -143,11 +120,15 @@ uint32_t secondMessage[9];
 uint32_t sensorerror[9];
 uint16_t timerCaptures[8][128];
 uint32_t timerCapture8[128];
+float timerFreq[4];
 void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 {
+	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_2, GPIO_PIN_SET);
 	uint32_t whichString = 0;
+	float myFreq = 1.0f;
 	if (htim->Instance == TIM8)
 	{
+		myFreq = timerFreq[3];
 		if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_2)
 		{
 			whichString = 6;
@@ -159,6 +140,7 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 	}
 	else if (htim->Instance == TIM4)
 	{
+		myFreq = timerFreq[2];
 		if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1)
 		{
 			whichString = 4;
@@ -170,6 +152,7 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 	}
 	else if (htim->Instance == TIM1)
 	{
+		myFreq = timerFreq[0];
 		if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1)
 		{
 			whichString = 0;
@@ -189,6 +172,7 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 	}
 	else if (htim->Instance == TIM2)
 	{
+		myFreq = timerFreq[1];
 		if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1)
 		{
 			whichString = 8;
@@ -222,12 +206,14 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 				difference = (65535 - previousCaptureValue[whichString] + 1) + captureValue;
 			}
 		}
+		uint16_t pulseLowBound = (uint16_t)(myFreq * 0.000153f);
+		uint16_t pulseHighBound = (uint16_t)(myFreq * 0.000171f);
 
 		previousCaptureValue[whichString] = captureValue;
 		pulses[whichString][currentPulse[whichString]] = difference;
 		currentPulse[whichString] = (currentPulse[whichString] + 1) & 127;
 		//if the pulse is the timing pulse
-		if ((difference > 1700)&& (difference < 1900))
+		if ((difference > pulseLowBound)&& (difference < pulseHighBound))
 		{
 			timingPulse[whichString] = difference / 56.0f;
 			if (timingPulse[whichString] < 0.1f)
@@ -237,7 +223,7 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 			currentNibble[whichString] = 0;
 			messageTotal[whichString] = 0;
 		}
-		else if (difference < 3400)
+		else if (difference < pulseLowBound)
 		{
 			//one of the data nibbles
 			if (currentNibble[whichString] < MAXNIBBLE)
@@ -270,13 +256,17 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 
 		}
 	}
+	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_2, GPIO_PIN_RESET);
 }
 
 void HAL_TIM_IC_CaptureHalfCpltCallback(TIM_HandleTypeDef *htim)
 {
+	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_3, GPIO_PIN_SET);
 	uint32_t whichString = 0;
+	float myFreq = 1.0f;
 	if (htim->Instance == TIM8)
 	{
+		myFreq = timerFreq[3];
 		if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_2)
 		{
 			whichString = 6;
@@ -288,6 +278,7 @@ void HAL_TIM_IC_CaptureHalfCpltCallback(TIM_HandleTypeDef *htim)
 	}
 	else if (htim->Instance == TIM4)
 	{
+		myFreq = timerFreq[2];
 		if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1)
 		{
 			whichString = 4;
@@ -299,6 +290,7 @@ void HAL_TIM_IC_CaptureHalfCpltCallback(TIM_HandleTypeDef *htim)
 	}
 	else if (htim->Instance == TIM1)
 	{
+		myFreq = timerFreq[0];
 		if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1)
 		{
 			whichString = 0;
@@ -318,6 +310,7 @@ void HAL_TIM_IC_CaptureHalfCpltCallback(TIM_HandleTypeDef *htim)
 	}
 	else if (htim->Instance == TIM2)
 	{
+		myFreq = timerFreq[1];
 		if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1)
 		{
 			whichString = 8;
@@ -353,11 +346,13 @@ void HAL_TIM_IC_CaptureHalfCpltCallback(TIM_HandleTypeDef *htim)
 		}
 
 
+		uint16_t pulseLowBound = (uint16_t)(myFreq * 0.000153f);
+		uint16_t pulseHighBound = (uint16_t)(myFreq * 0.000171f);
 		previousCaptureValue[whichString] = captureValue;
 		pulses[whichString][currentPulse[whichString]] = difference;
 		currentPulse[whichString] = (currentPulse[whichString] + 1) & 127;
 		//if the pulse is the timing pulse
-		if ((difference > 1700)&& (difference < 1900))
+		if ((difference > pulseLowBound)&& (difference < pulseHighBound))
 		{
 			timingPulse[whichString] = difference / 56.0f;
 			if (timingPulse[whichString] < 0.1f)
@@ -367,7 +362,7 @@ void HAL_TIM_IC_CaptureHalfCpltCallback(TIM_HandleTypeDef *htim)
 			currentNibble[whichString] = 0;
 			messageTotal[whichString] = 0;
 		}
-		else if (difference < 3400)
+		else if (pulseLowBound < 3400)
 		{
 			//one of the data nibbles
 			if (currentNibble[whichString] < MAXNIBBLE)
@@ -400,76 +395,8 @@ void HAL_TIM_IC_CaptureHalfCpltCallback(TIM_HandleTypeDef *htim)
 
 		}
 	}
+	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_3, GPIO_PIN_RESET);
 }
-
-#if 0
-void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
-{
-	//SENTRx_InputCaptureCallback(&sent_rx);
-
-	if (htim->Instance == TIM8)
-	{
-		if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_2) {
-			captureValue = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2);
-			difference = (captureValue - previousCaptureValue);
-			diffFloat = ((float)difference) / 37.5f;
-			previousCaptureValue = captureValue;
-			pulses[currentPulse] = difference;
-			currentPulse = (currentPulse + 1) & 127;
-			Frequency = HAL_RCC_GetPCLK1Freq();
-			//if the pulse is the timing pulse
-			if ((difference > 1700)&& (difference < 1900))
-			{
-				timingPulse = difference / 56.0f;
-				if (timingPulse < 0.1f)
-				{
-					timingPulse = 1.f;
-				}
-				currentNibble = 0;
-				messageTotal = 0;
-			}
-			else if (difference < 3400)
-			{
-				//one of the data nibbles
-				if (currentNibble < MAXNIBBLE)
-				{
-					currentMessageBytes[currentNibble] = (((float)difference / timingPulse) + 0.5f);
-					currentMessageBytesInt[currentNibble] = ((uint32_t)currentMessageBytes[currentNibble]) - 12;
-					currentNibble++;
-				}
-				//just read the last nibble of the message
-				if (currentNibble == (MAXNIBBLE -1))
-				{
-
-					for (int i = 0; i < MAXNIBBLE; i++)
-					{
-						messageTotal += currentMessageBytesInt[i];
-					}
-					if ((messageTotal > 0) && (messageTotal < 118))
-					{
-						firstMessage = (currentMessageBytesInt[1] << 8) + (currentMessageBytesInt[2] << 4) + (currentMessageBytesInt[3]);
-						secondMessage = (currentMessageBytesInt[4] << 8) + (currentMessageBytesInt[5] << 4) + (currentMessageBytesInt[6]);
-						statusNibble = currentMessageBytesInt[0];
-						if (statusNibble & 0b0001)
-						{
-							//start of "serial" message, a kind of meta SENT message
-							messageDone = !messageDone;
-						}
-
-					}
-				}
-
-			}
-
-
-			//SENTRx_InputCaptureCallback(&sent_rx);
-		}
-
-	}
-
-}
-#endif
-
 
 
 /* USER CODE END 0 */
@@ -519,11 +446,7 @@ int main(void)
   MX_TIM12_Init();
   MX_UART8_Init();
   /* USER CODE BEGIN 2 */
-#if 0
-  if (SENTRx_init(&sent_rx, &init, &SENT_MessageCallback, &SENT_SlowMessageCallback, NULL)) {
-      SENTRx_start(&sent_rx);
-  }
-#endif
+
 
   HAL_TIM_IC_Start_DMA(&htim8, TIM_CHANNEL_2, (uint32_t*)timerCaptures[6], 128);
   HAL_TIM_IC_Start_DMA(&htim8, TIM_CHANNEL_4, (uint32_t*)timerCaptures[7], 128);
@@ -534,6 +457,11 @@ int main(void)
   HAL_TIM_IC_Start_DMA(&htim1, TIM_CHANNEL_2, (uint32_t*)timerCaptures[1], 128);
   HAL_TIM_IC_Start_DMA(&htim1, TIM_CHANNEL_1, (uint32_t*)timerCaptures[0], 128);
   HAL_TIM_IC_Start_DMA(&htim2, TIM_CHANNEL_1, timerCapture8, 128);
+
+  timerFreq[0] = TIM_GET_FREQ(&htim1);
+  timerFreq[1] = TIM_GET_FREQ(&htim2);
+  timerFreq[2] = TIM_GET_FREQ(&htim4);
+  timerFreq[3] = TIM_GET_FREQ(&htim8);
   /* USER CODE END 2 */
 
   /* Infinite loop */
