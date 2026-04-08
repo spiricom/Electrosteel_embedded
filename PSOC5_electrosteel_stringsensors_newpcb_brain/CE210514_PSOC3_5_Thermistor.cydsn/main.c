@@ -9,7 +9,7 @@
 
 #define BOOTLOAD_STYLE
 
-const float versionNumber = 1.15f;
+const float versionNumber = 1.16f;
 
 uint32_t prevLastBufferBegin[2];
 uint32_t lastBufferBegin[2];

@@ -30,7 +30,7 @@
 
 #define SPIS_1_DATA_WIDTH                  (8u)
 #define SPIS_1_INTERNAL_TX_INT_ENABLED     (0u)
-#define SPIS_1_INTERNAL_RX_INT_ENABLED     (1u)
+#define SPIS_1_INTERNAL_RX_INT_ENABLED     (0u)
 #define SPIS_1_MODE_USE_ZERO               (1u)
 #define SPIS_1_BIDIRECTIONAL_MODE          (0u)
 #define SPIS_1_MODE                        (0u)
@@ -40,7 +40,7 @@
 #define SPIS_1_TX_BUFFER_SIZE             (4u)
 #define SPIS_1_RX_BUFFER_SIZE             (4u)
 #define SPIS_1_INTERNAL_TX_INT_ENABLED    (0u)
-#define SPIS_1_INTERNAL_RX_INT_ENABLED    (1u)
+#define SPIS_1_INTERNAL_RX_INT_ENABLED    (0u)
 
 #define SPIS_1_TX_SOFTWARE_BUF_ENABLED    ((0u != SPIS_1_INTERNAL_TX_INT_ENABLED) && \
                                                      (SPIS_1_TX_BUFFER_SIZE > SPIS_1_FIFO_SIZE))
@@ -160,7 +160,7 @@ extern uint8 SPIS_1_initVar;
 *    Initial Parameter Constants
 ***************************************/
 
-#define SPIS_1_INT_ON_SPI_DONE    (uint8)(1u << SPIS_1_STS_SPI_DONE_SHIFT)
+#define SPIS_1_INT_ON_SPI_DONE    (uint8)(0u << SPIS_1_STS_SPI_DONE_SHIFT)
 #define SPIS_1_INT_ON_TX_EMPTY    (uint8)(0u << SPIS_1_STS_TX_FIFO_EMPTY_SHIFT)
 #define SPIS_1_INT_ON_TX_NOT_FULL (uint8)(0u << SPIS_1_STS_TX_FIFO_NOT_FULL_SHIFT)
 #define SPIS_1_INT_ON_BYTE_COMP   (uint8)(0u << SPIS_1_STS_BYTE_COMPLETE_SHIFT)
@@ -172,7 +172,7 @@ extern uint8 SPIS_1_initVar;
 #define SPIS_1_INT_ON_RX_EMPTY     (uint8)(0u << SPIS_1_STS_RX_FIFO_EMPTY_SHIFT)
 #define SPIS_1_INT_ON_RX_NOT_EMPTY (uint8)(0u << SPIS_1_STS_RX_FIFO_NOT_EMPTY_SHIFT)
 #define SPIS_1_INT_ON_RX_OVER      (uint8)(0u << SPIS_1_STS_RX_FIFO_OVERRUN_SHIFT)
-#define SPIS_1_INT_ON_RX_FULL      (uint8)(1u << SPIS_1_STS_RX_FIFO_FULL_SHIFT)
+#define SPIS_1_INT_ON_RX_FULL      (uint8)(0u << SPIS_1_STS_RX_FIFO_FULL_SHIFT)
 
 #define SPIS_1_RX_INIT_INTERRUPTS_MASK (SPIS_1_INT_ON_RX_EMPTY | \
                                             SPIS_1_INT_ON_RX_NOT_EMPTY | SPIS_1_INT_ON_RX_OVER | \

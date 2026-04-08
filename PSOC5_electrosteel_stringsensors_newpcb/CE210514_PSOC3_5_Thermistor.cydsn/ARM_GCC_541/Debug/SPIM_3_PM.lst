@@ -1,0 +1,984 @@
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccANu2xp.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"SPIM_3_PM.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.data
+  20              		.align	2
+  21              		.type	SPIM_3_backup, %object
+  22              		.size	SPIM_3_backup, 2
+  23              	SPIM_3_backup:
+  24 0000 00       		.byte	0
+  25 0001 0F       		.byte	15
+  26              		.section	.text.SPIM_3_SaveConfig,"ax",%progbits
+  27              		.align	2
+  28              		.global	SPIM_3_SaveConfig
+  29              		.thumb
+  30              		.thumb_func
+  31              		.type	SPIM_3_SaveConfig, %function
+  32              	SPIM_3_SaveConfig:
+  33              	.LFB0:
+  34              		.file 1 "Generated_Source\\PSoC5\\SPIM_3_PM.c"
+   1:Generated_Source\PSoC5/SPIM_3_PM.c **** /*******************************************************************************
+   2:Generated_Source\PSoC5/SPIM_3_PM.c **** * File Name: SPIM_3_PM.c
+   3:Generated_Source\PSoC5/SPIM_3_PM.c **** * Version 2.50
+   4:Generated_Source\PSoC5/SPIM_3_PM.c **** *
+   5:Generated_Source\PSoC5/SPIM_3_PM.c **** * Description:
+   6:Generated_Source\PSoC5/SPIM_3_PM.c **** *  This file contains the setup, control and status commands to support
+   7:Generated_Source\PSoC5/SPIM_3_PM.c **** *  component operations in low power mode.
+   8:Generated_Source\PSoC5/SPIM_3_PM.c **** *
+   9:Generated_Source\PSoC5/SPIM_3_PM.c **** * Note:
+  10:Generated_Source\PSoC5/SPIM_3_PM.c **** *
+  11:Generated_Source\PSoC5/SPIM_3_PM.c **** ********************************************************************************
+  12:Generated_Source\PSoC5/SPIM_3_PM.c **** * Copyright 2008-2015, Cypress Semiconductor Corporation.  All rights reserved.
+  13:Generated_Source\PSoC5/SPIM_3_PM.c **** * You may use this file only in accordance with the license, terms, conditions,
+  14:Generated_Source\PSoC5/SPIM_3_PM.c **** * disclaimers, and limitations in the end user license agreement accompanying
+  15:Generated_Source\PSoC5/SPIM_3_PM.c **** * the software package with which this file was provided.
+  16:Generated_Source\PSoC5/SPIM_3_PM.c **** *******************************************************************************/
+  17:Generated_Source\PSoC5/SPIM_3_PM.c **** 
+  18:Generated_Source\PSoC5/SPIM_3_PM.c **** #include "SPIM_3_PVT.h"
+  19:Generated_Source\PSoC5/SPIM_3_PM.c **** 
+  20:Generated_Source\PSoC5/SPIM_3_PM.c **** static SPIM_3_BACKUP_STRUCT SPIM_3_backup =
+  21:Generated_Source\PSoC5/SPIM_3_PM.c **** {
+  22:Generated_Source\PSoC5/SPIM_3_PM.c ****     SPIM_3_DISABLED,
+  23:Generated_Source\PSoC5/SPIM_3_PM.c ****     SPIM_3_BITCTR_INIT,
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccANu2xp.s 			page 2
+
+
+  24:Generated_Source\PSoC5/SPIM_3_PM.c **** };
+  25:Generated_Source\PSoC5/SPIM_3_PM.c **** 
+  26:Generated_Source\PSoC5/SPIM_3_PM.c **** 
+  27:Generated_Source\PSoC5/SPIM_3_PM.c **** /*******************************************************************************
+  28:Generated_Source\PSoC5/SPIM_3_PM.c **** * Function Name: SPIM_3_SaveConfig
+  29:Generated_Source\PSoC5/SPIM_3_PM.c **** ********************************************************************************
+  30:Generated_Source\PSoC5/SPIM_3_PM.c **** *
+  31:Generated_Source\PSoC5/SPIM_3_PM.c **** * Summary:
+  32:Generated_Source\PSoC5/SPIM_3_PM.c **** *  Empty function. Included for consistency with other components.
+  33:Generated_Source\PSoC5/SPIM_3_PM.c **** *
+  34:Generated_Source\PSoC5/SPIM_3_PM.c **** * Parameters:
+  35:Generated_Source\PSoC5/SPIM_3_PM.c **** *  None.
+  36:Generated_Source\PSoC5/SPIM_3_PM.c **** *
+  37:Generated_Source\PSoC5/SPIM_3_PM.c **** * Return:
+  38:Generated_Source\PSoC5/SPIM_3_PM.c **** *  None.
+  39:Generated_Source\PSoC5/SPIM_3_PM.c **** *
+  40:Generated_Source\PSoC5/SPIM_3_PM.c **** *******************************************************************************/
+  41:Generated_Source\PSoC5/SPIM_3_PM.c **** void SPIM_3_SaveConfig(void) 
+  42:Generated_Source\PSoC5/SPIM_3_PM.c **** {
+  35              		.loc 1 42 0
+  36              		.cfi_startproc
+  37              		@ args = 0, pretend = 0, frame = 0
+  38              		@ frame_needed = 1, uses_anonymous_args = 0
+  39              		@ link register save eliminated.
+  40 0000 80B4     		push	{r7}
+  41              		.cfi_def_cfa_offset 4
+  42              		.cfi_offset 7, -4
+  43 0002 00AF     		add	r7, sp, #0
+  44              		.cfi_def_cfa_register 7
+  43:Generated_Source\PSoC5/SPIM_3_PM.c **** 
+  44:Generated_Source\PSoC5/SPIM_3_PM.c **** }
+  45              		.loc 1 44 0
+  46 0004 00BF     		nop
+  47 0006 BD46     		mov	sp, r7
+  48              		.cfi_def_cfa_register 13
+  49              		@ sp needed
+  50 0008 80BC     		pop	{r7}
+  51              		.cfi_restore 7
+  52              		.cfi_def_cfa_offset 0
+  53 000a 7047     		bx	lr
+  54              		.cfi_endproc
+  55              	.LFE0:
+  56              		.size	SPIM_3_SaveConfig, .-SPIM_3_SaveConfig
+  57              		.section	.text.SPIM_3_RestoreConfig,"ax",%progbits
+  58              		.align	2
+  59              		.global	SPIM_3_RestoreConfig
+  60              		.thumb
+  61              		.thumb_func
+  62              		.type	SPIM_3_RestoreConfig, %function
+  63              	SPIM_3_RestoreConfig:
+  64              	.LFB1:
+  45:Generated_Source\PSoC5/SPIM_3_PM.c **** 
+  46:Generated_Source\PSoC5/SPIM_3_PM.c **** 
+  47:Generated_Source\PSoC5/SPIM_3_PM.c **** /*******************************************************************************
+  48:Generated_Source\PSoC5/SPIM_3_PM.c **** * Function Name: SPIM_3_RestoreConfig
+  49:Generated_Source\PSoC5/SPIM_3_PM.c **** ********************************************************************************
+  50:Generated_Source\PSoC5/SPIM_3_PM.c **** *
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccANu2xp.s 			page 3
+
+
+  51:Generated_Source\PSoC5/SPIM_3_PM.c **** * Summary:
+  52:Generated_Source\PSoC5/SPIM_3_PM.c **** *  Empty function. Included for consistency with other components.
+  53:Generated_Source\PSoC5/SPIM_3_PM.c **** *
+  54:Generated_Source\PSoC5/SPIM_3_PM.c **** * Parameters:
+  55:Generated_Source\PSoC5/SPIM_3_PM.c **** *  None.
+  56:Generated_Source\PSoC5/SPIM_3_PM.c **** *
+  57:Generated_Source\PSoC5/SPIM_3_PM.c **** * Return:
+  58:Generated_Source\PSoC5/SPIM_3_PM.c **** *  None.
+  59:Generated_Source\PSoC5/SPIM_3_PM.c **** *
+  60:Generated_Source\PSoC5/SPIM_3_PM.c **** *******************************************************************************/
+  61:Generated_Source\PSoC5/SPIM_3_PM.c **** void SPIM_3_RestoreConfig(void) 
+  62:Generated_Source\PSoC5/SPIM_3_PM.c **** {
+  65              		.loc 1 62 0
+  66              		.cfi_startproc
+  67              		@ args = 0, pretend = 0, frame = 0
+  68              		@ frame_needed = 1, uses_anonymous_args = 0
+  69              		@ link register save eliminated.
+  70 0000 80B4     		push	{r7}
+  71              		.cfi_def_cfa_offset 4
+  72              		.cfi_offset 7, -4
+  73 0002 00AF     		add	r7, sp, #0
+  74              		.cfi_def_cfa_register 7
+  63:Generated_Source\PSoC5/SPIM_3_PM.c **** 
+  64:Generated_Source\PSoC5/SPIM_3_PM.c **** }
+  75              		.loc 1 64 0
+  76 0004 00BF     		nop
+  77 0006 BD46     		mov	sp, r7
+  78              		.cfi_def_cfa_register 13
+  79              		@ sp needed
+  80 0008 80BC     		pop	{r7}
+  81              		.cfi_restore 7
+  82              		.cfi_def_cfa_offset 0
+  83 000a 7047     		bx	lr
+  84              		.cfi_endproc
+  85              	.LFE1:
+  86              		.size	SPIM_3_RestoreConfig, .-SPIM_3_RestoreConfig
+  87              		.section	.text.SPIM_3_Sleep,"ax",%progbits
+  88              		.align	2
+  89              		.global	SPIM_3_Sleep
+  90              		.thumb
+  91              		.thumb_func
+  92              		.type	SPIM_3_Sleep, %function
+  93              	SPIM_3_Sleep:
+  94              	.LFB2:
+  65:Generated_Source\PSoC5/SPIM_3_PM.c **** 
+  66:Generated_Source\PSoC5/SPIM_3_PM.c **** 
+  67:Generated_Source\PSoC5/SPIM_3_PM.c **** /*******************************************************************************
+  68:Generated_Source\PSoC5/SPIM_3_PM.c **** * Function Name: SPIM_3_Sleep
+  69:Generated_Source\PSoC5/SPIM_3_PM.c **** ********************************************************************************
+  70:Generated_Source\PSoC5/SPIM_3_PM.c **** *
+  71:Generated_Source\PSoC5/SPIM_3_PM.c **** * Summary:
+  72:Generated_Source\PSoC5/SPIM_3_PM.c **** *  Prepare SPIM Component goes to sleep.
+  73:Generated_Source\PSoC5/SPIM_3_PM.c **** *
+  74:Generated_Source\PSoC5/SPIM_3_PM.c **** * Parameters:
+  75:Generated_Source\PSoC5/SPIM_3_PM.c **** *  None.
+  76:Generated_Source\PSoC5/SPIM_3_PM.c **** *
+  77:Generated_Source\PSoC5/SPIM_3_PM.c **** * Return:
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccANu2xp.s 			page 4
+
+
+  78:Generated_Source\PSoC5/SPIM_3_PM.c **** *  None.
+  79:Generated_Source\PSoC5/SPIM_3_PM.c **** *
+  80:Generated_Source\PSoC5/SPIM_3_PM.c **** * Global Variables:
+  81:Generated_Source\PSoC5/SPIM_3_PM.c **** *  SPIM_3_backup - modified when non-retention registers are saved.
+  82:Generated_Source\PSoC5/SPIM_3_PM.c **** *
+  83:Generated_Source\PSoC5/SPIM_3_PM.c **** * Reentrant:
+  84:Generated_Source\PSoC5/SPIM_3_PM.c **** *  No.
+  85:Generated_Source\PSoC5/SPIM_3_PM.c **** *
+  86:Generated_Source\PSoC5/SPIM_3_PM.c **** *******************************************************************************/
+  87:Generated_Source\PSoC5/SPIM_3_PM.c **** void SPIM_3_Sleep(void) 
+  88:Generated_Source\PSoC5/SPIM_3_PM.c **** {
+  95              		.loc 1 88 0
+  96              		.cfi_startproc
+  97              		@ args = 0, pretend = 0, frame = 0
+  98              		@ frame_needed = 1, uses_anonymous_args = 0
+  99 0000 80B5     		push	{r7, lr}
+ 100              		.cfi_def_cfa_offset 8
+ 101              		.cfi_offset 7, -8
+ 102              		.cfi_offset 14, -4
+ 103 0002 00AF     		add	r7, sp, #0
+ 104              		.cfi_def_cfa_register 7
+  89:Generated_Source\PSoC5/SPIM_3_PM.c ****     /* Save components enable state */
+  90:Generated_Source\PSoC5/SPIM_3_PM.c ****     SPIM_3_backup.enableState = ((uint8) SPIM_3_IS_ENABLED);
+ 105              		.loc 1 90 0
+ 106 0004 084B     		ldr	r3, .L4
+ 107 0006 1B78     		ldrb	r3, [r3]
+ 108 0008 DBB2     		uxtb	r3, r3
+ 109 000a 03F01003 		and	r3, r3, #16
+ 110 000e 002B     		cmp	r3, #0
+ 111 0010 14BF     		ite	ne
+ 112 0012 0123     		movne	r3, #1
+ 113 0014 0023     		moveq	r3, #0
+ 114 0016 DBB2     		uxtb	r3, r3
+ 115 0018 1A46     		mov	r2, r3
+ 116 001a 044B     		ldr	r3, .L4+4
+ 117 001c 1A70     		strb	r2, [r3]
+  91:Generated_Source\PSoC5/SPIM_3_PM.c **** 
+  92:Generated_Source\PSoC5/SPIM_3_PM.c ****     SPIM_3_Stop();
+ 118              		.loc 1 92 0
+ 119 001e FFF7FEFF 		bl	SPIM_3_Stop
+  93:Generated_Source\PSoC5/SPIM_3_PM.c **** }
+ 120              		.loc 1 93 0
+ 121 0022 00BF     		nop
+ 122 0024 80BD     		pop	{r7, pc}
+ 123              	.L5:
+ 124 0026 00BF     		.align	2
+ 125              	.L4:
+ 126 0028 91640040 		.word	1073767569
+ 127 002c 00000000 		.word	SPIM_3_backup
+ 128              		.cfi_endproc
+ 129              	.LFE2:
+ 130              		.size	SPIM_3_Sleep, .-SPIM_3_Sleep
+ 131              		.section	.text.SPIM_3_Wakeup,"ax",%progbits
+ 132              		.align	2
+ 133              		.global	SPIM_3_Wakeup
+ 134              		.thumb
+ 135              		.thumb_func
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccANu2xp.s 			page 5
+
+
+ 136              		.type	SPIM_3_Wakeup, %function
+ 137              	SPIM_3_Wakeup:
+ 138              	.LFB3:
+  94:Generated_Source\PSoC5/SPIM_3_PM.c **** 
+  95:Generated_Source\PSoC5/SPIM_3_PM.c **** 
+  96:Generated_Source\PSoC5/SPIM_3_PM.c **** /*******************************************************************************
+  97:Generated_Source\PSoC5/SPIM_3_PM.c **** * Function Name: SPIM_3_Wakeup
+  98:Generated_Source\PSoC5/SPIM_3_PM.c **** ********************************************************************************
+  99:Generated_Source\PSoC5/SPIM_3_PM.c **** *
+ 100:Generated_Source\PSoC5/SPIM_3_PM.c **** * Summary:
+ 101:Generated_Source\PSoC5/SPIM_3_PM.c **** *  Prepare SPIM Component to wake up.
+ 102:Generated_Source\PSoC5/SPIM_3_PM.c **** *
+ 103:Generated_Source\PSoC5/SPIM_3_PM.c **** * Parameters:
+ 104:Generated_Source\PSoC5/SPIM_3_PM.c **** *  None.
+ 105:Generated_Source\PSoC5/SPIM_3_PM.c **** *
+ 106:Generated_Source\PSoC5/SPIM_3_PM.c **** * Return:
+ 107:Generated_Source\PSoC5/SPIM_3_PM.c **** *  None.
+ 108:Generated_Source\PSoC5/SPIM_3_PM.c **** *
+ 109:Generated_Source\PSoC5/SPIM_3_PM.c **** * Global Variables:
+ 110:Generated_Source\PSoC5/SPIM_3_PM.c **** *  SPIM_3_backup - used when non-retention registers are restored.
+ 111:Generated_Source\PSoC5/SPIM_3_PM.c **** *  SPIM_3_txBufferWrite - modified every function call - resets to
+ 112:Generated_Source\PSoC5/SPIM_3_PM.c **** *  zero.
+ 113:Generated_Source\PSoC5/SPIM_3_PM.c **** *  SPIM_3_txBufferRead - modified every function call - resets to
+ 114:Generated_Source\PSoC5/SPIM_3_PM.c **** *  zero.
+ 115:Generated_Source\PSoC5/SPIM_3_PM.c **** *  SPIM_3_rxBufferWrite - modified every function call - resets to
+ 116:Generated_Source\PSoC5/SPIM_3_PM.c **** *  zero.
+ 117:Generated_Source\PSoC5/SPIM_3_PM.c **** *  SPIM_3_rxBufferRead - modified every function call - resets to
+ 118:Generated_Source\PSoC5/SPIM_3_PM.c **** *  zero.
+ 119:Generated_Source\PSoC5/SPIM_3_PM.c **** *
+ 120:Generated_Source\PSoC5/SPIM_3_PM.c **** * Reentrant:
+ 121:Generated_Source\PSoC5/SPIM_3_PM.c **** *  No.
+ 122:Generated_Source\PSoC5/SPIM_3_PM.c **** *
+ 123:Generated_Source\PSoC5/SPIM_3_PM.c **** *******************************************************************************/
+ 124:Generated_Source\PSoC5/SPIM_3_PM.c **** void SPIM_3_Wakeup(void) 
+ 125:Generated_Source\PSoC5/SPIM_3_PM.c **** {
+ 139              		.loc 1 125 0
+ 140              		.cfi_startproc
+ 141              		@ args = 0, pretend = 0, frame = 0
+ 142              		@ frame_needed = 1, uses_anonymous_args = 0
+ 143 0000 80B5     		push	{r7, lr}
+ 144              		.cfi_def_cfa_offset 8
+ 145              		.cfi_offset 7, -8
+ 146              		.cfi_offset 14, -4
+ 147 0002 00AF     		add	r7, sp, #0
+ 148              		.cfi_def_cfa_register 7
+ 126:Generated_Source\PSoC5/SPIM_3_PM.c ****     #if(SPIM_3_RX_SOFTWARE_BUF_ENABLED)
+ 127:Generated_Source\PSoC5/SPIM_3_PM.c ****         SPIM_3_rxBufferFull  = 0u;
+ 149              		.loc 1 127 0
+ 150 0004 0D4B     		ldr	r3, .L9
+ 151 0006 0022     		movs	r2, #0
+ 152 0008 1A70     		strb	r2, [r3]
+ 128:Generated_Source\PSoC5/SPIM_3_PM.c ****         SPIM_3_rxBufferRead  = 0u;
+ 153              		.loc 1 128 0
+ 154 000a 0D4B     		ldr	r3, .L9+4
+ 155 000c 0022     		movs	r2, #0
+ 156 000e 1A70     		strb	r2, [r3]
+ 129:Generated_Source\PSoC5/SPIM_3_PM.c ****         SPIM_3_rxBufferWrite = 0u;
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccANu2xp.s 			page 6
+
+
+ 157              		.loc 1 129 0
+ 158 0010 0C4B     		ldr	r3, .L9+8
+ 159 0012 0022     		movs	r2, #0
+ 160 0014 1A70     		strb	r2, [r3]
+ 130:Generated_Source\PSoC5/SPIM_3_PM.c ****     #endif /* (SPIM_3_RX_SOFTWARE_BUF_ENABLED) */
+ 131:Generated_Source\PSoC5/SPIM_3_PM.c **** 
+ 132:Generated_Source\PSoC5/SPIM_3_PM.c ****     #if(SPIM_3_TX_SOFTWARE_BUF_ENABLED)
+ 133:Generated_Source\PSoC5/SPIM_3_PM.c ****         SPIM_3_txBufferFull  = 0u;
+ 161              		.loc 1 133 0
+ 162 0016 0C4B     		ldr	r3, .L9+12
+ 163 0018 0022     		movs	r2, #0
+ 164 001a 1A70     		strb	r2, [r3]
+ 134:Generated_Source\PSoC5/SPIM_3_PM.c ****         SPIM_3_txBufferRead  = 0u;
+ 165              		.loc 1 134 0
+ 166 001c 0B4B     		ldr	r3, .L9+16
+ 167 001e 0022     		movs	r2, #0
+ 168 0020 1A70     		strb	r2, [r3]
+ 135:Generated_Source\PSoC5/SPIM_3_PM.c ****         SPIM_3_txBufferWrite = 0u;
+ 169              		.loc 1 135 0
+ 170 0022 0B4B     		ldr	r3, .L9+20
+ 171 0024 0022     		movs	r2, #0
+ 172 0026 1A70     		strb	r2, [r3]
+ 136:Generated_Source\PSoC5/SPIM_3_PM.c ****     #endif /* (SPIM_3_TX_SOFTWARE_BUF_ENABLED) */
+ 137:Generated_Source\PSoC5/SPIM_3_PM.c **** 
+ 138:Generated_Source\PSoC5/SPIM_3_PM.c ****     /* Clear any data from the RX and TX FIFO */
+ 139:Generated_Source\PSoC5/SPIM_3_PM.c ****     SPIM_3_ClearFIFO();
+ 173              		.loc 1 139 0
+ 174 0028 FFF7FEFF 		bl	SPIM_3_ClearFIFO
+ 140:Generated_Source\PSoC5/SPIM_3_PM.c **** 
+ 141:Generated_Source\PSoC5/SPIM_3_PM.c ****     /* Restore components block enable state */
+ 142:Generated_Source\PSoC5/SPIM_3_PM.c ****     if(0u != SPIM_3_backup.enableState)
+ 175              		.loc 1 142 0
+ 176 002c 094B     		ldr	r3, .L9+24
+ 177 002e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 178 0030 002B     		cmp	r3, #0
+ 179 0032 01D0     		beq	.L8
+ 143:Generated_Source\PSoC5/SPIM_3_PM.c ****     {
+ 144:Generated_Source\PSoC5/SPIM_3_PM.c ****         SPIM_3_Enable();
+ 180              		.loc 1 144 0
+ 181 0034 FFF7FEFF 		bl	SPIM_3_Enable
+ 182              	.L8:
+ 145:Generated_Source\PSoC5/SPIM_3_PM.c ****     }
+ 146:Generated_Source\PSoC5/SPIM_3_PM.c **** }
+ 183              		.loc 1 146 0
+ 184 0038 00BF     		nop
+ 185 003a 80BD     		pop	{r7, pc}
+ 186              	.L10:
+ 187              		.align	2
+ 188              	.L9:
+ 189 003c 00000000 		.word	SPIM_3_rxBufferFull
+ 190 0040 00000000 		.word	SPIM_3_rxBufferRead
+ 191 0044 00000000 		.word	SPIM_3_rxBufferWrite
+ 192 0048 00000000 		.word	SPIM_3_txBufferFull
+ 193 004c 00000000 		.word	SPIM_3_txBufferRead
+ 194 0050 00000000 		.word	SPIM_3_txBufferWrite
+ 195 0054 00000000 		.word	SPIM_3_backup
+ 196              		.cfi_endproc
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccANu2xp.s 			page 7
+
+
+ 197              	.LFE3:
+ 198              		.size	SPIM_3_Wakeup, .-SPIM_3_Wakeup
+ 199              		.text
+ 200              	.Letext0:
+ 201              		.file 2 "Generated_Source\\PSoC5\\cytypes.h"
+ 202              		.file 3 "Generated_Source\\PSoC5\\SPIM_3.h"
+ 203              		.file 4 "Generated_Source\\PSoC5\\SPIM_3_PVT.h"
+ 204              		.section	.debug_info,"",%progbits
+ 205              	.Ldebug_info0:
+ 206 0000 6B010000 		.4byte	0x16b
+ 207 0004 0400     		.2byte	0x4
+ 208 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 209 000a 04       		.byte	0x4
+ 210 000b 01       		.uleb128 0x1
+ 211 000c 37000000 		.4byte	.LASF29
+ 212 0010 0C       		.byte	0xc
+ 213 0011 54020000 		.4byte	.LASF30
+ 214 0015 58010000 		.4byte	.LASF31
+ 215 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 216 001d 00000000 		.4byte	0
+ 217 0021 00000000 		.4byte	.Ldebug_line0
+ 218 0025 02       		.uleb128 0x2
+ 219 0026 01       		.byte	0x1
+ 220 0027 06       		.byte	0x6
+ 221 0028 C4020000 		.4byte	.LASF0
+ 222 002c 02       		.uleb128 0x2
+ 223 002d 01       		.byte	0x1
+ 224 002e 08       		.byte	0x8
+ 225 002f 12010000 		.4byte	.LASF1
+ 226 0033 02       		.uleb128 0x2
+ 227 0034 02       		.byte	0x2
+ 228 0035 05       		.byte	0x5
+ 229 0036 8C020000 		.4byte	.LASF2
+ 230 003a 02       		.uleb128 0x2
+ 231 003b 02       		.byte	0x2
+ 232 003c 07       		.byte	0x7
+ 233 003d D3000000 		.4byte	.LASF3
+ 234 0041 02       		.uleb128 0x2
+ 235 0042 04       		.byte	0x4
+ 236 0043 05       		.byte	0x5
+ 237 0044 AA020000 		.4byte	.LASF4
+ 238 0048 02       		.uleb128 0x2
+ 239 0049 04       		.byte	0x4
+ 240 004a 07       		.byte	0x7
+ 241 004b 25010000 		.4byte	.LASF5
+ 242 004f 02       		.uleb128 0x2
+ 243 0050 08       		.byte	0x8
+ 244 0051 05       		.byte	0x5
+ 245 0052 46020000 		.4byte	.LASF6
+ 246 0056 02       		.uleb128 0x2
+ 247 0057 08       		.byte	0x8
+ 248 0058 07       		.byte	0x7
+ 249 0059 19020000 		.4byte	.LASF7
+ 250 005d 03       		.uleb128 0x3
+ 251 005e 04       		.byte	0x4
+ 252 005f 05       		.byte	0x5
+ 253 0060 696E7400 		.ascii	"int\000"
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccANu2xp.s 			page 8
+
+
+ 254 0064 02       		.uleb128 0x2
+ 255 0065 04       		.byte	0x4
+ 256 0066 07       		.byte	0x7
+ 257 0067 E2010000 		.4byte	.LASF8
+ 258 006b 04       		.uleb128 0x4
+ 259 006c 37010000 		.4byte	.LASF12
+ 260 0070 02       		.byte	0x2
+ 261 0071 E901     		.2byte	0x1e9
+ 262 0073 2C000000 		.4byte	0x2c
+ 263 0077 02       		.uleb128 0x2
+ 264 0078 04       		.byte	0x4
+ 265 0079 04       		.byte	0x4
+ 266 007a 0C010000 		.4byte	.LASF9
+ 267 007e 02       		.uleb128 0x2
+ 268 007f 08       		.byte	0x8
+ 269 0080 04       		.byte	0x4
+ 270 0081 51010000 		.4byte	.LASF10
+ 271 0085 02       		.uleb128 0x2
+ 272 0086 01       		.byte	0x1
+ 273 0087 08       		.byte	0x8
+ 274 0088 B3020000 		.4byte	.LASF11
+ 275 008c 04       		.uleb128 0x4
+ 276 008d 20010000 		.4byte	.LASF13
+ 277 0091 02       		.byte	0x2
+ 278 0092 9302     		.2byte	0x293
+ 279 0094 98000000 		.4byte	0x98
+ 280 0098 05       		.uleb128 0x5
+ 281 0099 6B000000 		.4byte	0x6b
+ 282 009d 02       		.uleb128 0x2
+ 283 009e 08       		.byte	0x8
+ 284 009f 04       		.byte	0x4
+ 285 00a0 B8020000 		.4byte	.LASF14
+ 286 00a4 02       		.uleb128 0x2
+ 287 00a5 04       		.byte	0x4
+ 288 00a6 07       		.byte	0x7
+ 289 00a7 3D020000 		.4byte	.LASF15
+ 290 00ab 06       		.uleb128 0x6
+ 291 00ac 02       		.byte	0x2
+ 292 00ad 03       		.byte	0x3
+ 293 00ae 40       		.byte	0x40
+ 294 00af CC000000 		.4byte	0xcc
+ 295 00b3 07       		.uleb128 0x7
+ 296 00b4 D6010000 		.4byte	.LASF16
+ 297 00b8 03       		.byte	0x3
+ 298 00b9 42       		.byte	0x42
+ 299 00ba 6B000000 		.4byte	0x6b
+ 300 00be 00       		.byte	0
+ 301 00bf 07       		.uleb128 0x7
+ 302 00c0 CB010000 		.4byte	.LASF17
+ 303 00c4 03       		.byte	0x3
+ 304 00c5 43       		.byte	0x43
+ 305 00c6 6B000000 		.4byte	0x6b
+ 306 00ca 01       		.byte	0x1
+ 307 00cb 00       		.byte	0
+ 308 00cc 08       		.uleb128 0x8
+ 309 00cd EF010000 		.4byte	.LASF18
+ 310 00d1 03       		.byte	0x3
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccANu2xp.s 			page 9
+
+
+ 311 00d2 44       		.byte	0x44
+ 312 00d3 AB000000 		.4byte	0xab
+ 313 00d7 09       		.uleb128 0x9
+ 314 00d8 E6000000 		.4byte	.LASF19
+ 315 00dc 01       		.byte	0x1
+ 316 00dd 29       		.byte	0x29
+ 317 00de 00000000 		.4byte	.LFB0
+ 318 00e2 0C000000 		.4byte	.LFE0-.LFB0
+ 319 00e6 01       		.uleb128 0x1
+ 320 00e7 9C       		.byte	0x9c
+ 321 00e8 09       		.uleb128 0x9
+ 322 00e9 77020000 		.4byte	.LASF20
+ 323 00ed 01       		.byte	0x1
+ 324 00ee 3D       		.byte	0x3d
+ 325 00ef 00000000 		.4byte	.LFB1
+ 326 00f3 0C000000 		.4byte	.LFE1-.LFB1
+ 327 00f7 01       		.uleb128 0x1
+ 328 00f8 9C       		.byte	0x9c
+ 329 00f9 0A       		.uleb128 0xa
+ 330 00fa 30020000 		.4byte	.LASF21
+ 331 00fe 01       		.byte	0x1
+ 332 00ff 57       		.byte	0x57
+ 333 0100 00000000 		.4byte	.LFB2
+ 334 0104 30000000 		.4byte	.LFE2-.LFB2
+ 335 0108 01       		.uleb128 0x1
+ 336 0109 9C       		.byte	0x9c
+ 337 010a 0A       		.uleb128 0xa
+ 338 010b C5000000 		.4byte	.LASF22
+ 339 010f 01       		.byte	0x1
+ 340 0110 7C       		.byte	0x7c
+ 341 0111 00000000 		.4byte	.LFB3
+ 342 0115 58000000 		.4byte	.LFE3-.LFB3
+ 343 0119 01       		.uleb128 0x1
+ 344 011a 9C       		.byte	0x9c
+ 345 011b 0B       		.uleb128 0xb
+ 346 011c 15000000 		.4byte	.LASF32
+ 347 0120 01       		.byte	0x1
+ 348 0121 14       		.byte	0x14
+ 349 0122 CC000000 		.4byte	0xcc
+ 350 0126 05       		.uleb128 0x5
+ 351 0127 03       		.byte	0x3
+ 352 0128 00000000 		.4byte	SPIM_3_backup
+ 353 012c 0C       		.uleb128 0xc
+ 354 012d F8000000 		.4byte	.LASF23
+ 355 0131 04       		.byte	0x4
+ 356 0132 26       		.byte	0x26
+ 357 0133 98000000 		.4byte	0x98
+ 358 0137 0C       		.uleb128 0xc
+ 359 0138 04020000 		.4byte	.LASF24
+ 360 013c 04       		.byte	0x4
+ 361 013d 27       		.byte	0x27
+ 362 013e 98000000 		.4byte	0x98
+ 363 0142 0C       		.uleb128 0xc
+ 364 0143 3D010000 		.4byte	.LASF25
+ 365 0147 04       		.byte	0x4
+ 366 0148 28       		.byte	0x28
+ 367 0149 98000000 		.4byte	0x98
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccANu2xp.s 			page 10
+
+
+ 368 014d 0C       		.uleb128 0xc
+ 369 014e 96020000 		.4byte	.LASF26
+ 370 0152 04       		.byte	0x4
+ 371 0153 2D       		.byte	0x2d
+ 372 0154 98000000 		.4byte	0x98
+ 373 0158 0C       		.uleb128 0xc
+ 374 0159 00000000 		.4byte	.LASF27
+ 375 015d 04       		.byte	0x4
+ 376 015e 2E       		.byte	0x2e
+ 377 015f 98000000 		.4byte	0x98
+ 378 0163 0C       		.uleb128 0xc
+ 379 0164 23000000 		.4byte	.LASF28
+ 380 0168 04       		.byte	0x4
+ 381 0169 2F       		.byte	0x2f
+ 382 016a 98000000 		.4byte	0x98
+ 383 016e 00       		.byte	0
+ 384              		.section	.debug_abbrev,"",%progbits
+ 385              	.Ldebug_abbrev0:
+ 386 0000 01       		.uleb128 0x1
+ 387 0001 11       		.uleb128 0x11
+ 388 0002 01       		.byte	0x1
+ 389 0003 25       		.uleb128 0x25
+ 390 0004 0E       		.uleb128 0xe
+ 391 0005 13       		.uleb128 0x13
+ 392 0006 0B       		.uleb128 0xb
+ 393 0007 03       		.uleb128 0x3
+ 394 0008 0E       		.uleb128 0xe
+ 395 0009 1B       		.uleb128 0x1b
+ 396 000a 0E       		.uleb128 0xe
+ 397 000b 55       		.uleb128 0x55
+ 398 000c 17       		.uleb128 0x17
+ 399 000d 11       		.uleb128 0x11
+ 400 000e 01       		.uleb128 0x1
+ 401 000f 10       		.uleb128 0x10
+ 402 0010 17       		.uleb128 0x17
+ 403 0011 00       		.byte	0
+ 404 0012 00       		.byte	0
+ 405 0013 02       		.uleb128 0x2
+ 406 0014 24       		.uleb128 0x24
+ 407 0015 00       		.byte	0
+ 408 0016 0B       		.uleb128 0xb
+ 409 0017 0B       		.uleb128 0xb
+ 410 0018 3E       		.uleb128 0x3e
+ 411 0019 0B       		.uleb128 0xb
+ 412 001a 03       		.uleb128 0x3
+ 413 001b 0E       		.uleb128 0xe
+ 414 001c 00       		.byte	0
+ 415 001d 00       		.byte	0
+ 416 001e 03       		.uleb128 0x3
+ 417 001f 24       		.uleb128 0x24
+ 418 0020 00       		.byte	0
+ 419 0021 0B       		.uleb128 0xb
+ 420 0022 0B       		.uleb128 0xb
+ 421 0023 3E       		.uleb128 0x3e
+ 422 0024 0B       		.uleb128 0xb
+ 423 0025 03       		.uleb128 0x3
+ 424 0026 08       		.uleb128 0x8
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccANu2xp.s 			page 11
+
+
+ 425 0027 00       		.byte	0
+ 426 0028 00       		.byte	0
+ 427 0029 04       		.uleb128 0x4
+ 428 002a 16       		.uleb128 0x16
+ 429 002b 00       		.byte	0
+ 430 002c 03       		.uleb128 0x3
+ 431 002d 0E       		.uleb128 0xe
+ 432 002e 3A       		.uleb128 0x3a
+ 433 002f 0B       		.uleb128 0xb
+ 434 0030 3B       		.uleb128 0x3b
+ 435 0031 05       		.uleb128 0x5
+ 436 0032 49       		.uleb128 0x49
+ 437 0033 13       		.uleb128 0x13
+ 438 0034 00       		.byte	0
+ 439 0035 00       		.byte	0
+ 440 0036 05       		.uleb128 0x5
+ 441 0037 35       		.uleb128 0x35
+ 442 0038 00       		.byte	0
+ 443 0039 49       		.uleb128 0x49
+ 444 003a 13       		.uleb128 0x13
+ 445 003b 00       		.byte	0
+ 446 003c 00       		.byte	0
+ 447 003d 06       		.uleb128 0x6
+ 448 003e 13       		.uleb128 0x13
+ 449 003f 01       		.byte	0x1
+ 450 0040 0B       		.uleb128 0xb
+ 451 0041 0B       		.uleb128 0xb
+ 452 0042 3A       		.uleb128 0x3a
+ 453 0043 0B       		.uleb128 0xb
+ 454 0044 3B       		.uleb128 0x3b
+ 455 0045 0B       		.uleb128 0xb
+ 456 0046 01       		.uleb128 0x1
+ 457 0047 13       		.uleb128 0x13
+ 458 0048 00       		.byte	0
+ 459 0049 00       		.byte	0
+ 460 004a 07       		.uleb128 0x7
+ 461 004b 0D       		.uleb128 0xd
+ 462 004c 00       		.byte	0
+ 463 004d 03       		.uleb128 0x3
+ 464 004e 0E       		.uleb128 0xe
+ 465 004f 3A       		.uleb128 0x3a
+ 466 0050 0B       		.uleb128 0xb
+ 467 0051 3B       		.uleb128 0x3b
+ 468 0052 0B       		.uleb128 0xb
+ 469 0053 49       		.uleb128 0x49
+ 470 0054 13       		.uleb128 0x13
+ 471 0055 38       		.uleb128 0x38
+ 472 0056 0B       		.uleb128 0xb
+ 473 0057 00       		.byte	0
+ 474 0058 00       		.byte	0
+ 475 0059 08       		.uleb128 0x8
+ 476 005a 16       		.uleb128 0x16
+ 477 005b 00       		.byte	0
+ 478 005c 03       		.uleb128 0x3
+ 479 005d 0E       		.uleb128 0xe
+ 480 005e 3A       		.uleb128 0x3a
+ 481 005f 0B       		.uleb128 0xb
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccANu2xp.s 			page 12
+
+
+ 482 0060 3B       		.uleb128 0x3b
+ 483 0061 0B       		.uleb128 0xb
+ 484 0062 49       		.uleb128 0x49
+ 485 0063 13       		.uleb128 0x13
+ 486 0064 00       		.byte	0
+ 487 0065 00       		.byte	0
+ 488 0066 09       		.uleb128 0x9
+ 489 0067 2E       		.uleb128 0x2e
+ 490 0068 00       		.byte	0
+ 491 0069 3F       		.uleb128 0x3f
+ 492 006a 19       		.uleb128 0x19
+ 493 006b 03       		.uleb128 0x3
+ 494 006c 0E       		.uleb128 0xe
+ 495 006d 3A       		.uleb128 0x3a
+ 496 006e 0B       		.uleb128 0xb
+ 497 006f 3B       		.uleb128 0x3b
+ 498 0070 0B       		.uleb128 0xb
+ 499 0071 27       		.uleb128 0x27
+ 500 0072 19       		.uleb128 0x19
+ 501 0073 11       		.uleb128 0x11
+ 502 0074 01       		.uleb128 0x1
+ 503 0075 12       		.uleb128 0x12
+ 504 0076 06       		.uleb128 0x6
+ 505 0077 40       		.uleb128 0x40
+ 506 0078 18       		.uleb128 0x18
+ 507 0079 9742     		.uleb128 0x2117
+ 508 007b 19       		.uleb128 0x19
+ 509 007c 00       		.byte	0
+ 510 007d 00       		.byte	0
+ 511 007e 0A       		.uleb128 0xa
+ 512 007f 2E       		.uleb128 0x2e
+ 513 0080 00       		.byte	0
+ 514 0081 3F       		.uleb128 0x3f
+ 515 0082 19       		.uleb128 0x19
+ 516 0083 03       		.uleb128 0x3
+ 517 0084 0E       		.uleb128 0xe
+ 518 0085 3A       		.uleb128 0x3a
+ 519 0086 0B       		.uleb128 0xb
+ 520 0087 3B       		.uleb128 0x3b
+ 521 0088 0B       		.uleb128 0xb
+ 522 0089 27       		.uleb128 0x27
+ 523 008a 19       		.uleb128 0x19
+ 524 008b 11       		.uleb128 0x11
+ 525 008c 01       		.uleb128 0x1
+ 526 008d 12       		.uleb128 0x12
+ 527 008e 06       		.uleb128 0x6
+ 528 008f 40       		.uleb128 0x40
+ 529 0090 18       		.uleb128 0x18
+ 530 0091 9642     		.uleb128 0x2116
+ 531 0093 19       		.uleb128 0x19
+ 532 0094 00       		.byte	0
+ 533 0095 00       		.byte	0
+ 534 0096 0B       		.uleb128 0xb
+ 535 0097 34       		.uleb128 0x34
+ 536 0098 00       		.byte	0
+ 537 0099 03       		.uleb128 0x3
+ 538 009a 0E       		.uleb128 0xe
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccANu2xp.s 			page 13
+
+
+ 539 009b 3A       		.uleb128 0x3a
+ 540 009c 0B       		.uleb128 0xb
+ 541 009d 3B       		.uleb128 0x3b
+ 542 009e 0B       		.uleb128 0xb
+ 543 009f 49       		.uleb128 0x49
+ 544 00a0 13       		.uleb128 0x13
+ 545 00a1 02       		.uleb128 0x2
+ 546 00a2 18       		.uleb128 0x18
+ 547 00a3 00       		.byte	0
+ 548 00a4 00       		.byte	0
+ 549 00a5 0C       		.uleb128 0xc
+ 550 00a6 34       		.uleb128 0x34
+ 551 00a7 00       		.byte	0
+ 552 00a8 03       		.uleb128 0x3
+ 553 00a9 0E       		.uleb128 0xe
+ 554 00aa 3A       		.uleb128 0x3a
+ 555 00ab 0B       		.uleb128 0xb
+ 556 00ac 3B       		.uleb128 0x3b
+ 557 00ad 0B       		.uleb128 0xb
+ 558 00ae 49       		.uleb128 0x49
+ 559 00af 13       		.uleb128 0x13
+ 560 00b0 3F       		.uleb128 0x3f
+ 561 00b1 19       		.uleb128 0x19
+ 562 00b2 3C       		.uleb128 0x3c
+ 563 00b3 19       		.uleb128 0x19
+ 564 00b4 00       		.byte	0
+ 565 00b5 00       		.byte	0
+ 566 00b6 00       		.byte	0
+ 567              		.section	.debug_aranges,"",%progbits
+ 568 0000 34000000 		.4byte	0x34
+ 569 0004 0200     		.2byte	0x2
+ 570 0006 00000000 		.4byte	.Ldebug_info0
+ 571 000a 04       		.byte	0x4
+ 572 000b 00       		.byte	0
+ 573 000c 0000     		.2byte	0
+ 574 000e 0000     		.2byte	0
+ 575 0010 00000000 		.4byte	.LFB0
+ 576 0014 0C000000 		.4byte	.LFE0-.LFB0
+ 577 0018 00000000 		.4byte	.LFB1
+ 578 001c 0C000000 		.4byte	.LFE1-.LFB1
+ 579 0020 00000000 		.4byte	.LFB2
+ 580 0024 30000000 		.4byte	.LFE2-.LFB2
+ 581 0028 00000000 		.4byte	.LFB3
+ 582 002c 58000000 		.4byte	.LFE3-.LFB3
+ 583 0030 00000000 		.4byte	0
+ 584 0034 00000000 		.4byte	0
+ 585              		.section	.debug_ranges,"",%progbits
+ 586              	.Ldebug_ranges0:
+ 587 0000 00000000 		.4byte	.LFB0
+ 588 0004 0C000000 		.4byte	.LFE0
+ 589 0008 00000000 		.4byte	.LFB1
+ 590 000c 0C000000 		.4byte	.LFE1
+ 591 0010 00000000 		.4byte	.LFB2
+ 592 0014 30000000 		.4byte	.LFE2
+ 593 0018 00000000 		.4byte	.LFB3
+ 594 001c 58000000 		.4byte	.LFE3
+ 595 0020 00000000 		.4byte	0
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccANu2xp.s 			page 14
+
+
+ 596 0024 00000000 		.4byte	0
+ 597              		.section	.debug_line,"",%progbits
+ 598              	.Ldebug_line0:
+ 599 0000 B5000000 		.section	.debug_str,"MS",%progbits,1
+ 599      02006200 
+ 599      00000201 
+ 599      FB0E0D00 
+ 599      01010101 
+ 600              	.LASF27:
+ 601 0000 5350494D 		.ascii	"SPIM_3_rxBufferWrite\000"
+ 601      5F335F72 
+ 601      78427566 
+ 601      66657257 
+ 601      72697465 
+ 602              	.LASF32:
+ 603 0015 5350494D 		.ascii	"SPIM_3_backup\000"
+ 603      5F335F62 
+ 603      61636B75 
+ 603      7000
+ 604              	.LASF28:
+ 605 0023 5350494D 		.ascii	"SPIM_3_rxBufferFull\000"
+ 605      5F335F72 
+ 605      78427566 
+ 605      66657246 
+ 605      756C6C00 
+ 606              	.LASF29:
+ 607 0037 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 607      43313120 
+ 607      352E342E 
+ 607      31203230 
+ 607      31363036 
+ 608 006a 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 608      20726576 
+ 608      6973696F 
+ 608      6E203233 
+ 608      37373135 
+ 609 009d 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 609      66756E63 
+ 609      74696F6E 
+ 609      2D736563 
+ 609      74696F6E 
+ 610              	.LASF22:
+ 611 00c5 5350494D 		.ascii	"SPIM_3_Wakeup\000"
+ 611      5F335F57 
+ 611      616B6575 
+ 611      7000
+ 612              	.LASF3:
+ 613 00d3 73686F72 		.ascii	"short unsigned int\000"
+ 613      7420756E 
+ 613      7369676E 
+ 613      65642069 
+ 613      6E7400
+ 614              	.LASF19:
+ 615 00e6 5350494D 		.ascii	"SPIM_3_SaveConfig\000"
+ 615      5F335F53 
+ 615      61766543 
+ 615      6F6E6669 
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccANu2xp.s 			page 15
+
+
+ 615      6700
+ 616              	.LASF23:
+ 617 00f8 5350494D 		.ascii	"SPIM_3_txBufferRead\000"
+ 617      5F335F74 
+ 617      78427566 
+ 617      66657252 
+ 617      65616400 
+ 618              	.LASF9:
+ 619 010c 666C6F61 		.ascii	"float\000"
+ 619      7400
+ 620              	.LASF1:
+ 621 0112 756E7369 		.ascii	"unsigned char\000"
+ 621      676E6564 
+ 621      20636861 
+ 621      7200
+ 622              	.LASF13:
+ 623 0120 72656738 		.ascii	"reg8\000"
+ 623      00
+ 624              	.LASF5:
+ 625 0125 6C6F6E67 		.ascii	"long unsigned int\000"
+ 625      20756E73 
+ 625      69676E65 
+ 625      6420696E 
+ 625      7400
+ 626              	.LASF12:
+ 627 0137 75696E74 		.ascii	"uint8\000"
+ 627      3800
+ 628              	.LASF25:
+ 629 013d 5350494D 		.ascii	"SPIM_3_txBufferFull\000"
+ 629      5F335F74 
+ 629      78427566 
+ 629      66657246 
+ 629      756C6C00 
+ 630              	.LASF10:
+ 631 0151 646F7562 		.ascii	"double\000"
+ 631      6C6500
+ 632              	.LASF31:
+ 633 0158 433A5C55 		.ascii	"C:\\Users\\ggg88\\dev\\Electrosteel_embedded\\PSOC5"
+ 633      73657273 
+ 633      5C676767 
+ 633      38385C64 
+ 633      65765C45 
+ 634 0186 5F656C65 		.ascii	"_electrosteel_stringsensors_newpcb\\CE210514_PSOC3_"
+ 634      6374726F 
+ 634      73746565 
+ 634      6C5F7374 
+ 634      72696E67 
+ 635 01b8 355F5468 		.ascii	"5_Thermistor.cydsn\000"
+ 635      65726D69 
+ 635      73746F72 
+ 635      2E637964 
+ 635      736E00
+ 636              	.LASF17:
+ 637 01cb 636E7472 		.ascii	"cntrPeriod\000"
+ 637      50657269 
+ 637      6F6400
+ 638              	.LASF16:
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccANu2xp.s 			page 16
+
+
+ 639 01d6 656E6162 		.ascii	"enableState\000"
+ 639      6C655374 
+ 639      61746500 
+ 640              	.LASF8:
+ 641 01e2 756E7369 		.ascii	"unsigned int\000"
+ 641      676E6564 
+ 641      20696E74 
+ 641      00
+ 642              	.LASF18:
+ 643 01ef 5350494D 		.ascii	"SPIM_3_BACKUP_STRUCT\000"
+ 643      5F335F42 
+ 643      41434B55 
+ 643      505F5354 
+ 643      52554354 
+ 644              	.LASF24:
+ 645 0204 5350494D 		.ascii	"SPIM_3_txBufferWrite\000"
+ 645      5F335F74 
+ 645      78427566 
+ 645      66657257 
+ 645      72697465 
+ 646              	.LASF7:
+ 647 0219 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 647      206C6F6E 
+ 647      6720756E 
+ 647      7369676E 
+ 647      65642069 
+ 648              	.LASF21:
+ 649 0230 5350494D 		.ascii	"SPIM_3_Sleep\000"
+ 649      5F335F53 
+ 649      6C656570 
+ 649      00
+ 650              	.LASF15:
+ 651 023d 73697A65 		.ascii	"sizetype\000"
+ 651      74797065 
+ 651      00
+ 652              	.LASF6:
+ 653 0246 6C6F6E67 		.ascii	"long long int\000"
+ 653      206C6F6E 
+ 653      6720696E 
+ 653      7400
+ 654              	.LASF30:
+ 655 0254 47656E65 		.ascii	"Generated_Source\\PSoC5\\SPIM_3_PM.c\000"
+ 655      72617465 
+ 655      645F536F 
+ 655      75726365 
+ 655      5C50536F 
+ 656              	.LASF20:
+ 657 0277 5350494D 		.ascii	"SPIM_3_RestoreConfig\000"
+ 657      5F335F52 
+ 657      6573746F 
+ 657      7265436F 
+ 657      6E666967 
+ 658              	.LASF2:
+ 659 028c 73686F72 		.ascii	"short int\000"
+ 659      7420696E 
+ 659      7400
+ 660              	.LASF26:
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccANu2xp.s 			page 17
+
+
+ 661 0296 5350494D 		.ascii	"SPIM_3_rxBufferRead\000"
+ 661      5F335F72 
+ 661      78427566 
+ 661      66657252 
+ 661      65616400 
+ 662              	.LASF4:
+ 663 02aa 6C6F6E67 		.ascii	"long int\000"
+ 663      20696E74 
+ 663      00
+ 664              	.LASF11:
+ 665 02b3 63686172 		.ascii	"char\000"
+ 665      00
+ 666              	.LASF14:
+ 667 02b8 6C6F6E67 		.ascii	"long double\000"
+ 667      20646F75 
+ 667      626C6500 
+ 668              	.LASF0:
+ 669 02c4 7369676E 		.ascii	"signed char\000"
+ 669      65642063 
+ 669      68617200 
+ 670              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

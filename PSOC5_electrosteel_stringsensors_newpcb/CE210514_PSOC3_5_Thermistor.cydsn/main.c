@@ -45,6 +45,7 @@
 
 #define barBufferSize 8
 #define touchBufferSize 4
+#define barInputBufferSize 38 //sending bar as 16bit average for all 9 sensors and 9 osc amounts, plus two bytes for start and stop check
 
 
 
@@ -53,6 +54,8 @@ uint8_t stringCapSensorsRaw[16];
 uint8_t thresholdArray[12] = {15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15};
 uint8 barArray[barBufferSize];
 uint8 touchArray[touchBufferSize];
+uint8_t barInputArray[barInputBufferSize];
+uint8_t barInputOutputArray[barInputBufferSize];
 int32_t linearPotValue32Bit[2];
 uint8_t i = 0;
 uint8_t counter = 0;
@@ -74,15 +77,15 @@ int main(void)
 
 
 	CYGlobalIntEnable; 
-    IDAC8_1_Start();
-	ADC_1_Start();
-	AMux_1_Start();
-    AMux_2_Start();
+    //IDAC8_1_Start();
+	//ADC_1_Start();
+	//AMux_1_Start();
+    //AMux_2_Start();
 
 
     SPIM_1_Start();
     SPIM_2_Start();
-    
+    SPIM_3_Start();
     CyDelay(500);
     CapSense_Start();     
     
@@ -91,6 +94,7 @@ int main(void)
     uint8_t myArrayCounter = 0;
     
     CapSense_ScanEnabledWidgets();  
+
 
 
 	for(;;)
@@ -156,7 +160,29 @@ int main(void)
             touchArray[1] |= (isSensorOn << (i - 8));
             barArray[5] |= (isSensorOn << (i - 8));
         }        
-        
+                
+        //get data from bar sensor board
+         for (int i = 0; i < barInputBufferSize; i++)
+        {         
+            barInputOutputArray[i] = i;
+           
+
+        }
+        SPIM_3_PutArray(barInputOutputArray, 38);
+while(0 == (SPIM_3_ReadTxStatus() & SPIM_3_STS_SPI_DONE)) {
+}
+
+    /* Clear dummy bytes from TX buffer */
+    SPIM_3_ClearTxBuffer();
+
+    /* Read data from the RX buffer */
+    i = 0u;
+    while (0u != SPIM_3_GetRxBufferSize())
+    {
+        barInputArray[i] = SPIM_3_ReadRxData();
+        i++;
+    }
+
         //send data over SPI to pluck detector boards
          for (int i = 0; i < touchBufferSize; i++)
         {         
@@ -177,11 +203,12 @@ int8_t currentPast = 0;
 int32_t resistorPast[30][3];
 void scanLinearResistor(uint8_t channel)
 {  
-        int32 iVtherm = 0;
+ #if 0
+    int32 iVtherm = 0;
         int32 iVref = 0;
         int32 iRes = 0;
         int32 offset = 0;
-        //connect the iout pin to the correct resistor channel
+           //connect the iout pin to the correct resistor channel
         AMux_2_FastSelect(channel);
     
         //select the wiper pins
@@ -218,6 +245,7 @@ void scanLinearResistor(uint8_t channel)
             iRes = 65535;
         }
         linearPotValue32Bit[channel] = iRes;
+        #endif
 }
 
 

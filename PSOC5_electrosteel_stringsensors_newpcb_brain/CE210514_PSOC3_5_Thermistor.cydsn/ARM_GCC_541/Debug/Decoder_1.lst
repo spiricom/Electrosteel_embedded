@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 1
 
 
    1              		.syntax unified
@@ -58,7 +58,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
   55              	aInitialized:
   56 0004 00       		.space	1
   57              		.data
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 2
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 2
 
 
   58              		.type	aIncrement, %object
@@ -118,7 +118,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
   31:Generated_Source\PSoC5/Decoder_1.c **** // local type declaration does not need Decoder_1_ prefix
   32:Generated_Source\PSoC5/Decoder_1.c **** #define er_t int8_t // int8_t, uint8_t, ..., uint32_t, float32(single), float64(double)
   33:Generated_Source\PSoC5/Decoder_1.c **** 
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 3
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 3
 
 
   34:Generated_Source\PSoC5/Decoder_1.c **** static const signed char enc_states[] = {0,-1,1,0,1,0,0,-1,-1,0,0,1,0,1,-1,0}; // 
@@ -178,7 +178,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
   86 0000 80B5     		push	{r7, lr}
   87              		.cfi_def_cfa_offset 8
   88              		.cfi_offset 7, -8
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 4
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 4
 
 
   89              		.cfi_offset 14, -4
@@ -238,7 +238,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  128 0034 02000000 		.word	aDirection
  129 0038 03000000 		.word	fPositionChanged
  130              		.cfi_endproc
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 5
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 5
 
 
  131              	.LFE63:
@@ -298,7 +298,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  131:Generated_Source\PSoC5/Decoder_1.c ****             SW_timeout = SW_DEBOUNCE_TIME;      // reset the debounce timer for this button
  132:Generated_Source\PSoC5/Decoder_1.c ****             Decoder_1_isrBtnSW_StartEx(Decoder_1_Tick_ISR);   // start debouncing timer isr
  133:Generated_Source\PSoC5/Decoder_1.c ****             return 0; // ignore encoder if button pressed
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 6
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 6
 
 
  134:Generated_Source\PSoC5/Decoder_1.c **** 	    }             
@@ -358,7 +358,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  188 0044 5AB2     		sxtb	r2, r3
  189 0046 114B     		ldr	r3, .L9+12
  190 0048 1A70     		strb	r2, [r3]
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 7
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 7
 
 
  153:Generated_Source\PSoC5/Decoder_1.c ****     Acc += enc_states[ index & 0x0f ];          // accumulate 1/4 steps   
@@ -418,7 +418,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  241              	.LFB65:
  157:Generated_Source\PSoC5/Decoder_1.c **** 
  158:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 8
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 8
 
 
  159:Generated_Source\PSoC5/Decoder_1.c **** // Debouncing ISR - counts milliseconds elapsed after button press
@@ -478,7 +478,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  203:Generated_Source\PSoC5/Decoder_1.c ****                 Decoder_1_PINS2_INTSTAT;     
  252              		.loc 1 203 0
  253 0004 024B     		ldr	r3, .L12
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 9
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 9
 
 
  254 0006 1B78     		ldrb	r3, [r3]
@@ -538,7 +538,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  292 0008 FFF7FEFF 		bl	Decoder_1_CheckStatus
  220:Generated_Source\PSoC5/Decoder_1.c ****     Decoder_1_GetPositionChanged();
  293              		.loc 1 220 0
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 10
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 10
 
 
  294 000c FFF7FEFF 		bl	Decoder_1_GetPositionChanged
@@ -598,7 +598,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  260:Generated_Source\PSoC5/Decoder_1.c ****                 return 0;                                   
  261:Generated_Source\PSoC5/Decoder_1.c ****             }    
  262:Generated_Source\PSoC5/Decoder_1.c **** 	    }
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 11
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 11
 
 
  263:Generated_Source\PSoC5/Decoder_1.c ****         else                                                // debouncing countdown after button pr
@@ -658,7 +658,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  317:Generated_Source\PSoC5/Decoder_1.c **** 
  318:Generated_Source\PSoC5/Decoder_1.c **** 
  319:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 12
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 12
 
 
  320:Generated_Source\PSoC5/Decoder_1.c **** // 
@@ -718,7 +718,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  331              	.L17:
  332              		.align	2
  333              	.L16:
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 13
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 13
 
 
  334 0018 00000000 		.word	Decoder_1_myDtrInt
@@ -778,7 +778,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  369 0016 00BF     		.align	2
  370              	.L19:
  371 0018 04000000 		.word	aInitialized
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 14
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 14
 
 
  372              		.cfi_endproc
@@ -838,7 +838,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  397 000a 00BF     		nop
  398 000c 80BD     		pop	{r7, pc}
  399              		.cfi_endproc
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 15
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 15
 
 
  400              	.LFE69:
@@ -898,7 +898,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  429 000e 00BF     		.section	.text.Decoder_1_GetPosition,"ax",%progbits
  430              		.align	2
  431              		.global	Decoder_1_GetPosition
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 16
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 16
 
 
  432              		.thumb
@@ -958,7 +958,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  438:Generated_Source\PSoC5/Decoder_1.c **** 
  439:Generated_Source\PSoC5/Decoder_1.c **** uint8 Decoder_1_SetPosition(er_t value)
  440:Generated_Source\PSoC5/Decoder_1.c **** {
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 17
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 17
 
 
  473              		.loc 1 440 0
@@ -1018,7 +1018,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  517 0040 0122     		movs	r2, #1
  518 0042 1A70     		strb	r2, [r3]
  451:Generated_Source\PSoC5/Decoder_1.c ****             }    
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 18
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 18
 
 
  452:Generated_Source\PSoC5/Decoder_1.c ****             result = 1;                 // success
@@ -1078,7 +1078,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  558 0074 03000000 		.word	aUpperBound
  559 0078 01000000 		.word	aPosition
  560 007c 02000000 		.word	aDirection
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 19
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 19
 
 
  561 0080 03000000 		.word	fPositionChanged
@@ -1138,7 +1138,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  607              	Decoder_1_GetPositionChanged:
  608              	.LFB74:
  475:Generated_Source\PSoC5/Decoder_1.c **** 
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 20
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 20
 
 
  476:Generated_Source\PSoC5/Decoder_1.c **** 
@@ -1198,7 +1198,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  506:Generated_Source\PSoC5/Decoder_1.c ****     
  507:Generated_Source\PSoC5/Decoder_1.c ****     if (aDirection==0) return 1;        // typically when set position
  633              		.loc 1 507 0
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 21
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 21
 
 
  634 0018 384B     		ldr	r3, .L50+4
@@ -1258,7 +1258,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  681              	.L43:
  515:Generated_Source\PSoC5/Decoder_1.c ****         }
  516:Generated_Source\PSoC5/Decoder_1.c ****         else
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 22
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 22
 
 
  517:Generated_Source\PSoC5/Decoder_1.c ****         //if (aDirection < 0)
@@ -1318,7 +1318,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  727 00d0 0AE0     		b	.L49
  728              	.L48:
  729              		.loc 1 525 0 discriminator 2
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 23
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 23
 
 
  730 00d2 0C4B     		ldr	r3, .L50+12
@@ -1378,7 +1378,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  533:Generated_Source\PSoC5/Decoder_1.c **** // return: 1= started, 0= stopped
  534:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
  535:Generated_Source\PSoC5/Decoder_1.c **** 
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 24
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 24
 
 
  536:Generated_Source\PSoC5/Decoder_1.c **** uint8 Decoder_1_GetInitStatus() { return aInitialized; }
@@ -1438,7 +1438,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  820              		.cfi_offset 7, -4
  821 0002 85B0     		sub	sp, sp, #20
  822              		.cfi_def_cfa_offset 24
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 25
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 25
 
 
  823 0004 00AF     		add	r7, sp, #0
@@ -1498,7 +1498,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  867              		.type	Decoder_1_SetCheckBounds, %function
  868              	Decoder_1_SetCheckBounds:
  869              	.LFB77:
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 26
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 26
 
 
  557:Generated_Source\PSoC5/Decoder_1.c **** 
@@ -1558,7 +1558,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  910              		.loc 1 570 0 discriminator 3
  911 003c 0123     		movs	r3, #1
  912 003e 00E0     		b	.L64
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 27
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 27
 
 
  913              	.L63:
@@ -1618,7 +1618,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  582:Generated_Source\PSoC5/Decoder_1.c **** //==============================================================================
  583:Generated_Source\PSoC5/Decoder_1.c **** 
  584:Generated_Source\PSoC5/Decoder_1.c **** uint8 Decoder_1_SetBounds (er_t lBound, er_t uBound)
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 28
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 28
 
 
  585:Generated_Source\PSoC5/Decoder_1.c **** {
@@ -1678,7 +1678,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  997 0034 1437     		adds	r7, r7, #20
  998              		.cfi_def_cfa_offset 4
  999 0036 BD46     		mov	sp, r7
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 29
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 29
 
 
  1000              		.cfi_def_cfa_register 13
@@ -1738,7 +1738,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1046 001c 3B71     		strb	r3, [r7, #4]
  606:Generated_Source\PSoC5/Decoder_1.c ****     uint8  result = Decoder_1_SetBounds ( lBound, uBound ) &&
  1047              		.loc 1 606 0
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 30
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 30
 
 
  1048 001e 97F90420 		ldrsb	r2, [r7, #4]
@@ -1798,7 +1798,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1090              		.loc 1 611 0
  1091 006c FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
  612:Generated_Source\PSoC5/Decoder_1.c **** }
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 31
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 31
 
 
  1092              		.loc 1 612 0
@@ -1858,7 +1858,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1140              		.align	2
  1141              		.global	Decoder_1_GetLowerBound
  1142              		.thumb
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 32
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 32
 
 
  1143              		.thumb_func
@@ -1918,7 +1918,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1195 0006 93F90030 		ldrsb	r3, [r3]
  1196 000a 1846     		mov	r0, r3
  1197 000c BD46     		mov	sp, r7
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 33
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 33
 
 
  1198              		.cfi_def_cfa_register 13
@@ -1978,7 +1978,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1251 0007 00       		.space	1
  1252              		.text
  1253              	.Letext0:
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 34
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 34
 
 
  1254              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
@@ -1992,58 +1992,58 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1262 0006 00000000 		.4byte	.Ldebug_abbrev0
  1263 000a 04       		.byte	0x4
  1264 000b 01       		.uleb128 0x1
- 1265 000c CD000000 		.4byte	.LASF64
+ 1265 000c 4F000000 		.4byte	.LASF64
  1266 0010 0C       		.byte	0xc
- 1267 0011 5B010000 		.4byte	.LASF65
- 1268 0015 0D000000 		.4byte	.LASF66
+ 1267 0011 DD000000 		.4byte	.LASF65
+ 1268 0015 5F010000 		.4byte	.LASF66
  1269 0019 00000000 		.4byte	.Ldebug_ranges0+0
  1270 001d 00000000 		.4byte	0
  1271 0021 00000000 		.4byte	.Ldebug_line0
  1272 0025 02       		.uleb128 0x2
- 1273 0026 A3030000 		.4byte	.LASF4
+ 1273 0026 9E030000 		.4byte	.LASF4
  1274 002a 02       		.byte	0x2
  1275 002b 1B       		.byte	0x1b
  1276 002c 30000000 		.4byte	0x30
  1277 0030 03       		.uleb128 0x3
  1278 0031 01       		.byte	0x1
  1279 0032 06       		.byte	0x6
- 1280 0033 97030000 		.4byte	.LASF0
+ 1280 0033 92030000 		.4byte	.LASF0
  1281 0037 03       		.uleb128 0x3
  1282 0038 01       		.byte	0x1
  1283 0039 08       		.byte	0x8
- 1284 003a C0020000 		.4byte	.LASF1
+ 1284 003a BB020000 		.4byte	.LASF1
  1285 003e 03       		.uleb128 0x3
  1286 003f 02       		.byte	0x2
  1287 0040 05       		.byte	0x5
- 1288 0041 A4000000 		.4byte	.LASF2
+ 1288 0041 26000000 		.4byte	.LASF2
  1289 0045 03       		.uleb128 0x3
  1290 0046 02       		.byte	0x2
  1291 0047 07       		.byte	0x7
- 1292 0048 84030000 		.4byte	.LASF3
+ 1292 0048 7F030000 		.4byte	.LASF3
  1293 004c 02       		.uleb128 0x2
- 1294 004d 58040000 		.4byte	.LASF5
+ 1294 004d 53040000 		.4byte	.LASF5
  1295 0051 02       		.byte	0x2
  1296 0052 3F       		.byte	0x3f
  1297 0053 57000000 		.4byte	0x57
  1298 0057 03       		.uleb128 0x3
  1299 0058 04       		.byte	0x4
  1300 0059 05       		.byte	0x5
- 1301 005a 55020000 		.4byte	.LASF6
+ 1301 005a 50020000 		.4byte	.LASF6
  1302 005e 03       		.uleb128 0x3
  1303 005f 04       		.byte	0x4
  1304 0060 07       		.byte	0x7
- 1305 0061 18040000 		.4byte	.LASF7
+ 1305 0061 13040000 		.4byte	.LASF7
  1306 0065 03       		.uleb128 0x3
  1307 0066 08       		.byte	0x8
  1308 0067 05       		.byte	0x5
- 1309 0068 26020000 		.4byte	.LASF8
+ 1309 0068 21020000 		.4byte	.LASF8
  1310 006c 03       		.uleb128 0x3
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 35
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 35
 
 
  1311 006d 08       		.byte	0x8
  1312 006e 07       		.byte	0x7
- 1313 006f 15030000 		.4byte	.LASF9
+ 1313 006f 10030000 		.4byte	.LASF9
  1314 0073 04       		.uleb128 0x4
  1315 0074 04       		.byte	0x4
  1316 0075 05       		.byte	0x5
@@ -2051,41 +2051,41 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1318 007a 03       		.uleb128 0x3
  1319 007b 04       		.byte	0x4
  1320 007c 07       		.byte	0x7
- 1321 007d 3C030000 		.4byte	.LASF10
+ 1321 007d 37030000 		.4byte	.LASF10
  1322 0081 02       		.uleb128 0x2
- 1323 0082 92000000 		.4byte	.LASF11
+ 1323 0082 14000000 		.4byte	.LASF11
  1324 0086 03       		.byte	0x3
  1325 0087 14       		.byte	0x14
  1326 0088 25000000 		.4byte	0x25
  1327 008c 02       		.uleb128 0x2
- 1328 008d D6030000 		.4byte	.LASF12
+ 1328 008d D1030000 		.4byte	.LASF12
  1329 0091 03       		.byte	0x3
  1330 0092 2C       		.byte	0x2c
  1331 0093 4C000000 		.4byte	0x4c
  1332 0097 05       		.uleb128 0x5
- 1333 0098 D7010000 		.4byte	.LASF13
+ 1333 0098 59010000 		.4byte	.LASF13
  1334 009c 04       		.byte	0x4
  1335 009d E901     		.2byte	0x1e9
  1336 009f 37000000 		.4byte	0x37
  1337 00a3 05       		.uleb128 0x5
- 1338 00a4 34020000 		.4byte	.LASF14
+ 1338 00a4 2F020000 		.4byte	.LASF14
  1339 00a8 04       		.byte	0x4
  1340 00a9 EC01     		.2byte	0x1ec
  1341 00ab 30000000 		.4byte	0x30
  1342 00af 03       		.uleb128 0x3
  1343 00b0 04       		.byte	0x4
  1344 00b1 04       		.byte	0x4
- 1345 00b2 F6010000 		.4byte	.LASF15
+ 1345 00b2 F1010000 		.4byte	.LASF15
  1346 00b6 03       		.uleb128 0x3
  1347 00b7 08       		.byte	0x8
  1348 00b8 04       		.byte	0x4
- 1349 00b9 2A040000 		.4byte	.LASF16
+ 1349 00b9 25040000 		.4byte	.LASF16
  1350 00bd 03       		.uleb128 0x3
  1351 00be 01       		.byte	0x1
  1352 00bf 08       		.byte	0x8
- 1353 00c0 45020000 		.4byte	.LASF17
+ 1353 00c0 40020000 		.4byte	.LASF17
  1354 00c4 05       		.uleb128 0x5
- 1355 00c5 13040000 		.4byte	.LASF18
+ 1355 00c5 0E040000 		.4byte	.LASF18
  1356 00c9 04       		.byte	0x4
  1357 00ca 9302     		.2byte	0x293
  1358 00cc D0000000 		.4byte	0xd0
@@ -2094,16 +2094,16 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1361 00d5 03       		.uleb128 0x3
  1362 00d6 08       		.byte	0x8
  1363 00d7 04       		.byte	0x4
- 1364 00d8 B4020000 		.4byte	.LASF19
+ 1364 00d8 AF020000 		.4byte	.LASF19
  1365 00dc 03       		.uleb128 0x3
  1366 00dd 04       		.byte	0x4
  1367 00de 07       		.byte	0x7
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 36
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 36
 
 
- 1368 00df AE000000 		.4byte	.LASF20
+ 1368 00df 30000000 		.4byte	.LASF20
  1369 00e3 07       		.uleb128 0x7
- 1370 00e4 B7000000 		.4byte	.LASF21
+ 1370 00e4 39000000 		.4byte	.LASF21
  1371 00e8 01       		.byte	0x1
  1372 00e9 52       		.byte	0x52
  1373 00ea A3000000 		.4byte	0xa3
@@ -2113,7 +2113,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1377 00f7 9C       		.byte	0x9c
  1378 00f8 0B010000 		.4byte	0x10b
  1379 00fc 08       		.uleb128 0x8
- 1380 00fd 0C040000 		.4byte	.LASF23
+ 1380 00fd 07040000 		.4byte	.LASF23
  1381 0101 01       		.byte	0x1
  1382 0102 59       		.byte	0x59
  1383 0103 A3000000 		.4byte	0xa3
@@ -2122,7 +2122,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1386 0109 77       		.sleb128 -9
  1387 010a 00       		.byte	0
  1388 010b 09       		.uleb128 0x9
- 1389 010c 49030000 		.4byte	.LASF22
+ 1389 010c 44030000 		.4byte	.LASF22
  1390 0110 01       		.byte	0x1
  1391 0111 78       		.byte	0x78
  1392 0112 A3000000 		.4byte	0xa3
@@ -2132,7 +2132,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1396 011f 9C       		.byte	0x9c
  1397 0120 55010000 		.4byte	0x155
  1398 0124 08       		.uleb128 0x8
- 1399 0125 D1010000 		.4byte	.LASF24
+ 1399 0125 53010000 		.4byte	.LASF24
  1400 0129 01       		.byte	0x1
  1401 012a 7A       		.byte	0x7a
  1402 012b 97000000 		.4byte	0x97
@@ -2148,7 +2148,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1412 0141 03       		.byte	0x3
  1413 0142 07000000 		.4byte	Acc.7286
  1414 0146 08       		.uleb128 0x8
- 1415 0147 FC010000 		.4byte	.LASF25
+ 1415 0147 F7010000 		.4byte	.LASF25
  1416 014b 01       		.byte	0x1
  1417 014c 8A       		.byte	0x8a
  1418 014d 97000000 		.4byte	0x97
@@ -2157,8 +2157,8 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1421 0153 77       		.sleb128 -9
  1422 0154 00       		.byte	0
  1423 0155 0B       		.uleb128 0xb
- 1424 0156 DD010000 		.4byte	.LASF26
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 37
+ 1424 0156 D8010000 		.4byte	.LASF26
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 37
 
 
  1425 015a 01       		.byte	0x1
@@ -2168,7 +2168,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1429 0164 01       		.uleb128 0x1
  1430 0165 9C       		.byte	0x9c
  1431 0166 0C       		.uleb128 0xc
- 1432 0167 CE020000 		.4byte	.LASF31
+ 1432 0167 C9020000 		.4byte	.LASF31
  1433 016b 01       		.byte	0x1
  1434 016c D8       		.byte	0xd8
  1435 016d 00000000 		.4byte	.LFB66
@@ -2176,7 +2176,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1437 0175 01       		.uleb128 0x1
  1438 0176 9C       		.byte	0x9c
  1439 0177 0D       		.uleb128 0xd
- 1440 0178 2C030000 		.4byte	.LASF27
+ 1440 0178 27030000 		.4byte	.LASF27
  1441 017c 01       		.byte	0x1
  1442 017d 4E01     		.2byte	0x14e
  1443 017f 00000000 		.4byte	.LFB67
@@ -2184,7 +2184,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1445 0187 01       		.uleb128 0x1
  1446 0188 9C       		.byte	0x9c
  1447 0189 0D       		.uleb128 0xd
- 1448 018a 9C040000 		.4byte	.LASF28
+ 1448 018a 97040000 		.4byte	.LASF28
  1449 018e 01       		.byte	0x1
  1450 018f 6501     		.2byte	0x165
  1451 0191 00000000 		.4byte	.LFB68
@@ -2192,7 +2192,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1453 0199 01       		.uleb128 0x1
  1454 019a 9C       		.byte	0x9c
  1455 019b 0D       		.uleb128 0xd
- 1456 019c 31040000 		.4byte	.LASF29
+ 1456 019c 2C040000 		.4byte	.LASF29
  1457 01a0 01       		.byte	0x1
  1458 01a1 7801     		.2byte	0x178
  1459 01a3 00000000 		.4byte	.LFB69
@@ -2200,7 +2200,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1461 01ab 01       		.uleb128 0x1
  1462 01ac 9C       		.byte	0x9c
  1463 01ad 0D       		.uleb128 0xd
- 1464 01ae 6D030000 		.4byte	.LASF30
+ 1464 01ae 68030000 		.4byte	.LASF30
  1465 01b2 01       		.byte	0x1
  1466 01b3 9501     		.2byte	0x195
  1467 01b5 00000000 		.4byte	.LFB70
@@ -2208,7 +2208,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1469 01bd 01       		.uleb128 0x1
  1470 01be 9C       		.byte	0x9c
  1471 01bf 0E       		.uleb128 0xe
- 1472 01c0 F6030000 		.4byte	.LASF32
+ 1472 01c0 F1030000 		.4byte	.LASF32
  1473 01c4 01       		.byte	0x1
  1474 01c5 AE01     		.2byte	0x1ae
  1475 01c7 81000000 		.4byte	0x81
@@ -2217,8 +2217,8 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1478 01d3 01       		.uleb128 0x1
  1479 01d4 9C       		.byte	0x9c
  1480 01d5 0F       		.uleb128 0xf
- 1481 01d6 AB040000 		.4byte	.LASF37
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 38
+ 1481 01d6 A6040000 		.4byte	.LASF37
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 38
 
 
  1482 01da 01       		.byte	0x1
@@ -2230,7 +2230,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1488 01ea 9C       		.byte	0x9c
  1489 01eb 0E020000 		.4byte	0x20e
  1490 01ef 10       		.uleb128 0x10
- 1491 01f0 C4010000 		.4byte	.LASF39
+ 1491 01f0 46010000 		.4byte	.LASF39
  1492 01f4 01       		.byte	0x1
  1493 01f5 B701     		.2byte	0x1b7
  1494 01f7 81000000 		.4byte	0x81
@@ -2238,7 +2238,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1496 01fc 91       		.byte	0x91
  1497 01fd 6F       		.sleb128 -17
  1498 01fe 11       		.uleb128 0x11
- 1499 01ff 8B000000 		.4byte	.LASF33
+ 1499 01ff 0D000000 		.4byte	.LASF33
  1500 0203 01       		.byte	0x1
  1501 0204 B901     		.2byte	0x1b9
  1502 0206 97000000 		.4byte	0x97
@@ -2247,7 +2247,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1505 020c 77       		.sleb128 -9
  1506 020d 00       		.byte	0
  1507 020e 0E       		.uleb128 0xe
- 1508 020f 95010000 		.4byte	.LASF34
+ 1508 020f 17010000 		.4byte	.LASF34
  1509 0213 01       		.byte	0x1
  1510 0214 DA01     		.2byte	0x1da
  1511 0216 A3000000 		.4byte	0xa3
@@ -2256,7 +2256,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1514 0222 01       		.uleb128 0x1
  1515 0223 9C       		.byte	0x9c
  1516 0224 0E       		.uleb128 0xe
- 1517 0225 F8020000 		.4byte	.LASF35
+ 1517 0225 F3020000 		.4byte	.LASF35
  1518 0229 01       		.byte	0x1
  1519 022a EF01     		.2byte	0x1ef
  1520 022c 97000000 		.4byte	0x97
@@ -2265,7 +2265,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1523 0238 01       		.uleb128 0x1
  1524 0239 9C       		.byte	0x9c
  1525 023a 0E       		.uleb128 0xe
- 1526 023b AC010000 		.4byte	.LASF36
+ 1526 023b 2E010000 		.4byte	.LASF36
  1527 023f 01       		.byte	0x1
  1528 0240 1802     		.2byte	0x218
  1529 0242 97000000 		.4byte	0x97
@@ -2274,11 +2274,11 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1532 024e 01       		.uleb128 0x1
  1533 024f 9C       		.byte	0x9c
  1534 0250 0F       		.uleb128 0xf
- 1535 0251 E1020000 		.4byte	.LASF38
+ 1535 0251 DC020000 		.4byte	.LASF38
  1536 0255 01       		.byte	0x1
  1537 0256 2102     		.2byte	0x221
  1538 0258 97000000 		.4byte	0x97
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 39
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 39
 
 
  1539 025c 00000000 		.4byte	.LFB76
@@ -2287,7 +2287,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1542 0265 9C       		.byte	0x9c
  1543 0266 89020000 		.4byte	0x289
  1544 026a 10       		.uleb128 0x10
- 1545 026b C4010000 		.4byte	.LASF39
+ 1545 026b 46010000 		.4byte	.LASF39
  1546 026f 01       		.byte	0x1
  1547 0270 2102     		.2byte	0x221
  1548 0272 81000000 		.4byte	0x81
@@ -2295,7 +2295,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1550 0277 91       		.byte	0x91
  1551 0278 6F       		.sleb128 -17
  1552 0279 11       		.uleb128 0x11
- 1553 027a 8B000000 		.4byte	.LASF33
+ 1553 027a 0D000000 		.4byte	.LASF33
  1554 027e 01       		.byte	0x1
  1555 027f 2302     		.2byte	0x223
  1556 0281 97000000 		.4byte	0x97
@@ -2304,7 +2304,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1559 0287 77       		.sleb128 -9
  1560 0288 00       		.byte	0
  1561 0289 0F       		.uleb128 0xf
- 1562 028a 6D040000 		.4byte	.LASF40
+ 1562 028a 68040000 		.4byte	.LASF40
  1563 028e 01       		.byte	0x1
  1564 028f 3302     		.2byte	0x233
  1565 0291 97000000 		.4byte	0x97
@@ -2314,7 +2314,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1569 029e 9C       		.byte	0x9c
  1570 029f C2020000 		.4byte	0x2c2
  1571 02a3 10       		.uleb128 0x10
- 1572 02a4 C4010000 		.4byte	.LASF39
+ 1572 02a4 46010000 		.4byte	.LASF39
  1573 02a8 01       		.byte	0x1
  1574 02a9 3302     		.2byte	0x233
  1575 02ab 97000000 		.4byte	0x97
@@ -2322,7 +2322,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1577 02b0 91       		.byte	0x91
  1578 02b1 6F       		.sleb128 -17
  1579 02b2 11       		.uleb128 0x11
- 1580 02b3 8B000000 		.4byte	.LASF33
+ 1580 02b3 0D000000 		.4byte	.LASF33
  1581 02b7 01       		.byte	0x1
  1582 02b8 3502     		.2byte	0x235
  1583 02ba 97000000 		.4byte	0x97
@@ -2331,20 +2331,20 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1586 02c0 77       		.sleb128 -9
  1587 02c1 00       		.byte	0
  1588 02c2 0F       		.uleb128 0xf
- 1589 02c3 08020000 		.4byte	.LASF41
+ 1589 02c3 03020000 		.4byte	.LASF41
  1590 02c7 01       		.byte	0x1
  1591 02c8 4802     		.2byte	0x248
  1592 02ca 97000000 		.4byte	0x97
  1593 02ce 00000000 		.4byte	.LFB78
  1594 02d2 44000000 		.4byte	.LFE78-.LFB78
  1595 02d6 01       		.uleb128 0x1
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 40
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 40
 
 
  1596 02d7 9C       		.byte	0x9c
  1597 02d8 0A030000 		.4byte	0x30a
  1598 02dc 10       		.uleb128 0x10
- 1599 02dd CA010000 		.4byte	.LASF42
+ 1599 02dd 4C010000 		.4byte	.LASF42
  1600 02e1 01       		.byte	0x1
  1601 02e2 4802     		.2byte	0x248
  1602 02e4 81000000 		.4byte	0x81
@@ -2352,7 +2352,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1604 02e9 91       		.byte	0x91
  1605 02ea 6F       		.sleb128 -17
  1606 02eb 10       		.uleb128 0x10
- 1607 02ec 8E010000 		.4byte	.LASF43
+ 1607 02ec 10010000 		.4byte	.LASF43
  1608 02f0 01       		.byte	0x1
  1609 02f1 4802     		.2byte	0x248
  1610 02f3 81000000 		.4byte	0x81
@@ -2360,7 +2360,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1612 02f8 91       		.byte	0x91
  1613 02f9 6E       		.sleb128 -18
  1614 02fa 11       		.uleb128 0x11
- 1615 02fb 8B000000 		.4byte	.LASF33
+ 1615 02fb 0D000000 		.4byte	.LASF33
  1616 02ff 01       		.byte	0x1
  1617 0300 4A02     		.2byte	0x24a
  1618 0302 97000000 		.4byte	0x97
@@ -2369,7 +2369,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1621 0308 77       		.sleb128 -9
  1622 0309 00       		.byte	0
  1623 030a 12       		.uleb128 0x12
- 1624 030b 7E010000 		.4byte	.LASF44
+ 1624 030b 00010000 		.4byte	.LASF44
  1625 030f 01       		.byte	0x1
  1626 0310 5C02     		.2byte	0x25c
  1627 0312 97000000 		.4byte	0x97
@@ -2379,7 +2379,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1631 031f 9C       		.byte	0x9c
  1632 0320 7F030000 		.4byte	0x37f
  1633 0324 10       		.uleb128 0x10
- 1634 0325 86040000 		.4byte	.LASF45
+ 1634 0325 81040000 		.4byte	.LASF45
  1635 0329 01       		.byte	0x1
  1636 032a 5C02     		.2byte	0x25c
  1637 032c 81000000 		.4byte	0x81
@@ -2387,7 +2387,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1639 0331 91       		.byte	0x91
  1640 0332 67       		.sleb128 -25
  1641 0333 10       		.uleb128 0x10
- 1642 0334 69020000 		.4byte	.LASF46
+ 1642 0334 64020000 		.4byte	.LASF46
  1643 0338 01       		.byte	0x1
  1644 0339 5C02     		.2byte	0x25c
  1645 033b 81000000 		.4byte	0x81
@@ -2395,10 +2395,10 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1647 0340 91       		.byte	0x91
  1648 0341 66       		.sleb128 -26
  1649 0342 10       		.uleb128 0x10
- 1650 0343 CA010000 		.4byte	.LASF42
+ 1650 0343 4C010000 		.4byte	.LASF42
  1651 0347 01       		.byte	0x1
  1652 0348 5C02     		.2byte	0x25c
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 41
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 41
 
 
  1653 034a 81000000 		.4byte	0x81
@@ -2406,7 +2406,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1655 034f 91       		.byte	0x91
  1656 0350 65       		.sleb128 -27
  1657 0351 10       		.uleb128 0x10
- 1658 0352 8E010000 		.4byte	.LASF43
+ 1658 0352 10010000 		.4byte	.LASF43
  1659 0356 01       		.byte	0x1
  1660 0357 5C02     		.2byte	0x25c
  1661 0359 81000000 		.4byte	0x81
@@ -2414,7 +2414,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1663 035e 91       		.byte	0x91
  1664 035f 64       		.sleb128 -28
  1665 0360 10       		.uleb128 0x10
- 1666 0361 01020000 		.4byte	.LASF47
+ 1666 0361 FC010000 		.4byte	.LASF47
  1667 0365 01       		.byte	0x1
  1668 0366 5C02     		.2byte	0x25c
  1669 0368 97000000 		.4byte	0x97
@@ -2422,7 +2422,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1671 036d 91       		.byte	0x91
  1672 036e 00       		.sleb128 0
  1673 036f 11       		.uleb128 0x11
- 1674 0370 8B000000 		.4byte	.LASF33
+ 1674 0370 0D000000 		.4byte	.LASF33
  1675 0374 01       		.byte	0x1
  1676 0375 5E02     		.2byte	0x25e
  1677 0377 97000000 		.4byte	0x97
@@ -2431,7 +2431,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1680 037d 6F       		.sleb128 -17
  1681 037e 00       		.byte	0
  1682 037f 0E       		.uleb128 0xe
- 1683 0380 73020000 		.4byte	.LASF48
+ 1683 0380 6E020000 		.4byte	.LASF48
  1684 0384 01       		.byte	0x1
  1685 0385 6A02     		.2byte	0x26a
  1686 0387 81000000 		.4byte	0x81
@@ -2440,7 +2440,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1689 0393 01       		.uleb128 0x1
  1690 0394 9C       		.byte	0x9c
  1691 0395 0E       		.uleb128 0xe
- 1692 0396 8A020000 		.4byte	.LASF49
+ 1692 0396 85020000 		.4byte	.LASF49
  1693 039a 01       		.byte	0x1
  1694 039b 6B02     		.2byte	0x26b
  1695 039d 81000000 		.4byte	0x81
@@ -2449,7 +2449,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1698 03a9 01       		.uleb128 0x1
  1699 03aa 9C       		.byte	0x9c
  1700 03ab 0E       		.uleb128 0xe
- 1701 03ac DE030000 		.4byte	.LASF50
+ 1701 03ac D9030000 		.4byte	.LASF50
  1702 03b0 01       		.byte	0x1
  1703 03b1 6C02     		.2byte	0x26c
  1704 03b3 81000000 		.4byte	0x81
@@ -2458,10 +2458,10 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1707 03bf 01       		.uleb128 0x1
  1708 03c0 9C       		.byte	0x9c
  1709 03c1 0E       		.uleb128 0xe
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 42
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 42
 
 
- 1710 03c2 AC030000 		.4byte	.LASF51
+ 1710 03c2 A7030000 		.4byte	.LASF51
  1711 03c6 01       		.byte	0x1
  1712 03c7 6D02     		.2byte	0x26d
  1713 03c9 97000000 		.4byte	0x97
@@ -2479,7 +2479,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1725 03e7 15       		.uleb128 0x15
  1726 03e8 30000000 		.4byte	0x30
  1727 03ec 08       		.uleb128 0x8
- 1728 03ed 62040000 		.4byte	.LASF52
+ 1728 03ed 5D040000 		.4byte	.LASF52
  1729 03f1 01       		.byte	0x1
  1730 03f2 22       		.byte	0x22
  1731 03f3 FD030000 		.4byte	0x3fd
@@ -2489,7 +2489,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1735 03fd 15       		.uleb128 0x15
  1736 03fe D7030000 		.4byte	0x3d7
  1737 0402 08       		.uleb128 0x8
- 1738 0403 5E020000 		.4byte	.LASF53
+ 1738 0403 59020000 		.4byte	.LASF53
  1739 0407 01       		.byte	0x1
  1740 0408 27       		.byte	0x27
  1741 0409 D0000000 		.4byte	0xd0
@@ -2497,7 +2497,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1743 040e 03       		.byte	0x3
  1744 040f 00000000 		.4byte	SW_timeout
  1745 0413 08       		.uleb128 0x8
- 1746 0414 1C020000 		.4byte	.LASF54
+ 1746 0414 17020000 		.4byte	.LASF54
  1747 0418 01       		.byte	0x1
  1748 0419 33       		.byte	0x33
  1749 041a 81000000 		.4byte	0x81
@@ -2505,7 +2505,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1751 041f 03       		.byte	0x3
  1752 0420 01000000 		.4byte	aPosition
  1753 0424 08       		.uleb128 0x8
- 1754 0425 99000000 		.4byte	.LASF55
+ 1754 0425 1B000000 		.4byte	.LASF55
  1755 0429 01       		.byte	0x1
  1756 042a 34       		.byte	0x34
  1757 042b A3000000 		.4byte	0xa3
@@ -2513,12 +2513,12 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1759 0430 03       		.byte	0x3
  1760 0431 02000000 		.4byte	aDirection
  1761 0435 08       		.uleb128 0x8
- 1762 0436 C5030000 		.4byte	.LASF56
+ 1762 0436 C0030000 		.4byte	.LASF56
  1763 043a 01       		.byte	0x1
  1764 043b 35       		.byte	0x35
  1765 043c D0000000 		.4byte	0xd0
  1766 0440 05       		.uleb128 0x5
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 43
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 43
 
 
  1767 0441 03       		.byte	0x3
@@ -2532,7 +2532,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1775 0452 03       		.byte	0x3
  1776 0453 04000000 		.4byte	aInitialized
  1777 0457 08       		.uleb128 0x8
- 1778 0458 4A020000 		.4byte	.LASF58
+ 1778 0458 45020000 		.4byte	.LASF58
  1779 045c 01       		.byte	0x1
  1780 045d 3F       		.byte	0x3f
  1781 045e 81000000 		.4byte	0x81
@@ -2540,7 +2540,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1783 0463 03       		.byte	0x3
  1784 0464 01000000 		.4byte	aIncrement
  1785 0468 08       		.uleb128 0x8
- 1786 0469 39020000 		.4byte	.LASF59
+ 1786 0469 34020000 		.4byte	.LASF59
  1787 046d 01       		.byte	0x1
  1788 046e 40       		.byte	0x40
  1789 046f 81000000 		.4byte	0x81
@@ -2548,7 +2548,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1791 0474 03       		.byte	0x3
  1792 0475 02000000 		.4byte	aLowerBound
  1793 0479 08       		.uleb128 0x8
- 1794 047a 61030000 		.4byte	.LASF60
+ 1794 047a 5C030000 		.4byte	.LASF60
  1795 047e 01       		.byte	0x1
  1796 047f 41       		.byte	0x41
  1797 0480 81000000 		.4byte	0x81
@@ -2556,7 +2556,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1799 0485 03       		.byte	0x3
  1800 0486 03000000 		.4byte	aUpperBound
  1801 048a 08       		.uleb128 0x8
- 1802 048b 4B040000 		.4byte	.LASF61
+ 1802 048b 46040000 		.4byte	.LASF61
  1803 048f 01       		.byte	0x1
  1804 0490 42       		.byte	0x42
  1805 0491 97000000 		.4byte	0x97
@@ -2564,21 +2564,21 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1807 0496 03       		.byte	0x3
  1808 0497 05000000 		.4byte	aCheckBounds
  1809 049b 16       		.uleb128 0x16
- 1810 049c 8F040000 		.4byte	.LASF62
+ 1810 049c 8A040000 		.4byte	.LASF62
  1811 04a0 05       		.byte	0x5
  1812 04a1 1207     		.2byte	0x712
  1813 04a3 A7040000 		.4byte	0x4a7
  1814 04a7 06       		.uleb128 0x6
  1815 04a8 8C000000 		.4byte	0x8c
  1816 04ac 17       		.uleb128 0x17
- 1817 04ad A2020000 		.4byte	.LASF63
+ 1817 04ad 9D020000 		.4byte	.LASF63
  1818 04b1 01       		.byte	0x1
  1819 04b2 3B       		.byte	0x3b
  1820 04b3 97000000 		.4byte	0x97
  1821 04b7 05       		.uleb128 0x5
  1822 04b8 03       		.byte	0x3
  1823 04b9 00000000 		.4byte	Decoder_1_Enabled
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 44
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 44
 
 
  1824 04bd 00       		.byte	0
@@ -2638,7 +2638,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1878 0033 08       		.uleb128 0x8
  1879 0034 00       		.byte	0
  1880 0035 00       		.byte	0
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 45
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 45
 
 
  1881 0036 05       		.uleb128 0x5
@@ -2698,7 +2698,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1935 006d 49       		.uleb128 0x49
  1936 006e 13       		.uleb128 0x13
  1937 006f 02       		.uleb128 0x2
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 46
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 46
 
 
  1938 0070 18       		.uleb128 0x18
@@ -2758,7 +2758,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  1992 00a7 11       		.uleb128 0x11
  1993 00a8 01       		.uleb128 0x1
  1994 00a9 12       		.uleb128 0x12
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 47
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 47
 
 
  1995 00aa 06       		.uleb128 0x6
@@ -2818,7 +2818,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  2049 00e3 3F       		.uleb128 0x3f
  2050 00e4 19       		.uleb128 0x19
  2051 00e5 03       		.uleb128 0x3
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 48
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 48
 
 
  2052 00e6 0E       		.uleb128 0xe
@@ -2878,7 +2878,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  2106 011e 13       		.uleb128 0x13
  2107 011f 02       		.uleb128 0x2
  2108 0120 18       		.uleb128 0x18
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 49
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 49
 
 
  2109 0121 00       		.byte	0
@@ -2938,7 +2938,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  2163 0158 21       		.uleb128 0x21
  2164 0159 00       		.byte	0
  2165 015a 49       		.uleb128 0x49
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 50
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 50
 
 
  2166 015b 13       		.uleb128 0x13
@@ -2998,7 +2998,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  2220 000e 0000     		.2byte	0
  2221 0010 00000000 		.4byte	.LFB63
  2222 0014 3C000000 		.4byte	.LFE63-.LFB63
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 51
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 51
 
 
  2223 0018 00000000 		.4byte	.LFB64
@@ -3058,7 +3058,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  2277 0028 00000000 		.4byte	.LFB68
  2278 002c 1C000000 		.4byte	.LFE68
  2279 0030 00000000 		.4byte	.LFB69
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 52
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 52
 
 
  2280 0034 0E000000 		.4byte	.LFE69
@@ -3104,201 +3104,201 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  2315      7469616C 
  2315      697A6564 
  2315      00
- 2316              	.LASF66:
- 2317 000d 433A5C55 		.ascii	"C:\\Users\\JeffSnyder\\dev\\Electrosteel_embedded\\"
- 2317      73657273 
- 2317      5C4A6566 
- 2317      66536E79 
- 2317      6465725C 
- 2318 003b 50534F43 		.ascii	"PSOC5_electrosteel_stringsensors_newpcb_brain\\CE21"
- 2318      355F656C 
- 2318      65637472 
- 2318      6F737465 
- 2318      656C5F73 
- 2319 006d 30353134 		.ascii	"0514_PSOC3_5_Thermistor.cydsn\000"
- 2319      5F50534F 
- 2319      43335F35 
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 53
+ 2316              	.LASF33:
+ 2317 000d 72657375 		.ascii	"result\000"
+ 2317      6C7400
+ 2318              	.LASF11:
+ 2319 0014 696E7438 		.ascii	"int8_t\000"
+ 2319      5F7400
+ 2320              	.LASF55:
+ 2321 001b 61446972 		.ascii	"aDirection\000"
+ 2321      65637469 
+ 2321      6F6E00
+ 2322              	.LASF2:
+ 2323 0026 73686F72 		.ascii	"short int\000"
+ 2323      7420696E 
+ 2323      7400
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 53
 
 
- 2319      5F546865 
- 2319      726D6973 
- 2320              	.LASF33:
- 2321 008b 72657375 		.ascii	"result\000"
- 2321      6C7400
- 2322              	.LASF11:
- 2323 0092 696E7438 		.ascii	"int8_t\000"
- 2323      5F7400
- 2324              	.LASF55:
- 2325 0099 61446972 		.ascii	"aDirection\000"
- 2325      65637469 
- 2325      6F6E00
- 2326              	.LASF2:
- 2327 00a4 73686F72 		.ascii	"short int\000"
- 2327      7420696E 
- 2327      7400
- 2328              	.LASF20:
- 2329 00ae 73697A65 		.ascii	"sizetype\000"
- 2329      74797065 
- 2329      00
- 2330              	.LASF21:
- 2331 00b7 4465636F 		.ascii	"Decoder_1_CheckStatus\000"
- 2331      6465725F 
- 2331      315F4368 
- 2331      65636B53 
- 2331      74617475 
- 2332              	.LASF64:
- 2333 00cd 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
- 2333      43313120 
- 2333      352E342E 
- 2333      31203230 
- 2333      31363036 
- 2334 0100 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
- 2334      20726576 
- 2334      6973696F 
- 2334      6E203233 
- 2334      37373135 
- 2335 0133 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
- 2335      66756E63 
- 2335      74696F6E 
- 2335      2D736563 
- 2335      74696F6E 
- 2336              	.LASF65:
- 2337 015b 47656E65 		.ascii	"Generated_Source\\PSoC5\\Decoder_1.c\000"
- 2337      72617465 
- 2337      645F536F 
- 2337      75726365 
- 2337      5C50536F 
- 2338              	.LASF44:
- 2339 017e 4465636F 		.ascii	"Decoder_1_Setup\000"
+ 2324              	.LASF20:
+ 2325 0030 73697A65 		.ascii	"sizetype\000"
+ 2325      74797065 
+ 2325      00
+ 2326              	.LASF21:
+ 2327 0039 4465636F 		.ascii	"Decoder_1_CheckStatus\000"
+ 2327      6465725F 
+ 2327      315F4368 
+ 2327      65636B53 
+ 2327      74617475 
+ 2328              	.LASF64:
+ 2329 004f 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 2329      43313120 
+ 2329      352E342E 
+ 2329      31203230 
+ 2329      31363036 
+ 2330 0082 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 2330      20726576 
+ 2330      6973696F 
+ 2330      6E203233 
+ 2330      37373135 
+ 2331 00b5 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 2331      66756E63 
+ 2331      74696F6E 
+ 2331      2D736563 
+ 2331      74696F6E 
+ 2332              	.LASF65:
+ 2333 00dd 47656E65 		.ascii	"Generated_Source\\PSoC5\\Decoder_1.c\000"
+ 2333      72617465 
+ 2333      645F536F 
+ 2333      75726365 
+ 2333      5C50536F 
+ 2334              	.LASF44:
+ 2335 0100 4465636F 		.ascii	"Decoder_1_Setup\000"
+ 2335      6465725F 
+ 2335      315F5365 
+ 2335      74757000 
+ 2336              	.LASF43:
+ 2337 0110 75426F75 		.ascii	"uBound\000"
+ 2337      6E6400
+ 2338              	.LASF34:
+ 2339 0117 4465636F 		.ascii	"Decoder_1_GetDirection\000"
  2339      6465725F 
- 2339      315F5365 
- 2339      74757000 
- 2340              	.LASF43:
- 2341 018e 75426F75 		.ascii	"uBound\000"
- 2341      6E6400
- 2342              	.LASF34:
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 54
+ 2339      315F4765 
+ 2339      74446972 
+ 2339      65637469 
+ 2340              	.LASF36:
+ 2341 012e 4465636F 		.ascii	"Decoder_1_GetInitStatus\000"
+ 2341      6465725F 
+ 2341      315F4765 
+ 2341      74496E69 
+ 2341      74537461 
+ 2342              	.LASF39:
+ 2343 0146 76616C75 		.ascii	"value\000"
+ 2343      6500
+ 2344              	.LASF42:
+ 2345 014c 6C426F75 		.ascii	"lBound\000"
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 54
 
 
- 2343 0195 4465636F 		.ascii	"Decoder_1_GetDirection\000"
- 2343      6465725F 
- 2343      315F4765 
- 2343      74446972 
- 2343      65637469 
- 2344              	.LASF36:
- 2345 01ac 4465636F 		.ascii	"Decoder_1_GetInitStatus\000"
- 2345      6465725F 
- 2345      315F4765 
- 2345      74496E69 
- 2345      74537461 
- 2346              	.LASF39:
- 2347 01c4 76616C75 		.ascii	"value\000"
- 2347      6500
- 2348              	.LASF42:
- 2349 01ca 6C426F75 		.ascii	"lBound\000"
- 2349      6E6400
- 2350              	.LASF24:
- 2351 01d1 696E6465 		.ascii	"index\000"
- 2351      7800
- 2352              	.LASF13:
- 2353 01d7 75696E74 		.ascii	"uint8\000"
- 2353      3800
+ 2345      6E6400
+ 2346              	.LASF24:
+ 2347 0153 696E6465 		.ascii	"index\000"
+ 2347      7800
+ 2348              	.LASF13:
+ 2349 0159 75696E74 		.ascii	"uint8\000"
+ 2349      3800
+ 2350              	.LASF66:
+ 2351 015f 433A5C55 		.ascii	"C:\\Users\\ggg88\\dev\\Electrosteel_embedded\\PSOC5"
+ 2351      73657273 
+ 2351      5C676767 
+ 2351      38385C64 
+ 2351      65765C45 
+ 2352 018d 5F656C65 		.ascii	"_electrosteel_stringsensors_newpcb_brain\\CE210514_"
+ 2352      6374726F 
+ 2352      73746565 
+ 2352      6C5F7374 
+ 2352      72696E67 
+ 2353 01bf 50534F43 		.ascii	"PSOC3_5_Thermistor.cydsn\000"
+ 2353      335F355F 
+ 2353      54686572 
+ 2353      6D697374 
+ 2353      6F722E63 
  2354              	.LASF26:
- 2355 01dd 4465636F 		.ascii	"Decoder_1_ClearInterrupt\000"
+ 2355 01d8 4465636F 		.ascii	"Decoder_1_ClearInterrupt\000"
  2355      6465725F 
  2355      315F436C 
  2355      65617249 
  2355      6E746572 
  2356              	.LASF15:
- 2357 01f6 666C6F61 		.ascii	"float\000"
+ 2357 01f1 666C6F61 		.ascii	"float\000"
  2357      7400
  2358              	.LASF25:
- 2359 01fc 62697473 		.ascii	"bits\000"
+ 2359 01f7 62697473 		.ascii	"bits\000"
  2359      00
  2360              	.LASF47:
- 2361 0201 626F756E 		.ascii	"bounds\000"
+ 2361 01fc 626F756E 		.ascii	"bounds\000"
  2361      647300
  2362              	.LASF41:
- 2363 0208 4465636F 		.ascii	"Decoder_1_SetBounds\000"
+ 2363 0203 4465636F 		.ascii	"Decoder_1_SetBounds\000"
  2363      6465725F 
  2363      315F5365 
  2363      74426F75 
  2363      6E647300 
  2364              	.LASF54:
- 2365 021c 61506F73 		.ascii	"aPosition\000"
+ 2365 0217 61506F73 		.ascii	"aPosition\000"
  2365      6974696F 
  2365      6E00
  2366              	.LASF8:
- 2367 0226 6C6F6E67 		.ascii	"long long int\000"
+ 2367 0221 6C6F6E67 		.ascii	"long long int\000"
  2367      206C6F6E 
  2367      6720696E 
  2367      7400
  2368              	.LASF14:
- 2369 0234 696E7438 		.ascii	"int8\000"
+ 2369 022f 696E7438 		.ascii	"int8\000"
  2369      00
  2370              	.LASF59:
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 55
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 55
 
 
- 2371 0239 614C6F77 		.ascii	"aLowerBound\000"
+ 2371 0234 614C6F77 		.ascii	"aLowerBound\000"
  2371      6572426F 
  2371      756E6400 
  2372              	.LASF17:
- 2373 0245 63686172 		.ascii	"char\000"
+ 2373 0240 63686172 		.ascii	"char\000"
  2373      00
  2374              	.LASF58:
- 2375 024a 61496E63 		.ascii	"aIncrement\000"
+ 2375 0245 61496E63 		.ascii	"aIncrement\000"
  2375      72656D65 
  2375      6E7400
  2376              	.LASF6:
- 2377 0255 6C6F6E67 		.ascii	"long int\000"
+ 2377 0250 6C6F6E67 		.ascii	"long int\000"
  2377      20696E74 
  2377      00
  2378              	.LASF53:
- 2379 025e 53575F74 		.ascii	"SW_timeout\000"
+ 2379 0259 53575F74 		.ascii	"SW_timeout\000"
  2379      696D656F 
  2379      757400
  2380              	.LASF46:
- 2381 0269 696E6372 		.ascii	"increment\000"
+ 2381 0264 696E6372 		.ascii	"increment\000"
  2381      656D656E 
  2381      7400
  2382              	.LASF48:
- 2383 0273 4465636F 		.ascii	"Decoder_1_GetIncrement\000"
+ 2383 026e 4465636F 		.ascii	"Decoder_1_GetIncrement\000"
  2383      6465725F 
  2383      315F4765 
  2383      74496E63 
  2383      72656D65 
  2384              	.LASF49:
- 2385 028a 4465636F 		.ascii	"Decoder_1_GetLowerBound\000"
+ 2385 0285 4465636F 		.ascii	"Decoder_1_GetLowerBound\000"
  2385      6465725F 
  2385      315F4765 
  2385      744C6F77 
  2385      6572426F 
  2386              	.LASF63:
- 2387 02a2 4465636F 		.ascii	"Decoder_1_Enabled\000"
+ 2387 029d 4465636F 		.ascii	"Decoder_1_Enabled\000"
  2387      6465725F 
  2387      315F456E 
  2387      61626C65 
  2387      6400
  2388              	.LASF19:
- 2389 02b4 6C6F6E67 		.ascii	"long double\000"
+ 2389 02af 6C6F6E67 		.ascii	"long double\000"
  2389      20646F75 
  2389      626C6500 
  2390              	.LASF1:
- 2391 02c0 756E7369 		.ascii	"unsigned char\000"
+ 2391 02bb 756E7369 		.ascii	"unsigned char\000"
  2391      676E6564 
  2391      20636861 
  2391      7200
  2392              	.LASF31:
- 2393 02ce 4465636F 		.ascii	"Decoder_1_myDtrInt\000"
+ 2393 02c9 4465636F 		.ascii	"Decoder_1_myDtrInt\000"
  2393      6465725F 
  2393      315F6D79 
  2393      44747249 
  2393      6E7400
  2394              	.LASF38:
- 2395 02e1 4465636F 		.ascii	"Decoder_1_SetIncrement\000"
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 56
+ 2395 02dc 4465636F 		.ascii	"Decoder_1_SetIncrement\000"
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 56
 
 
  2395      6465725F 
@@ -3306,146 +3306,146 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 1
  2395      74496E63 
  2395      72656D65 
  2396              	.LASF35:
- 2397 02f8 4465636F 		.ascii	"Decoder_1_GetPositionChanged\000"
+ 2397 02f3 4465636F 		.ascii	"Decoder_1_GetPositionChanged\000"
  2397      6465725F 
  2397      315F4765 
  2397      74506F73 
  2397      6974696F 
  2398              	.LASF9:
- 2399 0315 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 2399 0310 6C6F6E67 		.ascii	"long long unsigned int\000"
  2399      206C6F6E 
  2399      6720756E 
  2399      7369676E 
  2399      65642069 
  2400              	.LASF27:
- 2401 032c 4465636F 		.ascii	"Decoder_1_Start\000"
+ 2401 0327 4465636F 		.ascii	"Decoder_1_Start\000"
  2401      6465725F 
  2401      315F5374 
  2401      61727400 
  2402              	.LASF10:
- 2403 033c 756E7369 		.ascii	"unsigned int\000"
+ 2403 0337 756E7369 		.ascii	"unsigned int\000"
  2403      676E6564 
  2403      20696E74 
  2403      00
  2404              	.LASF22:
- 2405 0349 4465636F 		.ascii	"Decoder_1_CheckRotation\000"
+ 2405 0344 4465636F 		.ascii	"Decoder_1_CheckRotation\000"
  2405      6465725F 
  2405      315F4368 
  2405      65636B52 
  2405      6F746174 
  2406              	.LASF60:
- 2407 0361 61557070 		.ascii	"aUpperBound\000"
+ 2407 035c 61557070 		.ascii	"aUpperBound\000"
  2407      6572426F 
  2407      756E6400 
  2408              	.LASF30:
- 2409 036d 4465636F 		.ascii	"Decoder_1_SetInputsHiZ\000"
+ 2409 0368 4465636F 		.ascii	"Decoder_1_SetInputsHiZ\000"
  2409      6465725F 
  2409      315F5365 
  2409      74496E70 
  2409      75747348 
  2410              	.LASF3:
- 2411 0384 73686F72 		.ascii	"short unsigned int\000"
+ 2411 037f 73686F72 		.ascii	"short unsigned int\000"
  2411      7420756E 
  2411      7369676E 
  2411      65642069 
  2411      6E7400
  2412              	.LASF0:
- 2413 0397 7369676E 		.ascii	"signed char\000"
+ 2413 0392 7369676E 		.ascii	"signed char\000"
  2413      65642063 
  2413      68617200 
  2414              	.LASF4:
- 2415 03a3 5F5F696E 		.ascii	"__int8_t\000"
+ 2415 039e 5F5F696E 		.ascii	"__int8_t\000"
  2415      74385F74 
  2415      00
  2416              	.LASF51:
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 57
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 57
 
 
- 2417 03ac 4465636F 		.ascii	"Decoder_1_GetCheckBounds\000"
+ 2417 03a7 4465636F 		.ascii	"Decoder_1_GetCheckBounds\000"
  2417      6465725F 
  2417      315F4765 
  2417      74436865 
  2417      636B426F 
  2418              	.LASF56:
- 2419 03c5 66506F73 		.ascii	"fPositionChanged\000"
+ 2419 03c0 66506F73 		.ascii	"fPositionChanged\000"
  2419      6974696F 
  2419      6E436861 
  2419      6E676564 
  2419      00
  2420              	.LASF12:
- 2421 03d6 696E7433 		.ascii	"int32_t\000"
+ 2421 03d1 696E7433 		.ascii	"int32_t\000"
  2421      325F7400 
  2422              	.LASF50:
- 2423 03de 4465636F 		.ascii	"Decoder_1_GetUpperBound\000"
+ 2423 03d9 4465636F 		.ascii	"Decoder_1_GetUpperBound\000"
  2423      6465725F 
  2423      315F4765 
  2423      74557070 
  2423      6572426F 
  2424              	.LASF32:
- 2425 03f6 4465636F 		.ascii	"Decoder_1_GetPosition\000"
+ 2425 03f1 4465636F 		.ascii	"Decoder_1_GetPosition\000"
  2425      6465725F 
  2425      315F4765 
  2425      74506F73 
  2425      6974696F 
  2426              	.LASF23:
- 2427 040c 656E5F64 		.ascii	"en_dir\000"
+ 2427 0407 656E5F64 		.ascii	"en_dir\000"
  2427      697200
  2428              	.LASF18:
- 2429 0413 72656738 		.ascii	"reg8\000"
+ 2429 040e 72656738 		.ascii	"reg8\000"
  2429      00
  2430              	.LASF7:
- 2431 0418 6C6F6E67 		.ascii	"long unsigned int\000"
+ 2431 0413 6C6F6E67 		.ascii	"long unsigned int\000"
  2431      20756E73 
  2431      69676E65 
  2431      6420696E 
  2431      7400
  2432              	.LASF16:
- 2433 042a 646F7562 		.ascii	"double\000"
+ 2433 0425 646F7562 		.ascii	"double\000"
  2433      6C6500
  2434              	.LASF29:
- 2435 0431 4465636F 		.ascii	"Decoder_1_SetInputsPullUp\000"
+ 2435 042c 4465636F 		.ascii	"Decoder_1_SetInputsPullUp\000"
  2435      6465725F 
  2435      315F5365 
  2435      74496E70 
  2435      75747350 
  2436              	.LASF61:
- 2437 044b 61436865 		.ascii	"aCheckBounds\000"
+ 2437 0446 61436865 		.ascii	"aCheckBounds\000"
  2437      636B426F 
  2437      756E6473 
  2437      00
  2438              	.LASF5:
- 2439 0458 5F5F696E 		.ascii	"__int32_t\000"
+ 2439 0453 5F5F696E 		.ascii	"__int32_t\000"
  2439      7433325F 
  2439      7400
  2440              	.LASF52:
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccRlsg4s.s 			page 58
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccCsPFmh.s 			page 58
 
 
- 2441 0462 656E635F 		.ascii	"enc_states\000"
+ 2441 045d 656E635F 		.ascii	"enc_states\000"
  2441      73746174 
  2441      657300
  2442              	.LASF40:
- 2443 046d 4465636F 		.ascii	"Decoder_1_SetCheckBounds\000"
+ 2443 0468 4465636F 		.ascii	"Decoder_1_SetCheckBounds\000"
  2443      6465725F 
  2443      315F5365 
  2443      74436865 
  2443      636B426F 
  2444              	.LASF45:
- 2445 0486 706F7369 		.ascii	"position\000"
+ 2445 0481 706F7369 		.ascii	"position\000"
  2445      74696F6E 
  2445      00
  2446              	.LASF62:
- 2447 048f 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 2447 048a 49544D5F 		.ascii	"ITM_RxBuffer\000"
  2447      52784275 
  2447      66666572 
  2447      00
  2448              	.LASF28:
- 2449 049c 4465636F 		.ascii	"Decoder_1_Stop\000"
+ 2449 0497 4465636F 		.ascii	"Decoder_1_Stop\000"
  2449      6465725F 
  2449      315F5374 
  2449      6F7000
  2450              	.LASF37:
- 2451 04ab 4465636F 		.ascii	"Decoder_1_SetPosition\000"
+ 2451 04a6 4465636F 		.ascii	"Decoder_1_SetPosition\000"
  2451      6465725F 
  2451      315F5365 
  2451      74506F73 

@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 1
 
 
    1              		.syntax unified
@@ -58,7 +58,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
   27:gfx.c         ****  and/or other materials provided with the distribution.
   28:gfx.c         ****  
   29:gfx.c         ****  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 2
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 2
 
 
   30:gfx.c         ****  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -118,7 +118,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
   34 0000 80B4     		push	{r7}
   35              		.cfi_def_cfa_offset 4
   36              		.cfi_offset 7, -4
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 3
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 3
 
 
   37 0002 83B0     		sub	sp, sp, #12
@@ -178,7 +178,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
   88:gfx.c         ****             myGfx->textbgcolor = 0xFFFF;
   82              		.loc 1 88 0
   83 0048 7B68     		ldr	r3, [r7, #4]
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 4
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 4
 
 
   84 004a 4FF6FF72 		movw	r2, #65535
@@ -238,7 +238,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  131              	.LFB65:
   96:gfx.c         ****         
   97:gfx.c         ****         // Bresenham's algorithm - thx wikpedia
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 5
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 5
 
 
   98:gfx.c         ****         void GFXwriteLine(GFX* myGFX, int16_t x0, int16_t y0, int16_t x1, int16_t y1,
@@ -298,7 +298,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  181 0056 7B81     		strh	r3, [r7, #10]	@ movhi
  182 0058 3B8C     		ldrh	r3, [r7, #32]	@ movhi
  183 005a 3B81     		strh	r3, [r7, #8]	@ movhi
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 6
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 6
 
 
  184              	.LBE2:
@@ -358,7 +358,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  227 009a B7F90830 		ldrsh	r3, [r7, #8]
  228 009e D31A     		subs	r3, r2, r3
  229 00a0 002B     		cmp	r3, #0
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 7
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 7
 
 
  230 00a2 B8BF     		it	lt
@@ -418,7 +418,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  269 00ea B7F90820 		ldrsh	r2, [r7, #8]
  270 00ee B7F90A10 		ldrsh	r1, [r7, #10]
  271 00f2 F868     		ldr	r0, [r7, #12]
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 8
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 8
 
 
  272 00f4 FFF7FEFF 		bl	GFXwritePixel
@@ -478,7 +478,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  316 013c 80BD     		pop	{r7, pc}
  317              		.cfi_endproc
  318              	.LFE65:
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 9
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 9
 
 
  319              		.size	GFXwriteLine, .-GFXwriteLine
@@ -538,7 +538,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  366              		@ frame_needed = 1, uses_anonymous_args = 0
  367 0000 80B5     		push	{r7, lr}
  368              		.cfi_def_cfa_offset 8
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 10
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 10
 
 
  369              		.cfi_offset 7, -8
@@ -598,7 +598,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  416              		.loc 1 150 0
  417 005e 7B89     		ldrh	r3, [r7, #10]	@ movhi
  418 0060 FB82     		strh	r3, [r7, #22]	@ movhi
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 11
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 11
 
 
  419 0062 3B89     		ldrh	r3, [r7, #8]	@ movhi
@@ -658,7 +658,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  465 00b0 7B81     		strh	r3, [r7, #10]	@ movhi
  466 00b2 BB8A     		ldrh	r3, [r7, #20]	@ movhi
  467 00b4 3B81     		strh	r3, [r7, #8]	@ movhi
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 12
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 12
 
 
  468              	.LBE7:
@@ -718,7 +718,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  514 0112 3A89     		ldrh	r2, [r7, #8]
  515 0114 02F00702 		and	r2, r2, #7
  516 0118 0120     		movs	r0, #1
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 13
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 13
 
 
  517 011a 00FA02F2 		lsl	r2, r0, r2
@@ -778,7 +778,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  569 018e DB10     		asrs	r3, r3, #3
  570 0190 18B2     		sxth	r0, r3
  571 0192 0146     		mov	r1, r0
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 14
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 14
 
 
  572 0194 FB68     		ldr	r3, [r7, #12]
@@ -838,7 +838,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  172:gfx.c         ****         
  173:gfx.c         ****         void GFXwritePixel(GFX* myGFX,int16_t x, int16_t y, uint16_t color){
  622              		.loc 1 173 0
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 15
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 15
 
 
  623              		.cfi_startproc
@@ -898,7 +898,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  669              		.loc 1 181 0
  670              		.cfi_startproc
  671              		@ args = 4, pretend = 0, frame = 16
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 16
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 16
 
 
  672              		@ frame_needed = 1, uses_anonymous_args = 0
@@ -958,7 +958,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  189:gfx.c         ****         // should sort endpoints or call writeLine() instead
  190:gfx.c         ****         void GFXwriteFastHLine(GFX* myGFX, int16_t x, int16_t y,
  191:gfx.c         ****                                int16_t w, uint16_t color) {
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 17
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 17
 
 
  719              		.loc 1 191 0
@@ -1018,7 +1018,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  768              	.LFB71:
  197:gfx.c         ****         
  198:gfx.c         ****         void GFXwriteFillRect(GFX* myGFX,int16_t x, int16_t y, int16_t w, int16_t h,
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 18
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 18
 
 
  199:gfx.c         ****                               uint16_t color) {
@@ -1078,7 +1078,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  819              	GFXendWrite:
  820              	.LFB72:
  203:gfx.c         ****         
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 19
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 19
 
 
  204:gfx.c         ****         void GFXendWrite(GFX* myGFX){
@@ -1138,7 +1138,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  867 0004 02AF     		add	r7, sp, #8
  868              		.cfi_def_cfa 7, 32
  869 0006 F860     		str	r0, [r7, #12]
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 20
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 20
 
 
  870 0008 0846     		mov	r0, r1
@@ -1198,7 +1198,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  916              		.loc 1 219 0
  917              		.cfi_startproc
  918              		@ args = 4, pretend = 0, frame = 16
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 21
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 21
 
 
  919              		@ frame_needed = 1, uses_anonymous_args = 0
@@ -1258,7 +1258,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  970              		.thumb_func
  971              		.type	GFXfillRect, %function
  972              	GFXfillRect:
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 22
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 22
 
 
  973              	.LFB75:
@@ -1318,7 +1318,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  1019 0044 B7F91620 		ldrsh	r2, [r7, #22]
  1020 0048 B7F90A10 		ldrsh	r1, [r7, #10]
  1021 004c B7F90630 		ldrsh	r3, [r7, #6]
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 23
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 23
 
 
  1022 0050 0B44     		add	r3, r3, r1
@@ -1378,7 +1378,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  1070 001e 0B46     		mov	r3, r1
  1071 0020 0022     		movs	r2, #0
  1072 0022 0021     		movs	r1, #0
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 24
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 24
 
 
  1073 0024 7868     		ldr	r0, [r7, #4]
@@ -1438,7 +1438,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  241:gfx.c         ****                 if(y0 > y1) _swap_int16_t(y0, y1);
  1121              		.loc 1 241 0
  1122 0026 B7F90820 		ldrsh	r2, [r7, #8]
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 25
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 25
 
 
  1123 002a B7F92030 		ldrsh	r3, [r7, #32]
@@ -1498,7 +1498,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  1166 007a 7B89     		ldrh	r3, [r7, #10]	@ movhi
  1167 007c BB82     		strh	r3, [r7, #20]	@ movhi
  1168 007e FB88     		ldrh	r3, [r7, #6]	@ movhi
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 26
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 26
 
 
  1169 0080 7B81     		strh	r3, [r7, #10]	@ movhi
@@ -1558,7 +1558,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  1221              	GFXdrawCircle:
  1222              	.LFB78:
  250:gfx.c         ****         
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 27
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 27
 
 
  251:gfx.c         ****         // Draw a circle outline
@@ -1618,7 +1618,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  1267              		.loc 1 260 0
  1268 003e 3A89     		ldrh	r2, [r7, #8]
  1269 0040 FB88     		ldrh	r3, [r7, #6]
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 28
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 28
 
 
  1270 0042 1344     		add	r3, r3, r2
@@ -1678,7 +1678,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  1317 00a6 013B     		subs	r3, r3, #1
  1318 00a8 9BB2     		uxth	r3, r3
  1319 00aa FB82     		strh	r3, [r7, #22]	@ movhi
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 29
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 29
 
 
  268:gfx.c         ****                     ddF_y += 2;
@@ -1738,7 +1738,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  1365 00fa 3B8B     		ldrh	r3, [r7, #24]
  1366 00fc D31A     		subs	r3, r2, r3
  1367 00fe 9BB2     		uxth	r3, r3
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 30
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 30
 
 
  1368 0100 19B2     		sxth	r1, r3
@@ -1798,7 +1798,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  280:gfx.c         ****                 GFXwritePixel(myGFX,x0 - y, y0 + x, color);
  1419              		.loc 1 280 0
  1420 0168 7A89     		ldrh	r2, [r7, #10]
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 31
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 31
 
 
  1421 016a FB8A     		ldrh	r3, [r7, #22]
@@ -1858,7 +1858,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  1469 01cc 2037     		adds	r7, r7, #32
  1470              		.cfi_def_cfa_offset 8
  1471 01ce BD46     		mov	sp, r7
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 32
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 32
 
 
  1472              		.cfi_def_cfa_register 13
@@ -1918,7 +1918,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  1520 002e D31A     		subs	r3, r2, r3
  1521 0030 5B00     		lsls	r3, r3, #1
  1522 0032 9BB2     		uxth	r3, r3
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 33
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 33
 
 
  1523 0034 7B83     		strh	r3, [r7, #26]	@ movhi
@@ -1978,7 +1978,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  303:gfx.c         ****                 f     += ddF_x;
  1566              		.loc 1 303 0
  1567 007a FA8B     		ldrh	r2, [r7, #30]
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 34
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 34
 
 
  1568 007c BB8B     		ldrh	r3, [r7, #28]
@@ -2038,7 +2038,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  1616 00dc 19B2     		sxth	r1, r3
  1617 00de 3A89     		ldrh	r2, [r7, #8]
  1618 00e0 FB8A     		ldrh	r3, [r7, #22]
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 35
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 35
 
 
  1619 00e2 D31A     		subs	r3, r2, r3
@@ -2098,7 +2098,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  1668 0144 9BB2     		uxth	r3, r3
  1669 0146 1AB2     		sxth	r2, r3
  1670 0148 BB8D     		ldrh	r3, [r7, #44]
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 36
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 36
 
 
  1671 014a F868     		ldr	r0, [r7, #12]
@@ -2158,7 +2158,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  1717 01a6 BD46     		mov	sp, r7
  1718              		.cfi_def_cfa_register 13
  1719              		@ sp needed
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 37
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 37
 
 
  1720 01a8 80BD     		pop	{r7, pc}
@@ -2218,7 +2218,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  1769 0038 0346     		mov	r3, r0
  1770 003a F868     		ldr	r0, [r7, #12]
  1771 003c FFF7FEFF 		bl	GFXwriteFastVLine
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 38
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 38
 
 
  327:gfx.c         ****             GFXfillCircleHelper(myGFX, x0, y0, r, 3, 0, color);
@@ -2278,7 +2278,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  1819 000c 1A46     		mov	r2, r3
  1820 000e 0346     		mov	r3, r0	@ movhi
  1821 0010 7B81     		strh	r3, [r7, #10]	@ movhi
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 39
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 39
 
 
  1822 0012 0B46     		mov	r3, r1	@ movhi
@@ -2338,7 +2338,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  1865 005a 7B83     		strh	r3, [r7, #26]	@ movhi
  345:gfx.c         ****                     f     += ddF_y;
  1866              		.loc 1 345 0
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 40
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 40
 
 
  1867 005c FA8B     		ldrh	r2, [r7, #30]
@@ -2398,7 +2398,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  1914 00b4 1AB2     		sxth	r2, r3
  1915 00b6 3B8E     		ldrh	r3, [r7, #48]
  1916 00b8 0093     		str	r3, [sp]
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 41
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 41
 
 
  1917 00ba 1346     		mov	r3, r2
@@ -2458,7 +2458,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  1967 011e BB8D     		ldrh	r3, [r7, #44]
  1968 0120 1344     		add	r3, r3, r2
  1969 0122 9BB2     		uxth	r3, r3
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 42
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 42
 
 
  1970 0124 0133     		adds	r3, r3, #1
@@ -2518,7 +2518,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  2019              		.cfi_endproc
  2020              	.LFE81:
  2021              		.size	GFXfillCircleHelper, .-GFXfillCircleHelper
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 43
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 43
 
 
  2022 0182 00BF     		.section	.text.GFXdrawRect,"ax",%progbits
@@ -2578,7 +2578,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  2069 0040 B7F90600 		ldrsh	r0, [r7, #6]
  2070 0044 B7F90A10 		ldrsh	r1, [r7, #10]
  2071 0048 BB8B     		ldrh	r3, [r7, #28]
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 44
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 44
 
 
  2072 004a 0093     		str	r3, [sp]
@@ -2638,7 +2638,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  375:gfx.c         ****                               int16_t h, int16_t r, uint16_t color) {
  2119              		.loc 1 375 0
  2120              		.cfi_startproc
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 45
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 45
 
 
  2121              		@ args = 12, pretend = 0, frame = 16
@@ -2698,7 +2698,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  2172 0058 18B2     		sxth	r0, r3
  2173 005a FA88     		ldrh	r2, [r7, #6]
  2174 005c BB8B     		ldrh	r3, [r7, #28]
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 46
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 46
 
 
  2175 005e 5B00     		lsls	r3, r3, #1
@@ -2758,7 +2758,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  2227 00c8 0093     		str	r3, [sp]
  2228 00ca 1346     		mov	r3, r2
  2229 00cc 0246     		mov	r2, r0
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 47
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 47
 
 
  2230 00ce F868     		ldr	r0, [r7, #12]
@@ -2818,7 +2818,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  2280 0136 BB8B     		ldrh	r3, [r7, #28]
  2281 0138 D31A     		subs	r3, r2, r3
  2282 013a 9BB2     		uxth	r3, r3
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 48
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 48
 
 
  2283 013c 013B     		subs	r3, r3, #1
@@ -2878,7 +2878,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  2334              		@ sp needed
  2335 01a2 80BD     		pop	{r7, pc}
  2336              		.cfi_endproc
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 49
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 49
 
 
  2337              	.LFE83:
@@ -2938,7 +2938,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  2385 0038 0193     		str	r3, [sp, #4]
  2386 003a B7F92030 		ldrsh	r3, [r7, #32]
  2387 003e 0093     		str	r3, [sp]
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 50
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 50
 
 
  2388 0040 0346     		mov	r3, r0
@@ -2998,7 +2998,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  2439 00a8 5B00     		lsls	r3, r3, #1
  2440 00aa 9BB2     		uxth	r3, r3
  2441 00ac D31A     		subs	r3, r2, r3
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 51
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 51
 
 
  2442 00ae 9BB2     		uxth	r3, r3
@@ -3058,7 +3058,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  2490 000c 1A46     		mov	r2, r3
  2491 000e 0346     		mov	r3, r0	@ movhi
  2492 0010 7B81     		strh	r3, [r7, #10]	@ movhi
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 52
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 52
 
 
  2493 0012 0B46     		mov	r3, r1	@ movhi
@@ -3118,7 +3118,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  2543              		.global	GFXfillTriangle
  2544              		.thumb
  2545              		.thumb_func
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 53
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 53
 
 
  2546              		.type	GFXfillTriangle, %function
@@ -3178,7 +3178,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  2590 003e BB8D     		ldrh	r3, [r7, #44]	@ movhi
  2591 0040 FB80     		strh	r3, [r7, #6]	@ movhi
  2592              	.L70:
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 54
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 54
 
 
  2593              	.LBE12:
@@ -3238,7 +3238,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  424:gfx.c         ****             
  425:gfx.c         ****             
  426:gfx.c         ****             if(y0 == y2) { // Handle awkward all-on-same-line case as its own thing
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 55
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 55
 
 
  2640              		.loc 1 426 0
@@ -3298,7 +3298,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  2688              		.loc 1 432 0 is_stmt 1
  2689 00f6 BA8F     		ldrh	r2, [r7, #60]
  2690 00f8 FB8F     		ldrh	r3, [r7, #62]
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 56
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 56
 
 
  2691 00fa D31A     		subs	r3, r2, r3
@@ -3358,7 +3358,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  2735 0154 7B83     		strh	r3, [r7, #26]	@ movhi
  443:gfx.c         ****             dy12 = y2 - y1;
  2736              		.loc 1 443 0
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 57
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 57
 
 
  2737 0156 B7F85020 		ldrh	r2, [r7, #80]
@@ -3418,7 +3418,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  2776 01a0 9BB2     		uxth	r3, r3
  2777 01a2 FB87     		strh	r3, [r7, #62]	@ movhi
  459:gfx.c         ****                 b   = x0 + sb / dy02;
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 58
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 58
 
 
  2778              		.loc 1 459 0
@@ -3478,7 +3478,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  2824 0200 0346     		mov	r3, r0
  2825 0202 F868     		ldr	r0, [r7, #12]
  2826 0204 FFF7FEFF 		bl	GFXwriteFastHLine
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 59
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 59
 
 
  457:gfx.c         ****                 a   = x0 + sa / dy01;
@@ -3538,7 +3538,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  2870 026a 7B89     		ldrh	r3, [r7, #10]
  2871 026c 1344     		add	r3, r3, r2
  2872 026e 9BB2     		uxth	r3, r3
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 60
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 60
 
 
  2873 0270 BB87     		strh	r3, [r7, #60]	@ movhi
@@ -3598,7 +3598,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  2918 02ca 9BB2     		uxth	r3, r3
  2919 02cc 7B87     		strh	r3, [r7, #58]	@ movhi
  2920              	.L84:
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 61
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 61
 
 
  474:gfx.c         ****                 a   = x1 + sa / dy12;
@@ -3658,7 +3658,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  2961 000e 1346     		mov	r3, r2	@ movhi
  2962 0010 3B81     		strh	r3, [r7, #8]	@ movhi
  498:gfx.c         ****             
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 62
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 62
 
 
  499:gfx.c         **** // Getting a bit messy with these #ifndefs but startWrite() and endWrite()
@@ -3718,7 +3718,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  3006 005a 00DA     		bge	.L93
  3007 005c 0733     		adds	r3, r3, #7
  3008              	.L93:
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 63
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 63
 
 
  3009 005e DB10     		asrs	r3, r3, #3
@@ -3778,7 +3778,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  3059 00ba 0133     		adds	r3, r3, #1
  3060 00bc 9BB2     		uxth	r3, r3
  3061 00be 3B81     		strh	r3, [r7, #8]	@ movhi
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 64
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 64
 
 
  3062              	.L89:
@@ -3838,7 +3838,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  3102              		.cfi_def_cfa 7, 64
  3103 0006 F860     		str	r0, [r7, #12]
  3104 0008 0846     		mov	r0, r1
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 65
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 65
 
 
  3105 000a 1146     		mov	r1, r2
@@ -3898,7 +3898,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  3149              		.loc 1 529 0
  3150 0068 002B     		cmp	r3, #0
  3151 006a C0F2CB81 		blt	.L123
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 66
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 66
 
 
  531:gfx.c         ****                     return;
@@ -3958,7 +3958,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  3197 00b6 97F82E30 		ldrb	r3, [r7, #46]	@ zero_extendqisi2
  3198 00ba 03F00103 		and	r3, r3, #1
  3199 00be 002B     		cmp	r3, #0
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 67
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 67
 
 
  3200 00c0 41D0     		beq	.L106
@@ -4018,7 +4018,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  3250 0138 0093     		str	r3, [sp]
  3251 013a 2346     		mov	r3, r4
  3252 013c 0246     		mov	r2, r0
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 68
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 68
 
 
  3253 013e F868     		ldr	r0, [r7, #12]
@@ -4078,7 +4078,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  3302 01b0 1344     		add	r3, r3, r2
  3303 01b2 9BB2     		uxth	r3, r3
  3304 01b4 18B2     		sxth	r0, r3
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 69
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 69
 
 
  3305 01b6 97F84830 		ldrb	r3, [r7, #72]	@ zero_extendqisi2
@@ -4138,7 +4138,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  3350              		.loc 1 553 0
  3351 021c 97F84830 		ldrb	r3, [r7, #72]	@ zero_extendqisi2
  3352 0220 012B     		cmp	r3, #1
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 70
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 70
 
 
  3353 0222 0DD1     		bne	.L114
@@ -4198,7 +4198,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  3396              		.loc 1 564 0
  3397 0280 FB68     		ldr	r3, [r7, #12]
  3398 0282 9B69     		ldr	r3, [r3, #24]
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 71
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 71
 
 
  3399 0284 0833     		adds	r3, r3, #8
@@ -4258,7 +4258,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  3444 02d0 87F82630 		strb	r3, [r7, #38]
  574:gfx.c         ****                 int16_t  xo16 = 0, yo16 = 0;
  3445              		.loc 1 574 0
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 72
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 72
 
 
  3446 02d4 0023     		movs	r3, #0
@@ -4318,7 +4318,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  3472 0300 97F82630 		ldrb	r3, [r7, #38]	@ zero_extendqisi2
  3473 0304 5A1C     		adds	r2, r3, #1
  3474 0306 87F82620 		strb	r2, [r7, #38]
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 73
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 73
 
 
  3475 030a 03F00703 		and	r3, r3, #7
@@ -4378,7 +4378,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  3522              		.loc 1 609 0
  3523 0370 B7F92420 		ldrsh	r2, [r7, #36]
  3524 0374 97F82930 		ldrb	r3, [r7, #41]	@ zero_extendqisi2
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 74
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 74
 
 
  3525 0378 1344     		add	r3, r3, r2
@@ -4438,7 +4438,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  600:gfx.c         ****                     for(xx=0; xx<w; xx++) {
  3573              		.loc 1 600 0 is_stmt 1 discriminator 2
  3574 03ec 97F82830 		ldrb	r3, [r7, #40]	@ zero_extendqisi2
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 75
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 75
 
 
  3575 03f0 0133     		adds	r3, r3, #1
@@ -4498,7 +4498,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  3618              		.cfi_def_cfa_register 7
  3619 0006 7860     		str	r0, [r7, #4]
  3620 0008 0B46     		mov	r3, r1
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 76
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 76
 
 
  3621 000a 7B80     		strh	r3, [r7, #2]	@ movhi
@@ -4558,7 +4558,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  632:gfx.c         ****                     fontOffset = (myGFX->fontHeight * myGFX->textsize)-1; // cursor defines upper l
  3666              		.loc 1 632 0
  3667 0058 7B68     		ldr	r3, [r7, #4]
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 77
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 77
 
 
  3668 005a 9B8B     		ldrh	r3, [r3, #28]
@@ -4618,7 +4618,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  3712 00aa 7B68     		ldr	r3, [r7, #4]
  3713 00ac 1A8A     		ldrh	r2, [r3, #16]
  3714 00ae 7B68     		ldr	r3, [r7, #4]
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 78
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 78
 
 
  3715 00b0 5B8A     		ldrh	r3, [r3, #18]
@@ -4678,7 +4678,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  3763              	.LFE89:
  3764              		.size	GFXcheckScrollWrap, .-GFXcheckScrollWrap
  3765              		.section	.text.GFXwrite,"ax",%progbits
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 79
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 79
 
 
  3766              		.align	2
@@ -4738,7 +4738,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  3813 0034 7B68     		ldr	r3, [r7, #4]
  3814 0036 0022     		movs	r2, #0
  3815 0038 9A81     		strh	r2, [r3, #12]	@ movhi
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 80
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 80
 
 
  656:gfx.c         ****                     //cursor_y += textsize * 8;          // advance y one line
@@ -4798,7 +4798,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  3828 004c 1BB2     		sxth	r3, r3
  3829 004e 1946     		mov	r1, r3
  3830 0050 7868     		ldr	r0, [r7, #4]
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 81
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 81
 
 
  3831 0052 FFF7FEFF 		bl	GFXcheckScrollWrap
@@ -4858,7 +4858,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  3880              		.loc 1 671 0
  3881 00ac 7B68     		ldr	r3, [r7, #4]
  3882 00ae 5A89     		ldrh	r2, [r3, #10]
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 82
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 82
 
 
  3883 00b0 7B68     		ldr	r3, [r7, #4]
@@ -4918,7 +4918,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  676:gfx.c         ****                                                                           &myGFX->gfxFont->glyph))[
  3930              		.loc 1 676 0
  3931 00fa 7B68     		ldr	r3, [r7, #4]
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 83
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 83
 
 
  3932 00fc 9B69     		ldr	r3, [r3, #24]
@@ -4978,7 +4978,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  3977 0148 9B89     		ldrh	r3, [r3, #12]
  3978 014a 18B2     		sxth	r0, r3
  3979 014c 7B68     		ldr	r3, [r7, #4]
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 84
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 84
 
 
  3980 014e 5B89     		ldrh	r3, [r3, #10]
@@ -5038,7 +5038,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  4033              		.thumb_func
  4034              		.type	GFXsetCursor, %function
  4035              	GFXsetCursor:
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 85
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 85
 
 
  4036              	.LFB91:
@@ -5098,7 +5098,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  702:gfx.c         ****         int16_t GFXgetCursorX(GFX* myGFX)
  703:gfx.c         ****         {
  4084              		.loc 1 703 0
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 86
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 86
 
 
  4085              		.cfi_startproc
@@ -5158,7 +5158,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  4134              		.cfi_def_cfa_register 7
  4135 0006 7860     		str	r0, [r7, #4]
  709:gfx.c         ****             return myGFX->cursor_y;
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 87
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 87
 
 
  4136              		.loc 1 709 0
@@ -5218,7 +5218,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  4186              		.loc 1 713 0 discriminator 2
  4187 0018 0122     		movs	r2, #1
  4188              	.L147:
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 88
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 88
 
 
  4189              		.loc 1 713 0 discriminator 4
@@ -5278,7 +5278,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  4238 001a 5A82     		strh	r2, [r3, #18]	@ movhi
  719:gfx.c         ****         }
  4239              		.loc 1 719 0
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 89
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 89
 
 
  4240 001c 00BF     		nop
@@ -5338,7 +5338,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  4290              		.cfi_def_cfa_offset 0
  4291 001c 7047     		bx	lr
  4292              		.cfi_endproc
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 90
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 90
 
 
  4293              	.LFE96:
@@ -5398,7 +5398,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  729:gfx.c         ****         void GFXsetRotation(GFX* myGFX, uint8_t x) {
  4342              		.loc 1 729 0
  4343              		.cfi_startproc
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 91
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 91
 
 
  4344              		@ args = 0, pretend = 0, frame = 8
@@ -5458,7 +5458,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  4391              		.loc 1 736 0
  4392 0050 0CE0     		b	.L153
  4393              	.L156:
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 92
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 92
 
 
  737:gfx.c         ****                 case 1:
@@ -5518,7 +5518,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  4432              		.loc 1 752 0
  4433              		.cfi_startproc
  4434              		@ args = 0, pretend = 0, frame = 8
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 93
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 93
 
 
  4435              		@ frame_needed = 1, uses_anonymous_args = 0
@@ -5578,7 +5578,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  4485 0004 00AF     		add	r7, sp, #0
  4486              		.cfi_def_cfa_register 7
  4487 0006 7860     		str	r0, [r7, #4]
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 94
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 94
 
 
  4488 0008 3960     		str	r1, [r7]
@@ -5638,7 +5638,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  4523 003c 3B68     		ldr	r3, [r7]
  4524 003e 0933     		adds	r3, r3, #9
  4525 0040 1B78     		ldrb	r3, [r3]
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 95
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 95
 
 
  4526 0042 7B75     		strb	r3, [r7, #21]
@@ -5698,7 +5698,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  4566 0084 1BB2     		sxth	r3, r3
  4567 0086 1344     		add	r3, r3, r2
  4568 0088 1BB2     		sxth	r3, r3
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 96
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 96
 
 
  4569 008a 9AB2     		uxth	r2, r3
@@ -5758,7 +5758,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  803:gfx.c         ****                 
  804:gfx.c         ****                 myGFX->fontHeight = 8;
  4608              		.loc 1 804 0
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 97
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 97
 
 
  4609 00c0 7B68     		ldr	r3, [r7, #4]
@@ -5818,7 +5818,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  4648              		@ link register save eliminated.
  4649 0000 90B4     		push	{r4, r7}
  4650              		.cfi_def_cfa_offset 8
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 98
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 98
 
 
  4651              		.cfi_offset 4, -8
@@ -5878,7 +5878,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  832:gfx.c         ****                         uint8_t gw = pgm_read_byte(&glyph->width),
  833:gfx.c         ****                         gh = pgm_read_byte(&glyph->height),
  834:gfx.c         ****                         xa = pgm_read_byte(&glyph->xAdvance);
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 99
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 99
 
 
  835:gfx.c         ****                         int8_t  xo = pgm_read_byte(&glyph->xOffset),
@@ -5938,7 +5938,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  4705 005c 87F82F30 		strb	r3, [r7, #47]
  828:gfx.c         ****                     if((c >= first) && (c <= last)) { // Char present in this font?
  4706              		.loc 1 828 0
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 100
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 100
 
 
  4707 0060 FB68     		ldr	r3, [r7, #12]
@@ -5998,7 +5998,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  4751 00b4 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
  4752 00b6 87F82430 		strb	r3, [r7, #36]
  836:gfx.c         ****                         if(myGFX->wrap && ((*x+(((int16_t)xo+gw)*myGFX->textsize)) > myGFX->_width)
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 101
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 101
 
 
  4753              		.loc 1 836 0
@@ -6058,7 +6058,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  4802 011c FB68     		ldr	r3, [r7, #12]
  4803 011e DB89     		ldrh	r3, [r3, #14]
  4804 0120 3B84     		strh	r3, [r7, #32]	@ movhi
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 102
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 102
 
 
  842:gfx.c         ****                         y1 = *y + yo * ts,
@@ -6118,7 +6118,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  4854 018e BB6B     		ldr	r3, [r7, #56]
  4855 0190 B3F90030 		ldrsh	r3, [r3]
  4856 0194 B7F91E20 		ldrsh	r2, [r7, #30]
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 103
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 103
 
 
  4857 0198 9A42     		cmp	r2, r3
@@ -6178,7 +6178,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  4903 01ec 398C     		ldrh	r1, [r7, #32]
  4904 01ee 01FB03F3 		mul	r3, r1, r3
  4905 01f2 9BB2     		uxth	r3, r3
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 104
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 104
 
 
  4906 01f4 1344     		add	r3, r3, r2
@@ -6238,7 +6238,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  4954 023e FB68     		ldr	r3, [r7, #12]
  4955 0240 DB89     		ldrh	r3, [r3, #14]
  4956 0242 1A46     		mov	r2, r3
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 105
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 105
 
 
  4957 0244 1346     		mov	r3, r2
@@ -6298,7 +6298,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  5007 02a4 3B61     		str	r3, [r7, #16]
  867:gfx.c         ****                     if(y2 > *maxy) *maxy = y2;
  5008              		.loc 1 867 0
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 106
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 106
 
 
  5009 02a6 3B6C     		ldr	r3, [r7, #64]
@@ -6358,7 +6358,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  5056 02fe B3F90020 		ldrsh	r2, [r3]
  5057 0302 FB6B     		ldr	r3, [r7, #60]
  5058 0304 1A80     		strh	r2, [r3]	@ movhi
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 107
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 107
 
 
  5059              	.L183:
@@ -6418,7 +6418,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  5107              		.cfi_offset 7, -8
  5108              		.cfi_offset 14, -4
  5109 0002 8CB0     		sub	sp, sp, #48
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 108
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 108
 
 
  5110              		.cfi_def_cfa_offset 56
@@ -6478,7 +6478,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  5154 0052 381D     		adds	r0, r7, #4
  5155 0054 BA1D     		adds	r2, r7, #6
  5156 0056 F97F     		ldrb	r1, [r7, #31]	@ zero_extendqisi2
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 109
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 109
 
 
  5157 0058 07F11603 		add	r3, r7, #22
@@ -6538,7 +6538,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  896:gfx.c         ****                 *y1 = miny;
  5204              		.loc 1 896 0
  5205 00c0 B7F91A20 		ldrsh	r2, [r7, #26]
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 110
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 110
 
 
  5206 00c4 FB6A     		ldr	r3, [r7, #44]
@@ -6598,7 +6598,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  905:gfx.c         ****             return myGFX->_width;
  5252              		.loc 1 905 0
  5253 0008 7B68     		ldr	r3, [r7, #4]
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 111
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 111
 
 
  5254 000a 9B88     		ldrh	r3, [r3, #4]
@@ -6658,7 +6658,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  5303              		.cfi_restore 7
  5304              		.cfi_def_cfa_offset 0
  5305 0016 7047     		bx	lr
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 112
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 112
 
 
  5306              		.cfi_endproc
@@ -6718,7 +6718,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  5356 0004 44       		.byte	68
  5357 0005 20       		.byte	32
  5358 0006 44       		.byte	68
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 113
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 113
 
 
  5359 0007 23       		.byte	35
@@ -6778,7 +6778,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  5394 0002 88B0     		sub	sp, sp, #32
  5395              		.cfi_def_cfa_offset 40
  5396 0004 00AF     		add	r7, sp, #0
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 114
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 114
 
 
  5397              		.cfi_def_cfa_register 7
@@ -6838,7 +6838,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  5445 005e 9B1A     		subs	r3, r3, r2
  5446 0060 BB60     		str	r3, [r7, #8]
  5447              	.LBE36:
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 115
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 115
 
 
  934:gfx.c         ****             {
@@ -6898,7 +6898,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  5493 0000 90B5     		push	{r4, r7, lr}
  5494              		.cfi_def_cfa_offset 12
  5495              		.cfi_offset 4, -12
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 116
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 116
 
 
  5496              		.cfi_offset 7, -8
@@ -6958,7 +6958,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  5542 005a 0133     		adds	r3, r3, #1
  5543 005c 7B62     		str	r3, [r7, #36]
  955:gfx.c         ****                 offset = (1.0f - offset) + 0.01f;
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 117
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 117
 
 
  5544              		.loc 1 955 0
@@ -7018,7 +7018,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  5589 00b4 1344     		add	r3, r3, r2
  5590 00b6 7A69     		ldr	r2, [r7, #20]
  5591 00b8 5200     		lsls	r2, r2, #1
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 118
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 118
 
 
  5592 00ba 2B49     		ldr	r1, .L210+8
@@ -7078,7 +7078,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  5636              		.loc 1 974 0
  5637 010a BB69     		ldr	r3, [r7, #24]
  5638 010c 5A1C     		adds	r2, r3, #1
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 119
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 119
 
 
  5639 010e BA61     		str	r2, [r7, #24]
@@ -7138,7 +7138,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  5684              		.cfi_def_cfa_register 13
  5685              		@ sp needed
  5686 015c 90BD     		pop	{r4, r7, pc}
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 120
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 120
 
 
  5687              	.L211:
@@ -7198,7 +7198,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  5733 0026 3B61     		str	r3, [r7, #16]	@ float
  992:gfx.c         ****             
  993:gfx.c         ****             if ((midi + 0.5f) > (note+1))
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 121
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 121
 
 
  5734              		.loc 1 993 0
@@ -7258,7 +7258,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  5780 0088 0023     		movs	r3, #0
  5781 008a BB60     		str	r3, [r7, #8]
 1002:gfx.c         ****             
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 122
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 122
 
 
 1003:gfx.c         ****             buffer[idx++] = pitches[pclass*2];
@@ -7318,7 +7318,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  5831              		.thumb
  5832              		.thumb_func
  5833              		.type	OLEDparseFixedFloat, %function
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 123
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 123
 
 
  5834              	OLEDparseFixedFloat:
@@ -7378,7 +7378,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  5883 0058 0346     		mov	r3, r0
  5884 005a FB61     		str	r3, [r7, #28]	@ float
 1013:gfx.c         ****             
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 124
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 124
 
 
 1014:gfx.c         ****             int nonzeroHasHappened = 0, decimalHasHappened = 0;
@@ -7438,7 +7438,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  5925              		.loc 1 1027 0
  5926 00a2 6AE0     		b	.L221
  5927              	.L228:
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 125
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 125
 
 
 1028:gfx.c         ****             {
@@ -7498,7 +7498,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  5970 00e6 48E0     		b	.L221
  5971              	.L222:
  5972              	.LBB37:
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 126
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 126
 
 
 1040:gfx.c         ****                 }
@@ -7558,7 +7558,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  6014              		.loc 1 1052 0
  6015 0138 0123     		movs	r3, #1
  6016 013a 7B63     		str	r3, [r7, #52]
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 127
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 127
 
 
  6017 013c 13E0     		b	.L227
@@ -7618,7 +7618,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  6056              		.loc 1 1027 0
  6057 017a FA79     		ldrb	r2, [r7, #7]	@ zero_extendqisi2
  6058 017c 7B6A     		ldr	r3, [r7, #36]
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 128
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 128
 
 
  6059 017e 9A42     		cmp	r2, r3
@@ -7678,7 +7678,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
 1077:gfx.c         ****             ;
 1078:gfx.c         ****         }
  6103              		.loc 1 1078 0
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 129
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 129
 
 
  6104 0010 00BF     		nop
@@ -7738,7 +7738,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  6153              		.cfi_endproc
  6154              	.LFE111:
  6155              		.size	GFXscrollDown, .-GFXscrollDown
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 130
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 130
 
 
  6156 001a 00BF     		.section	.text.GFXscrollLeft,"ax",%progbits
@@ -7798,7 +7798,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  6203              		.loc 1 1090 0
  6204              		.cfi_startproc
  6205              		@ args = 0, pretend = 0, frame = 8
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 131
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 131
 
 
  6206              		@ frame_needed = 1, uses_anonymous_args = 0
@@ -7851,14 +7851,14 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  6250 000b 01       		.uleb128 0x1
  6251 000c BD000000 		.4byte	.LASF156
  6252 0010 0C       		.byte	0xc
- 6253 0011 71040000 		.4byte	.LASF157
- 6254 0015 60030000 		.4byte	.LASF158
+ 6253 0011 F3030000 		.4byte	.LASF157
+ 6254 0015 F9030000 		.4byte	.LASF158
  6255 0019 00000000 		.4byte	.Ldebug_ranges0+0
  6256 001d 00000000 		.4byte	0
  6257 0021 00000000 		.4byte	.Ldebug_line0
  6258 0025 02       		.uleb128 0x2
- 6259 0026 62040000 		.4byte	.LASF0
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 132
+ 6259 0026 E4030000 		.4byte	.LASF0
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 132
 
 
  6260 002a 02       		.byte	0x2
@@ -7867,25 +7867,25 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  6263 0030 03       		.uleb128 0x3
  6264 0031 01       		.byte	0x1
  6265 0032 06       		.byte	0x6
- 6266 0033 E0060000 		.4byte	.LASF2
+ 6266 0033 DB060000 		.4byte	.LASF2
  6267 0037 02       		.uleb128 0x2
- 6268 0038 57050000 		.4byte	.LASF1
+ 6268 0038 52050000 		.4byte	.LASF1
  6269 003c 02       		.byte	0x2
  6270 003d 1D       		.byte	0x1d
  6271 003e 42000000 		.4byte	0x42
  6272 0042 03       		.uleb128 0x3
  6273 0043 01       		.byte	0x1
  6274 0044 08       		.byte	0x8
- 6275 0045 26060000 		.4byte	.LASF3
+ 6275 0045 21060000 		.4byte	.LASF3
  6276 0049 02       		.uleb128 0x2
- 6277 004a E8030000 		.4byte	.LASF4
+ 6277 004a 6A030000 		.4byte	.LASF4
  6278 004e 02       		.byte	0x2
  6279 004f 29       		.byte	0x29
  6280 0050 54000000 		.4byte	0x54
  6281 0054 03       		.uleb128 0x3
  6282 0055 02       		.byte	0x2
  6283 0056 05       		.byte	0x5
- 6284 0057 B5040000 		.4byte	.LASF5
+ 6284 0057 B0040000 		.4byte	.LASF5
  6285 005b 02       		.uleb128 0x2
  6286 005c 55020000 		.4byte	.LASF6
  6287 0060 02       		.byte	0x2
@@ -7894,7 +7894,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  6290 0066 03       		.uleb128 0x3
  6291 0067 02       		.byte	0x2
  6292 0068 07       		.byte	0x7
- 6293 0069 F2060000 		.4byte	.LASF7
+ 6293 0069 ED060000 		.4byte	.LASF7
  6294 006d 02       		.uleb128 0x2
  6295 006e A6000000 		.4byte	.LASF8
  6296 0072 02       		.byte	0x2
@@ -7903,22 +7903,22 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  6299 0078 03       		.uleb128 0x3
  6300 0079 04       		.byte	0x4
  6301 007a 05       		.byte	0x5
- 6302 007b BF040000 		.4byte	.LASF9
+ 6302 007b BA040000 		.4byte	.LASF9
  6303 007f 02       		.uleb128 0x2
- 6304 0080 3B060000 		.4byte	.LASF10
+ 6304 0080 36060000 		.4byte	.LASF10
  6305 0084 02       		.byte	0x2
  6306 0085 41       		.byte	0x41
  6307 0086 8A000000 		.4byte	0x8a
  6308 008a 03       		.uleb128 0x3
  6309 008b 04       		.byte	0x4
  6310 008c 07       		.byte	0x7
- 6311 008d A3050000 		.4byte	.LASF11
+ 6311 008d 9E050000 		.4byte	.LASF11
  6312 0091 03       		.uleb128 0x3
  6313 0092 08       		.byte	0x8
  6314 0093 05       		.byte	0x5
  6315 0094 32030000 		.4byte	.LASF12
  6316 0098 03       		.uleb128 0x3
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 133
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 133
 
 
  6317 0099 08       		.byte	0x8
@@ -7948,12 +7948,12 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  6341 00c9 20       		.byte	0x20
  6342 00ca 49000000 		.4byte	0x49
  6343 00ce 02       		.uleb128 0x2
- 6344 00cf 83040000 		.4byte	.LASF18
+ 6344 00cf 7E040000 		.4byte	.LASF18
  6345 00d3 03       		.byte	0x3
  6346 00d4 24       		.byte	0x24
  6347 00d5 5B000000 		.4byte	0x5b
  6348 00d9 02       		.uleb128 0x2
- 6349 00da F4050000 		.4byte	.LASF19
+ 6349 00da EF050000 		.4byte	.LASF19
  6350 00de 03       		.byte	0x3
  6351 00df 2C       		.byte	0x2c
  6352 00e0 6D000000 		.4byte	0x6d
@@ -7978,24 +7978,24 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  6371 0108 04       		.byte	0x4
  6372 0109 0E       		.byte	0xe
  6373 010a B8000000 		.4byte	0xb8
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 134
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 134
 
 
  6374 010e 02       		.byte	0x2
  6375 010f 06       		.uleb128 0x6
- 6376 0110 4C040000 		.4byte	.LASF23
+ 6376 0110 CE030000 		.4byte	.LASF23
  6377 0114 04       		.byte	0x4
  6378 0115 0E       		.byte	0xe
  6379 0116 B8000000 		.4byte	0xb8
  6380 011a 03       		.byte	0x3
  6381 011b 06       		.uleb128 0x6
- 6382 011c A6060000 		.4byte	.LASF24
+ 6382 011c A1060000 		.4byte	.LASF24
  6383 0120 04       		.byte	0x4
  6384 0121 0F       		.byte	0xf
  6385 0122 B8000000 		.4byte	0xb8
  6386 0126 04       		.byte	0x4
  6387 0127 06       		.uleb128 0x6
- 6388 0128 C1060000 		.4byte	.LASF25
+ 6388 0128 BC060000 		.4byte	.LASF25
  6389 012c 04       		.byte	0x4
  6390 012d 10       		.byte	0x10
  6391 012e AD000000 		.4byte	0xad
@@ -8018,19 +8018,19 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  6408 014e 13       		.byte	0x13
  6409 014f 90010000 		.4byte	0x190
  6410 0153 06       		.uleb128 0x6
- 6411 0154 34060000 		.4byte	.LASF28
+ 6411 0154 2F060000 		.4byte	.LASF28
  6412 0158 04       		.byte	0x4
  6413 0159 14       		.byte	0x14
  6414 015a 90010000 		.4byte	0x190
  6415 015e 00       		.byte	0
  6416 015f 06       		.uleb128 0x6
- 6417 0160 FC050000 		.4byte	.LASF29
+ 6417 0160 F7050000 		.4byte	.LASF29
  6418 0164 04       		.byte	0x4
  6419 0165 15       		.byte	0x15
  6420 0166 96010000 		.4byte	0x196
  6421 016a 04       		.byte	0x4
  6422 016b 06       		.uleb128 0x6
- 6423 016c 7A060000 		.4byte	.LASF30
+ 6423 016c 75060000 		.4byte	.LASF30
  6424 0170 04       		.byte	0x4
  6425 0171 16       		.byte	0x16
  6426 0172 B8000000 		.4byte	0xb8
@@ -8038,7 +8038,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  6428 0177 06       		.uleb128 0x6
  6429 0178 0E000000 		.4byte	.LASF31
  6430 017c 04       		.byte	0x4
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 135
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 135
 
 
  6431 017d 16       		.byte	0x16
@@ -8063,7 +8063,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  6450 01a2 18       		.byte	0x18
  6451 01a3 4B010000 		.4byte	0x14b
  6452 01a7 08       		.uleb128 0x8
- 6453 01a8 18070000 		.4byte	.LASF34
+ 6453 01a8 13070000 		.4byte	.LASF34
  6454 01ac 05       		.byte	0x5
  6455 01ad E901     		.2byte	0x1e9
  6456 01af 42000000 		.4byte	0x42
@@ -8074,7 +8074,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  6461 01ba 03       		.uleb128 0x3
  6462 01bb 08       		.byte	0x8
  6463 01bc 04       		.byte	0x4
- 6464 01bd 1E070000 		.4byte	.LASF36
+ 6464 01bd 19070000 		.4byte	.LASF36
  6465 01c1 03       		.uleb128 0x3
  6466 01c2 01       		.byte	0x1
  6467 01c3 08       		.byte	0x8
@@ -8082,11 +8082,11 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  6469 01c8 03       		.uleb128 0x3
  6470 01c9 08       		.byte	0x8
  6471 01ca 04       		.byte	0x4
- 6472 01cb 77040000 		.4byte	.LASF38
+ 6472 01cb 72040000 		.4byte	.LASF38
  6473 01cf 03       		.uleb128 0x3
  6474 01d0 04       		.byte	0x4
  6475 01d1 07       		.byte	0x7
- 6476 01d2 9A050000 		.4byte	.LASF39
+ 6476 01d2 95050000 		.4byte	.LASF39
  6477 01d6 07       		.uleb128 0x7
  6478 01d7 04       		.byte	0x4
  6479 01d8 C1010000 		.4byte	0x1c1
@@ -8098,7 +8098,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  6485 01e4 A9020000 		.4byte	0x2a9
  6486 01e8 06       		.uleb128 0x6
  6487 01e9 7A020000 		.4byte	.LASF40
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 136
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 136
 
 
  6488 01ed 06       		.byte	0x6
@@ -8118,7 +8118,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  6502 0207 CE000000 		.4byte	0xce
  6503 020b 04       		.byte	0x4
  6504 020c 06       		.uleb128 0x6
- 6505 020d F2030000 		.4byte	.LASF43
+ 6505 020d 74030000 		.4byte	.LASF43
  6506 0211 06       		.byte	0x6
  6507 0212 21       		.byte	0x21
  6508 0213 CE000000 		.4byte	0xce
@@ -8148,17 +8148,17 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  6532 0243 CE000000 		.4byte	0xce
  6533 0247 0E       		.byte	0xe
  6534 0248 06       		.uleb128 0x6
- 6535 0249 25070000 		.4byte	.LASF48
+ 6535 0249 20070000 		.4byte	.LASF48
  6536 024d 06       		.byte	0x6
  6537 024e 26       		.byte	0x26
  6538 024f CE000000 		.4byte	0xce
  6539 0253 10       		.byte	0x10
  6540 0254 06       		.uleb128 0x6
- 6541 0255 5B070000 		.4byte	.LASF49
+ 6541 0255 56070000 		.4byte	.LASF49
  6542 0259 06       		.byte	0x6
  6543 025a 27       		.byte	0x27
  6544 025b CE000000 		.4byte	0xce
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 137
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 137
 
 
  6545 025f 12       		.byte	0x12
@@ -8175,13 +8175,13 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  6556 0273 CE000000 		.4byte	0xce
  6557 0277 16       		.byte	0x16
  6558 0278 06       		.uleb128 0x6
- 6559 0279 92050000 		.4byte	.LASF52
+ 6559 0279 8D050000 		.4byte	.LASF52
  6560 027d 06       		.byte	0x6
  6561 027e 2A       		.byte	0x2a
  6562 027f A9020000 		.4byte	0x2a9
  6563 0283 18       		.byte	0x18
  6564 0284 06       		.uleb128 0x6
- 6565 0285 FA040000 		.4byte	.LASF53
+ 6565 0285 F5040000 		.4byte	.LASF53
  6566 0289 06       		.byte	0x6
  6567 028a 2B       		.byte	0x2b
  6568 028b CE000000 		.4byte	0xce
@@ -8193,7 +8193,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  6574 0297 CE000000 		.4byte	0xce
  6575 029b 1E       		.byte	0x1e
  6576 029c 06       		.uleb128 0x6
- 6577 029d C9060000 		.4byte	.LASF55
+ 6577 029d C4060000 		.4byte	.LASF55
  6578 02a1 06       		.byte	0x6
  6579 02a2 2D       		.byte	0x2d
  6580 02a3 CE000000 		.4byte	0xce
@@ -8217,8 +8217,8 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  6598 02ca 9C       		.byte	0x9c
  6599 02cb F6020000 		.4byte	0x2f6
  6600 02cf 0C       		.uleb128 0xc
- 6601 02d0 51050000 		.4byte	.LASF56
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 138
+ 6601 02d0 4C050000 		.4byte	.LASF56
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 138
 
 
  6602 02d4 01       		.byte	0x1
@@ -8248,7 +8248,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  6626 02f7 04       		.byte	0x4
  6627 02f8 AF020000 		.4byte	0x2af
  6628 02fc 0E       		.uleb128 0xe
- 6629 02fd 46060000 		.4byte	.LASF58
+ 6629 02fd 41060000 		.4byte	.LASF58
  6630 0301 01       		.byte	0x1
  6631 0302 62       		.byte	0x62
  6632 0303 00000000 		.4byte	.LFB65
@@ -8257,7 +8257,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  6635 030c 9C       		.byte	0x9c
  6636 030d 0A040000 		.4byte	0x40a
  6637 0311 0C       		.uleb128 0xc
- 6638 0312 6B040000 		.4byte	.LASF59
+ 6638 0312 ED030000 		.4byte	.LASF59
  6639 0316 01       		.byte	0x1
  6640 0317 62       		.byte	0x62
  6641 0318 F6020000 		.4byte	0x2f6
@@ -8278,7 +8278,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  6656 0331 62       		.byte	0x62
  6657 0332 C3000000 		.4byte	0xc3
  6658 0336 02       		.uleb128 0x2
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 139
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 139
 
 
  6659 0337 91       		.byte	0x91
@@ -8300,7 +8300,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  6675 0351 91       		.byte	0x91
  6676 0352 00       		.sleb128 0
  6677 0353 0C       		.uleb128 0xc
- 6678 0354 40050000 		.4byte	.LASF60
+ 6678 0354 3B050000 		.4byte	.LASF60
  6679 0358 01       		.byte	0x1
  6680 0359 63       		.byte	0x63
  6681 035a CE000000 		.4byte	0xce
@@ -8338,12 +8338,12 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  6713 0390 C3000000 		.4byte	0xc3
  6714 0394 02       		.uleb128 0x2
  6715 0395 91       		.byte	0x91
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 140
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 140
 
 
  6716 0396 76       		.sleb128 -10
  6717 0397 0F       		.uleb128 0xf
- 6718 0398 66050000 		.4byte	.LASF62
+ 6718 0398 61050000 		.4byte	.LASF62
  6719 039c 01       		.byte	0x1
  6720 039d 74       		.byte	0x74
  6721 039e C3000000 		.4byte	0xc3
@@ -8398,7 +8398,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  6770 0400 6C       		.byte	0x6c
  6771 0401 C3000000 		.4byte	0xc3
  6772 0405 02       		.uleb128 0x2
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 141
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 141
 
 
  6773 0406 91       		.byte	0x91
@@ -8406,7 +8406,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  6775 0408 00       		.byte	0
  6776 0409 00       		.byte	0
  6777 040a 0B       		.uleb128 0xb
- 6778 040b D6040000 		.4byte	.LASF63
+ 6778 040b D1040000 		.4byte	.LASF63
  6779 040f 01       		.byte	0x1
  6780 0410 8A       		.byte	0x8a
  6781 0411 00000000 		.4byte	.LFB66
@@ -8415,7 +8415,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  6784 041a 9C       		.byte	0x9c
  6785 041b 2E040000 		.4byte	0x42e
  6786 041f 0C       		.uleb128 0xc
- 6787 0420 6B040000 		.4byte	.LASF59
+ 6787 0420 ED030000 		.4byte	.LASF59
  6788 0424 01       		.byte	0x1
  6789 0425 8A       		.byte	0x8a
  6790 0426 F6020000 		.4byte	0x2f6
@@ -8433,7 +8433,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  6802 043e 9C       		.byte	0x9c
  6803 043f A8040000 		.4byte	0x4a8
  6804 0443 0C       		.uleb128 0xc
- 6805 0444 6B040000 		.4byte	.LASF59
+ 6805 0444 ED030000 		.4byte	.LASF59
  6806 0448 01       		.byte	0x1
  6807 0449 8F       		.byte	0x8f
  6808 044a F6020000 		.4byte	0x2f6
@@ -8457,8 +8457,8 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  6826 0467 91       		.byte	0x91
  6827 0468 68       		.sleb128 -24
  6828 0469 0C       		.uleb128 0xc
- 6829 046a 40050000 		.4byte	.LASF60
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 142
+ 6829 046a 3B050000 		.4byte	.LASF60
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 142
 
 
  6830 046e 01       		.byte	0x1
@@ -8494,7 +8494,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  6860 04a6 00       		.byte	0
  6861 04a7 00       		.byte	0
  6862 04a8 0E       		.uleb128 0xe
- 6863 04a9 C5050000 		.4byte	.LASF65
+ 6863 04a9 C0050000 		.4byte	.LASF65
  6864 04ad 01       		.byte	0x1
  6865 04ae AD       		.byte	0xad
  6866 04af 00000000 		.4byte	.LFB68
@@ -8503,7 +8503,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  6869 04b8 9C       		.byte	0x9c
  6870 04b9 F2040000 		.4byte	0x4f2
  6871 04bd 0C       		.uleb128 0xc
- 6872 04be 6B040000 		.4byte	.LASF59
+ 6872 04be ED030000 		.4byte	.LASF59
  6873 04c2 01       		.byte	0x1
  6874 04c3 AD       		.byte	0xad
  6875 04c4 F6020000 		.4byte	0x2f6
@@ -8518,7 +8518,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  6884 04d4 02       		.uleb128 0x2
  6885 04d5 91       		.byte	0x91
  6886 04d6 72       		.sleb128 -14
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 143
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 143
 
 
  6887 04d7 0D       		.uleb128 0xd
@@ -8530,7 +8530,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  6893 04e1 91       		.byte	0x91
  6894 04e2 70       		.sleb128 -16
  6895 04e3 0C       		.uleb128 0xc
- 6896 04e4 40050000 		.4byte	.LASF60
+ 6896 04e4 3B050000 		.4byte	.LASF60
  6897 04e8 01       		.byte	0x1
  6898 04e9 AD       		.byte	0xad
  6899 04ea CE000000 		.4byte	0xce
@@ -8548,7 +8548,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  6911 0502 9C       		.byte	0x9c
  6912 0503 48050000 		.4byte	0x548
  6913 0507 0C       		.uleb128 0xc
- 6914 0508 6B040000 		.4byte	.LASF59
+ 6914 0508 ED030000 		.4byte	.LASF59
  6915 050c 01       		.byte	0x1
  6916 050d B4       		.byte	0xb4
  6917 050e F6020000 		.4byte	0x2f6
@@ -8578,12 +8578,12 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  6941 0532 C3000000 		.4byte	0xc3
  6942 0536 02       		.uleb128 0x2
  6943 0537 91       		.byte	0x91
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 144
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 144
 
 
  6944 0538 6E       		.sleb128 -18
  6945 0539 0C       		.uleb128 0xc
- 6946 053a 40050000 		.4byte	.LASF60
+ 6946 053a 3B050000 		.4byte	.LASF60
  6947 053e 01       		.byte	0x1
  6948 053f B5       		.byte	0xb5
  6949 0540 CE000000 		.4byte	0xce
@@ -8601,7 +8601,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  6961 0558 9C       		.byte	0x9c
  6962 0559 9E050000 		.4byte	0x59e
  6963 055d 0C       		.uleb128 0xc
- 6964 055e 6B040000 		.4byte	.LASF59
+ 6964 055e ED030000 		.4byte	.LASF59
  6965 0562 01       		.byte	0x1
  6966 0563 BE       		.byte	0xbe
  6967 0564 F6020000 		.4byte	0x2f6
@@ -8633,19 +8633,19 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  6993 058d 91       		.byte	0x91
  6994 058e 6E       		.sleb128 -18
  6995 058f 0C       		.uleb128 0xc
- 6996 0590 40050000 		.4byte	.LASF60
+ 6996 0590 3B050000 		.4byte	.LASF60
  6997 0594 01       		.byte	0x1
  6998 0595 BF       		.byte	0xbf
  6999 0596 CE000000 		.4byte	0xce
  7000 059a 02       		.uleb128 0x2
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 145
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 145
 
 
  7001 059b 91       		.byte	0x91
  7002 059c 00       		.sleb128 0
  7003 059d 00       		.byte	0
  7004 059e 0E       		.uleb128 0xe
- 7005 059f 2F050000 		.4byte	.LASF68
+ 7005 059f 2A050000 		.4byte	.LASF68
  7006 05a3 01       		.byte	0x1
  7007 05a4 C6       		.byte	0xc6
  7008 05a5 00000000 		.4byte	.LFB71
@@ -8654,7 +8654,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7011 05ae 9C       		.byte	0x9c
  7012 05af 00060000 		.4byte	0x600
  7013 05b3 0C       		.uleb128 0xc
- 7014 05b4 6B040000 		.4byte	.LASF59
+ 7014 05b4 ED030000 		.4byte	.LASF59
  7015 05b8 01       		.byte	0x1
  7016 05b9 C6       		.byte	0xc6
  7017 05ba F6020000 		.4byte	0x2f6
@@ -8694,11 +8694,11 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7051 05ef 91       		.byte	0x91
  7052 05f0 00       		.sleb128 0
  7053 05f1 0C       		.uleb128 0xc
- 7054 05f2 40050000 		.4byte	.LASF60
+ 7054 05f2 3B050000 		.4byte	.LASF60
  7055 05f6 01       		.byte	0x1
  7056 05f7 C7       		.byte	0xc7
  7057 05f8 CE000000 		.4byte	0xce
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 146
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 146
 
 
  7058 05fc 02       		.uleb128 0x2
@@ -8706,7 +8706,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7060 05fe 04       		.sleb128 4
  7061 05ff 00       		.byte	0
  7062 0600 0B       		.uleb128 0xb
- 7063 0601 1A060000 		.4byte	.LASF69
+ 7063 0601 15060000 		.4byte	.LASF69
  7064 0605 01       		.byte	0x1
  7065 0606 CC       		.byte	0xcc
  7066 0607 00000000 		.4byte	.LFB72
@@ -8715,7 +8715,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7069 0610 9C       		.byte	0x9c
  7070 0611 24060000 		.4byte	0x624
  7071 0615 0C       		.uleb128 0xc
- 7072 0616 6B040000 		.4byte	.LASF59
+ 7072 0616 ED030000 		.4byte	.LASF59
  7073 061a 01       		.byte	0x1
  7074 061b CC       		.byte	0xcc
  7075 061c F6020000 		.4byte	0x2f6
@@ -8724,7 +8724,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7078 0622 74       		.sleb128 -12
  7079 0623 00       		.byte	0
  7080 0624 0E       		.uleb128 0xe
- 7081 0625 0E040000 		.4byte	.LASF70
+ 7081 0625 90030000 		.4byte	.LASF70
  7082 0629 01       		.byte	0x1
  7083 062a D2       		.byte	0xd2
  7084 062b 00000000 		.4byte	.LFB73
@@ -8733,7 +8733,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7087 0634 9C       		.byte	0x9c
  7088 0635 7A060000 		.4byte	0x67a
  7089 0639 0C       		.uleb128 0xc
- 7090 063a 6B040000 		.4byte	.LASF59
+ 7090 063a ED030000 		.4byte	.LASF59
  7091 063e 01       		.byte	0x1
  7092 063f D2       		.byte	0xd2
  7093 0640 F6020000 		.4byte	0x2f6
@@ -8758,7 +8758,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7112 065e 68       		.sleb128 -24
  7113 065f 0D       		.uleb128 0xd
  7114 0660 6800     		.ascii	"h\000"
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 147
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 147
 
 
  7115 0662 01       		.byte	0x1
@@ -8768,7 +8768,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7119 0669 91       		.byte	0x91
  7120 066a 66       		.sleb128 -26
  7121 066b 0C       		.uleb128 0xc
- 7122 066c 40050000 		.4byte	.LASF60
+ 7122 066c 3B050000 		.4byte	.LASF60
  7123 0670 01       		.byte	0x1
  7124 0671 D3       		.byte	0xd3
  7125 0672 CE000000 		.4byte	0xce
@@ -8786,7 +8786,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7137 068a 9C       		.byte	0x9c
  7138 068b D0060000 		.4byte	0x6d0
  7139 068f 0C       		.uleb128 0xc
- 7140 0690 6B040000 		.4byte	.LASF59
+ 7140 0690 ED030000 		.4byte	.LASF59
  7141 0694 01       		.byte	0x1
  7142 0695 DA       		.byte	0xda
  7143 0696 F6020000 		.4byte	0x2f6
@@ -8818,10 +8818,10 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7169 06bf 91       		.byte	0x91
  7170 06c0 6E       		.sleb128 -18
  7171 06c1 0C       		.uleb128 0xc
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 148
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 148
 
 
- 7172 06c2 40050000 		.4byte	.LASF60
+ 7172 06c2 3B050000 		.4byte	.LASF60
  7173 06c6 01       		.byte	0x1
  7174 06c7 DB       		.byte	0xdb
  7175 06c8 CE000000 		.4byte	0xce
@@ -8830,7 +8830,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7178 06ce 00       		.sleb128 0
  7179 06cf 00       		.byte	0
  7180 06d0 0E       		.uleb128 0xe
- 7181 06d1 19050000 		.4byte	.LASF72
+ 7181 06d1 14050000 		.4byte	.LASF72
  7182 06d5 01       		.byte	0x1
  7183 06d6 E0       		.byte	0xe0
  7184 06d7 00000000 		.4byte	.LFB75
@@ -8839,7 +8839,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7187 06e0 9C       		.byte	0x9c
  7188 06e1 48070000 		.4byte	0x748
  7189 06e5 0C       		.uleb128 0xc
- 7190 06e6 6B040000 		.4byte	.LASF59
+ 7190 06e6 ED030000 		.4byte	.LASF59
  7191 06ea 01       		.byte	0x1
  7192 06eb E0       		.byte	0xe0
  7193 06ec F6020000 		.4byte	0x2f6
@@ -8878,11 +8878,11 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7226 0720 02       		.uleb128 0x2
  7227 0721 91       		.byte	0x91
  7228 0722 00       		.sleb128 0
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 149
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 149
 
 
  7229 0723 0C       		.uleb128 0xc
- 7230 0724 40050000 		.4byte	.LASF60
+ 7230 0724 3B050000 		.4byte	.LASF60
  7231 0728 01       		.byte	0x1
  7232 0729 E1       		.byte	0xe1
  7233 072a CE000000 		.4byte	0xce
@@ -8903,7 +8903,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7248 0746 00       		.byte	0
  7249 0747 00       		.byte	0
  7250 0748 0E       		.uleb128 0xe
- 7251 0749 05070000 		.4byte	.LASF73
+ 7251 0749 00070000 		.4byte	.LASF73
  7252 074d 01       		.byte	0x1
  7253 074e E8       		.byte	0xe8
  7254 074f 00000000 		.4byte	.LFB76
@@ -8912,7 +8912,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7257 0758 9C       		.byte	0x9c
  7258 0759 7A070000 		.4byte	0x77a
  7259 075d 0C       		.uleb128 0xc
- 7260 075e 6B040000 		.4byte	.LASF59
+ 7260 075e ED030000 		.4byte	.LASF59
  7261 0762 01       		.byte	0x1
  7262 0763 E8       		.byte	0xe8
  7263 0764 F6020000 		.4byte	0x2f6
@@ -8920,7 +8920,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7265 0769 91       		.byte	0x91
  7266 076a 74       		.sleb128 -12
  7267 076b 0C       		.uleb128 0xc
- 7268 076c 40050000 		.4byte	.LASF60
+ 7268 076c 3B050000 		.4byte	.LASF60
  7269 0770 01       		.byte	0x1
  7270 0771 E8       		.byte	0xe8
  7271 0772 CE000000 		.4byte	0xce
@@ -8938,10 +8938,10 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7283 078a 9C       		.byte	0x9c
  7284 078b 10080000 		.4byte	0x810
  7285 078f 0C       		.uleb128 0xc
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 150
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 150
 
 
- 7286 0790 6B040000 		.4byte	.LASF59
+ 7286 0790 ED030000 		.4byte	.LASF59
  7287 0794 01       		.byte	0x1
  7288 0795 ED       		.byte	0xed
  7289 0796 F6020000 		.4byte	0x2f6
@@ -8981,7 +8981,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7323 07cf 91       		.byte	0x91
  7324 07d0 00       		.sleb128 0
  7325 07d1 0C       		.uleb128 0xc
- 7326 07d2 40050000 		.4byte	.LASF60
+ 7326 07d2 3B050000 		.4byte	.LASF60
  7327 07d6 01       		.byte	0x1
  7328 07d7 EE       		.byte	0xee
  7329 07d8 CE000000 		.4byte	0xce
@@ -8998,7 +8998,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7340 07f0 F1       		.byte	0xf1
  7341 07f1 C3000000 		.4byte	0xc3
  7342 07f5 02       		.uleb128 0x2
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 151
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 151
 
 
  7343 07f6 91       		.byte	0x91
@@ -9027,7 +9027,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7366 0820 9C       		.byte	0x9c
  7367 0821 AB080000 		.4byte	0x8ab
  7368 0825 0C       		.uleb128 0xc
- 7369 0826 6B040000 		.4byte	.LASF59
+ 7369 0826 ED030000 		.4byte	.LASF59
  7370 082a 01       		.byte	0x1
  7371 082b FC       		.byte	0xfc
  7372 082c F6020000 		.4byte	0x2f6
@@ -9058,11 +9058,11 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7397 0856 02       		.uleb128 0x2
  7398 0857 91       		.byte	0x91
  7399 0858 5E       		.sleb128 -34
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 152
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 152
 
 
  7400 0859 0C       		.uleb128 0xc
- 7401 085a 40050000 		.4byte	.LASF60
+ 7401 085a 3B050000 		.4byte	.LASF60
  7402 085e 01       		.byte	0x1
  7403 085f FD       		.byte	0xfd
  7404 0860 CE000000 		.4byte	0xce
@@ -9078,7 +9078,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7414 0871 91       		.byte	0x91
  7415 0872 76       		.sleb128 -10
  7416 0873 0F       		.uleb128 0xf
- 7417 0874 D4060000 		.4byte	.LASF76
+ 7417 0874 CF060000 		.4byte	.LASF76
  7418 0878 01       		.byte	0x1
  7419 0879 FF       		.byte	0xff
  7420 087a C3000000 		.4byte	0xc3
@@ -9086,7 +9086,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7422 087f 91       		.byte	0x91
  7423 0880 74       		.sleb128 -12
  7424 0881 13       		.uleb128 0x13
- 7425 0882 DA060000 		.4byte	.LASF77
+ 7425 0882 D5060000 		.4byte	.LASF77
  7426 0886 01       		.byte	0x1
  7427 0887 0001     		.2byte	0x100
  7428 0889 C3000000 		.4byte	0xc3
@@ -9111,19 +9111,19 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7447 08a9 6E       		.sleb128 -18
  7448 08aa 00       		.byte	0
  7449 08ab 15       		.uleb128 0x15
- 7450 08ac FA030000 		.4byte	.LASF78
+ 7450 08ac 7C030000 		.4byte	.LASF78
  7451 08b0 01       		.byte	0x1
  7452 08b1 1F01     		.2byte	0x11f
  7453 08b3 00000000 		.4byte	.LFB79
  7454 08b7 AA010000 		.4byte	.LFE79-.LFB79
  7455 08bb 01       		.uleb128 0x1
  7456 08bc 9C       		.byte	0x9c
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 153
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 153
 
 
  7457 08bd 5D090000 		.4byte	0x95d
  7458 08c1 16       		.uleb128 0x16
- 7459 08c2 6B040000 		.4byte	.LASF59
+ 7459 08c2 ED030000 		.4byte	.LASF59
  7460 08c6 01       		.byte	0x1
  7461 08c7 1F01     		.2byte	0x11f
  7462 08c9 F6020000 		.4byte	0x2f6
@@ -9155,7 +9155,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7488 08f7 91       		.byte	0x91
  7489 08f8 5E       		.sleb128 -34
  7490 08f9 16       		.uleb128 0x16
- 7491 08fa 8E060000 		.4byte	.LASF79
+ 7491 08fa 89060000 		.4byte	.LASF79
  7492 08fe 01       		.byte	0x1
  7493 08ff 2001     		.2byte	0x120
  7494 0901 B8000000 		.4byte	0xb8
@@ -9163,7 +9163,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7496 0906 91       		.byte	0x91
  7497 0907 00       		.sleb128 0
  7498 0908 16       		.uleb128 0x16
- 7499 0909 40050000 		.4byte	.LASF60
+ 7499 0909 3B050000 		.4byte	.LASF60
  7500 090d 01       		.byte	0x1
  7501 090e 2001     		.2byte	0x120
  7502 0910 CE000000 		.4byte	0xce
@@ -9178,11 +9178,11 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7511 0921 02       		.uleb128 0x2
  7512 0922 91       		.byte	0x91
  7513 0923 76       		.sleb128 -10
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 154
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 154
 
 
  7514 0924 13       		.uleb128 0x13
- 7515 0925 D4060000 		.4byte	.LASF76
+ 7515 0925 CF060000 		.4byte	.LASF76
  7516 0929 01       		.byte	0x1
  7517 092a 2201     		.2byte	0x122
  7518 092c C3000000 		.4byte	0xc3
@@ -9190,7 +9190,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7520 0931 91       		.byte	0x91
  7521 0932 74       		.sleb128 -12
  7522 0933 13       		.uleb128 0x13
- 7523 0934 DA060000 		.4byte	.LASF77
+ 7523 0934 D5060000 		.4byte	.LASF77
  7524 0938 01       		.byte	0x1
  7525 0939 2301     		.2byte	0x123
  7526 093b C3000000 		.4byte	0xc3
@@ -9215,7 +9215,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7545 095b 6E       		.sleb128 -18
  7546 095c 00       		.byte	0
  7547 095d 15       		.uleb128 0x15
- 7548 095e DC050000 		.4byte	.LASF80
+ 7548 095e D7050000 		.4byte	.LASF80
  7549 0962 01       		.byte	0x1
  7550 0963 4301     		.2byte	0x143
  7551 0965 00000000 		.4byte	.LFB80
@@ -9224,7 +9224,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7554 096e 9C       		.byte	0x9c
  7555 096f BB090000 		.4byte	0x9bb
  7556 0973 16       		.uleb128 0x16
- 7557 0974 6B040000 		.4byte	.LASF59
+ 7557 0974 ED030000 		.4byte	.LASF59
  7558 0978 01       		.byte	0x1
  7559 0979 4301     		.2byte	0x143
  7560 097b F6020000 		.4byte	0x2f6
@@ -9238,7 +9238,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7568 0989 C3000000 		.4byte	0xc3
  7569 098d 02       		.uleb128 0x2
  7570 098e 91       		.byte	0x91
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 155
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 155
 
 
  7571 098f 72       		.sleb128 -14
@@ -9259,7 +9259,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7586 09a9 91       		.byte	0x91
  7587 09aa 6E       		.sleb128 -18
  7588 09ab 16       		.uleb128 0x16
- 7589 09ac 40050000 		.4byte	.LASF60
+ 7589 09ac 3B050000 		.4byte	.LASF60
  7590 09b0 01       		.byte	0x1
  7591 09b1 4401     		.2byte	0x144
  7592 09b3 CE000000 		.4byte	0xce
@@ -9268,7 +9268,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7595 09b9 00       		.sleb128 0
  7596 09ba 00       		.byte	0
  7597 09bb 15       		.uleb128 0x15
- 7598 09bc 47070000 		.4byte	.LASF81
+ 7598 09bc 42070000 		.4byte	.LASF81
  7599 09c0 01       		.byte	0x1
  7600 09c1 4C01     		.2byte	0x14c
  7601 09c3 00000000 		.4byte	.LFB81
@@ -9277,7 +9277,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7604 09cc 9C       		.byte	0x9c
  7605 09cd 7C0A0000 		.4byte	0xa7c
  7606 09d1 16       		.uleb128 0x16
- 7607 09d2 6B040000 		.4byte	.LASF59
+ 7607 09d2 ED030000 		.4byte	.LASF59
  7608 09d6 01       		.byte	0x1
  7609 09d7 4C01     		.2byte	0x14c
  7610 09d9 F6020000 		.4byte	0x2f6
@@ -9298,7 +9298,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7625 09f3 4C01     		.2byte	0x14c
  7626 09f5 C3000000 		.4byte	0xc3
  7627 09f9 02       		.uleb128 0x2
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 156
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 156
 
 
  7628 09fa 91       		.byte	0x91
@@ -9312,7 +9312,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7636 0a07 91       		.byte	0x91
  7637 0a08 5E       		.sleb128 -34
  7638 0a09 16       		.uleb128 0x16
- 7639 0a0a 8E060000 		.4byte	.LASF79
+ 7639 0a0a 89060000 		.4byte	.LASF79
  7640 0a0e 01       		.byte	0x1
  7641 0a0f 4D01     		.2byte	0x14d
  7642 0a11 B8000000 		.4byte	0xb8
@@ -9320,7 +9320,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7644 0a16 91       		.byte	0x91
  7645 0a17 00       		.sleb128 0
  7646 0a18 16       		.uleb128 0x16
- 7647 0a19 EC060000 		.4byte	.LASF82
+ 7647 0a19 E7060000 		.4byte	.LASF82
  7648 0a1d 01       		.byte	0x1
  7649 0a1e 4D01     		.2byte	0x14d
  7650 0a20 C3000000 		.4byte	0xc3
@@ -9328,7 +9328,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7652 0a25 91       		.byte	0x91
  7653 0a26 04       		.sleb128 4
  7654 0a27 16       		.uleb128 0x16
- 7655 0a28 40050000 		.4byte	.LASF60
+ 7655 0a28 3B050000 		.4byte	.LASF60
  7656 0a2c 01       		.byte	0x1
  7657 0a2d 4D01     		.2byte	0x14d
  7658 0a2f CE000000 		.4byte	0xce
@@ -9344,7 +9344,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7668 0a41 91       		.byte	0x91
  7669 0a42 76       		.sleb128 -10
  7670 0a43 13       		.uleb128 0x13
- 7671 0a44 D4060000 		.4byte	.LASF76
+ 7671 0a44 CF060000 		.4byte	.LASF76
  7672 0a48 01       		.byte	0x1
  7673 0a49 5001     		.2byte	0x150
  7674 0a4b C3000000 		.4byte	0xc3
@@ -9352,13 +9352,13 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7676 0a50 91       		.byte	0x91
  7677 0a51 74       		.sleb128 -12
  7678 0a52 13       		.uleb128 0x13
- 7679 0a53 DA060000 		.4byte	.LASF77
+ 7679 0a53 D5060000 		.4byte	.LASF77
  7680 0a57 01       		.byte	0x1
  7681 0a58 5101     		.2byte	0x151
  7682 0a5a C3000000 		.4byte	0xc3
  7683 0a5e 02       		.uleb128 0x2
  7684 0a5f 91       		.byte	0x91
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 157
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 157
 
 
  7685 0a60 72       		.sleb128 -14
@@ -9389,7 +9389,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7710 0a8d 9C       		.byte	0x9c
  7711 0a8e E50A0000 		.4byte	0xae5
  7712 0a92 16       		.uleb128 0x16
- 7713 0a93 6B040000 		.4byte	.LASF59
+ 7713 0a93 ED030000 		.4byte	.LASF59
  7714 0a97 01       		.byte	0x1
  7715 0a98 6B01     		.2byte	0x16b
  7716 0a9a F6020000 		.4byte	0x2f6
@@ -9418,7 +9418,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7739 0abf 6B01     		.2byte	0x16b
  7740 0ac1 C3000000 		.4byte	0xc3
  7741 0ac5 02       		.uleb128 0x2
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 158
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 158
 
 
  7742 0ac6 91       		.byte	0x91
@@ -9432,7 +9432,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7750 0ad3 91       		.byte	0x91
  7751 0ad4 00       		.sleb128 0
  7752 0ad5 16       		.uleb128 0x16
- 7753 0ad6 40050000 		.4byte	.LASF60
+ 7753 0ad6 3B050000 		.4byte	.LASF60
  7754 0ada 01       		.byte	0x1
  7755 0adb 6C01     		.2byte	0x16c
  7756 0add CE000000 		.4byte	0xce
@@ -9441,7 +9441,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7759 0ae3 04       		.sleb128 4
  7760 0ae4 00       		.byte	0
  7761 0ae5 15       		.uleb128 0x15
- 7762 0ae6 99040000 		.4byte	.LASF84
+ 7762 0ae6 94040000 		.4byte	.LASF84
  7763 0aea 01       		.byte	0x1
  7764 0aeb 7601     		.2byte	0x176
  7765 0aed 00000000 		.4byte	.LFB83
@@ -9450,7 +9450,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7768 0af6 9C       		.byte	0x9c
  7769 0af7 5B0B0000 		.4byte	0xb5b
  7770 0afb 16       		.uleb128 0x16
- 7771 0afc 6B040000 		.4byte	.LASF59
+ 7771 0afc ED030000 		.4byte	.LASF59
  7772 0b00 01       		.byte	0x1
  7773 0b01 7601     		.2byte	0x176
  7774 0b03 F6020000 		.4byte	0x2f6
@@ -9478,7 +9478,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7796 0b27 01       		.byte	0x1
  7797 0b28 7601     		.2byte	0x176
  7798 0b2a C3000000 		.4byte	0xc3
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 159
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 159
 
 
  7799 0b2e 02       		.uleb128 0x2
@@ -9501,7 +9501,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7816 0b49 91       		.byte	0x91
  7817 0b4a 04       		.sleb128 4
  7818 0b4b 16       		.uleb128 0x16
- 7819 0b4c 40050000 		.4byte	.LASF60
+ 7819 0b4c 3B050000 		.4byte	.LASF60
  7820 0b50 01       		.byte	0x1
  7821 0b51 7701     		.2byte	0x177
  7822 0b53 CE000000 		.4byte	0xce
@@ -9510,7 +9510,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7825 0b59 08       		.sleb128 8
  7826 0b5a 00       		.byte	0
  7827 0b5b 15       		.uleb128 0x15
- 7828 0b5c 2F070000 		.4byte	.LASF85
+ 7828 0b5c 2A070000 		.4byte	.LASF85
  7829 0b60 01       		.byte	0x1
  7830 0b61 8601     		.2byte	0x186
  7831 0b63 00000000 		.4byte	.LFB84
@@ -9519,7 +9519,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7834 0b6c 9C       		.byte	0x9c
  7835 0b6d D10B0000 		.4byte	0xbd1
  7836 0b71 16       		.uleb128 0x16
- 7837 0b72 6B040000 		.4byte	.LASF59
+ 7837 0b72 ED030000 		.4byte	.LASF59
  7838 0b76 01       		.byte	0x1
  7839 0b77 8601     		.2byte	0x186
  7840 0b79 F6020000 		.4byte	0x2f6
@@ -9538,7 +9538,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7853 0b8e 7900     		.ascii	"y\000"
  7854 0b90 01       		.byte	0x1
  7855 0b91 8601     		.2byte	0x186
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 160
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 160
 
 
  7856 0b93 C3000000 		.4byte	0xc3
@@ -9570,7 +9570,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7882 0bbf 91       		.byte	0x91
  7883 0bc0 04       		.sleb128 4
  7884 0bc1 16       		.uleb128 0x16
- 7885 0bc2 40050000 		.4byte	.LASF60
+ 7885 0bc2 3B050000 		.4byte	.LASF60
  7886 0bc6 01       		.byte	0x1
  7887 0bc7 8701     		.2byte	0x187
  7888 0bc9 CE000000 		.4byte	0xce
@@ -9579,7 +9579,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7891 0bcf 08       		.sleb128 8
  7892 0bd0 00       		.byte	0
  7893 0bd1 15       		.uleb128 0x15
- 7894 0bd2 B5050000 		.4byte	.LASF86
+ 7894 0bd2 B0050000 		.4byte	.LASF86
  7895 0bd6 01       		.byte	0x1
  7896 0bd7 9101     		.2byte	0x191
  7897 0bd9 00000000 		.4byte	.LFB85
@@ -9588,7 +9588,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7900 0be2 9C       		.byte	0x9c
  7901 0be3 5A0C0000 		.4byte	0xc5a
  7902 0be7 16       		.uleb128 0x16
- 7903 0be8 6B040000 		.4byte	.LASF59
+ 7903 0be8 ED030000 		.4byte	.LASF59
  7904 0bec 01       		.byte	0x1
  7905 0bed 9101     		.2byte	0x191
  7906 0bef F6020000 		.4byte	0x2f6
@@ -9598,7 +9598,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7910 0bf6 17       		.uleb128 0x17
  7911 0bf7 783000   		.ascii	"x0\000"
  7912 0bfa 01       		.byte	0x1
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 161
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 161
 
 
  7913 0bfb 9101     		.2byte	0x191
@@ -9647,7 +9647,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7956 0c48 91       		.byte	0x91
  7957 0c49 08       		.sleb128 8
  7958 0c4a 16       		.uleb128 0x16
- 7959 0c4b 40050000 		.4byte	.LASF60
+ 7959 0c4b 3B050000 		.4byte	.LASF60
  7960 0c4f 01       		.byte	0x1
  7961 0c50 9201     		.2byte	0x192
  7962 0c52 CE000000 		.4byte	0xce
@@ -9658,7 +9658,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7967 0c5a 15       		.uleb128 0x15
  7968 0c5b 10030000 		.4byte	.LASF87
  7969 0c5f 01       		.byte	0x1
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 162
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 162
 
 
  7970 0c60 9901     		.2byte	0x199
@@ -9668,7 +9668,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  7974 0c6b 9C       		.byte	0x9c
  7975 0c6c 640E0000 		.4byte	0xe64
  7976 0c70 16       		.uleb128 0x16
- 7977 0c71 6B040000 		.4byte	.LASF59
+ 7977 0c71 ED030000 		.4byte	.LASF59
  7978 0c75 01       		.byte	0x1
  7979 0c76 9901     		.2byte	0x199
  7980 0c78 F6020000 		.4byte	0x2f6
@@ -9718,7 +9718,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8024 0cc6 17       		.uleb128 0x17
  8025 0cc7 793200   		.ascii	"y2\000"
  8026 0cca 01       		.byte	0x1
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 163
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 163
 
 
  8027 0ccb 9A01     		.2byte	0x19a
@@ -9727,7 +9727,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8030 0cd2 91       		.byte	0x91
  8031 0cd3 08       		.sleb128 8
  8032 0cd4 16       		.uleb128 0x16
- 8033 0cd5 40050000 		.4byte	.LASF60
+ 8033 0cd5 3B050000 		.4byte	.LASF60
  8034 0cd9 01       		.byte	0x1
  8035 0cda 9A01     		.2byte	0x19a
  8036 0cdc CE000000 		.4byte	0xce
@@ -9778,7 +9778,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8081 0d29 D9020000 		.4byte	.LASF89
  8082 0d2d 01       		.byte	0x1
  8083 0d2e B701     		.2byte	0x1b7
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 164
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 164
 
 
  8084 0d30 C3000000 		.4byte	0xc3
@@ -9838,7 +9838,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8138 0d94 10000000 		.4byte	.LBE11-.LBB11
  8139 0d98 AA0D0000 		.4byte	0xdaa
  8140 0d9c 14       		.uleb128 0x14
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 165
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 165
 
 
  8141 0d9d 7400     		.ascii	"t\000"
@@ -9898,7 +9898,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8195 0e0c A601     		.2byte	0x1a6
  8196 0e0e C3000000 		.4byte	0xc3
  8197 0e12 02       		.uleb128 0x2
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 166
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 166
 
 
  8198 0e13 91       		.byte	0x91
@@ -9944,7 +9944,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8238 0e62 00       		.byte	0
  8239 0e63 00       		.byte	0
  8240 0e64 15       		.uleb128 0x15
- 8241 0e65 80060000 		.4byte	.LASF94
+ 8241 0e65 7B060000 		.4byte	.LASF94
  8242 0e69 01       		.byte	0x1
  8243 0e6a F001     		.2byte	0x1f0
  8244 0e6c 00000000 		.4byte	.LFB87
@@ -9953,12 +9953,12 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8247 0e75 9C       		.byte	0x9c
  8248 0e76 5A0F0000 		.4byte	0xf5a
  8249 0e7a 16       		.uleb128 0x16
- 8250 0e7b 6B040000 		.4byte	.LASF59
+ 8250 0e7b ED030000 		.4byte	.LASF59
  8251 0e7f 01       		.byte	0x1
  8252 0e80 F001     		.2byte	0x1f0
  8253 0e82 F6020000 		.4byte	0x2f6
  8254 0e86 02       		.uleb128 0x2
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 167
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 167
 
 
  8255 0e87 91       		.byte	0x91
@@ -9980,7 +9980,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8271 0ea1 91       		.byte	0x91
  8272 0ea2 68       		.sleb128 -24
  8273 0ea3 16       		.uleb128 0x16
- 8274 0ea4 34060000 		.4byte	.LASF28
+ 8274 0ea4 2F060000 		.4byte	.LASF28
  8275 0ea8 01       		.byte	0x1
  8276 0ea9 F101     		.2byte	0x1f1
  8277 0eab 90010000 		.4byte	0x190
@@ -10004,7 +10004,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8295 0eca 91       		.byte	0x91
  8296 0ecb 04       		.sleb128 4
  8297 0ecc 16       		.uleb128 0x16
- 8298 0ecd 40050000 		.4byte	.LASF60
+ 8298 0ecd 3B050000 		.4byte	.LASF60
  8299 0ed1 01       		.byte	0x1
  8300 0ed2 F101     		.2byte	0x1f1
  8301 0ed4 CE000000 		.4byte	0xce
@@ -10018,12 +10018,12 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8309 0ee2 CE000000 		.4byte	0xce
  8310 0ee6 02       		.uleb128 0x2
  8311 0ee7 91       		.byte	0x91
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 168
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 168
 
 
  8312 0ee8 0C       		.sleb128 12
  8313 0ee9 13       		.uleb128 0x13
- 8314 0eea DE030000 		.4byte	.LASF95
+ 8314 0eea 60030000 		.4byte	.LASF95
  8315 0eee 01       		.byte	0x1
  8316 0eef F701     		.2byte	0x1f7
  8317 0ef1 C3000000 		.4byte	0xc3
@@ -10031,7 +10031,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8319 0ef6 91       		.byte	0x91
  8320 0ef7 70       		.sleb128 -16
  8321 0ef8 13       		.uleb128 0x13
- 8322 0ef9 02060000 		.4byte	.LASF96
+ 8322 0ef9 FD050000 		.4byte	.LASF96
  8323 0efd 01       		.byte	0x1
  8324 0efe F801     		.2byte	0x1f8
  8325 0f00 B8000000 		.4byte	0xb8
@@ -10039,7 +10039,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8327 0f05 91       		.byte	0x91
  8328 0f06 77       		.sleb128 -9
  8329 0f07 18       		.uleb128 0x18
- 8330 0f08 AA040000 		.4byte	.LASF97
+ 8330 0f08 A5040000 		.4byte	.LASF97
  8331 0f0c 01       		.byte	0x1
  8332 0f0d F901     		.2byte	0x1f9
  8333 0f0f 9F000000 		.4byte	0x9f
@@ -10047,7 +10047,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8335 0f17 19       		.uleb128 0x19
  8336 0f18 00       		.byte	0
  8337 0f19 18       		.uleb128 0x18
- 8338 0f1a D3050000 		.4byte	.LASF98
+ 8338 0f1a CE050000 		.4byte	.LASF98
  8339 0f1e 01       		.byte	0x1
  8340 0f1f 0102     		.2byte	0x201
  8341 0f21 9F000000 		.4byte	0x9f
@@ -10078,12 +10078,12 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8366 0f56 72       		.sleb128 -14
  8367 0f57 00       		.byte	0
  8368 0f58 00       		.byte	0
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 169
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 169
 
 
  8369 0f59 00       		.byte	0
  8370 0f5a 15       		.uleb128 0x15
- 8371 0f5b AF060000 		.4byte	.LASF99
+ 8371 0f5b AA060000 		.4byte	.LASF99
  8372 0f5f 01       		.byte	0x1
  8373 0f60 0A02     		.2byte	0x20a
  8374 0f62 00000000 		.4byte	.LFB88
@@ -10092,7 +10092,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8377 0f6b 9C       		.byte	0x9c
  8378 0f6c E2100000 		.4byte	0x10e2
  8379 0f70 16       		.uleb128 0x16
- 8380 0f71 6B040000 		.4byte	.LASF59
+ 8380 0f71 ED030000 		.4byte	.LASF59
  8381 0f75 01       		.byte	0x1
  8382 0f76 0A02     		.2byte	0x20a
  8383 0f78 F6020000 		.4byte	0x2f6
@@ -10124,7 +10124,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8409 0fa4 91       		.byte	0x91
  8410 0fa5 47       		.sleb128 -57
  8411 0fa6 16       		.uleb128 0x16
- 8412 0fa7 40050000 		.4byte	.LASF60
+ 8412 0fa7 3B050000 		.4byte	.LASF60
  8413 0fab 01       		.byte	0x1
  8414 0fac 0B02     		.2byte	0x20b
  8415 0fae CE000000 		.4byte	0xce
@@ -10138,12 +10138,12 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8423 0fbc CE000000 		.4byte	0xce
  8424 0fc0 02       		.uleb128 0x2
  8425 0fc1 91       		.byte	0x91
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 170
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 170
 
 
  8426 0fc2 04       		.sleb128 4
  8427 0fc3 16       		.uleb128 0x16
- 8428 0fc4 1F040000 		.4byte	.LASF100
+ 8428 0fc4 A1030000 		.4byte	.LASF100
  8429 0fc8 01       		.byte	0x1
  8430 0fc9 0B02     		.2byte	0x20b
  8431 0fcb B8000000 		.4byte	0xb8
@@ -10166,7 +10166,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8448 0fed 8A000000 		.4byte	.LBB22
  8449 0ff1 6C010000 		.4byte	.LBE22-.LBB22
  8450 0ff5 13       		.uleb128 0x13
- 8451 0ff6 66060000 		.4byte	.LASF101
+ 8451 0ff6 61060000 		.4byte	.LASF101
  8452 0ffa 01       		.byte	0x1
  8453 0ffb 1902     		.2byte	0x219
  8454 0ffd B8000000 		.4byte	0xb8
@@ -10191,18 +10191,18 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8473 101e 80020000 		.4byte	.LBB24
  8474 1022 84010000 		.4byte	.LBE24-.LBB24
  8475 1026 13       		.uleb128 0x13
- 8476 1027 FC050000 		.4byte	.LASF29
+ 8476 1027 F7050000 		.4byte	.LASF29
  8477 102b 01       		.byte	0x1
  8478 102c 3502     		.2byte	0x235
  8479 102e 96010000 		.4byte	0x196
  8480 1032 02       		.uleb128 0x2
  8481 1033 91       		.byte	0x91
  8482 1034 5C       		.sleb128 -36
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 171
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 171
 
 
  8483 1035 13       		.uleb128 0x13
- 8484 1036 34060000 		.4byte	.LASF28
+ 8484 1036 2F060000 		.4byte	.LASF28
  8485 103a 01       		.byte	0x1
  8486 103b 3602     		.2byte	0x236
  8487 103d 90010000 		.4byte	0x190
@@ -10258,7 +10258,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8537 1094 91       		.byte	0x91
  8538 1095 69       		.sleb128 -23
  8539 1096 14       		.uleb128 0x14
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 172
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 172
 
 
  8540 1097 797900   		.ascii	"yy\000"
@@ -10285,7 +10285,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8561 10c0 91       		.byte	0x91
  8562 10c1 66       		.sleb128 -26
  8563 10c2 13       		.uleb128 0x13
- 8564 10c3 67070000 		.4byte	.LASF103
+ 8564 10c3 62070000 		.4byte	.LASF103
  8565 10c7 01       		.byte	0x1
  8566 10c8 3E02     		.2byte	0x23e
  8567 10ca C3000000 		.4byte	0xc3
@@ -10293,7 +10293,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8569 10cf 91       		.byte	0x91
  8570 10d0 64       		.sleb128 -28
  8571 10d1 13       		.uleb128 0x13
- 8572 10d2 24040000 		.4byte	.LASF104
+ 8572 10d2 A6030000 		.4byte	.LASF104
  8573 10d6 01       		.byte	0x1
  8574 10d7 3E02     		.2byte	0x23e
  8575 10d9 C3000000 		.4byte	0xc3
@@ -10303,7 +10303,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8579 10e0 00       		.byte	0
  8580 10e1 00       		.byte	0
  8581 10e2 15       		.uleb128 0x15
- 8582 10e3 53060000 		.4byte	.LASF105
+ 8582 10e3 4E060000 		.4byte	.LASF105
  8583 10e7 01       		.byte	0x1
  8584 10e8 6E02     		.2byte	0x26e
  8585 10ea 00000000 		.4byte	.LFB89
@@ -10312,18 +10312,18 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8588 10f3 9C       		.byte	0x9c
  8589 10f4 3F110000 		.4byte	0x113f
  8590 10f8 16       		.uleb128 0x16
- 8591 10f9 6B040000 		.4byte	.LASF59
+ 8591 10f9 ED030000 		.4byte	.LASF59
  8592 10fd 01       		.byte	0x1
  8593 10fe 6E02     		.2byte	0x26e
  8594 1100 F6020000 		.4byte	0x2f6
  8595 1104 02       		.uleb128 0x2
  8596 1105 91       		.byte	0x91
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 173
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 173
 
 
  8597 1106 6C       		.sleb128 -20
  8598 1107 16       		.uleb128 0x16
- 8599 1108 EA050000 		.4byte	.LASF106
+ 8599 1108 E5050000 		.4byte	.LASF106
  8600 110c 01       		.byte	0x1
  8601 110d 6E02     		.2byte	0x26e
  8602 110f C3000000 		.4byte	0xc3
@@ -10361,7 +10361,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8634 1150 9C       		.byte	0x9c
  8635 1151 D6110000 		.4byte	0x11d6
  8636 1155 16       		.uleb128 0x16
- 8637 1156 6B040000 		.4byte	.LASF59
+ 8637 1156 ED030000 		.4byte	.LASF59
  8638 115a 01       		.byte	0x1
  8639 115b 8B02     		.2byte	0x28b
  8640 115d F6020000 		.4byte	0x2f6
@@ -10378,12 +10378,12 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8651 1170 5B       		.sleb128 -37
  8652 1171 12       		.uleb128 0x12
  8653 1172 D4000000 		.4byte	.LBB26
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 174
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 174
 
 
  8654 1176 BE000000 		.4byte	.LBE26-.LBB26
  8655 117a 13       		.uleb128 0x13
- 8656 117b 7A060000 		.4byte	.LASF30
+ 8656 117b 75060000 		.4byte	.LASF30
  8657 117f 01       		.byte	0x1
  8658 1180 A202     		.2byte	0x2a2
  8659 1182 B8000000 		.4byte	0xb8
@@ -10394,7 +10394,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8664 118a F2000000 		.4byte	.LBB27
  8665 118e A0000000 		.4byte	.LBE27-.LBB27
  8666 1192 13       		.uleb128 0x13
- 8667 1193 FC050000 		.4byte	.LASF29
+ 8667 1193 F7050000 		.4byte	.LASF29
  8668 1197 01       		.byte	0x1
  8669 1198 A402     		.2byte	0x2a4
  8670 119a 96010000 		.4byte	0x196
@@ -10433,19 +10433,19 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8703 11d4 00       		.byte	0
  8704 11d5 00       		.byte	0
  8705 11d6 1A       		.uleb128 0x1a
- 8706 11d7 8C040000 		.4byte	.LASF110
+ 8706 11d7 87040000 		.4byte	.LASF110
  8707 11db 01       		.byte	0x1
  8708 11dc B902     		.2byte	0x2b9
  8709 11de 00000000 		.4byte	.LFB91
  8710 11e2 26000000 		.4byte	.LFE91-.LFB91
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 175
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 175
 
 
  8711 11e6 01       		.uleb128 0x1
  8712 11e7 9C       		.byte	0x9c
  8713 11e8 16120000 		.4byte	0x1216
  8714 11ec 16       		.uleb128 0x16
- 8715 11ed 6B040000 		.4byte	.LASF59
+ 8715 11ed ED030000 		.4byte	.LASF59
  8716 11f1 01       		.byte	0x1
  8717 11f2 B902     		.2byte	0x2b9
  8718 11f4 F6020000 		.4byte	0x2f6
@@ -10470,7 +10470,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8737 1214 70       		.sleb128 -16
  8738 1215 00       		.byte	0
  8739 1216 1B       		.uleb128 0x1b
- 8740 1217 76050000 		.4byte	.LASF111
+ 8740 1217 71050000 		.4byte	.LASF111
  8741 121b 01       		.byte	0x1
  8742 121c BE02     		.2byte	0x2be
  8743 121e C3000000 		.4byte	0xc3
@@ -10480,7 +10480,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8747 122b 9C       		.byte	0x9c
  8748 122c 40120000 		.4byte	0x1240
  8749 1230 16       		.uleb128 0x16
- 8750 1231 6B040000 		.4byte	.LASF59
+ 8750 1231 ED030000 		.4byte	.LASF59
  8751 1235 01       		.byte	0x1
  8752 1236 BE02     		.2byte	0x2be
  8753 1238 F6020000 		.4byte	0x2f6
@@ -10489,7 +10489,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8756 123e 74       		.sleb128 -12
  8757 123f 00       		.byte	0
  8758 1240 1B       		.uleb128 0x1b
- 8759 1241 84050000 		.4byte	.LASF112
+ 8759 1241 7F050000 		.4byte	.LASF112
  8760 1245 01       		.byte	0x1
  8761 1246 C302     		.2byte	0x2c3
  8762 1248 C3000000 		.4byte	0xc3
@@ -10498,11 +10498,11 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8765 1254 01       		.uleb128 0x1
  8766 1255 9C       		.byte	0x9c
  8767 1256 6A120000 		.4byte	0x126a
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 176
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 176
 
 
  8768 125a 16       		.uleb128 0x16
- 8769 125b 6B040000 		.4byte	.LASF59
+ 8769 125b ED030000 		.4byte	.LASF59
  8770 125f 01       		.byte	0x1
  8771 1260 C302     		.2byte	0x2c3
  8772 1262 F6020000 		.4byte	0x2f6
@@ -10511,7 +10511,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8775 1268 74       		.sleb128 -12
  8776 1269 00       		.byte	0
  8777 126a 1A       		.uleb128 0x1a
- 8778 126b 53040000 		.4byte	.LASF113
+ 8778 126b D5030000 		.4byte	.LASF113
  8779 126f 01       		.byte	0x1
  8780 1270 C802     		.2byte	0x2c8
  8781 1272 00000000 		.4byte	.LFB94
@@ -10520,7 +10520,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8784 127b 9C       		.byte	0x9c
  8785 127c 9D120000 		.4byte	0x129d
  8786 1280 16       		.uleb128 0x16
- 8787 1281 6B040000 		.4byte	.LASF59
+ 8787 1281 ED030000 		.4byte	.LASF59
  8788 1285 01       		.byte	0x1
  8789 1286 C802     		.2byte	0x2c8
  8790 1288 F6020000 		.4byte	0x2f6
@@ -10546,7 +10546,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8810 12ae 9C       		.byte	0x9c
  8811 12af DD120000 		.4byte	0x12dd
  8812 12b3 16       		.uleb128 0x16
- 8813 12b4 6B040000 		.4byte	.LASF59
+ 8813 12b4 ED030000 		.4byte	.LASF59
  8814 12b8 01       		.byte	0x1
  8815 12b9 CC02     		.2byte	0x2cc
  8816 12bb F6020000 		.4byte	0x2f6
@@ -10558,7 +10558,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8822 12c5 01       		.byte	0x1
  8823 12c6 CC02     		.2byte	0x2cc
  8824 12c8 CE000000 		.4byte	0xce
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 177
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 177
 
 
  8825 12cc 02       		.uleb128 0x2
@@ -10574,7 +10574,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8835 12db 70       		.sleb128 -16
  8836 12dc 00       		.byte	0
  8837 12dd 1A       		.uleb128 0x1a
- 8838 12de 6B060000 		.4byte	.LASF115
+ 8838 12de 66060000 		.4byte	.LASF115
  8839 12e2 01       		.byte	0x1
  8840 12e3 D102     		.2byte	0x2d1
  8841 12e5 00000000 		.4byte	.LFB96
@@ -10583,7 +10583,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8844 12ee 9C       		.byte	0x9c
  8845 12ef 10130000 		.4byte	0x1310
  8846 12f3 16       		.uleb128 0x16
- 8847 12f4 6B040000 		.4byte	.LASF59
+ 8847 12f4 ED030000 		.4byte	.LASF59
  8848 12f8 01       		.byte	0x1
  8849 12f9 D102     		.2byte	0x2d1
  8850 12fb F6020000 		.4byte	0x2f6
@@ -10600,7 +10600,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8861 130e 73       		.sleb128 -13
  8862 130f 00       		.byte	0
  8863 1310 1B       		.uleb128 0x1b
- 8864 1311 6C070000 		.4byte	.LASF116
+ 8864 1311 67070000 		.4byte	.LASF116
  8865 1315 01       		.byte	0x1
  8866 1316 D502     		.2byte	0x2d5
  8867 1318 B8000000 		.4byte	0xb8
@@ -10610,7 +10610,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8871 1325 9C       		.byte	0x9c
  8872 1326 3A130000 		.4byte	0x133a
  8873 132a 16       		.uleb128 0x16
- 8874 132b 6B040000 		.4byte	.LASF59
+ 8874 132b ED030000 		.4byte	.LASF59
  8875 132f 01       		.byte	0x1
  8876 1330 D502     		.2byte	0x2d5
  8877 1332 F6020000 		.4byte	0x2f6
@@ -10618,7 +10618,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8879 1337 91       		.byte	0x91
  8880 1338 74       		.sleb128 -12
  8881 1339 00       		.byte	0
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 178
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 178
 
 
  8882 133a 1A       		.uleb128 0x1a
@@ -10631,7 +10631,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8889 134b 9C       		.byte	0x9c
  8890 134c 6D130000 		.4byte	0x136d
  8891 1350 16       		.uleb128 0x16
- 8892 1351 6B040000 		.4byte	.LASF59
+ 8892 1351 ED030000 		.4byte	.LASF59
  8893 1355 01       		.byte	0x1
  8894 1356 D902     		.2byte	0x2d9
  8895 1358 F6020000 		.4byte	0x2f6
@@ -10648,7 +10648,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8906 136b 73       		.sleb128 -13
  8907 136c 00       		.byte	0
  8908 136d 1A       		.uleb128 0x1a
- 8909 136e F1040000 		.4byte	.LASF118
+ 8909 136e EC040000 		.4byte	.LASF118
  8910 1372 01       		.byte	0x1
  8911 1373 F002     		.2byte	0x2f0
  8912 1375 00000000 		.4byte	.LFB99
@@ -10657,7 +10657,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8915 137e 9C       		.byte	0x9c
  8916 137f A0130000 		.4byte	0x13a0
  8917 1383 16       		.uleb128 0x16
- 8918 1384 6B040000 		.4byte	.LASF59
+ 8918 1384 ED030000 		.4byte	.LASF59
  8919 1388 01       		.byte	0x1
  8920 1389 F002     		.2byte	0x2f0
  8921 138b F6020000 		.4byte	0x2f6
@@ -10678,7 +10678,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8936 13a5 01       		.byte	0x1
  8937 13a6 F402     		.2byte	0x2f4
  8938 13a8 00000000 		.4byte	.LFB100
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 179
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 179
 
 
  8939 13ac DC000000 		.4byte	.LFE100-.LFB100
@@ -10686,7 +10686,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8941 13b1 9C       		.byte	0x9c
  8942 13b2 47140000 		.4byte	0x1447
  8943 13b6 16       		.uleb128 0x16
- 8944 13b7 6B040000 		.4byte	.LASF59
+ 8944 13b7 ED030000 		.4byte	.LASF59
  8945 13bb 01       		.byte	0x1
  8946 13bc F402     		.2byte	0x2f4
  8947 13be F6020000 		.4byte	0x2f6
@@ -10705,7 +10705,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8960 13d3 2E000000 		.4byte	.LBB29
  8961 13d7 7C000000 		.4byte	.LBE29-.LBB29
  8962 13db 13       		.uleb128 0x13
- 8963 13dc 7A060000 		.4byte	.LASF30
+ 8963 13dc 75060000 		.4byte	.LASF30
  8964 13e0 01       		.byte	0x1
  8965 13e1 0603     		.2byte	0x306
  8966 13e3 B8000000 		.4byte	0xb8
@@ -10735,10 +10735,10 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  8990 1410 4A000000 		.4byte	.LBB31
  8991 1414 46000000 		.4byte	.LBE31-.LBB31
  8992 1418 13       		.uleb128 0x13
- 8993 1419 FC050000 		.4byte	.LASF29
+ 8993 1419 F7050000 		.4byte	.LASF29
  8994 141d 01       		.byte	0x1
  8995 141e 0A03     		.2byte	0x30a
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 180
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 180
 
 
  8996 1420 96010000 		.4byte	0x196
@@ -10780,7 +10780,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  9032 1463 9C       		.byte	0x9c
  9033 1464 D2150000 		.4byte	0x15d2
  9034 1468 16       		.uleb128 0x16
- 9035 1469 6B040000 		.4byte	.LASF59
+ 9035 1469 ED030000 		.4byte	.LASF59
  9036 146d 01       		.byte	0x1
  9037 146e 3203     		.2byte	0x332
  9038 1470 F6020000 		.4byte	0x2f6
@@ -10798,7 +10798,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  9050 1484 17       		.uleb128 0x17
  9051 1485 7800     		.ascii	"x\000"
  9052 1487 01       		.byte	0x1
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 181
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 181
 
 
  9053 1488 3203     		.2byte	0x332
@@ -10831,7 +10831,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  9080 14ba 91       		.byte	0x91
  9081 14bb 04       		.sleb128 4
  9082 14bc 16       		.uleb128 0x16
- 9083 14bd 71050000 		.4byte	.LASF123
+ 9083 14bd 6C050000 		.4byte	.LASF123
  9084 14c1 01       		.byte	0x1
  9085 14c2 3303     		.2byte	0x333
  9086 14c4 D2150000 		.4byte	0x15d2
@@ -10839,7 +10839,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  9088 14c9 91       		.byte	0x91
  9089 14ca 08       		.sleb128 8
  9090 14cb 16       		.uleb128 0x16
- 9091 14cc 13070000 		.4byte	.LASF124
+ 9091 14cc 0E070000 		.4byte	.LASF124
  9092 14d0 01       		.byte	0x1
  9093 14d1 3303     		.2byte	0x333
  9094 14d3 D2150000 		.4byte	0x15d2
@@ -10851,14 +10851,14 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  9100 14df A8010000 		.4byte	.LBE32-.LBB32
  9101 14e3 AB150000 		.4byte	0x15ab
  9102 14e7 13       		.uleb128 0x13
- 9103 14e8 7A060000 		.4byte	.LASF30
+ 9103 14e8 75060000 		.4byte	.LASF30
  9104 14ec 01       		.byte	0x1
  9105 14ed 3B03     		.2byte	0x33b
  9106 14ef B8000000 		.4byte	0xb8
  9107 14f3 02       		.uleb128 0x2
  9108 14f4 91       		.byte	0x91
  9109 14f5 77       		.sleb128 -9
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 182
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 182
 
 
  9110 14f6 13       		.uleb128 0x13
@@ -10873,7 +10873,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  9119 1506 82000000 		.4byte	.LBB33
  9120 150a 7C010000 		.4byte	.LBE33-.LBB33
  9121 150e 13       		.uleb128 0x13
- 9122 150f FC050000 		.4byte	.LASF29
+ 9122 150f F7050000 		.4byte	.LASF29
  9123 1513 01       		.byte	0x1
  9124 1514 3E03     		.2byte	0x33e
  9125 1516 96010000 		.4byte	0x196
@@ -10918,7 +10918,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  9164 155a 4403     		.2byte	0x344
  9165 155c AD000000 		.4byte	0xad
  9166 1560 02       		.uleb128 0x2
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 183
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 183
 
 
  9167 1561 91       		.byte	0x91
@@ -10978,7 +10978,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  9221 15c1 5C       		.sleb128 -36
  9222 15c2 14       		.uleb128 0x14
  9223 15c3 793200   		.ascii	"y2\000"
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 184
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 184
 
 
  9224 15c6 01       		.byte	0x1
@@ -11002,7 +11002,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  9242 15e9 9C       		.byte	0x9c
  9243 15ea A6160000 		.4byte	0x16a6
  9244 15ee 16       		.uleb128 0x16
- 9245 15ef 6B040000 		.4byte	.LASF59
+ 9245 15ef ED030000 		.4byte	.LASF59
  9246 15f3 01       		.byte	0x1
  9247 15f4 6E03     		.2byte	0x36e
  9248 15f6 F6020000 		.4byte	0x2f6
@@ -11038,7 +11038,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  9278 162a 01       		.byte	0x1
  9279 162b 6F03     		.2byte	0x36f
  9280 162d D2150000 		.4byte	0x15d2
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 185
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 185
 
 
  9281 1631 02       		.uleb128 0x2
@@ -11093,18 +11093,18 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  9330 1685 91       		.byte	0x91
  9331 1686 72       		.sleb128 -14
  9332 1687 13       		.uleb128 0x13
- 9333 1688 71050000 		.4byte	.LASF123
+ 9333 1688 6C050000 		.4byte	.LASF123
  9334 168c 01       		.byte	0x1
  9335 168d 7603     		.2byte	0x376
  9336 168f C3000000 		.4byte	0xc3
  9337 1693 02       		.uleb128 0x2
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 186
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 186
 
 
  9338 1694 91       		.byte	0x91
  9339 1695 70       		.sleb128 -16
  9340 1696 13       		.uleb128 0x13
- 9341 1697 13070000 		.4byte	.LASF124
+ 9341 1697 0E070000 		.4byte	.LASF124
  9342 169b 01       		.byte	0x1
  9343 169c 7603     		.2byte	0x376
  9344 169e C3000000 		.4byte	0xc3
@@ -11126,7 +11126,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  9360 16c1 9C       		.byte	0x9c
  9361 16c2 D6160000 		.4byte	0x16d6
  9362 16c6 16       		.uleb128 0x16
- 9363 16c7 6B040000 		.4byte	.LASF59
+ 9363 16c7 ED030000 		.4byte	.LASF59
  9364 16cb 01       		.byte	0x1
  9365 16cc 8803     		.2byte	0x388
  9366 16ce F6020000 		.4byte	0x2f6
@@ -11135,7 +11135,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  9369 16d4 74       		.sleb128 -12
  9370 16d5 00       		.byte	0
  9371 16d6 1B       		.uleb128 0x1b
- 9372 16d7 25050000 		.4byte	.LASF127
+ 9372 16d7 20050000 		.4byte	.LASF127
  9373 16db 01       		.byte	0x1
  9374 16dc 8C03     		.2byte	0x38c
  9375 16de C3000000 		.4byte	0xc3
@@ -11145,7 +11145,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  9379 16eb 9C       		.byte	0x9c
  9380 16ec 00170000 		.4byte	0x1700
  9381 16f0 16       		.uleb128 0x16
- 9382 16f1 6B040000 		.4byte	.LASF59
+ 9382 16f1 ED030000 		.4byte	.LASF59
  9383 16f5 01       		.byte	0x1
  9384 16f6 8C03     		.2byte	0x38c
  9385 16f8 F6020000 		.4byte	0x2f6
@@ -11158,7 +11158,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  9392 1705 01       		.byte	0x1
  9393 1706 9003     		.2byte	0x390
  9394 1708 00000000 		.4byte	.LFB105
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 187
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 187
 
 
  9395 170c 16000000 		.4byte	.LFE105-.LFB105
@@ -11166,7 +11166,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  9397 1711 9C       		.byte	0x9c
  9398 1712 33170000 		.4byte	0x1733
  9399 1716 16       		.uleb128 0x16
- 9400 1717 6B040000 		.4byte	.LASF59
+ 9400 1717 ED030000 		.4byte	.LASF59
  9401 171b 01       		.byte	0x1
  9402 171c 9003     		.2byte	0x390
  9403 171e F6020000 		.4byte	0x2f6
@@ -11183,7 +11183,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  9414 1731 73       		.sleb128 -13
  9415 1732 00       		.byte	0
  9416 1733 1D       		.uleb128 0x1d
- 9417 1734 99060000 		.4byte	.LASF129
+ 9417 1734 94060000 		.4byte	.LASF129
  9418 1738 01       		.byte	0x1
  9419 1739 A403     		.2byte	0x3a4
  9420 173b 9F000000 		.4byte	0x9f
@@ -11218,7 +11218,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  9449 1779 5F       		.sleb128 -33
  9450 177a 12       		.uleb128 0x12
  9451 177b 0E000000 		.4byte	.LBB35
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 188
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 188
 
 
  9452 177f 62000000 		.4byte	.LBE35-.LBB35
@@ -11234,7 +11234,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  9462 1791 14000000 		.4byte	.LBB36
  9463 1795 4E000000 		.4byte	.LBE36-.LBB36
  9464 1799 13       		.uleb128 0x13
- 9465 179a 46050000 		.4byte	.LASF133
+ 9465 179a 41050000 		.4byte	.LASF133
  9466 179e 01       		.byte	0x1
  9467 179f A803     		.2byte	0x3a8
  9468 17a1 9F000000 		.4byte	0x9f
@@ -11271,14 +11271,14 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  9499 17e1 91       		.byte	0x91
  9500 17e2 54       		.sleb128 -44
  9501 17e3 16       		.uleb128 0x16
- 9502 17e4 61050000 		.4byte	.LASF136
+ 9502 17e4 5C050000 		.4byte	.LASF136
  9503 17e8 01       		.byte	0x1
  9504 17e9 B103     		.2byte	0x3b1
  9505 17eb B3010000 		.4byte	0x1b3
  9506 17ef 02       		.uleb128 0x2
  9507 17f0 91       		.byte	0x91
  9508 17f1 50       		.sleb128 -48
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 189
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 189
 
 
  9509 17f2 16       		.uleb128 0x16
@@ -11298,7 +11298,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  9523 180e 91       		.byte	0x91
  9524 180f 5C       		.sleb128 -36
  9525 1810 13       		.uleb128 0x13
- 9526 1811 40070000 		.4byte	.LASF139
+ 9526 1811 3B070000 		.4byte	.LASF139
  9527 1815 01       		.byte	0x1
  9528 1816 B303     		.2byte	0x3b3
  9529 1818 9F000000 		.4byte	0x9f
@@ -11306,7 +11306,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  9531 181d 91       		.byte	0x91
  9532 181e 58       		.sleb128 -40
  9533 181f 13       		.uleb128 0x13
- 9534 1820 6C050000 		.4byte	.LASF140
+ 9534 1820 67050000 		.4byte	.LASF140
  9535 1824 01       		.byte	0x1
  9536 1825 B303     		.2byte	0x3b3
  9537 1827 9F000000 		.4byte	0x9f
@@ -11338,11 +11338,11 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  9563 1859 91       		.byte	0x91
  9564 185a 60       		.sleb128 -32
  9565 185b 00       		.byte	0
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 190
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 190
 
 
  9566 185c 1D       		.uleb128 0x1d
- 9567 185d 38040000 		.4byte	.LASF142
+ 9567 185d BA030000 		.4byte	.LASF142
  9568 1861 01       		.byte	0x1
  9569 1862 D903     		.2byte	0x3d9
  9570 1864 9F000000 		.4byte	0x9f
@@ -11360,7 +11360,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  9582 1883 91       		.byte	0x91
  9583 1884 5C       		.sleb128 -36
  9584 1885 16       		.uleb128 0x16
- 9585 1886 61050000 		.4byte	.LASF136
+ 9585 1886 5C050000 		.4byte	.LASF136
  9586 188a 01       		.byte	0x1
  9587 188b D903     		.2byte	0x3d9
  9588 188d B3010000 		.4byte	0x1b3
@@ -11376,7 +11376,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  9598 18a1 91       		.byte	0x91
  9599 18a2 64       		.sleb128 -28
  9600 18a3 13       		.uleb128 0x13
- 9601 18a4 6C050000 		.4byte	.LASF140
+ 9601 18a4 67050000 		.4byte	.LASF140
  9602 18a8 01       		.byte	0x1
  9603 18a9 DB03     		.2byte	0x3db
  9604 18ab 9F000000 		.4byte	0x9f
@@ -11398,13 +11398,13 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  9620 18c9 9F000000 		.4byte	0x9f
  9621 18cd 02       		.uleb128 0x2
  9622 18ce 91       		.byte	0x91
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 191
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 191
 
 
  9623 18cf 60       		.sleb128 -32
  9624 18d0 00       		.byte	0
  9625 18d1 1D       		.uleb128 0x1d
- 9626 18d2 05050000 		.4byte	.LASF143
+ 9626 18d2 00050000 		.4byte	.LASF143
  9627 18d6 01       		.byte	0x1
  9628 18d7 F103     		.2byte	0x3f1
  9629 18d9 9F000000 		.4byte	0x9f
@@ -11446,7 +11446,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  9665 1925 91       		.byte	0x91
  9666 1926 46       		.sleb128 -58
  9667 1927 13       		.uleb128 0x13
- 9668 1928 BB060000 		.4byte	.LASF146
+ 9668 1928 B6060000 		.4byte	.LASF146
  9669 192c 01       		.byte	0x1
  9670 192d F303     		.2byte	0x3f3
  9671 192f B3010000 		.4byte	0x1b3
@@ -11458,14 +11458,14 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  9677 1939 01       		.byte	0x1
  9678 193a F403     		.2byte	0x3f4
  9679 193c B3010000 		.4byte	0x1b3
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 192
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 192
 
 
  9680 1940 02       		.uleb128 0x2
  9681 1941 91       		.byte	0x91
  9682 1942 5C       		.sleb128 -36
  9683 1943 13       		.uleb128 0x13
- 9684 1944 07060000 		.4byte	.LASF147
+ 9684 1944 02060000 		.4byte	.LASF147
  9685 1948 01       		.byte	0x1
  9686 1949 F603     		.2byte	0x3f6
  9687 194b 9F000000 		.4byte	0x9f
@@ -11508,7 +11508,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  9724 198d E8000000 		.4byte	.LBB37
  9725 1991 92000000 		.4byte	.LBE37-.LBB37
  9726 1995 13       		.uleb128 0x13
- 9727 1996 46050000 		.4byte	.LASF133
+ 9727 1996 41050000 		.4byte	.LASF133
  9728 199a 01       		.byte	0x1
  9729 199b 1404     		.2byte	0x414
  9730 199d 9F000000 		.4byte	0x9f
@@ -11518,7 +11518,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  9734 19a4 13       		.uleb128 0x13
  9735 19a5 56000000 		.4byte	.LASF134
  9736 19a9 01       		.byte	0x1
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 193
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 193
 
 
  9737 19aa 1504     		.2byte	0x415
@@ -11538,7 +11538,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  9751 19c6 9C       		.byte	0x9c
  9752 19c7 F7190000 		.4byte	0x19f7
  9753 19cb 16       		.uleb128 0x16
- 9754 19cc 6B040000 		.4byte	.LASF59
+ 9754 19cc ED030000 		.4byte	.LASF59
  9755 19d0 01       		.byte	0x1
  9756 19d1 3304     		.2byte	0x433
  9757 19d3 F6020000 		.4byte	0x2f6
@@ -11554,7 +11554,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  9767 19e5 91       		.byte	0x91
  9768 19e6 73       		.sleb128 -13
  9769 19e7 16       		.uleb128 0x16
- 9770 19e8 40050000 		.4byte	.LASF60
+ 9770 19e8 3B050000 		.4byte	.LASF60
  9771 19ec 01       		.byte	0x1
  9772 19ed 3304     		.2byte	0x433
  9773 19ef CE000000 		.4byte	0xce
@@ -11563,7 +11563,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  9776 19f5 70       		.sleb128 -16
  9777 19f6 00       		.byte	0
  9778 19f7 1A       		.uleb128 0x1a
- 9779 19f8 C8040000 		.4byte	.LASF150
+ 9779 19f8 C3040000 		.4byte	.LASF150
  9780 19fc 01       		.byte	0x1
  9781 19fd 3804     		.2byte	0x438
  9782 19ff 00000000 		.4byte	.LFB111
@@ -11572,13 +11572,13 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  9785 1a08 9C       		.byte	0x9c
  9786 1a09 391A0000 		.4byte	0x1a39
  9787 1a0d 16       		.uleb128 0x16
- 9788 1a0e 6B040000 		.4byte	.LASF59
+ 9788 1a0e ED030000 		.4byte	.LASF59
  9789 1a12 01       		.byte	0x1
  9790 1a13 3804     		.2byte	0x438
  9791 1a15 F6020000 		.4byte	0x2f6
  9792 1a19 02       		.uleb128 0x2
  9793 1a1a 91       		.byte	0x91
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 194
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 194
 
 
  9794 1a1b 74       		.sleb128 -12
@@ -11591,7 +11591,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  9801 1a27 91       		.byte	0x91
  9802 1a28 73       		.sleb128 -13
  9803 1a29 16       		.uleb128 0x16
- 9804 1a2a 40050000 		.4byte	.LASF60
+ 9804 1a2a 3B050000 		.4byte	.LASF60
  9805 1a2e 01       		.byte	0x1
  9806 1a2f 3804     		.2byte	0x438
  9807 1a31 CE000000 		.4byte	0xce
@@ -11609,7 +11609,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  9819 1a4a 9C       		.byte	0x9c
  9820 1a4b 7B1A0000 		.4byte	0x1a7b
  9821 1a4f 16       		.uleb128 0x16
- 9822 1a50 6B040000 		.4byte	.LASF59
+ 9822 1a50 ED030000 		.4byte	.LASF59
  9823 1a54 01       		.byte	0x1
  9824 1a55 3D04     		.2byte	0x43d
  9825 1a57 F6020000 		.4byte	0x2f6
@@ -11625,7 +11625,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  9835 1a69 91       		.byte	0x91
  9836 1a6a 73       		.sleb128 -13
  9837 1a6b 16       		.uleb128 0x16
- 9838 1a6c 40050000 		.4byte	.LASF60
+ 9838 1a6c 3B050000 		.4byte	.LASF60
  9839 1a70 01       		.byte	0x1
  9840 1a71 3D04     		.2byte	0x43d
  9841 1a73 CE000000 		.4byte	0xce
@@ -11634,11 +11634,11 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  9844 1a79 70       		.sleb128 -16
  9845 1a7a 00       		.byte	0
  9846 1a7b 1A       		.uleb128 0x1a
- 9847 1a7c 29040000 		.4byte	.LASF152
+ 9847 1a7c AB030000 		.4byte	.LASF152
  9848 1a80 01       		.byte	0x1
  9849 1a81 4204     		.2byte	0x442
  9850 1a83 00000000 		.4byte	.LFB113
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 195
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 195
 
 
  9851 1a87 1A000000 		.4byte	.LFE113-.LFB113
@@ -11646,7 +11646,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  9853 1a8c 9C       		.byte	0x9c
  9854 1a8d BD1A0000 		.4byte	0x1abd
  9855 1a91 16       		.uleb128 0x16
- 9856 1a92 6B040000 		.4byte	.LASF59
+ 9856 1a92 ED030000 		.4byte	.LASF59
  9857 1a96 01       		.byte	0x1
  9858 1a97 4204     		.2byte	0x442
  9859 1a99 F6020000 		.4byte	0x2f6
@@ -11662,7 +11662,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  9869 1aab 91       		.byte	0x91
  9870 1aac 73       		.sleb128 -13
  9871 1aad 16       		.uleb128 0x16
- 9872 1aae 40050000 		.4byte	.LASF60
+ 9872 1aae 3B050000 		.4byte	.LASF60
  9873 1ab2 01       		.byte	0x1
  9874 1ab3 4204     		.2byte	0x442
  9875 1ab5 CE000000 		.4byte	0xce
@@ -11671,7 +11671,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  9878 1abb 70       		.sleb128 -16
  9879 1abc 00       		.byte	0
  9880 1abd 1E       		.uleb128 0x1e
- 9881 1abe E4040000 		.4byte	.LASF153
+ 9881 1abe DF040000 		.4byte	.LASF153
  9882 1ac2 07       		.byte	0x7
  9883 1ac3 1207     		.2byte	0x712
  9884 1ac5 C91A0000 		.4byte	0x1ac9
@@ -11698,7 +11698,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  9905 1af5 21       		.uleb128 0x21
  9906 1af6 B8000000 		.4byte	0xb8
  9907 1afa 051B0000 		.4byte	0x1b05
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 196
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 196
 
 
  9908 1afe 24       		.uleb128 0x24
@@ -11758,7 +11758,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  9962 0027 03       		.uleb128 0x3
  9963 0028 0E       		.uleb128 0xe
  9964 0029 00       		.byte	0
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 197
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 197
 
 
  9965 002a 00       		.byte	0
@@ -11818,7 +11818,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  10019 0060 3A       		.uleb128 0x3a
  10020 0061 0B       		.uleb128 0xb
  10021 0062 3B       		.uleb128 0x3b
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 198
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 198
 
 
  10022 0063 05       		.uleb128 0x5
@@ -11878,7 +11878,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  10076 009a 01       		.uleb128 0x1
  10077 009b 13       		.uleb128 0x13
  10078 009c 00       		.byte	0
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 199
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 199
 
 
  10079 009d 00       		.byte	0
@@ -11938,7 +11938,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  10133 00d4 00       		.byte	0
  10134 00d5 00       		.byte	0
  10135 00d6 0F       		.uleb128 0xf
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 200
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 200
 
 
  10136 00d7 34       		.uleb128 0x34
@@ -11998,7 +11998,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  10190 010d 3A       		.uleb128 0x3a
  10191 010e 0B       		.uleb128 0xb
  10192 010f 3B       		.uleb128 0x3b
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 201
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 201
 
 
  10193 0110 05       		.uleb128 0x5
@@ -12058,7 +12058,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  10247 0147 3B       		.uleb128 0x3b
  10248 0148 05       		.uleb128 0x5
  10249 0149 49       		.uleb128 0x49
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 202
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 202
 
 
  10250 014a 13       		.uleb128 0x13
@@ -12118,7 +12118,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  10304 0180 05       		.uleb128 0x5
  10305 0181 27       		.uleb128 0x27
  10306 0182 19       		.uleb128 0x19
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 203
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 203
 
 
  10307 0183 11       		.uleb128 0x11
@@ -12178,7 +12178,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  10361 01bb 0B       		.uleb128 0xb
  10362 01bc 3B       		.uleb128 0x3b
  10363 01bd 05       		.uleb128 0x5
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 204
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 204
 
 
  10364 01be 27       		.uleb128 0x27
@@ -12238,7 +12238,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  10418 01f5 18       		.uleb128 0x18
  10419 01f6 00       		.byte	0
  10420 01f7 00       		.byte	0
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 205
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 205
 
 
  10421 01f8 21       		.uleb128 0x21
@@ -12298,7 +12298,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  10475 022e 18       		.uleb128 0x18
  10476 022f 00       		.byte	0
  10477 0230 00       		.byte	0
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 206
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 206
 
 
  10478 0231 00       		.byte	0
@@ -12358,7 +12358,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  10532 00c4 E0020000 		.4byte	.LFE86-.LFB86
  10533 00c8 00000000 		.4byte	.LFB87
  10534 00cc D8000000 		.4byte	.LFE87-.LFB87
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 207
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 207
 
 
  10535 00d0 00000000 		.4byte	.LFB88
@@ -12418,7 +12418,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  10589              		.section	.debug_ranges,"",%progbits
  10590              	.Ldebug_ranges0:
  10591 0000 00000000 		.4byte	.LFB64
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 208
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 208
 
 
  10592 0004 7E000000 		.4byte	.LFE64
@@ -12478,7 +12478,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  10646 00dc 26000000 		.4byte	.LFE91
  10647 00e0 00000000 		.4byte	.LFB92
  10648 00e4 18000000 		.4byte	.LFE92
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 209
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 209
 
 
  10649 00e8 00000000 		.4byte	.LFB93
@@ -12538,7 +12538,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  10697      6972636C 
  10697      6500
  10698              	.LASF31:
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 210
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 210
 
 
  10699 000e 6C617374 		.ascii	"last\000"
@@ -12598,7 +12598,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  10727      676E6564 
  10727      20696E74 
  10727      00
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 211
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 211
 
 
  10728              	.LASF50:
@@ -12658,7 +12658,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  10751 018b 6E756D44 		.ascii	"numDigits\000"
  10751      69676974 
  10751      7300
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 212
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 212
 
 
  10752              	.LASF41:
@@ -12718,7 +12718,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  10779      61737448 
  10779      4C696E65 
  10779      00
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 213
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 213
 
 
  10780              	.LASF138:
@@ -12778,7 +12778,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  10807      6D626572 
  10807      00
  10808              	.LASF37:
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 214
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 214
 
 
  10809 02ba 63686172 		.ascii	"char\000"
@@ -12838,7 +12838,7 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  10839      6720696E 
  10839      7400
  10840              	.LASF54:
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 215
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 215
 
 
  10841 0340 666F6E74 		.ascii	"fontDesc\000"
@@ -12853,390 +12853,390 @@ ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 1
  10844              	.LASF93:
  10845 035b 64793132 		.ascii	"dy12\000"
  10845      00
- 10846              	.LASF158:
- 10847 0360 433A5C55 		.ascii	"C:\\Users\\JeffSnyder\\dev\\Electrosteel_embedded\\"
- 10847      73657273 
- 10847      5C4A6566 
- 10847      66536E79 
- 10847      6465725C 
- 10848 038e 50534F43 		.ascii	"PSOC5_electrosteel_stringsensors_newpcb_brain\\CE21"
- 10848      355F656C 
- 10848      65637472 
- 10848      6F737465 
- 10848      656C5F73 
- 10849 03c0 30353134 		.ascii	"0514_PSOC3_5_Thermistor.cydsn\000"
- 10849      5F50534F 
- 10849      43335F35 
- 10849      5F546865 
- 10849      726D6973 
- 10850              	.LASF95:
- 10851 03de 62797465 		.ascii	"byteWidth\000"
- 10851      57696474 
- 10851      6800
- 10852              	.LASF4:
- 10853 03e8 5F5F696E 		.ascii	"__int16_t\000"
- 10853      7431365F 
- 10853      7400
- 10854              	.LASF43:
- 10855 03f2 5F686569 		.ascii	"_height\000"
- 10855      67687400 
- 10856              	.LASF78:
- 10857 03fa 47465864 		.ascii	"GFXdrawCircleHelper\000"
- 10857      72617743 
- 10857      6972636C 
- 10857      6548656C 
- 10857      70657200 
- 10858              	.LASF70:
- 10859 040e 47465864 		.ascii	"GFXdrawFastVLine\000"
- 10859      72617746 
- 10859      61737456 
- 10859      4C696E65 
+ 10846              	.LASF95:
+ 10847 0360 62797465 		.ascii	"byteWidth\000"
+ 10847      57696474 
+ 10847      6800
+ 10848              	.LASF4:
+ 10849 036a 5F5F696E 		.ascii	"__int16_t\000"
+ 10849      7431365F 
+ 10849      7400
+ 10850              	.LASF43:
+ 10851 0374 5F686569 		.ascii	"_height\000"
+ 10851      67687400 
+ 10852              	.LASF78:
+ 10853 037c 47465864 		.ascii	"GFXdrawCircleHelper\000"
+ 10853      72617743 
+ 10853      6972636C 
+ 10853      6548656C 
+ 10853      70657200 
+ 10854              	.LASF70:
+ 10855 0390 47465864 		.ascii	"GFXdrawFastVLine\000"
+ 10855      72617746 
+ 10855      61737456 
+ 10855      4C696E65 
+ 10855      00
+ 10856              	.LASF100:
+ 10857 03a1 73697A65 		.ascii	"size\000"
+ 10857      00
+ 10858              	.LASF104:
+ 10859 03a6 796F3136 		.ascii	"yo16\000"
  10859      00
- 10860              	.LASF100:
- 10861 041f 73697A65 		.ascii	"size\000"
- 10861      00
- 10862              	.LASF104:
- 10863 0424 796F3136 		.ascii	"yo16\000"
- 10863      00
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 216
-
-
- 10864              	.LASF152:
- 10865 0429 47465873 		.ascii	"GFXscrollRight\000"
- 10865      63726F6C 
- 10865      6C526967 
+ 10860              	.LASF152:
+ 10861 03ab 47465873 		.ascii	"GFXscrollRight\000"
+ 10861      63726F6C 
+ 10861      6C526967 
+ 10861      687400
+ 10862              	.LASF142:
+ 10863 03ba 4F4C4544 		.ascii	"OLEDparsePitchClass\000"
+ 10863      70617273 
+ 10863      65506974 
+ 10863      6368436C 
+ 10863      61737300 
+ 10864              	.LASF23:
+ 10865 03ce 68656967 		.ascii	"height\000"
  10865      687400
- 10866              	.LASF142:
- 10867 0438 4F4C4544 		.ascii	"OLEDparsePitchClass\000"
- 10867      70617273 
- 10867      65506974 
- 10867      6368436C 
- 10867      61737300 
- 10868              	.LASF23:
- 10869 044c 68656967 		.ascii	"height\000"
- 10869      687400
- 10870              	.LASF113:
- 10871 0453 47465873 		.ascii	"GFXsetTextSize\000"
- 10871      65745465 
- 10871      78745369 
- 10871      7A6500
- 10872              	.LASF0:
- 10873 0462 5F5F696E 		.ascii	"__int8_t\000"
- 10873      74385F74 
- 10873      00
- 10874              	.LASF59:
- 10875 046b 6D794746 		.ascii	"myGFX\000"
- 10875      5800
- 10876              	.LASF157:
- 10877 0471 6766782E 		.ascii	"gfx.c\000"
- 10877      6300
+ 10866              	.LASF113:
+ 10867 03d5 47465873 		.ascii	"GFXsetTextSize\000"
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 216
+
+
+ 10867      65745465 
+ 10867      78745369 
+ 10867      7A6500
+ 10868              	.LASF0:
+ 10869 03e4 5F5F696E 		.ascii	"__int8_t\000"
+ 10869      74385F74 
+ 10869      00
+ 10870              	.LASF59:
+ 10871 03ed 6D794746 		.ascii	"myGFX\000"
+ 10871      5800
+ 10872              	.LASF157:
+ 10873 03f3 6766782E 		.ascii	"gfx.c\000"
+ 10873      6300
+ 10874              	.LASF158:
+ 10875 03f9 433A5C55 		.ascii	"C:\\Users\\ggg88\\dev\\Electrosteel_embedded\\PSOC5"
+ 10875      73657273 
+ 10875      5C676767 
+ 10875      38385C64 
+ 10875      65765C45 
+ 10876 0427 5F656C65 		.ascii	"_electrosteel_stringsensors_newpcb_brain\\CE210514_"
+ 10876      6374726F 
+ 10876      73746565 
+ 10876      6C5F7374 
+ 10876      72696E67 
+ 10877 0459 50534F43 		.ascii	"PSOC3_5_Thermistor.cydsn\000"
+ 10877      335F355F 
+ 10877      54686572 
+ 10877      6D697374 
+ 10877      6F722E63 
  10878              	.LASF38:
- 10879 0477 6C6F6E67 		.ascii	"long double\000"
+ 10879 0472 6C6F6E67 		.ascii	"long double\000"
  10879      20646F75 
  10879      626C6500 
  10880              	.LASF18:
- 10881 0483 75696E74 		.ascii	"uint16_t\000"
+ 10881 047e 75696E74 		.ascii	"uint16_t\000"
  10881      31365F74 
  10881      00
  10882              	.LASF110:
- 10883 048c 47465873 		.ascii	"GFXsetCursor\000"
+ 10883 0487 47465873 		.ascii	"GFXsetCursor\000"
  10883      65744375 
  10883      72736F72 
  10883      00
  10884              	.LASF84:
- 10885 0499 47465864 		.ascii	"GFXdrawRoundRect\000"
+ 10885 0494 47465864 		.ascii	"GFXdrawRoundRect\000"
  10885      72617752 
  10885      6F756E64 
  10885      52656374 
  10885      00
  10886              	.LASF97:
- 10887 04aa 73746172 		.ascii	"startWrite\000"
+ 10887 04a5 73746172 		.ascii	"startWrite\000"
  10887      74577269 
  10887      746500
  10888              	.LASF5:
- 10889 04b5 73686F72 		.ascii	"short int\000"
+ 10889 04b0 73686F72 		.ascii	"short int\000"
  10889      7420696E 
  10889      7400
  10890              	.LASF9:
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 217
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 217
 
 
- 10891 04bf 6C6F6E67 		.ascii	"long int\000"
+ 10891 04ba 6C6F6E67 		.ascii	"long int\000"
  10891      20696E74 
  10891      00
  10892              	.LASF150:
- 10893 04c8 47465873 		.ascii	"GFXscrollDown\000"
+ 10893 04c3 47465873 		.ascii	"GFXscrollDown\000"
  10893      63726F6C 
  10893      6C446F77 
  10893      6E00
  10894              	.LASF63:
- 10895 04d6 47465873 		.ascii	"GFXstartWrite\000"
+ 10895 04d1 47465873 		.ascii	"GFXstartWrite\000"
  10895      74617274 
  10895      57726974 
  10895      6500
  10896              	.LASF153:
- 10897 04e4 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 10897 04df 49544D5F 		.ascii	"ITM_RxBuffer\000"
  10897      52784275 
  10897      66666572 
  10897      00
  10898              	.LASF118:
- 10899 04f1 47465863 		.ascii	"GFXcp437\000"
+ 10899 04ec 47465863 		.ascii	"GFXcp437\000"
  10899      70343337 
  10899      00
  10900              	.LASF53:
- 10901 04fa 666F6E74 		.ascii	"fontHeight\000"
+ 10901 04f5 666F6E74 		.ascii	"fontHeight\000"
  10901      48656967 
  10901      687400
  10902              	.LASF143:
- 10903 0505 4F4C4544 		.ascii	"OLEDparseFixedFloat\000"
+ 10903 0500 4F4C4544 		.ascii	"OLEDparseFixedFloat\000"
  10903      70617273 
  10903      65466978 
  10903      6564466C 
  10903      6F617400 
  10904              	.LASF72:
- 10905 0519 47465866 		.ascii	"GFXfillRect\000"
+ 10905 0514 47465866 		.ascii	"GFXfillRect\000"
  10905      696C6C52 
  10905      65637400 
  10906              	.LASF127:
- 10907 0525 47465868 		.ascii	"GFXheight\000"
+ 10907 0520 47465868 		.ascii	"GFXheight\000"
  10907      65696768 
  10907      7400
  10908              	.LASF68:
- 10909 052f 47465877 		.ascii	"GFXwriteFillRect\000"
+ 10909 052a 47465877 		.ascii	"GFXwriteFillRect\000"
  10909      72697465 
  10909      46696C6C 
  10909      52656374 
  10909      00
  10910              	.LASF60:
- 10911 0540 636F6C6F 		.ascii	"color\000"
+ 10911 053b 636F6C6F 		.ascii	"color\000"
  10911      7200
  10912              	.LASF133:
- 10913 0546 77686963 		.ascii	"whichPlace\000"
+ 10913 0541 77686963 		.ascii	"whichPlace\000"
  10913      68506C61 
  10913      636500
  10914              	.LASF56:
- 10915 0551 6D794766 		.ascii	"myGfx\000"
+ 10915 054c 6D794766 		.ascii	"myGfx\000"
  10915      7800
  10916              	.LASF1:
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 218
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 218
 
 
- 10917 0557 5F5F7569 		.ascii	"__uint8_t\000"
+ 10917 0552 5F5F7569 		.ascii	"__uint8_t\000"
  10917      6E74385F 
  10917      7400
  10918              	.LASF136:
- 10919 0561 6D696469 		.ascii	"midi\000"
+ 10919 055c 6D696469 		.ascii	"midi\000"
  10919      00
  10920              	.LASF62:
- 10921 0566 79737465 		.ascii	"ystep\000"
+ 10921 0561 79737465 		.ascii	"ystep\000"
  10921      7000
  10922              	.LASF140:
- 10923 056c 6E6F7465 		.ascii	"note\000"
+ 10923 0567 6E6F7465 		.ascii	"note\000"
  10923      00
  10924              	.LASF123:
- 10925 0571 6D617878 		.ascii	"maxx\000"
+ 10925 056c 6D617878 		.ascii	"maxx\000"
  10925      00
  10926              	.LASF111:
- 10927 0576 47465867 		.ascii	"GFXgetCursorX\000"
+ 10927 0571 47465867 		.ascii	"GFXgetCursorX\000"
  10927      65744375 
  10927      72736F72 
  10927      5800
  10928              	.LASF112:
- 10929 0584 47465867 		.ascii	"GFXgetCursorY\000"
+ 10929 057f 47465867 		.ascii	"GFXgetCursorY\000"
  10929      65744375 
  10929      72736F72 
  10929      5900
  10930              	.LASF52:
- 10931 0592 67667846 		.ascii	"gfxFont\000"
+ 10931 058d 67667846 		.ascii	"gfxFont\000"
  10931      6F6E7400 
  10932              	.LASF39:
- 10933 059a 73697A65 		.ascii	"sizetype\000"
+ 10933 0595 73697A65 		.ascii	"sizetype\000"
  10933      74797065 
  10933      00
  10934              	.LASF11:
- 10935 05a3 6C6F6E67 		.ascii	"long unsigned int\000"
+ 10935 059e 6C6F6E67 		.ascii	"long unsigned int\000"
  10935      20756E73 
  10935      69676E65 
  10935      6420696E 
  10935      7400
  10936              	.LASF86:
- 10937 05b5 47465864 		.ascii	"GFXdrawTriangle\000"
+ 10937 05b0 47465864 		.ascii	"GFXdrawTriangle\000"
  10937      72617754 
  10937      7269616E 
  10937      676C6500 
  10938              	.LASF65:
- 10939 05c5 47465877 		.ascii	"GFXwritePixel\000"
+ 10939 05c0 47465877 		.ascii	"GFXwritePixel\000"
  10939      72697465 
  10939      50697865 
  10939      6C00
  10940              	.LASF98:
- 10941 05d3 656E6457 		.ascii	"endWrite\000"
+ 10941 05ce 656E6457 		.ascii	"endWrite\000"
  10941      72697465 
  10941      00
  10942              	.LASF80:
- 10943 05dc 47465866 		.ascii	"GFXfillCircle\000"
+ 10943 05d7 47465866 		.ascii	"GFXfillCircle\000"
  10943      696C6C43 
  10943      6972636C 
  10943      6500
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 219
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 219
 
 
  10944              	.LASF106:
- 10945 05ea 666F6E74 		.ascii	"fontWidth\000"
+ 10945 05e5 666F6E74 		.ascii	"fontWidth\000"
  10945      57696474 
  10945      6800
  10946              	.LASF19:
- 10947 05f4 696E7433 		.ascii	"int32_t\000"
+ 10947 05ef 696E7433 		.ascii	"int32_t\000"
  10947      325F7400 
  10948              	.LASF29:
- 10949 05fc 676C7970 		.ascii	"glyph\000"
+ 10949 05f7 676C7970 		.ascii	"glyph\000"
  10949      6800
  10950              	.LASF96:
- 10951 0602 62797465 		.ascii	"byte\000"
+ 10951 05fd 62797465 		.ascii	"byte\000"
  10951      00
  10952              	.LASF147:
- 10953 0607 6E6F6E7A 		.ascii	"nonzeroHasHappened\000"
+ 10953 0602 6E6F6E7A 		.ascii	"nonzeroHasHappened\000"
  10953      65726F48 
  10953      61734861 
  10953      7070656E 
  10953      656400
  10954              	.LASF69:
- 10955 061a 47465865 		.ascii	"GFXendWrite\000"
+ 10955 0615 47465865 		.ascii	"GFXendWrite\000"
  10955      6E645772 
  10955      69746500 
  10956              	.LASF3:
- 10957 0626 756E7369 		.ascii	"unsigned char\000"
+ 10957 0621 756E7369 		.ascii	"unsigned char\000"
  10957      676E6564 
  10957      20636861 
  10957      7200
  10958              	.LASF28:
- 10959 0634 6269746D 		.ascii	"bitmap\000"
+ 10959 062f 6269746D 		.ascii	"bitmap\000"
  10959      617000
  10960              	.LASF10:
- 10961 063b 5F5F7569 		.ascii	"__uint32_t\000"
+ 10961 0636 5F5F7569 		.ascii	"__uint32_t\000"
  10961      6E743332 
  10961      5F7400
  10962              	.LASF58:
- 10963 0646 47465877 		.ascii	"GFXwriteLine\000"
+ 10963 0641 47465877 		.ascii	"GFXwriteLine\000"
  10963      72697465 
  10963      4C696E65 
  10963      00
  10964              	.LASF105:
- 10965 0653 47465863 		.ascii	"GFXcheckScrollWrap\000"
+ 10965 064e 47465863 		.ascii	"GFXcheckScrollWrap\000"
  10965      6865636B 
  10965      5363726F 
  10965      6C6C5772 
  10965      617000
  10966              	.LASF101:
- 10967 0666 6C696E65 		.ascii	"line\000"
+ 10967 0661 6C696E65 		.ascii	"line\000"
  10967      00
  10968              	.LASF115:
- 10969 066b 47465873 		.ascii	"GFXsetTextWrap\000"
+ 10969 0666 47465873 		.ascii	"GFXsetTextWrap\000"
  10969      65745465 
  10969      78745772 
  10969      617000
  10970              	.LASF30:
- 10971 067a 66697273 		.ascii	"first\000"
+ 10971 0675 66697273 		.ascii	"first\000"
  10971      7400
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 220
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 220
 
 
  10972              	.LASF94:
- 10973 0680 47465864 		.ascii	"GFXdrawBitmap\000"
+ 10973 067b 47465864 		.ascii	"GFXdrawBitmap\000"
  10973      72617742 
  10973      69746D61 
  10973      7000
  10974              	.LASF79:
- 10975 068e 636F726E 		.ascii	"cornername\000"
+ 10975 0689 636F726E 		.ascii	"cornername\000"
  10975      65726E61 
  10975      6D6500
  10976              	.LASF129:
- 10977 0699 4F4C4544 		.ascii	"OLEDparseInt\000"
+ 10977 0694 4F4C4544 		.ascii	"OLEDparseInt\000"
  10977      70617273 
  10977      65496E74 
  10977      00
  10978              	.LASF24:
- 10979 06a6 78416476 		.ascii	"xAdvance\000"
+ 10979 06a1 78416476 		.ascii	"xAdvance\000"
  10979      616E6365 
  10979      00
  10980              	.LASF99:
- 10981 06af 47465864 		.ascii	"GFXdrawChar\000"
+ 10981 06aa 47465864 		.ascii	"GFXdrawChar\000"
  10981      72617743 
  10981      68617200 
  10982              	.LASF146:
- 10983 06bb 706F7765 		.ascii	"power\000"
+ 10983 06b6 706F7765 		.ascii	"power\000"
  10983      7200
  10984              	.LASF25:
- 10985 06c1 784F6666 		.ascii	"xOffset\000"
+ 10985 06bc 784F6666 		.ascii	"xOffset\000"
  10985      73657400 
  10986              	.LASF55:
- 10987 06c9 6175746F 		.ascii	"autoscroll\000"
+ 10987 06c4 6175746F 		.ascii	"autoscroll\000"
  10987      7363726F 
  10987      6C6C00
  10988              	.LASF76:
- 10989 06d4 6464465F 		.ascii	"ddF_x\000"
+ 10989 06cf 6464465F 		.ascii	"ddF_x\000"
  10989      7800
  10990              	.LASF77:
- 10991 06da 6464465F 		.ascii	"ddF_y\000"
+ 10991 06d5 6464465F 		.ascii	"ddF_y\000"
  10991      7900
  10992              	.LASF2:
- 10993 06e0 7369676E 		.ascii	"signed char\000"
+ 10993 06db 7369676E 		.ascii	"signed char\000"
  10993      65642063 
  10993      68617200 
  10994              	.LASF82:
- 10995 06ec 64656C74 		.ascii	"delta\000"
+ 10995 06e7 64656C74 		.ascii	"delta\000"
  10995      6100
  10996              	.LASF7:
- 10997 06f2 73686F72 		.ascii	"short unsigned int\000"
+ 10997 06ed 73686F72 		.ascii	"short unsigned int\000"
  10997      7420756E 
  10997      7369676E 
  10997      65642069 
  10997      6E7400
  10998              	.LASF73:
- 10999 0705 47465866 		.ascii	"GFXfillScreen\000"
+ 10999 0700 47465866 		.ascii	"GFXfillScreen\000"
  10999      696C6C53 
  10999      63726565 
  10999      6E00
  11000              	.LASF124:
-ARM GAS  C:\Users\JEFFSN~1\AppData\Local\Temp\ccW4Mc9f.s 			page 221
+ARM GAS  C:\Users\ggg88\AppData\Local\Temp\ccDkptWZ.s 			page 221
 
 
- 11001 0713 6D617879 		.ascii	"maxy\000"
+ 11001 070e 6D617879 		.ascii	"maxy\000"
  11001      00
  11002              	.LASF34:
- 11003 0718 75696E74 		.ascii	"uint8\000"
+ 11003 0713 75696E74 		.ascii	"uint8\000"
  11003      3800
  11004              	.LASF36:
- 11005 071e 646F7562 		.ascii	"double\000"
+ 11005 0719 646F7562 		.ascii	"double\000"
  11005      6C6500
  11006              	.LASF48:
- 11007 0725 74657874 		.ascii	"textcolor\000"
+ 11007 0720 74657874 		.ascii	"textcolor\000"
  11007      636F6C6F 
  11007      7200
  11008              	.LASF85:
- 11009 072f 47465866 		.ascii	"GFXfillRoundRect\000"
+ 11009 072a 47465866 		.ascii	"GFXfillRoundRect\000"
  11009      696C6C52 
  11009      6F756E64 
  11009      52656374 
  11009      00
  11010              	.LASF139:
- 11011 0740 6F637461 		.ascii	"octave\000"
+ 11011 073b 6F637461 		.ascii	"octave\000"
  11011      766500
  11012              	.LASF81:
- 11013 0747 47465866 		.ascii	"GFXfillCircleHelper\000"
+ 11013 0742 47465866 		.ascii	"GFXfillCircleHelper\000"
  11013      696C6C43 
  11013      6972636C 
  11013      6548656C 
  11013      70657200 
  11014              	.LASF49:
- 11015 075b 74657874 		.ascii	"textbgcolor\000"
+ 11015 0756 74657874 		.ascii	"textbgcolor\000"
  11015      6267636F 
  11015      6C6F7200 
  11016              	.LASF103:
- 11017 0767 786F3136 		.ascii	"xo16\000"
+ 11017 0762 786F3136 		.ascii	"xo16\000"
  11017      00
  11018              	.LASF116:
- 11019 076c 47465867 		.ascii	"GFXgetRotation\000"
+ 11019 0767 47465867 		.ascii	"GFXgetRotation\000"
  11019      6574526F 
  11019      74617469 
  11019      6F6E00
