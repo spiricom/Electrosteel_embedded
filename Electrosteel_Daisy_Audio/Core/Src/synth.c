@@ -19,7 +19,7 @@
 #include "string2.h"
 
 
-#define OVERSAMPLE 2
+#define OVERSAMPLE 4
 float inv_oversample = 1.0f / OVERSAMPLE;
 volatile float antiClickFade = 0.0f;
 volatile uint32_t nanHappened = 0;

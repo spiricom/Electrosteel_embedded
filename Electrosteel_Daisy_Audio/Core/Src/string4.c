@@ -234,7 +234,7 @@ float __ATTR_ITCMRAM audioTickString4(void)
 				}
 				float finalFreq = mtofTableLookup(theNote[i]);
 				tPattiString_setFreq(stringsP[i], finalFreq);
-				tPattiString_pluck(stringsP[i],  amplitz, 0.7f);
+				tPattiString_pluck(stringsP[i],  amplitz);
 
 			}
 			else if ((previousStringInputs[i] > 0) && (stringInputs[i] == 0))

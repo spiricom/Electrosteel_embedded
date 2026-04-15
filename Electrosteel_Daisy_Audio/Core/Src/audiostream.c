@@ -387,10 +387,12 @@ void audioInit()
 	}
 
 //messing around
-	//audioFrameFunction = audioFrameTesting;
-	//diskBusy = 0;
-	//presetReady = 1;
-		audioFrameFunction = audioFrameWaiting;
+#if TESTING
+	audioFrameFunction = audioFrameTesting;
+	diskBusy = 0;
+	presetReady = 1;
+#endif
+	audioFrameFunction = audioFrameWaiting;
 	HAL_Delay(1);
 
 }
@@ -529,8 +531,10 @@ void __ATTR_ITCMRAM HAL_SAI_TxCpltCallback(SAI_HandleTypeDef *hsai)
 	{
 		audioFrameFunction(HALF_BUFFER_SIZE);
 	}
-
+#if TESTING
+#else
 	voiceChangeCheck();
+#endif
 	uint32_t tempCountClean = DWT->CYCCNT;
 	SCB_CleanInvalidateDCache_by_Addr((uint32_t*)(((uint32_t)audioOutBuffer) & ~(uint32_t)0x1F), AUDIO_BUFFER_SIZE+32);
 	timeClean = DWT->CYCCNT - tempCountClean;
@@ -543,7 +547,10 @@ void __ATTR_ITCMRAM HAL_SAI_TxHalfCpltCallback(SAI_HandleTypeDef *hsai)
 	{
 		audioFrameFunction(0);
 	}
+#if TESTING
+#else
 	voiceChangeCheck();
+#endif
 	SCB_CleanInvalidateDCache_by_Addr((uint32_t*)(((uint32_t)audioOutBuffer) & ~(uint32_t)0x1F), AUDIO_BUFFER_SIZE+32);
 }
 
@@ -551,6 +558,8 @@ void __ATTR_ITCMRAM HAL_SAI_ErrorCallback(SAI_HandleTypeDef *hsai)
 {
 }
 
+uint32_t sampleCount = 0;
+uint32_t testVol = 0;
 void __ATTR_ITCMRAM audioFrameTesting(uint16_t buffer_offset)
 {
 	//HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_SET);
@@ -559,9 +568,15 @@ void __ATTR_ITCMRAM audioFrameTesting(uint16_t buffer_offset)
 	for (int i = 0; i < HALF_BUFFER_SIZE; i+=2)
 	{
 		int iplusbuffer = buffer_offset + i;
-		float leftOut = tCycle_tick(testSine);
+		float leftOut = tCycle_tick(testSine) * (float)testVol;
 		audioOutBuffer[iplusbuffer] = (int32_t)(leftOut * TWO_TO_23);
 		audioOutBuffer[iplusbuffer + 1] = (int32_t)(leftOut * -.99999f *  TWO_TO_23);
+		sampleCount++;
+		if (sampleCount > 48000)
+		{
+			sampleCount = 0;
+			testVol = !testVol;
+		}
 	}
 	timeFrame = DWT->CYCCNT - tempCountFrame;
 	frameLoadPercentage = (float)timeFrame * frameLoadMultiplier;
