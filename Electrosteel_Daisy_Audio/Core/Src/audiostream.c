@@ -22,7 +22,7 @@
 #include "vocal.h"
 #include "synth.h"
 #include "string3.h"
-
+#include "string4.h"
 //the audio buffers are put in the D2 RAM area because that is a memory location that the DMA has access to.
 int32_t audioOutBuffer[AUDIO_BUFFER_SIZE] __ATTR_RAM_D2_DMA;
 int32_t audioInBuffer[AUDIO_BUFFER_SIZE] __ATTR_RAM_D2_DMA;

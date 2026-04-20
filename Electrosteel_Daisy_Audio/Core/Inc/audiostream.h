@@ -66,7 +66,7 @@ typedef enum
   SynthLoaded,
 }StringModelLoadedTypeDef;
 
-//#define SAMPLERATE96K
+#define SAMPLERATE96K
 #ifdef SAMPLERATE96K
 #define SAMPLE_RATE 96000.f
 #else

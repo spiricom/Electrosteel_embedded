@@ -1676,7 +1676,7 @@ HAL_StatusTypeDef HAL_SPI_Transmit_IT(SPI_HandleTypeDef *hspi, const uint8_t *pD
 #if defined(USE_SPI_RELOAD_TRANSFER)
   hspi->Reload.Requested   = 0UL;
   hspi->Reload.pTxBuffPtr  = NULL;
-  hspi->Reload.TxXferSize  = NULL;
+  hspi->Reload.TxXferSize  = (uint16_t) NULL;
 #endif /* USE_SPI_RELOAD_TRANSFER */
 
   /* Set the function for IT treatment */
@@ -1766,7 +1766,7 @@ HAL_StatusTypeDef HAL_SPI_Receive_IT(SPI_HandleTypeDef *hspi, uint8_t *pData, ui
 #if defined(USE_SPI_RELOAD_TRANSFER)
   hspi->Reload.Requested   = 0UL;
   hspi->Reload.pRxBuffPtr  = NULL;
-  hspi->Reload.RxXferSize  = NULL;
+  hspi->Reload.RxXferSize  = (uint16_t)NULL;
 #endif /* USE_SPI_RELOAD_TRANSFER */
 
   /* Set the function for IT treatment */
@@ -1865,9 +1865,9 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive_IT(SPI_HandleTypeDef *hspi, const uint
 #if defined(USE_SPI_RELOAD_TRANSFER)
   hspi->Reload.Requested   = 0UL;
   hspi->Reload.pRxBuffPtr  = NULL;
-  hspi->Reload.RxXferSize  = NULL;
+  hspi->Reload.RxXferSize  = (uint16_t)NULL;
   hspi->Reload.pTxBuffPtr  = NULL;
-  hspi->Reload.TxXferSize  = NULL;
+  hspi->Reload.TxXferSize  = (uint16_t)NULL;
 #endif /* USE_SPI_RELOAD_TRANSFER */
 
   /* Set the function for IT treatment */

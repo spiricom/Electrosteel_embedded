@@ -134,7 +134,8 @@ void codec_init(I2C_HandleTypeDef* i2c)
 
     // samplerate
     // TODO: add support for other samplerates
-    res = WriteControlRegister(i2c, CODEC_REG_SAMPLE_RATE, CODEC_RATE_48K_48K);
+    //res = WriteControlRegister(i2c, CODEC_REG_SAMPLE_RATE, CODEC_RATE_48K_48K);
+    res = WriteControlRegister(i2c, CODEC_REG_SAMPLE_RATE, CODEC_RATE_96K_96K);
 
 
     res = WriteControlRegister(i2c, CODEC_REG_ACTIVE, 0x00);

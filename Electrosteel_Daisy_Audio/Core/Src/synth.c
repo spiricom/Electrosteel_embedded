@@ -550,6 +550,10 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 		oscillator_tick(note[v], v);
 		timeOsc = DWT->CYCCNT - tempCountOsc;
 
+
+		sample = oscOuts[0][0][v] *amplitude[v];
+		sample = tSVF_LP_tick(finalLowpass[v], sample) * masterVolFromBrainForSynth;
+#if 0
 		uint32_t tempCountNoise = DWT->CYCCNT;
 		if (noiseOn)
 		{
@@ -658,6 +662,7 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 		}
 
 		sample = tSVF_LP_tick(finalLowpass[v], sample) * masterVolFromBrainForSynth;
+#endif
 		masterSample += sample * finalMaster[v];
 	}
 	uint32_t tempVolumePoly = DWT->CYCCNT;
