@@ -19,7 +19,7 @@
 #include "string2.h"
 
 
-#define OVERSAMPLE 4
+#define OVERSAMPLE 2
 float inv_oversample = 1.0f / OVERSAMPLE;
 volatile float antiClickFade = 0.0f;
 volatile uint32_t nanHappened = 0;
@@ -551,9 +551,9 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 		timeOsc = DWT->CYCCNT - tempCountOsc;
 
 
-		sample = oscOuts[0][0][v] *amplitude[v];
-		sample = tSVF_LP_tick(finalLowpass[v], sample) * masterVolFromBrainForSynth;
-#if 0
+		//sample = oscOuts[0][0][v] *amplitude[v];
+		//sample = tSVF_LP_tick(finalLowpass[v], sample) * masterVolFromBrainForSynth;
+#if 1
 		uint32_t tempCountNoise = DWT->CYCCNT;
 		if (noiseOn)
 		{

@@ -411,6 +411,8 @@ HAL_StatusTypeDef HAL_SAI_Init(SAI_HandleTypeDef *hsai)
   assert_param(IS_SAI_BLOCK_MCK_OVERSAMPLING(hsai->Init.MckOverSampling));
 
   /* Check the SAI Block Frame parameters */
+  //hsai->FrameInit.FrameLength = 128;
+  //hsai->FrameInit.ActiveFrameLength = 64;
   assert_param(IS_SAI_BLOCK_FRAME_LENGTH(hsai->FrameInit.FrameLength));
   assert_param(IS_SAI_BLOCK_ACTIVE_FRAME(hsai->FrameInit.ActiveFrameLength));
   assert_param(IS_SAI_BLOCK_FS_DEFINITION(hsai->FrameInit.FSDefinition));
@@ -647,7 +649,7 @@ HAL_StatusTypeDef HAL_SAI_Init(SAI_HandleTypeDef *hsai)
       tmpval = (freq * 10U) / (hsai->Init.AudioFrequency * tmposr * 256U);
     }
     hsai->Init.Mckdiv = tmpval / 10U;
-
+    //hsai->Init.Mckdiv = 2;
     /* Round result to the nearest integer */
     if ((tmpval % 10U) > 8U)
     {

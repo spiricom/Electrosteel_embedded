@@ -83,7 +83,7 @@ enum CodecSettings
 
     CODEC_RATE_48K_48K = 0x00 << 2,
     CODEC_RATE_8K_8K   = 0x03 << 2,
-    CODEC_RATE_96K_96K = 0x07 << 2,
+    CODEC_RATE_96K_96K = 0x17 << 2, //0x17 if core clock is divided by 2, otherwise 0x07
     CODEC_RATE_32K_32K = 0x06 << 2,
     CODEC_RATE_44K_44K = 0x08 << 2,
 };

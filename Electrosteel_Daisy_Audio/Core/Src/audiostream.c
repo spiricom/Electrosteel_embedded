@@ -27,6 +27,7 @@
 int32_t audioOutBuffer[AUDIO_BUFFER_SIZE] __ATTR_RAM_D2_DMA;
 int32_t audioInBuffer[AUDIO_BUFFER_SIZE] __ATTR_RAM_D2_DMA;
 
+#define TESTING 0
 
 char small_memory[SMALL_MEM_SIZE];
 char medium_memory[MED_MEM_SIZE] __ATTR_RAM_D1;
@@ -272,11 +273,11 @@ void audioInit()
 	{
 		previousStringInputs[i]	= 0;
 	}
-
+	frameLoadMultiplier = 1.0f / ((480000000.0f / SAMPLE_RATE) * AUDIO_FRAME_SIZE);
 
 
 	tCycle_init(&testSine, &leaf);
-	tCycle_setFreq(testSine, 440.0f);
+	tCycle_setFreq(testSine, 10000.0f);
 
 	for (int i = 0; i < 256; i++)
 	{
@@ -391,8 +392,9 @@ void audioInit()
 	audioFrameFunction = audioFrameTesting;
 	diskBusy = 0;
 	presetReady = 1;
-#endif
+#else
 	audioFrameFunction = audioFrameWaiting;
+#endif
 	HAL_Delay(1);
 
 }
@@ -560,6 +562,8 @@ void __ATTR_ITCMRAM HAL_SAI_ErrorCallback(SAI_HandleTypeDef *hsai)
 
 uint32_t sampleCount = 0;
 uint32_t testVol = 0;
+float freqArray[6] = {200.0f, 2000.0f, 5000.0f, 10000.0f, 20000.0f, 40000.0f};
+uint32_t whichFreq = 0;
 void __ATTR_ITCMRAM audioFrameTesting(uint16_t buffer_offset)
 {
 	//HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_SET);
@@ -572,10 +576,14 @@ void __ATTR_ITCMRAM audioFrameTesting(uint16_t buffer_offset)
 		audioOutBuffer[iplusbuffer] = (int32_t)(leftOut * TWO_TO_23);
 		audioOutBuffer[iplusbuffer + 1] = (int32_t)(leftOut * -.99999f *  TWO_TO_23);
 		sampleCount++;
-		if (sampleCount > 48000)
+		if (sampleCount > (uint32_t)SAMPLE_RATE)
 		{
 			sampleCount = 0;
 			testVol = !testVol;
+			if (testVol == 1)
+			{
+				tCycle_setFreq(testSine, freqArray[whichFreq++%6]);
+			}
 		}
 	}
 	timeFrame = DWT->CYCCNT - tempCountFrame;
