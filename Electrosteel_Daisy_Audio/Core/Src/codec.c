@@ -6,7 +6,7 @@
  */
 #include "main.h"
 #include "codec.h"
-
+#include "audiostream.h"
 #define W8731_ADDR_0 0x1A
 #define W8731_ADDR_1 0x1B
 #define W8731_NUM_REGS 10
@@ -134,9 +134,13 @@ void codec_init(I2C_HandleTypeDef* i2c)
 
     // samplerate
     // TODO: add support for other samplerates
-    //res = WriteControlRegister(i2c, CODEC_REG_SAMPLE_RATE, CODEC_RATE_48K_48K);
+#ifdef SAMPLERATE96K
+
     res = WriteControlRegister(i2c, CODEC_REG_SAMPLE_RATE, CODEC_RATE_96K_96K);
 
+#else
+    res = WriteControlRegister(i2c, CODEC_REG_SAMPLE_RATE, CODEC_RATE_48K_48K);
+#endif
 
     res = WriteControlRegister(i2c, CODEC_REG_ACTIVE, 0x00);
 
