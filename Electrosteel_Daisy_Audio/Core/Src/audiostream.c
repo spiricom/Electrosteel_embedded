@@ -83,12 +83,12 @@ float prevBarInMIDI[2] ;
 
 uint8_t numStringsThisBoard = NUM_STRINGS_PER_BOARD;
 
-tExpSmooth stringFreqSmoothers[NUM_STRINGS_PER_BOARD];
+tDynamicSmoother stringFreqSmoothers[NUM_STRINGS_PER_BOARD];
 
-tExpSmooth volumeSmoother;
-tExpSmooth knobSmoothers[20];
-tExpSmooth pedalSmoothers[10];
-tExpSmooth barSlideSmoother[NUM_STRINGS_PER_BOARD];
+tDynamicSmoother volumeSmoother;
+tDynamicSmoother knobSmoothers[20];
+tDynamicSmoother pedalSmoothers[10];
+tDynamicSmoother barSlideSmoother[NUM_STRINGS_PER_BOARD];
 tEnvelopeFollower barNoiseSmoother[NUM_STRINGS_PER_BOARD];
 
 
@@ -340,19 +340,20 @@ void audioInit()
 
 
 
-	tExpSmooth_init(&volumeSmoother,0.0f, 0.0005f, &leaf);
+	tDynamicSmoother_init(&volumeSmoother,&leaf);
+	tDynamicSmoother_setValAndDest(volumeSmoother, 1.0f);
 	for (int i = 0; i < 20; i++)
 	{
-		tExpSmooth_init(&knobSmoothers[i],0.0f, 0.0005f, &leaf);
+		tDynamicSmoother_init(&knobSmoothers[i],&leaf);
 	}
 	for (int i = 0; i < 10; i++)
 	{
-		tExpSmooth_init(&pedalSmoothers[i],0.0f, 0.0005f, &leaf);
+		tDynamicSmoother_init(&pedalSmoothers[i],&leaf);
 	}
 
 	for (int i = 0; i < NUM_STRINGS_PER_BOARD; i++)
 	{
-		tExpSmooth_init(&barSlideSmoother[i],0.000f, 0.01f, &leaf);
+		tDynamicSmoother_init(&barSlideSmoother[i],&leaf);
 		tEnvelopeFollower_init(&barNoiseSmoother[i],0.0001f, 0.9993f, &leaf);
 	}
 
@@ -441,13 +442,13 @@ void __ATTR_ITCMRAM updateStateFromSPIMessage(uint8_t offset)
 		barInMIDI[0] = stringPositions[0] * 0.001953125f;
 		barInMIDI[1] = stringPositions[1] * 0.001953125f;
 	}
-	tExpSmooth_setDest(volumeSmoother,volumePedal);
+	tDynamicSmoother_setDest(volumeSmoother,volumePedal);
 	timeSPI = DWT->CYCCNT - tempCountSPI;
 }
 
 
 
-inline void voiceChangeCheck(void)
+void voiceChangeCheck(void)
 {
 	if (voice != prevVoice)
 	{

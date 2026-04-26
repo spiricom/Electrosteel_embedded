@@ -82,9 +82,9 @@ float outSamples[2][NUM_OSC][NUM_STRINGS_PER_BOARD];
 //source vals
 float sourceValues[NUM_SOURCES][NUM_STRINGS_PER_BOARD];
 
-tExpSmooth mapSmoothers[MAX_NUM_MAPPINGS][NUM_STRINGS_PER_BOARD];
-tExpSmooth pitchSmoother[NUM_OSC][NUM_STRINGS_PER_BOARD];
-tExpSmooth filterCutoffSmoother[NUM_FILT][NUM_STRINGS_PER_BOARD];
+tDynamicSmoother mapSmoothers[MAX_NUM_MAPPINGS][NUM_STRINGS_PER_BOARD];
+tDynamicSmoother pitchSmoother[NUM_OSC][NUM_STRINGS_PER_BOARD];
+tDynamicSmoother filterCutoffSmoother[NUM_FILT][NUM_STRINGS_PER_BOARD];
 
 
 
@@ -206,7 +206,8 @@ void audioInitSynth()
 
 			tPBSineTriangle_init(&sinePaired[i][v],&leaf);
 
-			tExpSmooth_init(&pitchSmoother[i][v], 64.0f, 0.05f, &leaf);
+			tDynamicSmoother_init(&pitchSmoother[i][v], &leaf);
+			tDynamicSmoother_setValAndDest(pitchSmoother[i][v], 0.5f);
 
 			freqMult[i][v] = 1.0f;
 			midiAdd[i][v] = 0.0f;
@@ -224,7 +225,8 @@ void audioInitSynth()
 			tVZFilterBR_init(&VZfilterBR[i][v], 2000.f, 1.0f, &leaf);
 			tLadderFilter_init(&Ladderfilter[i][v], 2000.f, 1.0f, &leaf);
 			//tLadderFilter_setOversampling(&Ladderfilter[i][v], 2);
-			tExpSmooth_init(&filterCutoffSmoother[i][v], 64.0f, 0.01f, &leaf);
+			tDynamicSmoother_init(&filterCutoffSmoother[i][v], &leaf);
+			tDynamicSmoother_setValAndDest(filterCutoffSmoother[i][v], 0.5f);
 		}
 
 		for (int i = 0; i < NUM_LFOS; i++)
@@ -296,7 +298,7 @@ void audioInitSynth()
 
 		for (int i = 0; i < MAX_NUM_MAPPINGS; i++)
 		{
-			tExpSmooth_init(&mapSmoothers[i][v], 0.0f, 0.01f, &leaf);
+			tDynamicSmoother_init(&mapSmoothers[i][v], &leaf);
 		}
 
 		tSVF_LP_init(&finalLowpass[v], 19000.f, 0.2f, &leaf);
@@ -344,7 +346,7 @@ void  audioSwitchToSynth()
 	}
 	for (int i = 0; i < 20; i++)
 	{
-		tExpSmooth_setFactor(knobSmoothers[i], 0.001f);
+		//tDynamicSmoother_setFactor(knobSmoothers[i], 0.001f);
 		//tExpSmooth_setValAndDest(&knobSmoothers[i], string2Defaults[i]);
 		knobFrozen[i] = 1;
 	}
@@ -484,13 +486,13 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 	timeMap = DWT->CYCCNT - tempCountMap;
 
 	uint32_t tempSmoothing = DWT->CYCCNT;
-	float volumeSmoothed = tExpSmooth_tick(volumeSmoother);
+	float volumeSmoothed = tDynamicSmoother_tickNoInput(volumeSmoother);
 
 	for (int i = 0; i < 12; i++)
 	{
 		if (knobTicked[i])
 		{
-			knobScaled[i] = tExpSmooth_tick(knobSmoothers[i]);
+			knobScaled[i] = tDynamicSmoother_tickNoInput(knobSmoothers[i]);
 			for (int v = 0; v < numStringsThisBoard; v++)
 			{
 				sourceValues[MACRO_SOURCE_OFFSET + i][v] = knobScaled[i];
@@ -502,7 +504,7 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 	{
 		if (pedalTicked[i])
 		{
-			pedalScaled[i] = tExpSmooth_tick(pedalSmoothers[i]);
+			pedalScaled[i] = tDynamicSmoother_tickNoInput(pedalSmoothers[i]);
 			for (int v = 0; v < numStringsThisBoard; v++)
 			{
 				sourceValues[PEDAL_SOURCE_OFFSET + i][v] = pedalScaled[i];
@@ -780,9 +782,9 @@ void __ATTR_ITCMRAM oscillator_tick(float note, int string)
 			float filterSend = oscParams[OscFilterSend].realVal[string];
 			//int sync = oscParams[OscisSync].realVal[string] > 0.5f; // probably faster than previous roundf version but haven't tested
 			float freqToSmooth = (note + (fine*0.01f));
-			tExpSmooth_setDest(pitchSmoother[osc][string], freqToSmooth);
+			tDynamicSmoother_setDest(pitchSmoother[osc][string], freqToSmooth * 0.00787402f);
 
-			float tempMIDI = tExpSmooth_tick(pitchSmoother[osc][string]) + midiAdd[osc][string];
+			float tempMIDI = tDynamicSmoother_tickNoInput(pitchSmoother[osc][string])*127.0f + midiAdd[osc][string];
 
 
 			float finalFreq = (mtofTableLookup(tempMIDI) * freqMult[osc][string]) + freqOffset;
@@ -1207,8 +1209,8 @@ void __ATTR_ITCMRAM tickMappings(void)
 				//sources are now summed - let's add the initial value
 				smoothedValue += mappings[i].dest->zeroToOneVal[v];
 
-				tExpSmooth_setDest(mapSmoothers[i][v], smoothedValue);
-				smoothedValue = tExpSmooth_tick(mapSmoothers[i][v]);
+				tDynamicSmoother_setDest(mapSmoothers[i][v], smoothedValue);
+				smoothedValue = tDynamicSmoother_tickNoInput(mapSmoothers[i][v]);
 				float finalVal = unsmoothedValue + smoothedValue;
 
 				//now scale the value with the correct scaling function

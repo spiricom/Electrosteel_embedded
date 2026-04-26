@@ -95,14 +95,14 @@ void __ATTR_ITCMRAM audioSwitchToString4()
 	audioInitString4();
 	for (int i = 0; i < 20; i++)
 	{
-		tExpSmooth_setFactor(knobSmoothers[i], 0.001f);
+		//tExpSmooth_setFactor(knobSmoothers[i], 0.001f);
 		if (voice == 62)
 		{
-			tExpSmooth_setValAndDest(knobSmoothers[i], string4Defaults[i]);
+			tDynamicSmoother_setValAndDest(knobSmoothers[i], string4Defaults[i]);
 		}
 		else
 		{
-			tExpSmooth_setValAndDest(knobSmoothers[i], loadedKnobParams[i]);
+			tDynamicSmoother_setValAndDest(knobSmoothers[i], loadedKnobParams[i]);
 		}
 		knobFrozen[i] = 1;
 	}
@@ -144,8 +144,8 @@ void __ATTR_ITCMRAM audioFrameString4(uint16_t buffer_offset)
 			current_sample = (int32_t)(audioTickString4() * TWO_TO_23);
 			current_sample = LEAF_clip((-1 * TWO_TO_23) + 1, current_sample, TWO_TO_23 - 1);
 
-			audioOutBuffer[buffer_offset + i] = current_sample;
-			audioOutBuffer[buffer_offset + i + 1] = current_sample * -1;
+			audioOutBuffer[iplusbuffer] = current_sample;
+			audioOutBuffer[iplusbuffer + 1] = current_sample * -1;
 		}
 		/*
 		if (switchStrings)
@@ -165,11 +165,11 @@ float __ATTR_ITCMRAM audioTickString4(void)
 	float temp = 0.0f;
 	float theNote[NUM_STRINGS_PER_BOARD];
 
-	float volumeSmoothed = tExpSmooth_tick(volumeSmoother);
+	float volumeSmoothed = tDynamicSmoother_tickNoInput(volumeSmoother);
 
 	for (int i = 0; i < 20; i++)
 	{
-		knobScaled[i] = tExpSmooth_tick(knobSmoothers[i]);
+		knobScaled[i] = tDynamicSmoother_tickNoInput(knobSmoothers[i]);
 	}
 	for (int i = 0; i < numStringsThisBoard; i++)
 	{
