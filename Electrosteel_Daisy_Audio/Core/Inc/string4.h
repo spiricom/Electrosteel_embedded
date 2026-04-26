@@ -4,10 +4,8 @@
  *  Created on: Mar 9, 2026
  *      Author: josnyder
  */
-
 #ifndef INC_STRING4_H_
 #define INC_STRING4_H_
-
 
 #include "parameters.h"
 #include "leaf.h"
@@ -19,7 +17,6 @@ float audioTickString4(void);
 void audioInitString4();
 void  audioFreeString4();
 void  audioSwitchToString4();
-
 
 
 

@@ -357,9 +357,12 @@ void __ATTR_ITCMRAM audioFrameAdditive(uint16_t buffer_offset)
 		//mono operation, no need to compute right channel. Also for loop iterating by 2 instead of 1 to avoid if statement.
 	for (int i = 0; i < HALF_BUFFER_SIZE; i+=2)
 	{
+		int iplusbuffer = buffer_offset + i;
 		current_sample = (int32_t)(audioTickAdditive() * TWO_TO_23);
-		audioOutBuffer[buffer_offset + i] = current_sample;
-		audioOutBuffer[buffer_offset + i + 1] = current_sample;
+		current_sample = LEAF_clip((-1 * TWO_TO_23) + 1, current_sample, TWO_TO_23 - 1);
+
+		audioOutBuffer[iplusbuffer] = current_sample;
+		audioOutBuffer[iplusbuffer + 1] = current_sample * -1;
 	}
 /*
 	if (switchStrings)

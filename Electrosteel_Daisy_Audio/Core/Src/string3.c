@@ -186,8 +186,10 @@ void __ATTR_ITCMRAM audioFrameString3(uint16_t buffer_offset)
 		{
 			int iplusbuffer = buffer_offset + i;
 			current_sample = (int32_t)(audioTickString3() * TWO_TO_23);
+			current_sample = LEAF_clip((-1 * TWO_TO_23) + 1, current_sample, TWO_TO_23 - 1);
+
 			audioOutBuffer[iplusbuffer] = current_sample;
-			audioOutBuffer[iplusbuffer + 1] = current_sample;
+			audioOutBuffer[iplusbuffer + 1] = current_sample * -1;
 		}
 		/*
 		if (switchStrings)

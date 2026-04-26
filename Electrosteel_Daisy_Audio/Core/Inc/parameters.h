@@ -67,7 +67,7 @@ enum MappingChangeTypes
 #define NUM_CONTROL 4
 
 #define NUM_STRINGS 12
-#define NUM_STRINGS_PER_BOARD 2
+#define NUM_STRINGS_PER_BOARD 1
 
 //mapping array defines
 #define NUM_POSSIBLE_HOOKS 3

@@ -1,20 +1,3 @@
-/*
- * string4.c
- *
- *  Created on: Mar 9, 2026
- *      Author: josnyder
- */
-
-
-/*
- * string2.c
- *
- *  Created on: Dec 27, 2023
- *      Author: jeffsnyder
- */
-
-
-
 
 #include "main.h"
 #include "leaf.h"
@@ -102,7 +85,7 @@ void __ATTR_ITCMRAM audioFreeString4()
 {
 	for (int v = 0; v < numStringsThisBoard; v++)
 	{
-		//tPattiString_free(&stringsP[v]);
+		tPattiString_free(&stringsP[v]);
 	}
 }
 
@@ -141,7 +124,7 @@ void __ATTR_ITCMRAM audioFrameString4(uint16_t buffer_offset)
 			for (int i = 0; i < numStringsThisBoard; i++)
 			{
 				//note off
-				//tPattiString_mute(stringsP[i]);
+				tPattiString_mute(stringsP[i]);
 				previousStringInputs[i] = 0;
 			}
 			resetStringInputs = 0;
@@ -150,8 +133,9 @@ void __ATTR_ITCMRAM audioFrameString4(uint16_t buffer_offset)
 		for (int i = 0; i < numStringsThisBoard; i++)
 		{
 
-			tPattiString_setFullStringFreq(stringsP[i], 350.f);
-			tPattiString_setPickupWidth(stringsP[i], 0.9f);
+			//tPattiString_setFullStringFreq(stringsP[i], 370.f);
+			//tPattiString_setPickupWidth(stringsP[i], 0.01f);
+			//tPattiString_setPickupPos(stringsP[i], 0.9f);
 		}
 		//mono operation, no need to compute right channel. Also for loop iterating by 2 instead of 1 to avoid if statement.
 		for (int i = 0; i < HALF_BUFFER_SIZE; i+=2)
@@ -187,7 +171,48 @@ float __ATTR_ITCMRAM audioTickString4(void)
 	{
 		knobScaled[i] = tExpSmooth_tick(knobSmoothers[i]);
 	}
+	for (int i = 0; i < numStringsThisBoard; i++)
+	{
 
+		//tPattiString_setFullStringFreq(stringsP[i], 370.f);
+		//tPattiString_setPickupWidth(stringsP[i], 0.5f * knobScaled[0]);
+		//tPattiString_setPickupPos(stringsP[i], 1.0f - (0.5f * knobScaled[1]));
+
+		if (knobScaled[0] < 0.3f)
+		{
+			tPattiString_setFullStringFreq(stringsP[i], 370.0f); //open string 1
+			tPattiString_setPickupWidth(stringsP[i], 0.04583333f); //1.1"
+			tPattiString_setPickupPos(stringsP[i], 0.92183333f); //1.9" -JS should check that we're actually centering the bridge on this point, I think it might not be the case
+			tPattiString_setPluckPos(stringsP[i], 0.65f);//0.89583333f); //2.5" from bridge
+		}
+		else if ((knobScaled[0] >= 0.3f) && (knobScaled[0] < 0.6f))
+		{
+			tPattiString_setFullStringFreq(stringsP[i], 185.0f); //open string 7
+			tPattiString_setPickupWidth(stringsP[i], 0.04583333f); //1.1"
+			tPattiString_setPickupPos(stringsP[i], 0.92183333f); //1.9" -JS should check that we're actually centering the bridge on this point, I think it might not be the case
+			tPattiString_setPluckPos(stringsP[i], 0.89583333f); //2.5" from bridge
+		}
+		else
+		{
+			tPattiString_setFullStringFreq(stringsP[i], 123.0f); //open string 10
+			tPattiString_setPickupWidth(stringsP[i], 0.04583333f); //1.1"
+			tPattiString_setPickupPos(stringsP[i], 0.92183333f); //1.9" -JS should check that we're actually centering the bridge on this point, I think it might not be the case
+			tPattiString_setPluckPos(stringsP[i], 0.89583333f); //2.5" from bridge
+		}
+		//tPattiString_setPickupWidth(stringsP[i], 0.04583333f); //1.1"
+		//tPattiString_setPickupPos(stringsP[i], 0.92183333f); //1.9" -JS should check that we're actually centering the bridge on this point, I think it might not be the case
+		stringsP[i]->pluckShape = (knobScaled[1]*20.0f)+ 1.0;
+		tPattiString_setPickupFilterAmount(stringsP[i], knobScaled[2]);
+		tPattiString_setNonlinearityAmount(stringsP[i], knobScaled[3]);
+		tPattiString_setVerticalGain(stringsP[i], knobScaled[4]*2.0f);
+		tPattiString_setHorizontalGain(stringsP[i], knobScaled[5]*2.0f);
+		tPattiString_setDecay(stringsP[i], knobScaled[6] * 10.0f);
+		tPattiString_setBrightness(stringsP[i], knobScaled[7]);
+		tPattiString_setNonlinearScalingV(stringsP[i], (knobScaled[8] * 2.0f)+ 1.0f);
+		tPattiString_setNonlinearScalingH(stringsP[i], (knobScaled[9] * 2.0f) + 1.0f);
+		stringsP[i]->pickupMixAmount = knobScaled[10];
+		stringsP[i]->derivativeMix = knobScaled[11];
+	}
 	/*
 	  specialModeMacroNames[1][0] = "DecayTime ";
 	  specialModeMacroNames[1][1] = "Tone      ";
@@ -240,7 +265,7 @@ float __ATTR_ITCMRAM audioTickString4(void)
 			else if ((previousStringInputs[i] > 0) && (stringInputs[i] == 0))
 			{
 				//note off
-				//tPattiString_mute(stringsP[i]);
+				tPattiString_mute(stringsP[i]);
 			}
 			previousStringInputs[i] = stringInputs[i];
 		}
@@ -391,7 +416,7 @@ float __ATTR_ITCMRAM audioTickString4(void)
 		//tTString_setDecayInSeconds(stringsP[i],decayTime * decayScaling);
 		//tTString_setFilterFreqDirectly(stringsP[i], filterFreq * filterScaling);
 		float inSample = 0.0f;
-		temp += tPattiString_tick(stringsP[i], inSample) * 0.5f;
+		temp += tPattiString_tick(stringsP[i], inSample) * 2.0f;
 	}
 	//float outVol = 0.0265625f - (0.2467348f * volumeSmoothed) + (1.253049f * volumeSmoothed * volumeSmoothed);
 	float outVol = 0.006721744f + 0.4720157f*volumeSmoothed - 2.542849f*volumeSmoothed*volumeSmoothed + 6.332339f*volumeSmoothed*volumeSmoothed*volumeSmoothed - 3.271672f*volumeSmoothed*volumeSmoothed*volumeSmoothed*volumeSmoothed;

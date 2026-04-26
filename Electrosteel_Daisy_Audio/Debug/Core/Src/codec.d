@@ -77,7 +77,8 @@ Core/Src/codec.o: ../Core/Src/codec.c \
  /Users/josnyder/dev/LEAF/leaf/./Inc/leaf-electrical.h \
  /Users/josnyder/dev/LEAF/leaf/./Inc/leaf-vocal.h \
  /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Core/Inc/main.h \
- /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Core/Inc/codec.h
+ /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Core/Inc/codec.h \
+ /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Core/Inc/audiostream.h
 /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Core/Inc/main.h:
 /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h:
 /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Core/Inc/stm32h7xx_hal_conf.h:
@@ -157,3 +158,4 @@ Core/Src/codec.o: ../Core/Src/codec.c \
 /Users/josnyder/dev/LEAF/leaf/./Inc/leaf-vocal.h:
 /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Core/Inc/main.h:
 /Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Core/Inc/codec.h:
+/Users/josnyder/dev/Electrosteel_embedded/Electrosteel_Daisy_Audio/Core/Inc/audiostream.h:
