@@ -17,9 +17,9 @@
 #include "string4.h"
 #include "synth.h"
 
-tSimpleLivingString3 livStr;
-tPickupNonLinearity pu;
-tDynamicSmoother pitchSmootherS;
+tSimpleLivingString3 livStr[NUM_STRINGS_PER_BOARD];
+tPickupNonLinearity pu[NUM_STRINGS_PER_BOARD];
+tDynamicSmoother pitchSmootherS[NUM_STRINGS_PER_BOARD];
 float string1Defaults[12] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.3019f, 0.1764f, 0.7764f, 0.8155f};
 void __ATTR_ITCMRAM audioInitString1()
 {
@@ -41,16 +41,16 @@ void __ATTR_ITCMRAM audioInitString1()
 
 
 
-		tSimpleLivingString3_initToPool(&livStr, 4, 220.0f, 17000.0f,
+		tSimpleLivingString3_initToPool(&livStr[0], 4, 220.0f, 17000.0f,
 													 0.99999f, 0.0f, 0.01f,
 												 0.01f, 0, &mediumPool);
-		tSimpleLivingString3_setTargetLev(livStr, 0.047059f);
-		tSimpleLivingString3_setLevSmoothFactor(livStr, 0.0301913f);
-		tSimpleLivingString3_setLevStrength(livStr, 0.0f);
-		tSimpleLivingString3_setLevMode(livStr, 1);
-		tPickupNonLinearity_init(&pu, &leaf);
-		tDynamicSmoother_init(&pitchSmootherS, &leaf);
-		tDynamicSmoother_setValAndDest(pitchSmootherS, 0.5f);
+		tSimpleLivingString3_setTargetLev(livStr[0], 0.047059f);
+		tSimpleLivingString3_setLevSmoothFactor(livStr[0], 0.0301913f);
+		tSimpleLivingString3_setLevStrength(livStr[0], 0.0f);
+		tSimpleLivingString3_setLevMode(livStr[0], 1);
+		tPickupNonLinearity_init(&pu[0], &leaf);
+		tDynamicSmoother_init(&pitchSmootherS[0], &leaf);
+		tDynamicSmoother_setValAndDest(pitchSmootherS[0], 0.5f);
 
 		whichStringModelLoaded = String1Loaded;
 	}
@@ -61,9 +61,9 @@ void __ATTR_ITCMRAM audioInitString1()
 void __ATTR_ITCMRAM audioFreeString1()
 {
 
-	tDynamicSmoother_free(&pitchSmootherS);
-	tSimpleLivingString3_free(&livStr);
-	tPickupNonLinearity_free(&pu);
+	tDynamicSmoother_free(&pitchSmootherS[0]);
+	tSimpleLivingString3_free(&livStr[0]);
+	tPickupNonLinearity_free(&pu[0]);
 
 }
 
@@ -74,15 +74,15 @@ void __ATTR_ITCMRAM audioSwitchToString1()
 	//load string1 default params:
 	for (int i = 0; i < 12; i++)
 	{
-		//tExpSmooth_setFactor(knobSmoothers[i], 0.001f);
+		tExpSmooth_setFactor(knobSmoothers[i], 0.001f);
 
 		if (voice == 63)
 		{
-			tDynamicSmoother_setValAndDest(knobSmoothers[i], string1Defaults[i]);
+			tExpSmooth_setValAndDest(knobSmoothers[i], string1Defaults[i]);
 		}
 		else
 		{
-			tDynamicSmoother_setValAndDest(knobSmoothers[i], loadedKnobParams[i]);
+			tExpSmooth_setValAndDest(knobSmoothers[i], loadedKnobParams[i]);
 		}
 
 		knobFrozen[i] = 1;
@@ -104,8 +104,8 @@ void __ATTR_ITCMRAM audioFrameString1(uint16_t buffer_offset)
 	{
 
 			//note off
-			lsDecay = 0;
-			previousStringInputs = 0;
+			lsDecay[0] = 0;
+			previousStringInputs[0] = 0;
 
 		resetStringInputs = 0;
 		newPluck = 1;
@@ -193,7 +193,7 @@ float __ATTR_ITCMRAM audioTickString1(void)
 
 	for (int i = 0; i < 12; i++)
 	{
-		knobScaled[i] = tDynamicSmoother_tickNoInput(knobSmoothers[i]);
+		knobScaled[i] = tExpSmooth_tick(knobSmoothers[i]);
 	}
 	pluckPos = knobScaled[9];
 

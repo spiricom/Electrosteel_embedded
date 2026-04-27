@@ -178,14 +178,14 @@ void __ATTR_ITCMRAM audioSwitchToAdditive()
 	tVZFilter_setFrequencyAndResonance(noiseFilt2,61.0f, 2.5f);
 	for (int i = 0; i < 12; i++)
 	{
-		//tExpSmooth_setFactor(knobSmoothers[i], 0.001f);
+		tExpSmooth_setFactor(knobSmoothers[i], 0.0005f);
 		if (voice == 61)
 		{
-			tDynamicSmoother_setValAndDest(knobSmoothers[i], additiveDefaults[i]);
+			tExpSmooth_setValAndDest(knobSmoothers[i], additiveDefaults[i]);
 		}
 		else
 		{
-			tDynamicSmoother_setValAndDest(knobSmoothers[i], loadedKnobParams[i]);
+			tExpSmooth_setValAndDest(knobSmoothers[i], loadedKnobParams[i]);
 		}
 		knobFrozen[i] = 1;
 	}
@@ -383,7 +383,7 @@ float __ATTR_ITCMRAM audioTickAdditive(void)
 	float tempSamp = 0.0f;
 	for (int i = 0; i < 12; i++)
 	{
-		knobScaled[i] = tDynamicSmoother_tickNoInput(knobSmoothers[i]);
+		knobScaled[i] = tExpSmooth_tick(knobSmoothers[i]);
 	}
 
 

@@ -82,8 +82,8 @@ float outSamples[2][NUM_OSC][NUM_STRINGS_PER_BOARD];
 //source vals
 float sourceValues[NUM_SOURCES][NUM_STRINGS_PER_BOARD];
 
-tDynamicSmoother mapSmoothers[MAX_NUM_MAPPINGS][NUM_STRINGS_PER_BOARD];
-tDynamicSmoother pitchSmoother[NUM_OSC][NUM_STRINGS_PER_BOARD];
+tExpSmooth mapSmoothers[MAX_NUM_MAPPINGS][NUM_STRINGS_PER_BOARD];
+tDynamicSmoother pitchSmoother;
 tDynamicSmoother filterCutoffSmoother[NUM_FILT][NUM_STRINGS_PER_BOARD];
 
 
@@ -206,13 +206,16 @@ void audioInitSynth()
 
 			tPBSineTriangle_init(&sinePaired[i][v],&leaf);
 
-			tDynamicSmoother_init(&pitchSmoother[i][v], &leaf);
-			tDynamicSmoother_setValAndDest(pitchSmoother[i][v], 0.5f);
 
 			freqMult[i][v] = 1.0f;
 			midiAdd[i][v] = 0.0f;
 
 		}
+
+
+		tDynamicSmoother_init(&pitchSmoother, &leaf);
+		tDynamicSmoother_setValAndDest(pitchSmoother, 0.5f);
+
 		for (int i = 0; i < NUM_FILT; i++)
 		{
 			tSVF_init(&lowpass[i][v], SVFTypeLowpass, 2000.f, 0.7f, &leaf);
@@ -298,7 +301,7 @@ void audioInitSynth()
 
 		for (int i = 0; i < MAX_NUM_MAPPINGS; i++)
 		{
-			tDynamicSmoother_init(&mapSmoothers[i][v], &leaf);
+			tExpSmooth_init(&mapSmoothers[i][v], 0.0f, 0.001f, &leaf);
 		}
 
 		tSVF_LP_init(&finalLowpass[v], 19000.f, 0.2f, &leaf);
@@ -346,8 +349,8 @@ void  audioSwitchToSynth()
 	}
 	for (int i = 0; i < 20; i++)
 	{
-		//tDynamicSmoother_setFactor(knobSmoothers[i], 0.001f);
-		//tExpSmooth_setValAndDest(&knobSmoothers[i], string2Defaults[i]);
+		tExpSmooth_setFactor(knobSmoothers[i], 0.001f);
+		//tExpSmooth_setValAndDest(knobSmoothers[i], string2Defaults[i]);
 		knobFrozen[i] = 1;
 	}
 	antiClickFade = 0.0f;
@@ -492,7 +495,7 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 	{
 		if (knobTicked[i])
 		{
-			knobScaled[i] = tDynamicSmoother_tickNoInput(knobSmoothers[i]);
+			knobScaled[i] = tExpSmooth_tick(knobSmoothers[i]);
 			for (int v = 0; v < numStringsThisBoard; v++)
 			{
 				sourceValues[MACRO_SOURCE_OFFSET + i][v] = knobScaled[i];
@@ -504,7 +507,7 @@ float __ATTR_ITCMRAM audioTickSynth(void)
 	{
 		if (pedalTicked[i])
 		{
-			pedalScaled[i] = tDynamicSmoother_tickNoInput(pedalSmoothers[i]);
+			pedalScaled[i] = tExpSmooth_tick(pedalSmoothers[i]);
 			for (int v = 0; v < numStringsThisBoard; v++)
 			{
 				sourceValues[PEDAL_SOURCE_OFFSET + i][v] = pedalScaled[i];
@@ -769,6 +772,8 @@ void __ATTR_ITCMRAM oscillator_tick(float note, int string)
 		oscOuts[0][i][string] = 0.0f;
 		oscOuts[1][i][string] = 0.0f;
 	}
+	tDynamicSmoother_setDest(pitchSmoother, note * 0.00787402f);
+	float mainFreq = tDynamicSmoother_tickNoInput(pitchSmoother) * 127.0f;
 	for (int osc = 0; osc < oscToTick; osc++)
 	{
 		if (oscOn[osc])
@@ -781,14 +786,8 @@ void __ATTR_ITCMRAM oscillator_tick(float note, int string)
 			float amp = oscParams[OscAmp].realVal[string];
 			float filterSend = oscParams[OscFilterSend].realVal[string];
 			//int sync = oscParams[OscisSync].realVal[string] > 0.5f; // probably faster than previous roundf version but haven't tested
-			float freqToSmooth = (note + (fine*0.01f));
-			tDynamicSmoother_setDest(pitchSmoother[osc][string], freqToSmooth * 0.00787402f);
-
-			float tempMIDI = tDynamicSmoother_tickNoInput(pitchSmoother[osc][string])*127.0f + midiAdd[osc][string];
-
-
+			float tempMIDI = (mainFreq + (fine*0.01f)) + midiAdd[osc][string];
 			float finalFreq = (mtofTableLookup(tempMIDI) * freqMult[osc][string]) + freqOffset;
-
 			float sample = 0.0f;
 
 
@@ -1209,8 +1208,8 @@ void __ATTR_ITCMRAM tickMappings(void)
 				//sources are now summed - let's add the initial value
 				smoothedValue += mappings[i].dest->zeroToOneVal[v];
 
-				tDynamicSmoother_setDest(mapSmoothers[i][v], smoothedValue);
-				smoothedValue = tDynamicSmoother_tickNoInput(mapSmoothers[i][v]);
+				tExpSmooth_setDest(mapSmoothers[i][v], smoothedValue);
+				smoothedValue = tExpSmooth_tick(mapSmoothers[i][v]);
 				float finalVal = unsmoothedValue + smoothedValue;
 
 				//now scale the value with the correct scaling function

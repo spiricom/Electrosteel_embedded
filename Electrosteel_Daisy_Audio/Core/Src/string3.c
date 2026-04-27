@@ -61,15 +61,15 @@ void __ATTR_ITCMRAM audioSwitchToString3()
 {
 	for (int i = 0; i < 12; i++)
 	{
-		//tExpSmooth_setFactor(knobSmoothers[i], 0.001f);
+		tExpSmooth_setFactor(knobSmoothers[i], 0.001f);
 
 		if (voice == 59)
 		{
-			tDynamicSmoother_setValAndDest(knobSmoothers[i], string3Defaults[i]);
+			tExpSmooth_setValAndDest(knobSmoothers[i], string3Defaults[i]);
 		}
 		else
 		{
-			tDynamicSmoother_setValAndDest(knobSmoothers[i], loadedKnobParams[i]);
+			tExpSmooth_setValAndDest(knobSmoothers[i], loadedKnobParams[i]);
 		}
 		knobFrozen[i] = 1;
 	}
@@ -213,7 +213,7 @@ float __ATTR_ITCMRAM audioTickString3(void)
 
 	for (int i = 0; i < 12; i++)
 	{
-		knobScaled[i] = tDynamicSmoother_tickNoInput(knobSmoothers[i]);
+		knobScaled[i] = tExpSmooth_tick(knobSmoothers[i]);
 	}
 
 	/*

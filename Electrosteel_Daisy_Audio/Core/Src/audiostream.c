@@ -86,8 +86,8 @@ uint8_t numStringsThisBoard = NUM_STRINGS_PER_BOARD;
 tDynamicSmoother stringFreqSmoothers[NUM_STRINGS_PER_BOARD];
 
 tDynamicSmoother volumeSmoother;
-tDynamicSmoother knobSmoothers[20];
-tDynamicSmoother pedalSmoothers[10];
+tExpSmooth knobSmoothers[20];
+tExpSmooth pedalSmoothers[10];
 tDynamicSmoother barSlideSmoother[NUM_STRINGS_PER_BOARD];
 tEnvelopeFollower barNoiseSmoother[NUM_STRINGS_PER_BOARD];
 
@@ -344,11 +344,11 @@ void audioInit()
 	tDynamicSmoother_setValAndDest(volumeSmoother, 1.0f);
 	for (int i = 0; i < 20; i++)
 	{
-		tDynamicSmoother_init(&knobSmoothers[i],&leaf);
+		tExpSmooth_init(&knobSmoothers[i],0.0f, 0.0001f, &leaf);
 	}
 	for (int i = 0; i < 10; i++)
 	{
-		tDynamicSmoother_init(&pedalSmoothers[i],&leaf);
+		tExpSmooth_init(&pedalSmoothers[i],0.0f, 0.0001f,&leaf);
 	}
 
 	for (int i = 0; i < NUM_STRINGS_PER_BOARD; i++)

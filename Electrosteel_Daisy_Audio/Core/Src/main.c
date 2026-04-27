@@ -1763,7 +1763,7 @@ void  handleSPI (uint8_t offset)
 				}
 				else
 				{
-					tDynamicSmoother_setDest(knobSmoothers[i], (SPI_LEVERS_RX[i + currentByte] * 0.003921568627451f)); //scaled 0.0 to 1.0
+					tExpSmooth_setDest(knobSmoothers[i], (SPI_LEVERS_RX[i + currentByte] * 0.003921568627451f)); //scaled 0.0 to 1.0
 					prevKnobByte[i] = newByte;
 				}
 
@@ -1787,7 +1787,7 @@ void  handleSPI (uint8_t offset)
 				}
 				else
 				{
-					tDynamicSmoother_setDest(knobSmoothers[i], (newByte * 0.003921568627451f)); //scaled 0.0 to 1.0
+					tExpSmooth_setDest(knobSmoothers[i], (newByte * 0.003921568627451f)); //scaled 0.0 to 1.0
 					prevKnobByte[i] = newByte;
 				}
 
@@ -1795,7 +1795,7 @@ void  handleSPI (uint8_t offset)
 			currentByte += 12;
 			for (int i = 0; i < 10; i++)
 			{
-				tDynamicSmoother_setDest(pedalSmoothers[i], (SPI_LEVERS_RX[i + currentByte ] * 0.003921568627451f)); //scaled 0.0 to 1.0
+				tExpSmooth_setDest(pedalSmoothers[i], (SPI_LEVERS_RX[i + currentByte ] * 0.003921568627451f)); //scaled 0.0 to 1.0
 			}
 			//HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_SET);
 			whichBar = 1;
@@ -1829,7 +1829,7 @@ void  handleSPI (uint8_t offset)
 				}
 				else
 				{
-					tDynamicSmoother_setDest(knobSmoothers[whichKnob], (newByte * 0.003921568627451f)); //scaled 0.0 to 1.0
+					tExpSmooth_setDest(knobSmoothers[whichKnob], (newByte * 0.003921568627451f)); //scaled 0.0 to 1.0
 					prevKnobByte[whichKnob] = newByte;
 				}
 
@@ -1853,7 +1853,7 @@ void  handleSPI (uint8_t offset)
 				}
 				else
 				{
-					tDynamicSmoother_setDest(knobSmoothers[whichKnob], (SPI_LEVERS_RX[i + currentByte] * 0.003921568627451f)); //scaled 0.0 to 1.0
+					tExpSmooth_setDest(knobSmoothers[whichKnob], (SPI_LEVERS_RX[i + currentByte] * 0.003921568627451f)); //scaled 0.0 to 1.0
 					prevKnobByte[whichKnob] = newByte;
 				}
 
@@ -1862,7 +1862,7 @@ void  handleSPI (uint8_t offset)
 			currentByte += 12;
 			for (int i = 0; i < 10; i++)
 			{
-				tDynamicSmoother_setDest(pedalSmoothers[i], (SPI_LEVERS_RX[i + currentByte ] * 0.003921568627451f)); //scaled 0.0 to 1.0
+				tExpSmooth_setDest(pedalSmoothers[i], (SPI_LEVERS_RX[i + currentByte ] * 0.003921568627451f)); //scaled 0.0 to 1.0
 			}
 			//HAL_GPIO_WritePin(GPIOG, GPIO_PIN_9, GPIO_PIN_SET);
 			whichBar = 1;
@@ -3100,7 +3100,7 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 				sourceValues[source][v] = params[whichMacro + MACRO_PARAMS_OFFSET].realVal[v];
 			}
 			//set starting point for the knob smoothers to smooth from
-			tDynamicSmoother_setValAndDest(knobSmoothers[whichMacro], params[whichMacro + MACRO_PARAMS_OFFSET].realVal[0]);
+			tExpSmooth_setValAndDest(knobSmoothers[whichMacro], params[whichMacro + MACRO_PARAMS_OFFSET].realVal[0]);
 			knobFrozen[whichMacro] = 1;
 			knobTicked[whichMacro] = 1;
 		}
@@ -3143,7 +3143,7 @@ void __ATTR_ITCMRAM parsePreset(int size, int presetNumber)
 						sourceValues[scalar][v] = params[whichMacro + MACRO_PARAMS_OFFSET].realVal[v];
 					}
 					//set starting point for the knob smoothers to smooth from
-					tDynamicSmoother_setValAndDest(knobSmoothers[whichMacro], params[whichMacro + MACRO_PARAMS_OFFSET].realVal[0]);
+					tExpSmooth_setValAndDest(knobSmoothers[whichMacro], params[whichMacro + MACRO_PARAMS_OFFSET].realVal[0]);
 					knobFrozen[whichMacro] = 1;
 					knobTicked[whichMacro] = 1;
 				}
