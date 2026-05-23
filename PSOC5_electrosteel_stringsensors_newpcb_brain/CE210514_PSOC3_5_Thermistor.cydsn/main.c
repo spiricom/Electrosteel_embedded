@@ -7,7 +7,7 @@
 #include "main.h"
 #include "ui.h"
 
-#define BOOTLOAD_STYLE
+//#define BOOTLOAD_STYLE
 
 const float versionNumber = 1.16f;
 
@@ -567,7 +567,7 @@ int main(void)
     I2Cbuff1[0] = 1<<2;
     status = I2C_MasterWriteBlocking(0x70, 1, I2C_1_MODE_COMPLETE_XFER);
     
-    CyDelay(500);
+    CyDelay(10);
     //read from eeprom all the stored user settings
     
     //check if this is the first time it's ever booted up, in which case there will be no copedents loaded)
