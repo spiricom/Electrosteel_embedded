@@ -7,9 +7,9 @@
 #include "main.h"
 #include "ui.h"
 
-#define BOOTLOAD_STYLE
+//#define BOOTLOAD_STYLE
 
-const float versionNumber = 1.16f;
+const float versionNumber = 1.17f;
 
 uint32_t prevLastBufferBegin[2];
 uint32_t lastBufferBegin[2];
@@ -18,7 +18,7 @@ uint32_t lastParseCall = 0;
 uint32_t prevLastParseCall = 0;
 uint32_t lastBufferStuff = 0;
 uint32_t lastEndReceive = 0;
-
+uint16_t sensorOffThreshold[NUM_SLIDERS];
 uint8_t sysexBuffer[2048];
 uint32_t sysexWritePointer = 0;
 uint32_t sysexReadPointer = 0;
@@ -56,7 +56,7 @@ uint8_t midiDebugSendOn = 0;
 uint8_t pitchSmoothing = 0;
 uint8_t controlSmoothing = 0;
 uint8_t octaveAction = 0;
-uint8_t stringRepresentation[2] = {3,8};
+uint8_t stringRepresentation[NUM_SLIDERS] = {3,8};
 
 uint8_t presetArraySection = presetName;
 
@@ -98,7 +98,12 @@ volatile uint8_t USB_check_flag = 0;
 
 uint8_t mappingArray[6];
 
-uint8_t inBuffer[myBufferSize];
+
+#define UART_BUFFER_SIZE 38
+
+volatile uint8_t UARTBuffer[UART_BUFFER_SIZE]  __attribute__((aligned(32)));
+uint8_t UART_fix_count = 0;
+volatile uint8_t inBuffer[myBufferSize] __attribute__((aligned(32)));
 
 uint8_t myArray[myBufferSize];
 uint8_t returnedData[myBufferSize];
@@ -127,13 +132,15 @@ volatile uint8 txTD __attribute__((aligned(32)));
 volatile uint8 rx3Channel __attribute__((aligned(32)));
 volatile uint8 rx3TD __attribute__((aligned(32)));
 
+volatile uint8 rx5Channel __attribute__((aligned(32)));
+volatile uint8 rx5TD __attribute__((aligned(32)));
 
 volatile uint8 rxBufferPluck[2][PLUCK_BUFFER_SIZE] __attribute__((aligned(32)));
 volatile uint8 rxBufferBar[2][BAR_BUFFER_SIZE] __attribute__((aligned(32)));
 
 volatile uint16_t strings[12];
 volatile uint16_t prevStrings[12];
-volatile uint16_t bar[2];
+volatile uint16_t bar[NUM_SLIDERS];
 volatile uint16_t prevBar[2];
 volatile uint16_t maxStrings[12];
 volatile uint8_t amHere = 0;
@@ -148,6 +155,8 @@ volatile uint8_t currentPluckBuffer = 0;
 volatile uint8_t currentBarBuffer = 0;
 volatile uint8_t pluckErrorCount = 0;
 volatile uint16_t SPI1ErrorCount = 0;
+
+volatile uint8_t barOnArray[NUM_SLIDERS];
 
 volatile uint8_t inputData = 0;
 
@@ -485,6 +494,54 @@ CY_ISR(spis_2_ss)
     CyDmaChEnable(rx2Channel, 1);
 }
 
+
+uint16 uartInput[18];
+volatile uint8 newBar = 0;
+//This one happens when the UART buffer gets filled by DMA
+
+CY_ISR(uart_interrupt)
+{
+    //LED_TEST_Write(1);
+   
+    if ((UARTBuffer[0] == 253)&&(UARTBuffer[37] == 254))
+    {
+        //data is good
+        
+        for (int i = 0; i < 18; i++)
+        {
+            uartInput[i] = UARTBuffer[i*2+1] << 8;
+            uartInput[i] +=  UARTBuffer[(i*2)+2];
+            
+            //sendMIDIControlChange(i*2, (uartInput[i] >> 10) & 128, 0);
+            //sendMIDIControlChange(i*2+1, (uartInput[i] >> 2) & 128, 0);
+        }
+        
+        UART_1_ClearRxBuffer();
+
+        CyDmaClearPendingDrq(rx5Channel);
+
+        //set up the next DMA transaction
+        CyDmaTdSetConfiguration(rx5TD, UART_BUFFER_SIZE, DMA_DISABLE_TD, TD_INC_DST_ADR | DMA_5__TD_TERMOUT_EN);
+        CyDmaTdSetAddress(rx5TD, LO16((uint32) UART_1_RXDATA_PTR), LO16((uint32) UARTBuffer));
+        CyDmaChSetInitialTd(rx5Channel, rx5TD);
+        CyDmaChEnable(rx5Channel, 1);
+        // sendMIDIControlChange(0, (uartInput[0] /512), 0);
+        // sendMIDIControlChange(1, ((uartInput[0] >> 2) & 127), 0);
+    }
+    else
+    {
+       LED_TEST_Write(0);
+       UART_fix_count = 10;
+    
+    }
+   
+    
+
+    
+//LED_TEST_Write(0);
+}
+
+
 CY_ISR(spis_1_ss)
 {
     currentPluckBuffer = !currentPluckBuffer;
@@ -524,11 +581,16 @@ void loadEEPROMdefaults(void)
     EEPROM_WriteByte(64,EEPROM_VOLUME_OFFSET);
 }
 
+volatile uint8_t firstTest = 0;
+volatile uint8_t secondTest = 0;
+volatile uint8_t thirdTest = 0;
+
+
 
 int main(void)
 {
     
-	CYGlobalIntEnable; 
+	CYGlobalIntEnable;
     EEPROM_Start();
      #ifdef BOOTLOAD_STYLE
      //since we sucessfully booted this firmware, set it to be the default until the brain chip gets a new firmware command from the synth chip
@@ -630,6 +692,13 @@ int main(void)
     {
         fretMeasurements[0][i] = (EEPROM_ReadByte(EEPROM_FRET_CALIBRATION_OFFSET + (i*4)) << 8) + (EEPROM_ReadByte(EEPROM_FRET_CALIBRATION_OFFSET + ((i*4) + 1)) & 255);
         fretMeasurements[1][i] = (EEPROM_ReadByte(EEPROM_FRET_CALIBRATION_OFFSET + ((i*4) + 2)) << 8) + (EEPROM_ReadByte(EEPROM_FRET_CALIBRATION_OFFSET + ((i*4) + 3)) & 255);
+        fretMeasurements[2][i] = (EEPROM_ReadByte(EEPROM_FRET_CALIBRATION_OFFSET + ((i*4) + 4)) << 8) + (EEPROM_ReadByte(EEPROM_FRET_CALIBRATION_OFFSET + ((i*4) + 5)) & 255);
+        fretMeasurements[3][i] = (EEPROM_ReadByte(EEPROM_FRET_CALIBRATION_OFFSET + ((i*4) + 6)) << 8) + (EEPROM_ReadByte(EEPROM_FRET_CALIBRATION_OFFSET + ((i*4) + 7)) & 255);
+        fretMeasurements[4][i] = (EEPROM_ReadByte(EEPROM_FRET_CALIBRATION_OFFSET + ((i*4) + 8)) << 8) + (EEPROM_ReadByte(EEPROM_FRET_CALIBRATION_OFFSET + ((i*4) + 9)) & 255);
+        fretMeasurements[5][i] = (EEPROM_ReadByte(EEPROM_FRET_CALIBRATION_OFFSET + ((i*4) + 10)) << 8) + (EEPROM_ReadByte(EEPROM_FRET_CALIBRATION_OFFSET + ((i*4) + 11)) & 255);
+        fretMeasurements[6][i] = (EEPROM_ReadByte(EEPROM_FRET_CALIBRATION_OFFSET + ((i*4) + 12)) << 8) + (EEPROM_ReadByte(EEPROM_FRET_CALIBRATION_OFFSET + ((i*4) + 13)) & 255);
+        fretMeasurements[7][i] = (EEPROM_ReadByte(EEPROM_FRET_CALIBRATION_OFFSET + ((i*4) + 14)) << 8) + (EEPROM_ReadByte(EEPROM_FRET_CALIBRATION_OFFSET + ((i*4) + 15)) & 255);
+        fretMeasurements[8][i] = (EEPROM_ReadByte(EEPROM_FRET_CALIBRATION_OFFSET + ((i*4) + 16)) << 8) + (EEPROM_ReadByte(EEPROM_FRET_CALIBRATION_OFFSET + ((i*4) + 17)) & 255);
     }
     //blank out the preset names array so that we can tell when we get the real names from the synth board sd card
     for (int i = 0; i < MAX_NUM_PRESETS; i++)
@@ -685,24 +754,45 @@ int main(void)
 
     I2Cbuff1[0] = 0xf; //message says scan single-ended mode from beginning to 8th knob (scan all knobs)
     status = I2C_MasterWriteBlocking(0x35, 1, I2C_1_MODE_COMPLETE_XFER);
-    
+
 
     SPIS_1_Start();  
     SPIM_1_Start();  
     SPIS_2_Start(); 
+    UART_1_Start();
+    
     DmaTxConfiguration();
     DmaRxConfiguration();
     isr_SPI1_ss_StartEx(spis_1_ss);
     isr_SPI2_ss_StartEx(spis_2_ss);
+    isr_uart_StartEx(uart_interrupt);
     
     myArray[30] = 254;
     myArray[31] = 253;
 
     main_counter = 0;
+    LED_TEST_Write(1);
     //burnInitialPedalZeroPositions();
 	for(;;)
     {
-        
+        if (UART_fix_count > 0)
+        {
+            UART_fix_count--;
+            if (UART_fix_count == 0)
+            {
+                UART_1_ClearRxBuffer();
+
+                CyDmaClearPendingDrq(rx5Channel);
+
+                //set up the next DMA transaction
+                CyDmaTdSetConfiguration(rx5TD, UART_BUFFER_SIZE, DMA_DISABLE_TD, TD_INC_DST_ADR | DMA_5__TD_TERMOUT_EN);
+                CyDmaTdSetAddress(rx5TD, LO16((uint32) UART_1_RXDATA_PTR), LO16((uint32) UARTBuffer));
+                CyDmaChSetInitialTd(rx5Channel, rx5TD);
+                CyDmaChEnable(rx5Channel, 1);
+                //tell the UART that you are ready for data again
+                LED_TEST_Write(1);
+            }
+        }
         if (parseThatMF)
         {
             parseSysex();
@@ -987,7 +1077,7 @@ int main(void)
         //testpin3_Write(0);
 
        // testpin5_Write(1);
-        
+        #if 0
         if ((rxBufferBar[!currentBarBuffer][6] == 254) && (rxBufferBar[!currentBarBuffer][7] == 253))
         {
             for (int i = 0; i < NUM_SLIDERS; i++)
@@ -1038,6 +1128,52 @@ int main(void)
             }
         }
         
+        
+        #endif
+        
+        for (int i = 0; i < NUM_SLIDERS; i++)
+            {
+                {
+    				if (midiDebugSendOn)
+                    {
+                        sendMIDIControlChange(34+(i*3), uartInput[i] & 127, 1);
+                        sendMIDIControlChange(33+(i*3), (uartInput[i] >> 7) & 127, 1);
+                        sendMIDIControlChange(32+(i*3), (uartInput[i] >> 14) & 127, 1);
+                    }
+
+                    if (uartInput[i] >= fretMeasurements[i][0])
+    				{
+    					stringMappedPositionsInRatios[i] = 1.0f;
+    				}
+                    else if (uartInput[i] > fretMeasurements[i][NUM_FRET_MEASUREMENTS-1])
+                    {
+                        for (int j = 0; j < NUM_FRET_MEASUREMENTS-1; j++)
+                        {
+                            if ((uartInput[i] <=  fretMeasurements[i][j]) && (uartInput[i] >  fretMeasurements[i][j+1]))
+                            {
+                                stringMappedPositionsInRatios[i] = map((float)uartInput[i], fretMeasurements[i][j], fretMeasurements[i][j+1], fretScalingInRatios[j], fretScalingInRatios[j + 1]);
+                                if (midiDebugSendOn)
+                                {
+                                    sendMIDIControlChange(44, j, 1);
+                                }
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        stringMappedPositionsInRatios[i] = map((float)uartInput[i], fretMeasurements[i][NUM_FRET_MEASUREMENTS-2], fretMeasurements[i][NUM_FRET_MEASUREMENTS-1], fretScalingInRatios[NUM_FRET_MEASUREMENTS-2], fretScalingInRatios[NUM_FRET_MEASUREMENTS-1]);
+                    }
+                    stringMappedPositionsInRatiosInt[i] = stringMappedPositionsInRatios[i]*16384.0f;
+                    if (midiDebugSendOn)
+                    {
+                        sendMIDIControlChange(40+(i*3), stringMappedPositionsInRatiosInt[i] & 127, 1);
+                        sendMIDIControlChange(39+(i*3), (stringMappedPositionsInRatiosInt[i] >> 7) & 127, 1);
+                        sendMIDIControlChange(38+(i*3), (stringMappedPositionsInRatiosInt[i] >> 14) & 127, 1);
+                    }
+                }
+                //
+            }
         //testpin5_Write(0);
         if (midiSendOn)
         {
@@ -1073,6 +1209,10 @@ int main(void)
             
         }
         
+        for (int i = 0; i < NUM_SLIDERS; i++)
+        {
+            barOnArray[i] = (uartInput[i+9] < sensorOffThreshold[i]);
+        }
         //testpin4_Write(1);
         //calculate the pitch of each string based on the current Copedent
         for (int i = 0; i < numStrings; i++)
@@ -1549,6 +1689,29 @@ void DmaRxConfiguration()
 
     /* Associate the TD with the channel */
     CyDmaChSetInitialTd(rx3Channel, rx3TD);
+    
+
+    
+            /* Init UART DMA, 1 byte bursts, each burst requires a request */ 
+    rx5Channel = DMA_5_DmaInitialize(DMA_RX_BYTES_PER_BURST, DMA_RX_REQUEST_PER_BURST,
+                                     HI16(DMA_RX_SRC_BASE), HI16(DMA_RX_DST_BASE));
+
+    rx5TD = CyDmaTdAllocate();
+    
+    /* Configure this Td as follows:
+    *  - Increment the destination address, but not the source address
+    */
+    CyDmaTdSetConfiguration(rx5TD, UART_BUFFER_SIZE,DMA_DISABLE_TD, TD_INC_DST_ADR | DMA_5__TD_TERMOUT_EN);
+
+    /* From the SPIM to the memory */
+    CyDmaTdSetAddress(rx5TD, LO16((uint32)UART_1_RXDATA_PTR), LO16((uint32)UARTBuffer));
+
+    /* Associate the TD with the channel */
+    CyDmaChSetInitialTd(rx5Channel, rx5TD);
+    
+    CyDmaChEnable(rx5Channel, true);
+
+    
 }
 
 uint8 I2C_MasterWriteBlocking(uint8 i2CAddr, uint16 nbytes, uint8_t mode)

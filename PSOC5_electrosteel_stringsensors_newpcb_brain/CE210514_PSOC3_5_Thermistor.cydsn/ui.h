@@ -12,6 +12,7 @@
 #include <device.h>
 #include <stdio.h>
 #include <math.h>
+
 #include "gfx.h"
 #include "oled.h"
 
@@ -32,4 +33,5 @@ void exitFretCalibrationMode(void);
 void exitPresetStoreMenu(void);
 void displayCurrentPresetNameAndCopedent(void);
 void displayCurrentControlNames(void);
+void finalFretCalibration(void);
 /* [] END OF FILE */

@@ -39,6 +39,13 @@ uint8_t whichMacroPageIsActive = 0;
 
 char newPresetName[14] = {'A',32,32,32,32,32,32,32,32,32,32,32,32,32};
 
+
+uint8_t fretToCalibrate = 0;
+uint8_t whichFretArray[NUM_FRET_MEASUREMENTS] = {0, 1, 3, 5, 7, 9, 12, 15, 17, 19, 21, 24};
+uint16_t sensorOnMax[NUM_SLIDERS];
+uint16_t sensorOnMin[NUM_SLIDERS];
+uint16_t sensorOff[NUM_SLIDERS];
+
 void scanUI(void)
 {
     if (!knobPanelButton1_Read())
@@ -619,8 +626,6 @@ void exitEditModeMenu(void)
     displayCurrentPresetNameAndCopedent();
 }
 
-uint8_t fretToCalibrate = 0;
-uint8_t whichFretArray[NUM_FRET_MEASUREMENTS] = {0, 1, 3, 5, 7, 9, 12, 15, 17, 19, 21, 24};
 void menuAction(enum direction action)
 {
     uint8_t whatToDraw = 0;
@@ -931,18 +936,46 @@ void menuAction(enum direction action)
         //when user presses -> button, then store the current fret and increment which fret to store next
         if ((action == Right) || (action == Enter))
         {
-            fretMeasurements[0][fretToCalibrate] = bar[0];
-            sendMIDIControlChange(64, bar[0]/512, 1);
-            fretMeasurements[1][fretToCalibrate] = bar[1];
-            fretToCalibrate++;
-            if (fretToCalibrate == NUM_FRET_MEASUREMENTS)
+            if (fretCalibrationMode > 1)
             {
+                for (int i = 0; i < NUM_SLIDERS; i++)
+                {
+                    sensorOff[i] = uartInput[i+9];
+                    
+                    sensorOffThreshold[i] = ((sensorOff[i] - sensorOnMax[i]) / 2) + sensorOnMax[i];
+                }
+                
+                
                 exitFretCalibrationMode();
             }
             else
             {
-               OLEDwriteInt(whichFretArray[fretToCalibrate], 2, 40, ThirdLine);
-               mainOLEDWaitingToSend = 1;
+                for (int i = 0; i < NUM_SLIDERS; i++)
+                {
+                    fretMeasurements[i][fretToCalibrate] = uartInput[i];
+                    
+                    if (uartInput[i+9] > sensorOnMax[i])
+                    {
+                        sensorOnMax[i] = uartInput[i+9];
+                    }
+                    if (uartInput[i+9] < sensorOnMin[i])
+                    {
+                        sensorOnMin[i] = uartInput[i+9];
+                    }
+                    
+                }
+                fretToCalibrate++;
+                //TODO: add mode to test without bar values
+                if (fretToCalibrate == NUM_FRET_MEASUREMENTS)
+                {
+                    finalFretCalibration();
+                }
+
+                else
+                {
+                   OLEDwriteInt(whichFretArray[fretToCalibrate], 2, 40, ThirdLine);
+                   mainOLEDWaitingToSend = 1;
+                }
             }
         }
     }
@@ -1537,6 +1570,12 @@ void enterFretCalibrationMode(void)
     myGFX_setFont(2);
     OLEDtextColor(0, 1);
     fretToCalibrate = 0;
+    for (int i = 0; i < NUM_SLIDERS; i++)
+    {
+        sensorOnMax[i] = 0;
+        sensorOnMin[i] = 65535;
+    }
+    
     OLEDwriteString("CALIBRATION", 11, 1, FirstLine);
     OLEDwriteString("PLACE BAR AT ", 15, 1, SecondLine);
     OLEDwriteString("FRET ", 5, 1, ThirdLine);
@@ -1547,17 +1586,47 @@ void enterFretCalibrationMode(void)
     fretCalibrationMode = 1;
 }
 
+void finalFretCalibration(void)
+{
+    OLEDclear(128, 64);
+    myGFX_setFont(2);
+    OLEDtextColor(0, 1);
+
+    
+    OLEDwriteString("CALIBRATION", 11, 1, FirstLine);
+    OLEDwriteString("REMOVE BAR ", 11, 1, SecondLine);
+   // OLEDwriteString(" ", 1, 1, ThirdLine);
+    //OLEDwriteInt(whichFretArray[fretToCalibrate], 2, 40, ThirdLine);
+    OLEDwriteString("THEN PRESS ->", 15, 1, FourthLine);
+    mainOLEDWaitingToSend = 1;
+    OLEDtextColor(1, 0);
+    fretCalibrationMode = 2;
+}
+
 void exitFretCalibrationMode(void)
 {
     fretCalibrationMode = 0;
     //now need to store this in EEPROM.                
-    for (int i = 0; i < NUM_FRET_MEASUREMENTS; i++)
+    for (int i = 0; i < NUM_SLIDERS; i++)
     {
-         EEPROM_WriteByte((fretMeasurements[0][i] >> 8), EEPROM_FRET_CALIBRATION_OFFSET + (i*4));
-         EEPROM_WriteByte((fretMeasurements[0][i] & 255), EEPROM_FRET_CALIBRATION_OFFSET + ((i*4) + 1));
-         EEPROM_WriteByte((fretMeasurements[1][i] >> 8), EEPROM_FRET_CALIBRATION_OFFSET + ((i*4) + 2));
-         EEPROM_WriteByte((fretMeasurements[1][i] & 255), EEPROM_FRET_CALIBRATION_OFFSET + ((i*4) + 3));
+        EEPROM_WriteByte((sensorOffThreshold[i] >> 8), EEPROM_FRET_CALIBRATION_OFFSET + (i*2));
+        EEPROM_WriteByte((sensorOffThreshold[i] & 255), EEPROM_FRET_CALIBRATION_OFFSET + ((i*2) + 1));
     }
+    for (int i = 0; i < NUM_SLIDERS; i++)
+    {
+        for (int j = 0; j < NUM_FRET_MEASUREMENTS; j++)
+        {
+            EEPROM_WriteByte((fretMeasurements[j][i] >> 8), EEPROM_FRET_CALIBRATION_OFFSET + (NUM_SLIDERS*2) + (i*2) + (j*NUM_FRET_MEASUREMENTS));
+            EEPROM_WriteByte((fretMeasurements[j][i] >> 8), EEPROM_FRET_CALIBRATION_OFFSET + (NUM_SLIDERS*2) + (i*2) + (j*NUM_FRET_MEASUREMENTS) + 1);
+            
+            //EEPROM_WriteByte((fretMeasurements[j][i] >> 8), EEPROM_FRET_CALIBRATION_OFFSET + (i*2) + (j*NUM_SLIDERS) + (NUM_SLIDERS*2));
+            //EEPROM_WriteByte((fretMeasurements[j][i] & 255), EEPROM_FRET_CALIBRATION_OFFSET + ((i*2) + (j*NUM_SLIDERS)) + 1 + (NUM_SLIDERS*2));
+
+        }
+    }
+ 
+
+        
     exitEditModeMenu();
 
 }

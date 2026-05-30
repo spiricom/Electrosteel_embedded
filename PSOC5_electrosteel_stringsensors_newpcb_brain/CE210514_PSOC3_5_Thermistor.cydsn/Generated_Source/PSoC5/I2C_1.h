@@ -30,7 +30,7 @@
 *   Conditional Compilation Parameters
 ****************************************/
 
-#define I2C_1_IMPLEMENTATION     (0u)
+#define I2C_1_IMPLEMENTATION     (1u)
 #define I2C_1_MODE               (2u)
 #define I2C_1_ENABLE_WAKEUP      (0u)
 #define I2C_1_ADDR_DECODE        (1u)
@@ -253,7 +253,7 @@ extern uint8 I2C_1_initVar;
 *   Initial Parameter Constants
 ***************************************/
 
-#define I2C_1_DATA_RATE          (1000u)
+#define I2C_1_DATA_RATE          (400u)
 #define I2C_1_DEFAULT_ADDR       (8u)
 #define I2C_1_I2C_PAIR_SELECTED  (0u)
 
@@ -944,7 +944,7 @@ extern uint8 I2C_1_initVar;
                                              I2C_1_ENABLE_SLAVE)
 
     /*I2C_1_DEFAULT_DIVIDE_FACTOR_REG */
-    #define I2C_1_DEFAULT_DIVIDE_FACTOR  ((uint16) 1u)
+    #define I2C_1_DEFAULT_DIVIDE_FACTOR  ((uint16) 13u)
 
 #else
     /* I2C_1_CFG_REG: bits definition  */

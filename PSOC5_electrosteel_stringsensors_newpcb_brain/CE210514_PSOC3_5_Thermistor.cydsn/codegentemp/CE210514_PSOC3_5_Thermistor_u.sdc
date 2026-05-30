@@ -1,3 +1,3 @@
 # Component constraints for C:\Users\ggg88\dev\Electrosteel_embedded\PSOC5_electrosteel_stringsensors_newpcb_brain\CE210514_PSOC3_5_Thermistor.cydsn\TopDesign\TopDesign.cysch
 # Project: C:\Users\ggg88\dev\Electrosteel_embedded\PSOC5_electrosteel_stringsensors_newpcb_brain\CE210514_PSOC3_5_Thermistor.cydsn\CE210514_PSOC3_5_Thermistor.cyprj
-# Date: Fri, 09 Jan 2026 01:17:47 GMT
+# Date: Sun, 24 May 2026 22:04:18 GMT

@@ -20,11 +20,11 @@
 #define PRESET_NAME_LENGTH_IN_BYTES 14
 #define COPEDENT_NAME_LENGTH_IN_BYTES 10
 #define NUM_FRET_MEASUREMENTS 12
-#define NUM_SLIDERS 2
+#define NUM_SLIDERS 9
 #define EEPROM_LEVER_CALIBRATION_OFFSET (EEPROM_COPEDENT_OFFSET + (MAX_NUM_COPEDENTS * COPEDENT_SIZE_IN_BYTES))
 #define LEVER_CALIBRATION_SIZE_IN_BYTES (NUM_PEDALS * 4) //for each pedal, store 2 bytes for high and 2 bytes for low
 #define EEPROM_FRET_CALIBRATION_OFFSET (EEPROM_LEVER_CALIBRATION_OFFSET + LEVER_CALIBRATION_SIZE_IN_BYTES)
-#define FRET_CALIBRATION_SIZE_IN_BYTES NUM_FRET_MEASUREMENTS * NUM_SLIDERS * 2 //(measurement points *  2 sliders, each point 2 bytes)
+#define FRET_CALIBRATION_SIZE_IN_BYTES (NUM_FRET_MEASUREMENTS * NUM_SLIDERS * 2) + (NUM_SLIDERS * 2)//(measurement points *  9 sliders, each point 2 bytes) + (9 sliders threshold value, each 2 bytes)
 #define EEPROM_CURRENT_PRESET_OFFSET EEPROM_FRET_CALIBRATION_OFFSET + FRET_CALIBRATION_SIZE_IN_BYTES  //2036
 #define CURRENT_PRESET_SIZE_IN_BYTES 1
 #define EEPROM_STRING_REP_OFFSET EEPROM_CURRENT_PRESET_OFFSET + CURRENT_PRESET_SIZE_IN_BYTES
@@ -58,7 +58,7 @@
 #define CONTROL_NAME_CLIPPED_LENGTH 10
 
 #define myBufferSize 32
-#define MAX_NUM_COPEDENTS 7
+#define MAX_NUM_COPEDENTS 6
 #define NUM_STRINGS 12
 #define NUM_PEDALS 10
 #define INV_440 0.0022727272727273f
@@ -141,7 +141,8 @@ extern char newPresetName[14];
 extern uint8_t knobPanelLightActive;
 extern uint8_t neckPreset[2];
 extern uint8_t neckPresetsByte;
-
+extern uint16_t uartInput[18];
+extern uint16_t sensorOffThreshold[NUM_SLIDERS];
 typedef enum _MenuModes
 {
 	MainMenu = 0,

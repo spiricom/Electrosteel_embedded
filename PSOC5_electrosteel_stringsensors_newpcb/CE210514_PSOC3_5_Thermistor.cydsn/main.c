@@ -45,7 +45,7 @@
 
 #define barBufferSize 8
 #define touchBufferSize 4
-#define barInputBufferSize 38 //sending bar as 16bit average for all 9 sensors and 9 osc amounts, plus two bytes for start and stop check
+//#define barInputBufferSize 38 //sending bar as 16bit average for all 9 sensors and 9 osc amounts, plus two bytes for start and stop check
 
 
 
@@ -54,8 +54,8 @@ uint8_t stringCapSensorsRaw[16];
 uint8_t thresholdArray[12] = {15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15};
 uint8 barArray[barBufferSize];
 uint8 touchArray[touchBufferSize];
-uint8_t barInputArray[barInputBufferSize];
-uint8_t barInputOutputArray[barInputBufferSize];
+//uint8_t barInputArray[barInputBufferSize];
+//uint8_t barInputOutputArray[barInputBufferSize];
 int32_t linearPotValue32Bit[2];
 uint8_t i = 0;
 uint8_t counter = 0;
@@ -69,6 +69,7 @@ CY_ISR(button_press_ISR) {     /* No need to clear any interrupt source; interru
 }
 
 uint16_t ADC_values[12];
+uint8_t currentByte = 0;
 
 int main(void)
 {
@@ -85,7 +86,24 @@ int main(void)
 
     SPIM_1_Start();
     SPIM_2_Start();
-    SPIM_3_Start();
+   // SPIM_3_Start();
+    // UART_1_Start();
+
+   #if 0 
+    	for(;;)
+    {
+        int status = UART_1_ReadRxStatus();
+        if (status > 0)
+        {
+        barInputArray[currentByte] = UART_1_GetByte();
+        currentByte++;
+        if (currentByte > 38)
+{
+    currentByte = 0;
+}
+        }
+    }
+    #endif
     CyDelay(500);
     CapSense_Start();     
     
@@ -100,12 +118,12 @@ int main(void)
 	for(;;)
     {
         CapSense_ClearSensors();
-        
+        #if 0
         for (i = 0; i < 2; i++)
         {
            scanLinearResistor(i);
         }
-
+#endif
 
         uint8_t byteCounter = 0;
 
@@ -123,13 +141,13 @@ int main(void)
         }
 
         counter = 0;
-        
+        #if 0
         for (i = 0; i < 2; i++)
         {
             barArray[counter++] = ((uint16_t) linearPotValue32Bit[i]) >> 8;
             barArray[counter++] = ((uint16_t) linearPotValue32Bit[i]) & 0xff;
         }
-
+#endif
 
 
         barArray[4] = 0;
@@ -160,7 +178,7 @@ int main(void)
             touchArray[1] |= (isSensorOn << (i - 8));
             barArray[5] |= (isSensorOn << (i - 8));
         }        
-                
+                #if 0
         //get data from bar sensor board
          for (int i = 0; i < barInputBufferSize; i++)
         {         
@@ -168,21 +186,23 @@ int main(void)
            
 
         }
-        SPIM_3_PutArray(barInputOutputArray, 38);
-while(0 == (SPIM_3_ReadTxStatus() & SPIM_3_STS_SPI_DONE)) {
-}
+        #endif
+        //SPIM_3_PutArray(barInputOutputArray, 38);
+//while(0 == (SPIM_3_ReadTxStatus() & SPIM_3_STS_SPI_DONE)) {
+//}
 
     /* Clear dummy bytes from TX buffer */
-    SPIM_3_ClearTxBuffer();
+    //SPIM_3_ClearTxBuffer();
 
     /* Read data from the RX buffer */
+        #if 0
     i = 0u;
     while (0u != SPIM_3_GetRxBufferSize())
     {
         barInputArray[i] = SPIM_3_ReadRxData();
         i++;
     }
-
+#endif
         //send data over SPI to pluck detector boards
          for (int i = 0; i < touchBufferSize; i++)
         {         

@@ -1,23 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <blockRegMap version="1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://cypress.com/xsd/cyblockregmap cyblockregmap.xsd" xmlns="http://cypress.com/xsd/cyblockregmap">
   <block name="LED" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-  <block name="MISO_2" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="SCLK_2" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-  <block name="SS_3" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-  <block name="MOSI_2" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-  <block name="cy_boot" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-  <block name="Em_EEPROM_Dynamic" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-  <block name="SPIM_3" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false">
-    <block name="TxInternalInterrupt" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-    <block name="VirtualMux_2" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-    <block name="ZeroTerminal_1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-    <block name="VirtualMux_3" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-    <block name="IntClock" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-    <block name="VirtualMux_1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-    <block name="BSPIM" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-    <block name="RxInternalInterrupt" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-  </block>
-  <block name="MISO_3" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="SPIM_1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false">
     <block name="VirtualMux_2" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
     <block name="VirtualMux_3" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
@@ -26,10 +10,13 @@
     <block name="IntClock" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
     <block name="BSPIM" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   </block>
+  <block name="MISO_2" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+  <block name="Em_EEPROM_Dynamic" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+  <block name="cy_boot" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+  <block name="MOSI_2" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="SCLK_1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-  <block name="SCLK_3" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-  <block name="MISO_1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="MOSI_1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+  <block name="MISO_1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="CapSense" BASE="0x0" SIZE="0x0" desc="CapSense" visible="true" hidden="false">
     <block name="Select_VrefCH1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
     <block name="Select_VrefOutput" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
@@ -384,7 +371,7 @@
     <block name="Select_VrefCH0" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
     <block name="ClockGen" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
     <block name="MeasureCH0" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
-    <register name="CTL_REG" address="0x40006477" bitWidth="8" desc="CapSense Control Register" hidden="false">
+    <register name="CTL_REG" address="0x4000647C" bitWidth="8" desc="CapSense Control Register" hidden="false">
       <field name="Channel 1" from="3" to="3" access="R" resetVal="" desc="Channel 1 Enable" hidden="false">
         <value name="Disabled" value="0" desc="Channel 1 scanning is disabled" />
         <value name="Enabled" value="1" desc="Channel 1 scanning is enabled" />
@@ -402,15 +389,15 @@
         <value name="Enabled" value="1" desc="Clocks are enabled" />
       </field>
     </register>
-    <register name="ScanSpeed_CTL_REG" address="0x40006597" bitWidth="8" desc="CapSense Clock Prescaler Control Register" hidden="false">
+    <register name="ScanSpeed_CTL_REG" address="0x4000649D" bitWidth="8" desc="CapSense Clock Prescaler Control Register" hidden="false">
       <field name="Counter" from="3" to="3" access="R" resetVal="" desc="Clock Prescaler Enable" hidden="false">
         <value name="Disabled" value="0" desc="Prescaler counter is disabled" />
         <value name="Enabled" value="1" desc="Prescaler counter is enabled" />
       </field>
     </register>
   </block>
-  <block name="SS_1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="SS_2" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
+  <block name="SS_1" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   <block name="SPIM_2" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false">
     <block name="VirtualMux_2" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
     <block name="VirtualMux_3" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
@@ -419,5 +406,4 @@
     <block name="IntClock" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
     <block name="BSPIM" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
   </block>
-  <block name="MOSI_3" BASE="0x0" SIZE="0x0" desc="" visible="true" hidden="false" />
 </blockRegMap>
