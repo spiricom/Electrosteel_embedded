@@ -952,8 +952,8 @@ void menuAction(enum direction action)
             {
                 for (int i = 0; i < NUM_SLIDERS; i++)
                 {
-                    fretMeasurements[i][fretToCalibrate] = uartInput[i];
-                    
+                    fretMeasurements[i][fretToCalibrate][0] = uartInput[i];
+                    fretMeasurements[i][fretToCalibrate][1] = uartInput[i+9];
                     if (uartInput[i+9] > sensorOnMax[i])
                     {
                         sensorOnMax[i] = uartInput[i+9];
@@ -1606,19 +1606,22 @@ void finalFretCalibration(void)
 void exitFretCalibrationMode(void)
 {
     fretCalibrationMode = 0;
-    //now need to store this in EEPROM.                
+    //now need to store this in EEPROM.  
+    /*
     for (int i = 0; i < NUM_SLIDERS; i++)
     {
         EEPROM_WriteByte((sensorOffThreshold[i] >> 8), EEPROM_FRET_CALIBRATION_OFFSET + (i*2));
         EEPROM_WriteByte((sensorOffThreshold[i] & 255), EEPROM_FRET_CALIBRATION_OFFSET + ((i*2) + 1));
     }
+    */
     for (int i = 0; i < NUM_SLIDERS; i++)
     {
         for (int j = 0; j < NUM_FRET_MEASUREMENTS; j++)
         {
-            EEPROM_WriteByte((fretMeasurements[j][i] >> 8), EEPROM_FRET_CALIBRATION_OFFSET + (NUM_SLIDERS*2) + (i*2) + (j*NUM_FRET_MEASUREMENTS));
-            EEPROM_WriteByte((fretMeasurements[j][i] >> 8), EEPROM_FRET_CALIBRATION_OFFSET + (NUM_SLIDERS*2) + (i*2) + (j*NUM_FRET_MEASUREMENTS) + 1);
-            
+            EEPROM_WriteByte((fretMeasurements[j][i][0] >> 8), EEPROM_FRET_CALIBRATION_OFFSET  + (i*4*NUM_FRET_MEASUREMENTS) + (j*4));
+            EEPROM_WriteByte((fretMeasurements[j][i][0] & 255), EEPROM_FRET_CALIBRATION_OFFSET  + (i*4*NUM_FRET_MEASUREMENTS) + (j*4) + 1);
+            EEPROM_WriteByte((fretMeasurements[j][i][1] >> 8), EEPROM_FRET_CALIBRATION_OFFSET  + (i*4*NUM_FRET_MEASUREMENTS) + (j*4) + 2);
+            EEPROM_WriteByte((fretMeasurements[j][i][1] & 255), EEPROM_FRET_CALIBRATION_OFFSET  + (i*4*NUM_FRET_MEASUREMENTS) + (j*4) + 3);
             //EEPROM_WriteByte((fretMeasurements[j][i] >> 8), EEPROM_FRET_CALIBRATION_OFFSET + (i*2) + (j*NUM_SLIDERS) + (NUM_SLIDERS*2));
             //EEPROM_WriteByte((fretMeasurements[j][i] & 255), EEPROM_FRET_CALIBRATION_OFFSET + ((i*2) + (j*NUM_SLIDERS)) + 1 + (NUM_SLIDERS*2));
 

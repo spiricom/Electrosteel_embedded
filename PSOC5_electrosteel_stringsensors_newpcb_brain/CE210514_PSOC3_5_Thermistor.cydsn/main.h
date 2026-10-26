@@ -24,7 +24,7 @@
 #define EEPROM_LEVER_CALIBRATION_OFFSET (EEPROM_COPEDENT_OFFSET + (MAX_NUM_COPEDENTS * COPEDENT_SIZE_IN_BYTES))
 #define LEVER_CALIBRATION_SIZE_IN_BYTES (NUM_PEDALS * 4) //for each pedal, store 2 bytes for high and 2 bytes for low
 #define EEPROM_FRET_CALIBRATION_OFFSET (EEPROM_LEVER_CALIBRATION_OFFSET + LEVER_CALIBRATION_SIZE_IN_BYTES)
-#define FRET_CALIBRATION_SIZE_IN_BYTES (NUM_FRET_MEASUREMENTS * NUM_SLIDERS * 2) + (NUM_SLIDERS * 2)//(measurement points *  9 sliders, each point 2 bytes) + (9 sliders threshold value, each 2 bytes)
+#define FRET_CALIBRATION_SIZE_IN_BYTES (NUM_FRET_MEASUREMENTS * NUM_SLIDERS * 4)//each fret measurement (plus one for bar off) for each slider, each two bytes, each two measurements (position and bar-on/off)...//  for each measurement,  + (NUM_SLIDERS * 2)//(measurement points *  9 sliders, each point 2 bytes) + (9 sliders threshold value, each 2 bytes)
 #define EEPROM_CURRENT_PRESET_OFFSET EEPROM_FRET_CALIBRATION_OFFSET + FRET_CALIBRATION_SIZE_IN_BYTES  //2036
 #define CURRENT_PRESET_SIZE_IN_BYTES 1
 #define EEPROM_STRING_REP_OFFSET EEPROM_CURRENT_PRESET_OFFSET + CURRENT_PRESET_SIZE_IN_BYTES
@@ -58,7 +58,7 @@
 #define CONTROL_NAME_CLIPPED_LENGTH 10
 
 #define myBufferSize 32
-#define MAX_NUM_COPEDENTS 6
+#define MAX_NUM_COPEDENTS 5
 #define NUM_STRINGS 12
 #define NUM_PEDALS 10
 #define INV_440 0.0022727272727273f
@@ -114,7 +114,8 @@ extern uint8_t presetAlreadyDisplayed[MAX_NUM_PRESETS];
 extern uint8_t whichMacro;
 extern uint8_t fretCalibrationMode;
 extern uint8_t leverCalibrationMode;
-extern uint16_t fretMeasurements[NUM_SLIDERS][NUM_FRET_MEASUREMENTS];
+extern uint16_t fretMeasurements[NUM_SLIDERS][NUM_FRET_MEASUREMENTS][2];
+
 extern uint16_t pedals_low[NUM_PEDALS];
 extern uint16_t pedals_high[NUM_PEDALS];
 extern uint8_t pedal_inverted[NUM_PEDALS];

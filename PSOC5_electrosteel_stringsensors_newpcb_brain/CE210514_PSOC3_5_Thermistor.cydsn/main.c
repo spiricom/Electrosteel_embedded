@@ -7,6 +7,8 @@
 #include "main.h"
 #include "ui.h"
 
+
+#define BAR_ON_TOLERANCE 1300
 //#define BOOTLOAD_STYLE
 
 const float versionNumber = 1.17f;
@@ -56,8 +58,8 @@ uint8_t midiDebugSendOn = 0;
 uint8_t pitchSmoothing = 0;
 uint8_t controlSmoothing = 0;
 uint8_t octaveAction = 0;
-uint8_t stringRepresentation[NUM_SLIDERS] = {3,8};
-
+uint8_t stringRepresentation[NUM_SLIDERS] = {3,8,0,0,0,0,0,0,0};
+uint8_t barOns[NUM_SLIDERS] = {0};
 uint8_t presetArraySection = presetName;
 
 uint8_t sendLocalPresetStoreCommand;
@@ -235,7 +237,7 @@ int16_t processed_volumePedal;
 
 uint8_t sliderBugOn = 0;
 
-uint16_t fretMeasurements[NUM_SLIDERS][NUM_FRET_MEASUREMENTS];
+uint16_t fretMeasurements[NUM_SLIDERS][NUM_FRET_MEASUREMENTS][2];
 
 
 
@@ -329,6 +331,13 @@ float mapDualSlider(float value, float ostart, float ostop)
     return ostart + (ostop - ostart) * ((value - stringRepresentation[0]) * stringRepDivider);
 }
 
+
+float tableInterp(float tableVal1, float tableVal2, float alpha)
+{
+    float span = tableVal2-tableVal1;
+    float spanAlpha = ((span * (1.0f - alpha)));
+    return tableVal1 + spanAlpha;
+}
 void burnInitialPedalZeroPositions()
 {
     for (int i = 0; i < 5; i++)
@@ -688,17 +697,13 @@ int main(void)
     calculatePedalRatios();
                 
     
-    for (int i = 0; i < NUM_FRET_MEASUREMENTS; i++)
+    for (int i = 0; i < NUM_SLIDERS; i++)
     {
-        fretMeasurements[0][i] = (EEPROM_ReadByte(EEPROM_FRET_CALIBRATION_OFFSET + (i*4)) << 8) + (EEPROM_ReadByte(EEPROM_FRET_CALIBRATION_OFFSET + ((i*4) + 1)) & 255);
-        fretMeasurements[1][i] = (EEPROM_ReadByte(EEPROM_FRET_CALIBRATION_OFFSET + ((i*4) + 2)) << 8) + (EEPROM_ReadByte(EEPROM_FRET_CALIBRATION_OFFSET + ((i*4) + 3)) & 255);
-        fretMeasurements[2][i] = (EEPROM_ReadByte(EEPROM_FRET_CALIBRATION_OFFSET + ((i*4) + 4)) << 8) + (EEPROM_ReadByte(EEPROM_FRET_CALIBRATION_OFFSET + ((i*4) + 5)) & 255);
-        fretMeasurements[3][i] = (EEPROM_ReadByte(EEPROM_FRET_CALIBRATION_OFFSET + ((i*4) + 6)) << 8) + (EEPROM_ReadByte(EEPROM_FRET_CALIBRATION_OFFSET + ((i*4) + 7)) & 255);
-        fretMeasurements[4][i] = (EEPROM_ReadByte(EEPROM_FRET_CALIBRATION_OFFSET + ((i*4) + 8)) << 8) + (EEPROM_ReadByte(EEPROM_FRET_CALIBRATION_OFFSET + ((i*4) + 9)) & 255);
-        fretMeasurements[5][i] = (EEPROM_ReadByte(EEPROM_FRET_CALIBRATION_OFFSET + ((i*4) + 10)) << 8) + (EEPROM_ReadByte(EEPROM_FRET_CALIBRATION_OFFSET + ((i*4) + 11)) & 255);
-        fretMeasurements[6][i] = (EEPROM_ReadByte(EEPROM_FRET_CALIBRATION_OFFSET + ((i*4) + 12)) << 8) + (EEPROM_ReadByte(EEPROM_FRET_CALIBRATION_OFFSET + ((i*4) + 13)) & 255);
-        fretMeasurements[7][i] = (EEPROM_ReadByte(EEPROM_FRET_CALIBRATION_OFFSET + ((i*4) + 14)) << 8) + (EEPROM_ReadByte(EEPROM_FRET_CALIBRATION_OFFSET + ((i*4) + 15)) & 255);
-        fretMeasurements[8][i] = (EEPROM_ReadByte(EEPROM_FRET_CALIBRATION_OFFSET + ((i*4) + 16)) << 8) + (EEPROM_ReadByte(EEPROM_FRET_CALIBRATION_OFFSET + ((i*4) + 17)) & 255);
+        for (int j = 0; j < NUM_FRET_MEASUREMENTS; j++)
+        {
+            fretMeasurements[j][i][0] = (EEPROM_ReadByte(EEPROM_FRET_CALIBRATION_OFFSET + (j*4)+(i*NUM_FRET_MEASUREMENTS*4)) << 8) + (EEPROM_ReadByte(EEPROM_FRET_CALIBRATION_OFFSET + ((j*4+(i*NUM_FRET_MEASUREMENTS*4)) + 1)) & 255);
+            fretMeasurements[j][i][1] = (EEPROM_ReadByte(EEPROM_FRET_CALIBRATION_OFFSET + ((j*4+(i*NUM_FRET_MEASUREMENTS*4)) + 2)) << 8) + (EEPROM_ReadByte(EEPROM_FRET_CALIBRATION_OFFSET + ((j*4+(i*NUM_FRET_MEASUREMENTS*4)) + 3)) & 255);
+        }
     }
     //blank out the preset names array so that we can tell when we get the real names from the synth board sd card
     for (int i = 0; i < MAX_NUM_PRESETS; i++)
@@ -1139,22 +1144,45 @@ int main(void)
                         sendMIDIControlChange(34+(i*3), uartInput[i] & 127, 1);
                         sendMIDIControlChange(33+(i*3), (uartInput[i] >> 7) & 127, 1);
                         sendMIDIControlChange(32+(i*3), (uartInput[i] >> 14) & 127, 1);
+                        sendMIDIControlChange(94+(i*3), uartInput[i+9] & 127, 1);
+                        sendMIDIControlChange(93+(i*3), (uartInput[i+9] >> 7) & 127, 1);
+                        sendMIDIControlChange(92+(i*3), (uartInput[i+9] >> 14) & 127, 1);
                     }
 
-                    if (uartInput[i] >= fretMeasurements[i][0])
+                    if (uartInput[i] >= fretMeasurements[i][0][0])
     				{
     					stringMappedPositionsInRatios[i] = 1.0f;
+                        if ((uartInput[i+9] < (fretMeasurements[i][0][1]+BAR_ON_TOLERANCE)) && (uartInput[i+9] > (fretMeasurements[i][0][1]-BAR_ON_TOLERANCE)))
+                        {
+                            barOns[i] = 1;
+                        }
+                        else
+                        {
+                            barOns[i] = 0;
+                        }
     				}
-                    else if (uartInput[i] > fretMeasurements[i][NUM_FRET_MEASUREMENTS-1])
+                    else if (uartInput[i] > fretMeasurements[i][NUM_FRET_MEASUREMENTS-1][0])
                     {
                         for (int j = 0; j < NUM_FRET_MEASUREMENTS-1; j++)
                         {
-                            if ((uartInput[i] <=  fretMeasurements[i][j]) && (uartInput[i] >  fretMeasurements[i][j+1]))
+                            if ((uartInput[i] <=  fretMeasurements[i][j][0]) && (uartInput[i] >  fretMeasurements[i][j+1][0]))
                             {
-                                stringMappedPositionsInRatios[i] = map((float)uartInput[i], fretMeasurements[i][j], fretMeasurements[i][j+1], fretScalingInRatios[j], fretScalingInRatios[j + 1]);
+                                float myAlpha = ((float)uartInput[i] - fretMeasurements[i][j+1][0]) / (fretMeasurements[i][j][0] - fretMeasurements[i][j+1][0]);
+                                float barOnMapped = tableInterp(fretMeasurements[i][j][1],fretMeasurements[i][j+1][1], myAlpha);
+                                
+                                stringMappedPositionsInRatios[i] = map((float)uartInput[i], fretMeasurements[i][j][0], fretMeasurements[i][j+1][0], fretScalingInRatios[j], fretScalingInRatios[j + 1]);
+                                int32_t barOnMappedInt = (int32_t) barOnMapped;
+                                if ((uartInput[i+9] < (barOnMappedInt+BAR_ON_TOLERANCE)) && (uartInput[i+9] > (barOnMappedInt-BAR_ON_TOLERANCE)))
+                                {
+                                    barOns[i] = 1;
+                                }
+                                else
+                                {
+                                    barOns[i] = 0;
+                                }
                                 if (midiDebugSendOn)
                                 {
-                                    sendMIDIControlChange(44, j, 1);
+                                    //sendMIDIControlChange(44, j, 1);
                                 }
                                 break;
                             }
@@ -1162,14 +1190,14 @@ int main(void)
                     }
                     else
                     {
-                        stringMappedPositionsInRatios[i] = map((float)uartInput[i], fretMeasurements[i][NUM_FRET_MEASUREMENTS-2], fretMeasurements[i][NUM_FRET_MEASUREMENTS-1], fretScalingInRatios[NUM_FRET_MEASUREMENTS-2], fretScalingInRatios[NUM_FRET_MEASUREMENTS-1]);
+                        stringMappedPositionsInRatios[i] = map((float)uartInput[i], fretMeasurements[i][NUM_FRET_MEASUREMENTS-2][0], fretMeasurements[i][NUM_FRET_MEASUREMENTS-1][0], fretScalingInRatios[NUM_FRET_MEASUREMENTS-2], fretScalingInRatios[NUM_FRET_MEASUREMENTS-1]);
                     }
                     stringMappedPositionsInRatiosInt[i] = stringMappedPositionsInRatios[i]*16384.0f;
                     if (midiDebugSendOn)
                     {
-                        sendMIDIControlChange(40+(i*3), stringMappedPositionsInRatiosInt[i] & 127, 1);
-                        sendMIDIControlChange(39+(i*3), (stringMappedPositionsInRatiosInt[i] >> 7) & 127, 1);
-                        sendMIDIControlChange(38+(i*3), (stringMappedPositionsInRatiosInt[i] >> 14) & 127, 1);
+                        sendMIDIControlChange(61+(i*3), stringMappedPositionsInRatiosInt[i] & 127, 1);
+                        sendMIDIControlChange(60+(i*3), (stringMappedPositionsInRatiosInt[i] >> 7) & 127, 1);
+                        sendMIDIControlChange(59+(i*3), (stringMappedPositionsInRatiosInt[i] >> 14) & 127, 1);
                     }
                 }
                 //
@@ -1220,6 +1248,7 @@ int main(void)
     		//interpolate ratios for each of the strings
            
             float myMappedPos;
+            /*
             if (dualSlider)
             {
                if ((bar[0] != 65535) && (bar[1] != 65535))
@@ -1236,8 +1265,17 @@ int main(void)
                 }
             }
             else
+            */
             {
-                myMappedPos = stringMappedPositionsInRatios[0];
+                
+                if (i < NUM_SLIDERS)
+                {
+                    myMappedPos = stringMappedPositionsInRatios[i];
+                }
+                else
+                {
+                    myMappedPos = stringMappedPositionsInRatios[NUM_SLIDERS-1];
+                }
             }
 
             float pedalsMIDI = 0.0f;
@@ -1260,9 +1298,9 @@ int main(void)
                     uint16_t pedalsMIDIInt = pedalsMIDI * 512.0f;
                     if (midiDebugSendOn)
                     {
-                        sendMIDIControlChange(47+(i*3), pedalsMIDIInt & 127, 1);
-                        sendMIDIControlChange(46+(i*3), (pedalsMIDIInt >> 7) & 127, 1);
-                        sendMIDIControlChange(45+(i*3), (pedalsMIDIInt >> 14) & 127, 1);
+                        //sendMIDIControlChange(47+(i*3), pedalsMIDIInt & 127, 1);
+                        //sendMIDIControlChange(46+(i*3), (pedalsMIDIInt >> 7) & 127, 1);
+                        //sendMIDIControlChange(45+(i*3), (pedalsMIDIInt >> 14) & 127, 1);
                     }
                 }
             }
@@ -1321,14 +1359,14 @@ int main(void)
                 if (i == 0)
                 {
                         uint16_t barMIDIInt = barMIDI * 512.0f;
-                        sendMIDIControlChange(50, barMIDIInt & 127, 1);
-                        sendMIDIControlChange(49, (barMIDIInt >> 7) & 127, 1);
+                       // sendMIDIControlChange(50, barMIDIInt & 127, 1);
+                       // sendMIDIControlChange(49, (barMIDIInt >> 7) & 127, 1);
                         
                         sendMIDIControlChange(48, (barMIDIInt >> 14) & 127, 1);
                         uint16_t openStringMIDI_Int2 = openStringMIDI_Int[0] * 512.0f;
-                        sendMIDIControlChange(53, openStringMIDI_Int2 & 127, 1);
-                        sendMIDIControlChange(52, (openStringMIDI_Int2 >> 7) & 127, 1);
-                        sendMIDIControlChange(51, (openStringMIDI_Int2 >> 14) & 127, 1);
+                        //sendMIDIControlChange(53, openStringMIDI_Int2 & 127, 1);
+                        //sendMIDIControlChange(52, (openStringMIDI_Int2 >> 7) & 127, 1);
+                        //sendMIDIControlChange(51, (openStringMIDI_Int2 >> 14) & 127, 1);
                 }
             }
             
@@ -1529,7 +1567,8 @@ int main(void)
                 myArray[i * 2 + 1] = scaledMIDI >> 8;
                 myArray[(i * 2) + 2] = scaledMIDI & 255;
             }
-            
+            myArray[22] = (barOns[7]<<7) + (barOns[6]<<6) + (barOns[5]<<5) + (barOns[4]<<4) + (barOns[3]<<3) + (barOns[2]<<2) + (barOns[1]<<1) + barOns[0];
+            myArray[23] = (barOns[8]<<1) + barOns[8];
             myArray[24] = octave | (voice << 4) | (dualSlider << 5) | (octaveAction << 6);
             myArray[25] = patchNum;
             myArray[26] = processed_volumePedal >> 8;
